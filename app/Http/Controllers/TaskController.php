@@ -316,6 +316,8 @@ class TaskController extends BaseController
             $orders = $orders->where('customer_id', $request->customer_id);
         }
 
+        
+
         $orders = $orders->where('status', $request->routesListingType)->where('status', '!=', null)->orderBy('updated_at', 'desc');
         // dd($orders->get());
         $preference = ClientPreference::where('id', 1)->first(['theme','date_format','time_format']);

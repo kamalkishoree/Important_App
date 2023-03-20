@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Accountancy;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Model\{Agent, Order, AgentPayout, PayoutOption};
+use App\Model\{Agent, Order, AgentPayout, PayoutOption, Team};
 use Auth;
 use DataTables;
 use App\Traits\agentEarningManager;
@@ -17,12 +17,20 @@ class DriverAccountingController extends BaseController
     use ApiResponser;
     public function index(Request $request) {
         
+        $user = Auth::user();
+        if ( $user->is_superadmin == 0 &&  $user->all_team_access == 0) {
+            $userid = $user->id;
+            $agentList = Agent::whereHas('team.permissionToManager', function($q) use ($userid){
+                $q->where('sub_admin_id', $userid);
+            })->pluck('name', 'id')->toArray();
+        }else{
+            $agentList = Agent::pluck('name', 'id')->toArray();
+        }
         if( $request->status ) {
             $status = $request->status;
         } else {
             $status = 'settlement';
         }
-        $agentList = Agent::pluck('name', 'id')->toArray();
         return view('accountancy.driver.index')->with(['status' => $status, 'agentList' => $agentList]);
     }
 
@@ -45,9 +53,15 @@ class DriverAccountingController extends BaseController
     public function driverDatatable(Request $request) {
         
         $data = $request->all();
-        
+        $user = Auth::user();
+        $userid = $user->id;
         $type = $request->routesListingType;
         $orders = Order::with(['agent', 'getAgentPayout']);
+        if ( $user->is_superadmin == 0 &&  $user->all_team_access == 0) {
+            $orders = $orders->whereHas('agent.team.permissionToManager', function($q) use ($userid){
+            $q->where('sub_admin_id', $userid);
+        });}
+        
         if($type == 'statement') {
             $orders = $orders->whereHas('getAgentPayout' , function($query) use($type) {
                 $query->where('status', 1);

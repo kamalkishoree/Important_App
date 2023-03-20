@@ -37,7 +37,9 @@
         .extra {
             display: none;
         }
-
+        .auto_allocation ul.list-inline li.active label{
+    background: #d36b6b;
+}
     </style>
 @endsection
 
@@ -81,7 +83,7 @@
                                 @endphp --}}
                                 <div class="row mb-2">
                                     <div class="col-md-12">
-                                    <div class="login-form">
+                                    <div class="login-form auto_allocation">
                                         <ul class="list-inline">
                                             <li class="d-inline-block mr-2">
                                                 <input type="radio" id="acknowledge1" class="autoredio" value="acknowledge"
@@ -368,6 +370,7 @@
                     $('.sendtoall').hide();
                 }
 
+            $("input[name='acknowledgement_type']:checked").parents("li:first").addClass('active');
             $(function() {
                 $('#manual_allocation').change(function() {
                     var checked = $('#manual_allocation').prop('checked');
@@ -398,6 +401,9 @@
             var CSRF_TOKEN = $("input[name=_token]").val();
 
             $(document).on('click', '.autoredio', function () {
+                var obj = $(this);
+                $('.auto_allocation ul.list-inline li.active').removeClass('active');
+                $(this).parents("li:first").addClass('active');
                 var value = $("input[name='acknowledgement_type']:checked").val();
                 if(value == 'acknowledge'){
                     $('.sendtoall').hide();

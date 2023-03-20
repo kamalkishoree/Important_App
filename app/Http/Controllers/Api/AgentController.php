@@ -6,7 +6,8 @@ use App\Http\Controllers\Api\BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use App\Model\{Agent, AgentLog, AllocationRule, Client, ClientPreference, Cms, Order, Task, TaskProof, Timezone, User, DriverGeo, Geo, TagsForAgent};
+use App\Model\{Agent, AgentLog, AgentSlot, AllocationRule, Client, ClientPreference, Cms, Order, Task, TaskProof, Timezone, User, DriverGeo, Geo, TagsForAgent};
+use App\Model\Order\Category;
 use Validator;
 use DB;
 use Illuminate\Support\Facades\Storage;
@@ -14,11 +15,14 @@ use App\Model\Roster;
 use Config;
 use Illuminate\Support\Facades\URL;
 use GuzzleHttp\Client as GClient;
+use App\Traits\{AgentSlotTrait};
 
 class AgentController extends BaseController
 {
+    use AgentSlotTrait;
     /**   get agent according to lat long  */
-    function getAgents(Request $request){
+    function getAgents(Request $request)
+    {
         try {
 
             $validator = Validator::make(request()->all(), [
@@ -26,7 +30,7 @@ class AgentController extends BaseController
                 'longitude' => 'required',
             ]);
 
-            if($validator->fails()){
+            if ($validator->fails()) {
                 return $this->errorResponse($validator->messages(), 422);
             }
 
@@ -34,24 +38,23 @@ class AgentController extends BaseController
             $geoagents_ids = DriverGeo::where('geo_id', $geoid)->pluck('driver_id');
 
             $tagId = '';
-            if(!empty($request->tag)){
+            if (!empty($request->tag)) {
                 $tag = TagsForAgent::where('name', $request->tag)->get()->first();
-                if(!empty($tag)){
+                if (!empty($tag)) {
                     $tagId = $tag->id;
-                }else{
+                } else {
                     return response()->json([
                         'data' => [],
                         'status' => 200,
                         'message' => __('Agents not found.')
                     ], 200);
                 }
-
             }
 
-            $geoagents = Agent::with(['agentlog','vehicle_type']);
+            $geoagents = Agent::with(['agentlog', 'vehicle_type']);
 
-            if(!empty($tagId)){
-                $geoagents->whereHas('tags', function($q) use($tagId){
+            if (!empty($tagId)) {
+                $geoagents->whereHas('tags', function ($q) use ($tagId) {
                     $q->where('tag_id', $tagId);
                 });
             }
@@ -59,16 +62,16 @@ class AgentController extends BaseController
             $geoagents = $geoagents->whereIn('id', $geoagents_ids)->where(["is_available" => 1, "is_approved" => 1])->orderBy('id', 'DESC')->get();
             // $preferences = ClientPreference::with('currency')->first();
             // $clientPreference = json_decode($preferences->customer_notification_per_distance);
-            
+
             $finalAgents = [];
             foreach($geoagents as $geoagent){
                 $agentLat = !empty($geoagent->agentlog) ? $geoagent->agentlog->lat : 0.00000;
                 $agentLong = !empty($geoagent->agentlog) ? $geoagent->agentlog->long : 0.00000;
 
                 $getDistance = $this->getLatLongDistance($agentLat, $agentLong, $request->latitude, $request->longitude, 'km');
-                
+
                 //get agent under 5 km
-                if($getDistance < 6){
+                if ($getDistance < 6) {
                     $geoagent->distance = $getDistance;
                     $geoagent->distance_type = 'km';
                     $finalAgents[] = $geoagent;
@@ -76,7 +79,6 @@ class AgentController extends BaseController
 
                 $getArrivalTime = $this->getLatLongDistance($agentLat, $agentLong, $request->latitude, $request->longitude, 'minutes');
                 $geoagent->arrival_time = $getArrivalTime;
-                
             }
 
             $distance = array_column($finalAgents, 'distance');
@@ -87,16 +89,15 @@ class AgentController extends BaseController
                 'status' => 200,
                 'message' => __('success')
             ], 200);
-
         } catch (Exception $e) {
             return response()->json([
                 'message' => $e->getMessage()
             ], 400);
         }
-
     }
 
-    function getLatLongDistance($lat1, $lon1, $lat2, $lon2, $unit) {
+    function getLatLongDistance($lat1, $lon1, $lat2, $lon2, $unit)
+    {
 
         $earthRadius = 6371;  // earth radius in km
 
@@ -107,7 +108,7 @@ class AgentController extends BaseController
         $latDelta = $latTo - $latFrom;
         $lonDelta = $lonTo - $lonFrom;
         $angle = 2 * asin(sqrt(pow(sin($latDelta / 2), 2) +
-        cos($latFrom) * cos($latTo) * pow(sin($lonDelta / 2), 2)));
+            cos($latFrom) * cos($latTo) * pow(sin($lonDelta / 2), 2)));
 
         $final = round($angle * $earthRadius);
         if ($unit == "km") {
@@ -115,10 +116,10 @@ class AgentController extends BaseController
         } else if ($unit == "minutes") {
             $kmsPerMin = 0.5; // asume per km time estimate 0.5 minute
             $minutesTaken = $final / $kmsPerMin;
-            if($minutesTaken < 60){
-                return $minutesTaken.' min';
-            }else{
-                return intdiv($minutesTaken, 60).'hours '. ($minutesTaken % 60).'min';
+            if ($minutesTaken < 60) {
+                return $minutesTaken . ' min';
+            } else {
+                return intdiv($minutesTaken, 60) . 'hours ' . ($minutesTaken % 60) . 'min';
             }
         } else {
             return round($final * 0.6214); //miles
@@ -138,12 +139,12 @@ class AgentController extends BaseController
 
         foreach ($localities as $k => $locality) {
 
-            if(!empty($locality->polygon)){
+            if (!empty($locality->polygon)) {
                 $geoLocalitie = Geo::where('id', $locality->id)->whereRaw("ST_Contains(POLYGON, ST_GEOMFROMTEXT('POINT(" . $lat . " " . $lng . ")'))")->first();
-                if(!empty($geoLocalitie)){
+                if (!empty($geoLocalitie)) {
                     return $locality->id;
                 }
-            }else{
+            } else {
                 $all_points = $locality->geo_array;
                 $temp = $all_points;
                 $temp = str_replace('(', '[', $temp);
@@ -173,7 +174,6 @@ class AgentController extends BaseController
                     return $locality->id;
                 }
             }
-            
         }
 
         return false;
@@ -190,4 +190,90 @@ class AgentController extends BaseController
         }
         return $c;
     }
+    public function On_demand_services_list(Request $request)
+    {
+
+        try {
+            $category_list = Category::with('products')->where('type_id', '8')->get();
+
+            if (!empty($category_list[0]->slug)) {
+                return response()->json([
+                    'data' => $category_list,
+                ]);
+            } else {
+                return response()->json(['error' => 'No record found.'], 404);
+            }
+        } catch (Exception $e) {
+            return $this->errorResponse($e->getMessage(), $e->getCode());
+        }
+    }
+    public function getTaskListWithDate(Request $request){
+        $header = $request->header();
+        $client_code = Client::where('database_name', $header['client'][0])->first();
+        $tz = new Timezone();
+        $orderStatus = 'assigned';
+        $client_code->timezone = $tz->timezone_name($client_code->timezone);
+        $selectedDatesArray   = $request->has('selectedDatesArray') ? $request->selectedDatesArray : [];
+     
+      
+        $id     = Auth::user()->id;
+
+        $all     = $request->all;
+        $tasks   = [];
+        $orders = Order::where('driver_id', $id);//->where('status',  $orderStatus);
+        //if ($all != 1) { //geting today task
+            $orders = $orders->whereIn(DB::raw('DATE(order_time)'), $selectedDatesArray );
+            //$orders = $orders->whereBetween('order_time', [$utc_start,$utc_end]);
+           // } 
+       
+        $orders = $orders->orderBy("order_time","ASC")->orderBy("id","ASC")->pluck('id')->toArray();
+     
+        if (count($orders) > 0) {
+            
+            $tasks = Task::whereIn('order_id', $orders)
+            ->with(['location','tasktype','order.customer','order.customer.resources','order.task.location','order.additionData'])->orderBy("order_id", "DESC")
+            ->orderBy("id","ASC")
+            ->get();
+            if (count($tasks) > 0) {
+                //sort according to task_order
+                $tasks = $tasks->toArray();
+                if ($tasks[0]['task_order'] !=0) {
+                    usort($tasks, function ($a, $b) {
+                        return $a['task_order'] <=> $b['task_order'];
+                    });
+                }
+            }
+        }
+        $request->merge(['agent_id'=> $id]);
+        $AgentSlotRoster = $this->getAgentSlotByType($request);
+        $AgentBlockRoster = $this->getAgentSlotBlocked($request);
+        $response =  [
+                        'tasks' => $tasks,
+                        'agent_slots'=> $AgentSlotRoster,
+                        'agent_blocked_dates'=> $AgentBlockRoster
+                    ];
+        return response()->json([
+            'data' => $response,
+            'status' => 200,
+            'message' => __('success')
+        ], 200);
+    }
+
+     /**   get agent data api */
+     function getAgentDetails(Request $request,$driver_id)
+     {
+         try {
+            $agent = Agent::with(['agentlog','agentRating'])->where('id',$driver_id)->first();
+            return response()->json([
+                'data' => $agent,
+                'status' => 200,
+                'message' => __('success')
+            ], 200);
+         } catch (Exception $e) {
+             return response()->json([
+                 'message' => $e->getMessage()
+             ], 400);
+         }
+     }
+
 }
