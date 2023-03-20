@@ -552,7 +552,6 @@ class TaskController extends BaseController
     // function for saving new order
     public function newtasks(Request $request)
     {
-        // dd($request->warehouse_id);
         try {
             DB::beginTransaction();
 
@@ -715,12 +714,11 @@ class TaskController extends BaseController
                     array_push($longitude, $location->longitude);
                 }
 
-                if(@$request->warehouse_id[$key]){
+                if($request->filled('warehouse_id') && @$request->warehouse_id[$key]){
                     $warehouse_detail = Warehouse::find($request->warehouse_id[$key]);
-                    $Loction = Location::create(
-                        ['latitude' => $warehouse_detail->latitude, 'longitude' => $warehouse_detail->longitude, 'address' => $warehouse_detail->address]
+                    $Loction = Location::updateOrCreate(
+                        ['latitude' => $warehouse_detail->latitude, 'longitude' => $warehouse_detail->longitude, 'address' => $warehouse_detail->address,'warehouse_id'  => $request->warehouse_id[$key]]
                     );
-
                     $loc_id = $Loction->id;
                 }
 

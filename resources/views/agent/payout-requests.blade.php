@@ -140,7 +140,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                         <form method="POST" action="{{route('preference', Auth::user()->code)}}" class="d-flex">
                                             @csrf
                                             <input type="text" name="charge_percent_from_agent" id="" class="form-control" value="@if((isset($preferences->charge_percent_from_agent))){{$preferences->charge_percent_from_agent}}@endif" placeholder="Commission Percentage">
-                                            <button class="ml-2" type="submit">Save</button>
+                                            <button class="btn btn-blue ml-2" type="submit">Save</button>
                                         </form>
                                     @endif
                                 </div>

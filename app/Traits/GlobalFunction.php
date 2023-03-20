@@ -65,7 +65,7 @@ trait GlobalFunction{
             $preference = ClientPreference::select('manage_fleet', 'is_cab_pooling_toggle')->first();
             $geoagents_ids =  DriverGeo::where('geo_id', $geo);
 
-            if($preference->is_cab_pooling_toggle == 1){
+            if($preference->is_cab_pooling_toggle == 1 && $is_cab_pooling == 1){
                 $geoagents_ids = $geoagents_ids->whereHas('agent', function($q) use ($geo, $is_cab_pooling){
                     $q->where('is_pooling_available', $is_cab_pooling);
                 });
