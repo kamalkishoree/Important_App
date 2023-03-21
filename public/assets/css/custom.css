@@ -75,8 +75,8 @@ body.light .address_box label {
 body.light div#agents-datatable_wrapper .dataTables_scrollHead thead th {
 }
 button[type="submit"]:hover {
-    background-color: transparent;
-    border-color: transparent;
+    /* background-color: transparent;
+    border-color: transparent; */
     cursor: pointer;
     font-size: 14px;
 }
