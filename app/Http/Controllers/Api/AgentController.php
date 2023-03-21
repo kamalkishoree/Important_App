@@ -67,18 +67,18 @@ class AgentController extends BaseController
             foreach($geoagents as $geoagent){
                 $agentLat = !empty($geoagent->agentlog) ? $geoagent->agentlog->lat : 0.00000;
                 $agentLong = !empty($geoagent->agentlog) ? $geoagent->agentlog->long : 0.00000;
+                $getLatLongDistance = $this->getLatLongDistance($agentLat, $agentLong, $request->latitude, $request->longitude);
+                $getDistance =   $getLatLongDistance['km']; 
+                $geoagent->distance = $getDistance;
+                $geoagent->distance_type = 'km';
 
-                $getDistance = $this->getLatLongDistance($agentLat, $agentLong, $request->latitude, $request->longitude, 'km');
-
+                $getArrivalTime =  $getLatLongDistance['time']; 
+                $geoagent->arrival_time = $getArrivalTime;
                 //get agent under 5 km
                 if ($getDistance < 6) {
-                    $geoagent->distance = $getDistance;
-                    $geoagent->distance_type = 'km';
                     $finalAgents[] = $geoagent;
                 }
 
-                $getArrivalTime = $this->getLatLongDistance($agentLat, $agentLong, $request->latitude, $request->longitude, 'minutes');
-                $geoagent->arrival_time = $getArrivalTime;
             }
 
             $distance = array_column($finalAgents, 'distance');
@@ -96,9 +96,9 @@ class AgentController extends BaseController
         }
     }
 
-    function getLatLongDistance($lat1, $lon1, $lat2, $lon2, $unit)
+    function getLatLongDistance($lat1, $lon1, $lat2, $lon2, $unit = '')
     {
-
+        $return_array= [];
         $earthRadius = 6371;  // earth radius in km
 
         $latFrom = deg2rad($lat1);
@@ -110,20 +110,25 @@ class AgentController extends BaseController
         $angle = 2 * asin(sqrt(pow(sin($latDelta / 2), 2) +
             cos($latFrom) * cos($latTo) * pow(sin($lonDelta / 2), 2)));
 
-        $final = round($angle * $earthRadius);
-        if ($unit == "km") {
-            return $final;
-        } else if ($unit == "minutes") {
+        $final = round($angle * $earthRadius); // get KM 
+        $return_array['km']=  $final;
+        // if ($unit == "km") {
+        //     return $final;
+        // } else if ($unit == "minutes") {
+            $time  = '';
             $kmsPerMin = 0.5; // asume per km time estimate 0.5 minute
             $minutesTaken = $final / $kmsPerMin;
             if ($minutesTaken < 60) {
-                return $minutesTaken . ' min';
+                $time = $minutesTaken . ' min';
             } else {
-                return intdiv($minutesTaken, 60) . 'hours ' . ($minutesTaken % 60) . 'min';
+                $time = intdiv($minutesTaken, 60) . 'hours ' . ($minutesTaken % 60) . 'min';
             }
-        } else {
-            return round($final * 0.6214); //miles
-        }
+            $return_array['time']=  $time;
+            $return_array['miles']=   round($final * 0.6214); //miles
+        // } else {
+        //     return round($final * 0.6214); //miles
+        // }
+        return $return_array;
     }
 
     public function findLocalityByLatLng($lat, $lng)
