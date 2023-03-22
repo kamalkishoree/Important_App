@@ -6,7 +6,7 @@ use App\Http\Controllers\Api\BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use App\Model\{Agent, AgentLog, AgentSlot, AllocationRule, Client, ClientPreference, Cms, Order, Task, TaskProof, Timezone, User, DriverGeo, Geo, TagsForAgent};
+use App\Model\{Agent, AgentLog, AgentSlot, AllocationRule, Client, ClientPreference, Cms, Order, Task, TaskProof, Timezone, User, DriverGeo, Geo, TagsForAgent, DriverHomeAddress};
 use App\Model\Order\Category;
 use Validator;
 use DB;
@@ -280,5 +280,176 @@ class AgentController extends BaseController
              ], 400);
          }
      }
+
+
+     
+    /**   get agent enable/disbale go to home address option  */
+    function getAgentgotoHomeAddress(Request $request){
+        try {
+            $validator = Validator::make(request()->all(), [
+                'agent_id' => 'required|exists:agents,id',
+            ]);
+            if ($validator->fails()) {
+                return $this->errorResponse($validator->messages(), 422);
+            }
+            $agent                          = Agent::find($request->agent_id);
+            return response()->json([
+                'data' => $agent,
+                'status' => 200,
+                'message' => __('success')
+            ], 200);
+            
+        }
+        catch (Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 400);
+        }
+    }
+     /**   add agent enable/disbale go to home address option  */
+     function addAgentgotoHomeAddress(Request $request){
+        try {
+            $validator = Validator::make(request()->all(), [
+                'agent_id' => 'required|exists:agents,id',
+            ]);
+            if ($validator->fails()) {
+                return $this->errorResponse($validator->messages(), 422);
+            }
+            if($request->status ==1){
+                $status = $request->status;
+            }else if($request->status ==0){
+                $status = $request->status;
+            }
+            $agent                          = Agent::find($request->agent_id);
+            $agent->is_go_to_home_address   = $status;
+            $agent->save();
+            return response()->json([
+                'data' => $agent,
+                'status' => 200,
+                'message' => __('success')
+            ], 200);
+            
+        }
+        catch (Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 400);
+        }
+    }
+    /**   get agent according to lat long  */
+    function addagentAddress(Request $request)
+    {
+       
+        try {
+           
+            $validator = Validator::make(request()->all(), [
+                'agent_id' => 'required|exists:agents,id',
+                'latitude' => 'required',
+                'longitude' => 'required',
+            ]);
+            if ($validator->fails()) {
+                return $this->errorResponse($validator->messages(), 422);
+            }
+            $count = DriverHomeAddress::where('agent_id',$request->agent_id)->count();
+            if($count > 0){
+                DriverHomeAddress::where('agent_id',$request->agent_id)->update(['is_default' => 0]);
+            }
+           
+            $address                = new DriverHomeAddress();
+            $address->agent_id      = $request->agent_id;
+            $address->latitude      = $request->latitude;
+            $address->longitude     = $request->longitude;
+            $address->short_name    = $request->short_name;
+            $address->address       = $request->address;
+            $address->post_code     = $request->post_code;
+            $address->is_default    = 1;
+            $address->save();
+           
+            return response()->json([
+                'data' => $address,
+                'status' => 200,
+                'message' => __('success')
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 400);
+        }
+    }
+     /**   get agent home address By Agent id  */
+    function allHomeAddress(Request $request)
+    {
+        try {
+           
+            $validator = Validator::make(request()->all(), [
+                'agent_id' => 'required|exists:agents,id',
+            ]);
+            if ($validator->fails()) {
+                return $this->errorResponse($validator->messages(), 422);
+            }
+            $count = DriverHomeAddress::where('agent_id',$request->agent_id)->count();
+            if($count > 0){
+                $address = DriverHomeAddress::where('agent_id',$request->agent_id)->get();
+            }else{
+                return response()->json([
+                    'message' => 'User not found'
+                ], 404);
+            }
+           
+            
+           
+            return response()->json([
+                'data' => $address,
+                'status' => 200,
+                'message' => __('success')
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 400);
+        }
+    }
+    /**Check status go to home address is Enabled/Disabled */
+    function HomeAddressStatus(Request $request){
+        try {
+            $request->all();
+            $validator = Validator::make(request()->all(), [
+                'agent_id' => 'required|exists:agents,id',
+                'id' => 'required|exists:agents_home_address,id',
+                'status' => 'required|boolean',
+            ]);
+            if ($validator->fails()) {
+                return $this->errorResponse($validator->messages(), 422);
+            }
+            $count = DriverHomeAddress::where(['agent_id'=>$request->agent_id,'id'=>$request->id])->count();
+            if($count > 0){
+                if($request->is_default == 0){
+                    $status = 0;
+                }else if($request->is_default == 1){
+                    $status = 1;
+                }
+                DriverHomeAddress::where('agent_id',$request->agent_id)->update(['is_default' => 0]);
+                $address                = DriverHomeAddress::where(['agent_id'=>$request->agent_id,'id'=>$request->id])->first();
+                $address->is_default    = $status;
+                $address->save();
+            }else{
+                return response()->json([
+                    'message' => 'User not found'
+                ], 404);
+            }
+           
+            
+           
+            return response()->json([
+                'data' => $address,
+                'status' => 200,
+                'message' => __('success')
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 400);
+        }
+    }
 
 }
