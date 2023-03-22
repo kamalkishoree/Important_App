@@ -573,7 +573,7 @@ class AuthController extends BaseController
         
         if (isset($request->bike_color)) {             
             $agent_docs = AgentDocs::create( [
-                'file_type' => 'Text',
+                'file_type' => 'bike_color',
                 'agent_id' => $agent->id,
                 'file_name' => $request->bike_color,
                 'label_name' => 'Bike Color'
@@ -582,22 +582,13 @@ class AuthController extends BaseController
         
         if (isset($request->bike_type)) {          
             $agent_docs = AgentDocs::create( [
-                'file_type' => 'Text',
+                'file_type' => 'bike_type',
                 'agent_id' => $agent->id,
                 'file_name' => $request->bike_type,
                 'label_name' => 'Bike Type'
             ]);
         }
         
-        if (isset($request->bike_num_plate)) {          
-            $agent_docs = AgentDocs::create( [
-                'file_type' => 'Text',
-                'agent_id' => $agent->id,
-                'file_name' => $request->bike_num_plate,
-                'label_name' => 'Bike Number'
-            ]);
-        }
-
         $clientContact = Client::first();
         $emailSmtpDetail = SmtpDetail::where('id', 1)->first();
         $smtp = SmtpDetail::where('id', 1)->first();

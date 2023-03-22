@@ -202,6 +202,21 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     </div>
 </div>
 <div class="row">
+    @foreach($agent_docs as $agent_doc)
+        @if($agent_doc->file_type == 'bike_type' || $agent_doc->file_type == 'bike_color')
+        <div class="col-md-6">
+            <div class="form-group" id="{{$agent_doc->file_type}}Input">
+                <label for="plate_number" class="control-label">{{__( $agent_doc->label_name)}}</label>
+                <input type="text" class="form-control" id="input_file_logo_{{$agent_doc->agent_id}}" name="{{$agent_doc->file_type}}" placeholder="Enter Text" value="{{ $agent_doc->file_name }}">
+                <span class="invalid-feedback" role="alert">
+                    <strong></strong>
+                </span>
+            </div>
+        </div>
+        @endif
+    @endforeach
+</div>
+<div class="row">
     @if(!empty($driver_registration_documents) && count($driver_registration_documents) > 0)
     @foreach($driver_registration_documents as $driver_registration_document)
     @php
