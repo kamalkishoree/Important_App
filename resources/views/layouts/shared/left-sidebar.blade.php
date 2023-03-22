@@ -286,12 +286,12 @@
                     </a>
                 </li>
                 @endif
-                <li>
+                {{-- <li>
                     <a href="{{route('services.index')}}">
                         <i class="fe-package"></i>
                         <span> {{__('Services')}} </span>
                     </a>
-                </li>
+                </li> --}}
 
                 {{-- <li>
                     <a href="{{route('general_slots')}}">
