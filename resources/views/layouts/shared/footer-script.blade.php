@@ -1,7 +1,10 @@
 <!-- bundle -->
 <!-- Vendor js -->
-{{-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script> --}}
-@include('modal.modalPopup')
+{{--
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"
+	type="text/javascript"></script>
+--}} @include('modal.modalPopup')
 
 <!-- <div class="nb-spinner-main">
     <div class="nb-spinner"></div>
@@ -94,6 +97,7 @@
             };
             $(this).closest(".firstclone1").find(".location-section").toggle();
             $(this).closest(".firstclone1").find(".warehouse-fields").toggle();
+            $(this).closest(".firstclone1").find(".warehouse-data").toggle();
         });
 
 
@@ -140,7 +144,7 @@
         });
         var arr = [];
         var product_ids = [];
-        var vendor_ids = []; 
+        var vendor_ids = [];
         $(document).on('change', '#inventory_product', function() {
             var cat_id = $(this).val();
             $.ajax({
@@ -157,11 +161,11 @@
                             arr.push(cat_id);
                             $("#selected_inventory_products").append("<option value='" + cat_id + "' selected>" + data + "</option>");
                         }
-                       
-                        $.each($('#selected_inventory_products').select2('data'), (e, v) => {
+
+                          $.each($('#selected_inventory_products').select2('data'), (e, v) => {
 
                             product_ids.push(parseInt(v.id));
-                            getProductWarehouses(product_ids)
+                            
 
 
                         })
@@ -177,9 +181,22 @@
             });
 
         });
+        
+        $("#get-warehouse").click(function()
+        {
+        
+           getProductWarehouses(product_ids)
+        
+        });
 
-        function getProductWarehouses(data){
-           
+        function getProductWarehouses(data) {
+
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
             $.ajax({
                 url: "/get-selected-warehouses",
                 type: "post",
@@ -188,9 +205,9 @@
                     data: data
                 },
                 success: (data) => {
-                   
-                    $(".inventory_vendor").empty();
-                    $(".inventory_vendor").append(data);
+
+                    $(".inventory_warehouse").empty();
+                    $(".inventory_warehouse").append(data);
 
                 },
                 error: () => {
@@ -203,13 +220,110 @@
 
         }
 
+        var warehouse_id = [];
+        var vendor_id = [];
+        var item_count = [];
+        var list= [];
+        $("#create_subtask").click(function(e) {
+
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                }
+            });
+             
+      
+            $("input[name='product_id']").each(function() {
+            
+                if(!warehouse_id.includes(parseInt($(this).val()))){
+                   warehouse_id.push(parseInt($(this).val()));
+                }
+            });
+ 
+ 
+            $("input[name='product_id']").each(function() {
+            
+                  vendor_id.push({'warehouse_id':parseInt($(this).attr('data-id')),'product_id':parseInt($(this).val())});
+              
+            });
+         
+         console.log(vendor_id);
+            autoWrap.indexOf('addHeader1') === -1 ? autoWrap.push('addHeader1') : '';
+            e.preventDefault();
+
+            $.ajax({
+                type: "post",
+                url: "{{ route('getWarehouseProducts')}}",
+                data: {
+                    'product_id' : warehouse_id,
+                    'vendor_id' : vendor_id
+                },
+                dataType: 'json',
+                success: function(data) {
+                    $('.submitTaskHeaderLoader').css('display', 'none');
+                    $('#submitTaskHeaderText').text('Submit');
+                    $('.submitTaskHeader').removeClass("inactiveLink");
+
+                    $('#task-modal-header #addCardBox').html(data.html);
+
+                    $('#task-modal-header').find('.selectizeInput').selectize();
+
+
+                    $('.dropify').dropify();
+                    $(".newcustomer").hide();
+                    $(".searchshow").show();
+                    $(".append").show();
+                    $('.copyin').remove();
+
+                    $(".addspan").hide();
+                    $(".tagspan").hide();
+                    $(".tagspan2").hide();
+                    $(".searchspan").hide();
+                    $(".datenow").hide();
+
+                    $(".pickup-barcode-error").hide();
+                    $(".drop-barcode-error").hide();
+                    $(".appointment-barcode-error").hide();
+
+                    $('.appoint').hide();
+
+                    loadMapHeader(autoWrap);
+                    searchRes();
+                    $('#task-modal-header').modal({
+                        backdrop: 'static',
+                        keyboard: false
+                    });
+
+                    phoneInput();
+                    runPicker();
+
+                    $('#task-modal-header .edit-icon-float-right').on('click', function() {
+                        $('#task-modal-header .meta_data_task_div').toggle();
+                        if ($(this).find('i').hasClass('mdi mdi-chevron-down')) {
+                            $(this).find('i').removeClass('mdi mdi-chevron-down');
+                            $(this).find('i').addClass('mdi mdi-chevron-up');
+                        } else {
+                            $(this).find('i').removeClass('mdi mdi-chevron-up');
+                            $(this).find('i').addClass('mdi mdi-chevron-down');
+                        }
+                    });
+
+
+                },
+                error: function(data) {}
+            });
+
+
+
+        });
+
     });
 </script>
 @yield('script')
 <!-- App js -->
 
 <script src="{{asset('assets/js/app.min.js')}}"></script>
-<script src="{{asset('assets/libs/jquery-toast-plugin/jquery-toast-plugin.min.js')}}"></script>
+<script
+	src="{{asset('assets/libs/jquery-toast-plugin/jquery-toast-plugin.min.js')}}"></script>
 <script src="{{asset('assets/js/pages/toastr.init.js')}}"></script>
-@yield('script-bottom')
-@yield('popup-js')
+@yield('script-bottom') @yield('popup-js')

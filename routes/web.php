@@ -237,7 +237,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::get('batchs/', 'TaskController@batchlist')->name('batch.list');
 			Route::POST('batchDetails/', 'TaskController@batchDetails')->name('batchDetails');
 			Route::resource('tasks', 'TaskController');
-
+			Route::post('get-warehouse-products', 'TaskController@getWarehouseProducts')->name('getWarehouseProducts');
 			Route::post('newtasks', 'TaskController@newtasks');
 			Route::any('updatetasks/tasks/{id}', 'TaskController@update');
 			Route::post('single_taskdelete', 'TaskController@deleteSingleTask')->name('tasks.single.destroy');
@@ -245,8 +245,14 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::get('get-category-warehouse', 'TaskController@getCategoryWarehouse')->name('getCategoryWarehouse');
 			Route::get('get-inventory-products', 'TaskController@getInventoryProducts')->name('getInventoryProducts');
 
-			Route::get('get-product-name', 'TaskController@getProductName')->name('getProductName');
+
+			Route::get('create-product-route', 'TaskController@createProductRoute')->name('create-product-route');
+			Route::get('inventory-update', 'TaskController@inventoryUpdate')->name('inventory-update');
+			
+		 	Route::get('get-product-name', 'TaskController@getProductName')->name('getProductName');
 			Route::post('get-selected-warehouses', 'TaskController@getSelectedWarehouses')->name('getSelectedWarehouses');
+
+			Route::post('create-subtask', 'TaskController@createSubtask')->name('createSubtask');
 			
 			Route::post('optimize-route', 'DashBoardController@optimizeRoute');
 			Route::post('arrange-route', 'DashBoardController@arrangeRoute');

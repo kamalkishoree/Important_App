@@ -101,7 +101,7 @@
                 </li>
                 @endif
               
-                @if($warehouse_mode['show_category_module'] == 1)
+                @if($warehouse_mode['show_inventory_category_module'] == 1)
                 <li>
                     <a href="{{route('category.inventory')}}">
                         <i class="fe-package"></i>
@@ -153,7 +153,8 @@
                 @endif
 
                 @if(in_array('ACL',$allowed) || Auth::user()->is_superadmin == 1)
-                <li>
+                <li
+
                     <a href="{{route('subadmins.index')}}">
                         <i class="fe-users"></i>
                         <span> {{__('Managers')}} </span>

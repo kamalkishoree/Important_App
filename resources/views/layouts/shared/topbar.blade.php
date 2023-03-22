@@ -114,11 +114,23 @@ $clientData = \App\Model\Client::select('id', 'logo','custom_domain','code')->wi
         </li>
         @if(in_array('Add Route',$allowed) || Auth::user()->is_superadmin == 1)
             
+         @php
+                    $warehouse_mode = checkWarehouseMode();
+                @endphp
+                @if($warehouse_mode['show_inventory_category_module'] == 1)
+              <li class="d-lg-inline-block" >
+                <a class="nav-link" href="#">   <!-- addTaskModalHeader -->
+                    <button type="button" class="btn btn-blue waves-effect waves-light klklkl" data-toggle="modal" data-target="#addRouteModal" data-backdrop="static" title="{{__('Add Route')}}" data-keyboard="false"><span><i class="mdi mdi-plus-circle mr-1"></i> {{__('Add Route')}}</span></button>
+                </a>
+            </li>
+            @endif
+             @if($warehouse_mode['show_inventory_category_module'] == 0)
             <li class="d-lg-inline-block" >
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="#">   <!-- addTaskModalHeader -->
                     <button type="button" class="btn btn-blue waves-effect waves-light addTaskModalHeader klklkl" data-toggle="modal" data-target="" data-backdrop="static" title="{{__('Add Route')}}" data-keyboard="false"><span><i class="mdi mdi-plus-circle mr-1"></i> {{__('Add Route')}}</span></button>
                 </a>
             </li>
+              @endif
         @endif
 
             @php

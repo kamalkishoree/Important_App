@@ -54,11 +54,13 @@ use App\Traits\TollFee;
 use App\Imports\OrderImport;
 use App\Model\Product;
 use App\Model\InventoryVendor;
+use App\OrderVendorProduct;
+use App\Traits\inventoryManagement;
 
 class TaskController extends BaseController
 {
     use ApiResponser;
-    use TollFee;
+    use TollFee,inventoryManagement;
 
     /**
      * Display a listing of the resource.
@@ -213,6 +215,14 @@ class TaskController extends BaseController
             'warehouses' => $warehouses,
             'warehouse_manager' => $warehouse_manager
         ]);
+    }
+
+    public function inventoryUpdate($ids)
+    {
+        $token = $this->authenticateInventoryPanel();
+
+        $details = $this->getInventoryPanelDetails($token, $ids);
+        return true;
     }
 
     public function batchlist(Request $request)
@@ -807,6 +817,7 @@ class TaskController extends BaseController
                     'location_id' => $loc_id,
                     'appointment_duration' => $task_appointment_duration,
                     'dependent_task_id' => $dep_id,
+                    'vendor_id' => ! empty($request->vendor_id[$key]) ? $request->vendor_id[$key] : '',
                     'task_status' => $agent_id != null ? 1 : 0,
                     'created_at' => $notification_time,
                     'assigned_time' => $notification_time,
@@ -818,6 +829,24 @@ class TaskController extends BaseController
                     $data['warehouse_id'] = $request->warehouse_id[$key];
                 }
                 $task = Task::create($data);
+
+                $product_data = json_decode($request->product_data, true);
+
+                foreach ($product_data as $data) {
+
+                    if ($task->vendor_id == $data['warehouse_id']) {
+
+                        $order_vendor_data = new OrderVendorProduct();
+                        $order_vendor_data->product_id = $data['product_id'];
+                        $order_vendor_data->task_id = $task->id;
+                        $order_vendor_data->vendor_id = $data['warehouse_id'];
+                        $order_vendor_data->save();
+                    }
+                }
+                $Ids = array_column($product_data, 'product_id');
+
+                $this->inventoryUpdate($Ids);
+
                 $dep_id = $task->id;
 
                 // for net quantity
@@ -1293,8 +1322,18 @@ class TaskController extends BaseController
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
+        $product_ids = ! empty($request->product_id) ? $request->product_id : '';
+
+        if (! empty($product_ids)) {
+            $vendor_ids = Product::whereIn('id', $product_ids)->select('vendor_id')
+                ->groupBy('vendor_id')
+                ->get()
+                ->pluck('vendor_id');
+
+            $vendor = InventoryVendor::with('warehouseProducts')->whereIn('id', $vendor_ids)->get();
+        }
         $teamTag = TagsForTeam::OrderBy('id', 'asc');
         if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
             $teamTag = $teamTag->whereHas('assignTeams.team.permissionToManager', function ($query) {
@@ -1355,8 +1394,102 @@ class TaskController extends BaseController
             'task_proofs' => $task_proofs,
             'warehouses' => $warehouses,
             'vehicle_type' => $vehicle_type,
-            'category' => $category
+            'category' => $category,
+            'vendors' => ! empty($vendor) ? $vendor : ''
         ])->render();
+        return response()->json(array(
+            'success' => true,
+            'html' => $returnHTML
+        ));
+    }
+
+    public function getWarehouseProducts(Request $request)
+    {
+        $product_ids = ! empty($request->product_id) ? $request->product_id : '';
+        $product_data = ! empty($request->vendor_id) ? $request->vendor_id : 0;
+
+        $vendor_data = [];
+        
+        foreach ($product_data as $data) {
+            $vendor_data[] = (array) $data;
+        }
+
+        $product_data = array_map("unserialize", array_unique(array_map("serialize", $vendor_data)));
+
+        if (! empty($product_ids)) {
+            $vendor_ids = Product::whereIn('id', $product_ids)->select('vendor_id')
+                ->groupBy('vendor_id')
+                ->get()
+                ->pluck('vendor_id');
+
+            $vendor = InventoryVendor::with('warehouseProducts')->whereIn('id', $vendor_ids)->get();
+        }
+        $teamTag = TagsForTeam::OrderBy('id', 'asc');
+        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
+            $teamTag = $teamTag->whereHas('assignTeams.team.permissionToManager', function ($query) {
+                $query->where('sub_admin_id', Auth::user()->id);
+            });
+        }
+        $teamTag = $teamTag->get();
+
+        $agentTag = TagsForAgent::OrderBy('id', 'asc');
+        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
+            $agentTag = $agentTag->whereHas('assignTags.agent.team.permissionToManager', function ($query) {
+                $query->where('sub_admin_id', Auth::user()->id);
+            });
+        }
+        $agentTag = $agentTag->get();
+
+        $pricingRule = PricingRule::select('id', 'name');
+        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
+            $pricingRule = $pricingRule->whereHas('priceRuleTags.team.permissionToManager', function ($query) {
+                $query->where('sub_admin_id', Auth::user()->id);
+            });
+        }
+
+        $pricingRule = $pricingRule->get();
+
+        $allcation = AllocationRule::where('id', 1)->first();
+
+        $agents = Agent::orderBy('name', 'asc');
+        if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
+            $agents = $agents->whereHas('team.permissionToManager', function ($query) {
+                $query->where('sub_admin_id', Auth::user()->id);
+            });
+        }
+        $agents = $agents->where('is_approved', 1)->get();
+
+        $preference = ClientPreference::where('id', 1)->first([
+            'route_flat_input',
+            'route_alcoholic_input'
+        ]);
+        $warehouses = [];
+        if (checkTableExists('warehouses')) {
+            $warehouses = Warehouse::all();
+        }
+        $task_proofs = TaskProof::all();
+
+        $vehicle_type = VehicleType::all();
+        $category = [];
+        if (checkTableExists('warehouses')) {
+            $category = Category::where('status', 1)->get();
+        }
+
+        $returnHTML = view('modals/add-task-modal')->with([
+            'teamTag' => $teamTag,
+            'preference' => $preference,
+            'agentTag' => $agentTag,
+            'agents' => $agents,
+            'pricingRule' => $pricingRule,
+            'allcation' => $allcation,
+            'task_proofs' => $task_proofs,
+            'warehouses' => $warehouses,
+            'vehicle_type' => $vehicle_type,
+            'category' => $category,
+            'vendors' => ! empty($vendor) ? $vendor : '',
+            'product_data' => ! empty($product_data) ? json_encode($product_data) : ''
+        ])->render();
+
         return response()->json(array(
             'success' => true,
             'html' => $returnHTML
@@ -3169,6 +3302,26 @@ class TaskController extends BaseController
             ]))->render();
             return $options;
         }
+    }
+
+    public function createSubtask(Request $request)
+    {
+        $ids = array_unique($request->data);
+
+        $vendor_ids = Product::whereIn('id', $ids)->select('vendor_id')
+            ->groupBy('vendor_id')
+            ->get()
+            ->pluck('vendor_id');
+        echo "<pre>";
+        print_r($vendor_ids);
+        die();
+    }
+
+    public function createProductRoute(Request $request)
+    {
+        $category = Category::where('status', 1)->get();
+
+        return view('create-product-route', compact('category'));
     }
 
     public function getProductName(Request $request)
