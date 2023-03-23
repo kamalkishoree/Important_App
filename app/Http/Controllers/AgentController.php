@@ -797,14 +797,6 @@ class AgentController extends Controller
             }
         }
 
-        if (isset($request->bike_color)) {             
-            $agent_docs = AgentDocs::where(['agent_id'=> $agent->id, 'file_type' => 'bike_color'])->update(['file_name' => $request->bike_color]);
-        }
-        
-        if (isset($request->bike_type)) {          
-            $agent_docs = AgentDocs::where(['agent_id'=> $agent->id, 'file_type' => 'bike_type'])->update(['file_name' => $request->bike_type]);     
-        }
-
         if ($agent) {
             return response()->json([
                 'status' => 'success',
