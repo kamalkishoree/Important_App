@@ -247,7 +247,14 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 
 
 			Route::get('create-product-route', 'TaskController@createProductRoute')->name('create-product-route');
+			
+			Route::get('dispatcher-add-route', 'TaskController@dispatcherAddRoute')->name('dispatcher-add-route');
+			
+			Route::get('get-category-list', 'CategoryController@getCategoryList')->name('get-category-list');
+			
 			Route::get('inventory-update', 'TaskController@inventoryUpdate')->name('inventory-update');
+			Route::get('get-warehouse-data', 'TaskController@getWarehouseData')->name('get-warehouse-data');
+			
 			
 		 	Route::get('get-product-name', 'TaskController@getProductName')->name('getProductName');
 			Route::post('get-selected-warehouses', 'TaskController@getSelectedWarehouses')->name('getSelectedWarehouses');

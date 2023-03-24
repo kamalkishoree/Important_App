@@ -1346,4 +1346,5 @@ session('preferences.map_key_1'):'kdsjhfkjsdhfsf'; $theme =
         this.value = this.value.replace(/[^0-9\.]/g,'');
     });
 
+
 </script>

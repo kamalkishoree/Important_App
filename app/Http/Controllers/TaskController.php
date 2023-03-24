@@ -56,6 +56,7 @@ use App\Model\Product;
 use App\Model\InventoryVendor;
 use App\OrderVendorProduct;
 use App\Traits\inventoryManagement;
+use App\Model\ProductVariant;
 
 class TaskController extends BaseController
 {
@@ -217,11 +218,11 @@ class TaskController extends BaseController
         ]);
     }
 
-    public function inventoryUpdate($ids)
+    public function inventoryUpdate($ids, $flag = null)
     {
         $token = $this->authenticateInventoryPanel();
 
-        $details = $this->getInventoryPanelDetails($token, $ids);
+        $details = $this->getInventoryPanelDetails($token, $ids, $flag);
         return true;
     }
 
@@ -809,15 +810,24 @@ class TaskController extends BaseController
                     array_push($latitude, $location->latitude);
                     array_push($longitude, $location->longitude);
                 }
-
                 $task_appointment_duration = empty($request->appointment_date[$key]) ? '0' : $request->appointment_date[$key];
+
+                $array = [
+                    null
+                ];
+                $vendor_ids = [];
+                if (! empty($request->product_data)) {
+                    $product_data = json_decode($request->product_data, true);
+
+                    $vendor_ids = array_merge($array, array_unique(array_column($product_data, 'vendor_id')));
+                }
                 $data = [
                     'order_id' => $orders->id,
                     'task_type_id' => $value,
                     'location_id' => $loc_id,
                     'appointment_duration' => $task_appointment_duration,
                     'dependent_task_id' => $dep_id,
-                    'vendor_id' => ! empty($request->vendor_id[$key]) ? $request->vendor_id[$key] : '',
+                    'vendor_id' => ! empty($vendor_ids[$key]) ? $vendor_ids[$key] : '',
                     'task_status' => $agent_id != null ? 1 : 0,
                     'created_at' => $notification_time,
                     'assigned_time' => $notification_time,
@@ -829,23 +839,32 @@ class TaskController extends BaseController
                     $data['warehouse_id'] = $request->warehouse_id[$key];
                 }
                 $task = Task::create($data);
+                $new_task = Task::where([
+                    'vendor_id' => $data['vendor_id'],
+                    'task_type_id' => '1',
+                    'order_id' => $orders->id
+                ])->first();
 
-                $product_data = json_decode($request->product_data, true);
+                if (! empty($new_task)) {
+                    foreach ($product_data as $data) {
 
-                foreach ($product_data as $data) {
-
-                    if ($task->vendor_id == $data['warehouse_id']) {
-
-                        $order_vendor_data = new OrderVendorProduct();
-                        $order_vendor_data->product_id = $data['product_id'];
-                        $order_vendor_data->task_id = $task->id;
-                        $order_vendor_data->vendor_id = $data['warehouse_id'];
-                        $order_vendor_data->save();
+                        if (($new_task->vendor_id == $data['vendor_id']) && $new_task->task_type_id == 1) {
+                            $product_variant = ProductVariant::where([
+                                'id' => $data['product_variant_id']
+                            ])->first();
+                            $order_vendor_data = new OrderVendorProduct();
+                            $order_vendor_data->product_id = $data['product_variant_id'];
+                            $order_vendor_data->task_id = $new_task->id;
+                            $order_vendor_data->vendor_id = $data['vendor_id'];
+                            $order_vendor_data->quantity = $data['quantity'];
+                            $order_vendor_data->save();
+                            $product_variant->quantity = $product_variant->quantity - $data['quantity'];
+                            $product_variant->save();
+                        }
                     }
                 }
-                $Ids = array_column($product_data, 'product_id');
 
-                $this->inventoryUpdate($Ids);
+                $this->inventoryUpdate(json_encode($product_data));
 
                 $dep_id = $task->id;
 
@@ -1405,24 +1424,16 @@ class TaskController extends BaseController
 
     public function getWarehouseProducts(Request $request)
     {
-        $product_ids = ! empty($request->product_id) ? $request->product_id : '';
-        $product_data = ! empty($request->vendor_id) ? $request->vendor_id : 0;
+        $vendor_data = ! empty($request->vendors) ? $request->vendors : '';
 
-        $vendor_data = [];
-        
-        foreach ($product_data as $data) {
-            $vendor_data[] = (array) $data;
-        }
+        if (! empty($vendor_data)) {
+            $product_data = array_map("unserialize", array_unique(array_map("serialize", $vendor_data)));
 
-        $product_data = array_map("unserialize", array_unique(array_map("serialize", $vendor_data)));
+            $vendor_ids = array_unique(array_column($product_data, 'vendor_id'));
+            if (! empty($vendor_ids)) {
 
-        if (! empty($product_ids)) {
-            $vendor_ids = Product::whereIn('id', $product_ids)->select('vendor_id')
-                ->groupBy('vendor_id')
-                ->get()
-                ->pluck('vendor_id');
-
-            $vendor = InventoryVendor::with('warehouseProducts')->whereIn('id', $vendor_ids)->get();
+                $vendor = InventoryVendor::with('warehouseProducts')->whereIn('id', $vendor_ids)->get();
+            }
         }
         $teamTag = TagsForTeam::OrderBy('id', 'asc');
         if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
@@ -3112,7 +3123,33 @@ class TaskController extends BaseController
         $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')
             ->where('id', $id)
             ->first();
+
+        $tasks = Task::where([
+            'order_id' => $orderdata->id
+        ])->select('id')
+            ->groupBy('id')
+            ->get()
+            ->pluck('id');
+
+        $product_variant_ids = OrderVendorProduct::whereIn('task_id', $tasks)->select('product_id')
+            ->groupBy('product_id')
+            ->get()
+            ->pluck('product_id');
+
+        try {
+            $ids = explode(",", $tasks);
+            OrderVendorProduct::WhereIn('task_id', $ids)->each(function ($product, $key) {
+
+                $variant = ProductVariant::find($product->product_id);
+                $variant->update([
+                    'quantity' => ($variant->quantity + $product->quantity)
+                ]);
+                $product->delete();
+            });
+        } catch (\Exception $e) {}
+
         Order::where('id', $id)->delete();
+        $this->inventoryUpdate($product_variant_ids, true);
         $orderdata->status = "Deleted";
         // event(new \App\Events\loadDashboardData($orderdata));
         return redirect()->back()->with('success', 'Task deleted successfully!');
@@ -3276,21 +3313,59 @@ class TaskController extends BaseController
     {
         if ($request->ajax()) {
             $category_id = $request->cat_id;
-            $products = Product::where('category_id', $category_id)->get();
+
+            if (! empty($request->title)) {
+                $products = Product::where('category_id', $category_id)->where('title', 'like', '%' . $request->title . '%')->get();
+            } else {
+                $products = Product::where('category_id', $category_id)->get();
+            }
             $options = view("modals.inventory-products-ajax", compact('products'))->render();
+            return $options;
+        }
+    }
+
+    public function getWarehouseData(Request $request)
+    {
+        $ids = $request->product_id;
+
+      
+        if (! empty($ids)) {
+            $vendor_ids = Product::whereIn('id', $ids)->select('vendor_id')
+                ->groupBy('vendor_id')
+                ->get()
+                ->pluck('vendor_id');
+                echo"<pre>";
+               
+            $product_ids = Product::whereIn('id', $ids)->select('id')
+                ->groupBy('id')
+                ->get()
+                ->pluck('id');
+            $warehouses = InventoryVendor::with('warehouseProducts')->whereIn('id', $vendor_ids)
+            ->where('slug', 'like', '%' . $request->title . '%')
+                ->get();
+            $options = view("modals.inventory-vendors-ajax", compact([
+                'warehouses',
+                'product_ids'
+            ]))->render();
             return $options;
         }
     }
 
     public function getSelectedWarehouses(Request $request)
     {
-        $ids = array_unique($request->data);
-
+        if (is_array(($request->data))) {
+            $ids = array_unique($request->data);
+        } else {
+            $ids = [
+                $request->data
+            ];
+        }
         if (! empty($ids)) {
             $vendor_ids = Product::whereIn('id', $ids)->select('vendor_id')
                 ->groupBy('vendor_id')
                 ->get()
                 ->pluck('vendor_id');
+
             $product_ids = Product::whereIn('id', $ids)->select('id')
                 ->groupBy('id')
                 ->get()
@@ -3324,15 +3399,21 @@ class TaskController extends BaseController
         return view('create-product-route', compact('category'));
     }
 
+    public function dispatcherAddRoute(Request $request)
+    {
+        $category = Category::where('status', 1)->get();
+
+        return view('dispatcher-add-route', compact('category'));
+    }
+
     public function getProductName(Request $request)
     {
         if ($request->ajax()) {
-            $id = $request->cat_id;
-            $products = Product::where('id', $id)->first();
+            $id = $request->id;
+            $product = Product::where('id', $id)->first();
 
-            if (! empty($products)) {
-
-                return $products->sku;
+            if (! empty($product)) {
+                return 1;
             }
         }
     }

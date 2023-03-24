@@ -247,6 +247,17 @@ class CategoryController extends Controller
         }
     }
 
+    public function getCategoryList(Request $request)
+    {
+        if ($request->ajax()) {
+          
+            $category = Category::where('slug', 'like', '%' . $request->search . '%')->get();
+           
+            $options = view("modals.category-list-ajax", compact('category'))->render();
+            return $options;
+        }
+    }
+
     public function getDispatchSideData(Request $request)
     {
         $order_panel_id = $request->order_panel_id;
@@ -276,7 +287,7 @@ class CategoryController extends Controller
 
             // $statusCode = $response->status();
             $checkAuth = json_decode($response->getBody(), true);
-       
+
             if (@$checkAuth['status'] == 200) {
                 $apiRequestURL = $url . '/api/v1/category-product-sync-dispatcher';
 
@@ -289,15 +300,15 @@ class CategoryController extends Controller
                     'shortcode' => $order_details->code,
                     'Authorization' => $checkAuth['token']
                 ];
-                
+
                 $response = Http::withHeaders($headers)->post($apiRequestURL, $postInput);
                 $responseBody = json_decode($response->getBody(), true);
-            
+
                 if (@$responseBody['status'] == 200) {
                     $order_details = OrderPanelDetail::find($order_panel_id);
                     $order_details->sync_status = 1;
                     $order_details->save();
-                    
+
                     // $this->importOrderSideCategory($responseBody['data']);
                 } elseif (@$responseBody['error'] && ! empty($responseBody['error'])) {
                     return redirect()->back()->with('error', $responseBody['error']);

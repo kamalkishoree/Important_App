@@ -6,6 +6,7 @@ use App\Model\OrderPanelDetail;
 use App\Model\Client;
 use Illuminate\Support\Facades\App;
 use App\Model\Product;
+use App\Model\ProductVariant;
 
 trait inventoryManagement
 {
@@ -42,7 +43,7 @@ trait inventoryManagement
         throw new \ErrorException('Invalid Inventory Panel Url.', 400);
     }
 
-    public function getInventoryPanelDetails($token, $ids)
+    public function getInventoryPanelDetails($token, $ids, $flag = null)
     {
         $inventory_detail = OrderPanelDetail::where([
             'type' => 1
@@ -50,7 +51,12 @@ trait inventoryManagement
         $url = $inventory_detail->url;
         $code = $inventory_detail->code;
         $apiRequestURL = $url . '/api/v1/get-inventory-panel-detail';
-        $products = Product::all()->whereIn('id', $ids);
+        if (empty($flag)) {
+            $ids = json_decode($ids, true);
+
+            $ids = array_column($ids, 'product_variant_id');
+        }
+        $products = ProductVariant::all()->whereIn('id', $ids);
         // POST Data
         $postInput = [
             'product_data' => json_encode($products)
@@ -62,8 +68,9 @@ trait inventoryManagement
         ];
 
         $headers['Authorization'] = $token;
-        $response = Http::withHeaders($headers)->get($apiRequestURL, $postInput);
+        $response = Http::withHeaders($headers)->post($apiRequestURL, $postInput);
         $responseBody = json_decode($response->getBody(), true);
+
         if (@$responseBody['status'] == 200) {
             return $responseBody;
         }

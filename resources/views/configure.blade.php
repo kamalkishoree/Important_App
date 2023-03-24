@@ -1378,10 +1378,6 @@ $sms_crendential = json_decode($preference->sms_credentials);
         </div>
 
 
-
-
-
-
     </div> <!-- container -->
     @include('modals.add-sub-client')
 @endsection
