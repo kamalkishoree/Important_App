@@ -418,6 +418,12 @@ body .navbar-custom .topnav-menu .nav-link {
 .login-form .blank-label {
     display: none;
 }
+.login-form input[type="radio"]:checked + label {
+    background-color: #6658dd;
+    color:#fff;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+}
 .login-form input[type="radio"]:checkedlabel {
     border-color: #6658dd;
     font-size: 13px;
