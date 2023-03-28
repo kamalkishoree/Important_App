@@ -24,8 +24,8 @@
         // alert("hello");
         $('body').addClass('modal-opensag');
     });
-
-
+    
+ 
 
     const startLoader = function(element) {
         // check if the element is not specified

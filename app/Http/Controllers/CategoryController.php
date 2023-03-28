@@ -67,7 +67,7 @@ class CategoryController extends Controller
             $sku_url = array_reverse(explode('.', $sku_url));
             $sku_url = implode(".", $sku_url);
         }
-        $orderDb_detail = OrderPanelDetail::all();
+        $orderDb_detail = OrderPanelDetail::where('type','0')->get();
 
         return view('category.index')->with([
             'order_panel' => $order_panel,
@@ -120,7 +120,7 @@ class CategoryController extends Controller
             $sku_url = implode(".", $sku_url);
         }
 
-        $orderDb_detail = OrderPanelDetail::all();
+        $orderDb_detail = OrderPanelDetail::where('type','1')->get();
         return view('category.inventory_index')->with([
             'order_panel' => $order_panel,
             'category' => $category,

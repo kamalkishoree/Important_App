@@ -12,30 +12,31 @@ $products = Product::where([
 ])->whereIn('id', $product_ids)->get();
 
 @endphp
-<li id="warehouse_wise_product_{{ $warehouse->id}}"><label>{{
-		strToUpper($warehouse->slug)}}</label> @foreach($products as $product)
+
+<li id="warehouse_wise_product_{{ $warehouse->id}}">
+
+<label>{{ strToUpper($warehouse->slug)}}</label> @foreach($products as $key => $product)
 
 
-	@foreach($product->variant as $variant) @php if($variant->quantity == 0
-	){ continue; } @endphp
-	<div class="product">
+	@foreach($product->variant as  $variant) @php if($variant->quantity <= 0 ){ continue; } @endphp
+	<div class="product  <?= ($key == 0) ? 'produ' : ''?>">
 		<div class="row">
 			<div class="col-sm-6">
 				<div class="prod">
 					<div class="form-check">
 						<input type="checkbox" class="form-check-input"
 							name="vendor_product" id="vendor_product_{{$product->id}}"
-							value="{{$variant->id}}"> <label></label>
+							value="{{$variant->id}}"  onclick="getProductVariant({{$product->id}})"> <label></label>
 					</div>
 					<div class="prod-pic">
-						<img src="images/pngwing.png" alt="image">
+						<img src="images/no-img.jpg" alt="image">
 					</div>
 					<input type="hidden" name="vendor_id"
 						id="vendor_id_{{$variant->id}}"
 						value="{{$variant->product->vendor_id}}">
 					
 					  <?php  $title = !empty($variant->title) ? $variant->title :$product->title ?>
-					  <span class="variant-title" ><?=   $product->title."<br>(".$title." )" ?></span>
+					  <span class="variant-title" ><?=   $product->title."(".$title." )" ?></span>
 					  
 				</div>
 			</div>

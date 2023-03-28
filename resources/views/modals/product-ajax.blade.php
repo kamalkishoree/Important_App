@@ -2,7 +2,7 @@
 <li id="new_product_{{$product->id}}">
 	<div class="prod">
 		<div class="prod-pic">
-			<img src="images/pngwing.png" alt="image">
+			<img src="images/no-img.jpg" alt="image">
 		</div>
 		{{ $product->title}}
 	</div>

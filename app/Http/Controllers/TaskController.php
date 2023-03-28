@@ -54,7 +54,7 @@ use App\Traits\TollFee;
 use App\Imports\OrderImport;
 use App\Model\Product;
 use App\Model\InventoryVendor;
-use App\OrderVendorProduct;
+use App\Model\OrderVendorProduct;
 use App\Traits\inventoryManagement;
 use App\Model\ProductVariant;
 
@@ -856,6 +856,7 @@ class TaskController extends BaseController
                             $order_vendor_data->product_id = $data['product_variant_id'];
                             $order_vendor_data->task_id = $new_task->id;
                             $order_vendor_data->vendor_id = $data['vendor_id'];
+                            $order_vendor_data->order_id = $orders->id;
                             $order_vendor_data->quantity = $data['quantity'];
                             $order_vendor_data->save();
                             $product_variant->quantity = $product_variant->quantity - $data['quantity'];
@@ -2688,6 +2689,7 @@ class TaskController extends BaseController
             'agent',
             'customer.location'
         ])->first();
+
         $fatchdrivertag = TaskDriverTag::where('task_id', $id)->get('tag_id');
         $fatchteamtag = TaskTeamTag::where('task_id', $id)->get('tag_id');
         if (count($fatchdrivertag) > 0 && count($fatchteamtag) > 0) {
@@ -2787,6 +2789,7 @@ class TaskController extends BaseController
         if (checkTableExists('categories')) {
             $category = Category::where('status', 1)->get();
         }
+
         return view('tasks/update-task')->with([
             'task' => $task,
             'agent_location' => $agent_location,
@@ -2943,8 +2946,8 @@ class TaskController extends BaseController
                     'images_array' => $last
                 ]);
             }
-
             Task::where('order_id', $id)->delete();
+            OrderVendorProduct::where('order_id', $id)->delete();
             $dep_id = null;
             foreach ($request->task_type_id as $key => $value) {
                 if (isset($request->address[$key])) {
@@ -3004,6 +3007,7 @@ class TaskController extends BaseController
                     'dependent_task_id' => $dep_id,
                     'task_status' => isset($agent_id) ? 1 : 0,
                     'barcode' => $request->barcode[$key],
+                    'vendor_id' => ! empty($request->vendor_id[$key]) ? $request->vendor_id[$key] : '',
                     'quantity' => $request->quantity[$key],
                     'assigned_time' => $notification_time,
                     'alcoholic_item' => ! empty($request->alcoholic_item[$key]) ? $request->alcoholic_item[$key] : ''
@@ -3053,6 +3057,20 @@ class TaskController extends BaseController
                 ->first();
             // event(new \App\Events\loadDashboardData($orderdata));
             DB::commit();
+            if (! empty($request->product_variant_id)) {
+
+                foreach ($request->product_variant_id as $key => $variant) {
+                    $tasks = Task::where('order_id', $id)->where('vendor_id', $request->product_vendor_id[$key])->first();
+                    $vendor_data = [
+                        'order_id' => $id,
+                        'task_id' => $tasks->id,
+                        'product_id' => $variant,
+                        'quantity' => $request->product_quantity[$key],
+                        'vendor_id' => $request->product_vendor_id[$key]
+                    ];
+                    OrderVendorProduct::updateOrCreate($vendor_data);
+                }
+            }
             return response()->json([
                 'status' => "Success",
                 'message' => 'Task Updated successfully!'
@@ -3109,6 +3127,21 @@ class TaskController extends BaseController
                 ->send();
 
             Log::info('sendsilentnotification');
+        }
+    }
+
+    public function getProductDetail(Request $request)
+    {
+        $data = [];
+        $task = Task::find($request->id);
+
+        if (! empty($task)) {
+
+            $options = view("tasks.show-product-variant", compact('task'))->render();
+
+            $data['title'] = ! empty($task->vendor) ? $task->vendor->name : "";
+            $data['html'] = $options;
+            return $data;
         }
     }
 
@@ -3328,20 +3361,18 @@ class TaskController extends BaseController
     {
         $ids = $request->product_id;
 
-      
         if (! empty($ids)) {
             $vendor_ids = Product::whereIn('id', $ids)->select('vendor_id')
                 ->groupBy('vendor_id')
                 ->get()
                 ->pluck('vendor_id');
-                echo"<pre>";
-               
+
             $product_ids = Product::whereIn('id', $ids)->select('id')
                 ->groupBy('id')
                 ->get()
                 ->pluck('id');
             $warehouses = InventoryVendor::with('warehouseProducts')->whereIn('id', $vendor_ids)
-            ->where('slug', 'like', '%' . $request->title . '%')
+                ->where('slug', 'like', '%' . $request->title . '%')
                 ->get();
             $options = view("modals.inventory-vendors-ajax", compact([
                 'warehouses',
@@ -3366,11 +3397,66 @@ class TaskController extends BaseController
                 ->get()
                 ->pluck('vendor_id');
 
+            $products = Product::whereIn('id', $ids);
+            $product = $products->get();
+            $product_ids = $products->select('id')
+                ->groupBy('id')
+                ->get()
+                ->pluck('id');
+            $warehouses = InventoryVendor::with([
+                'warehouseProducts'
+            ])->whereIn('id', $vendor_ids);
+            if (@$request->title) {
+                $warehouses->where('slug', 'like', '%' . $request->title . '%');
+            }
+
+            if (@$request->filter) {
+                $vendor_ids = Product::where('id', $request->filter)->select('vendor_id')
+                    ->groupBy('vendor_id')
+                    ->get()
+                    ->pluck('vendor_id');
+                $warehouses = InventoryVendor::with([
+                    'warehouseProducts'
+                ])->whereIn('id', $vendor_ids);
+            }
+            $warehouses = $warehouses->get();
+            $options['html'] = view("modals.inventory-vendors-ajax", compact([
+                'warehouses',
+                'product_ids'
+            ]))->render();
+            $options['item'] = view("modals.product-search-ajax", compact([
+                'product'
+            ]))->render();
+            return $options;
+        }
+    }
+
+    public function sortProducts(Request $request)
+    {
+        if (is_array(($request->data))) {
+            $ids = array_unique($request->data);
+        } else {
+            $ids = [
+                $request->data
+            ];
+        }
+        if (! empty($ids)) {
+            $vendor_ids = Product::whereIn('id', $ids)->select('vendor_id')
+                ->groupBy('vendor_id')
+                ->get()
+                ->pluck('vendor_id');
+
             $product_ids = Product::whereIn('id', $ids)->select('id')
                 ->groupBy('id')
                 ->get()
                 ->pluck('id');
-            $warehouses = InventoryVendor::with('warehouseProducts')->whereIn('id', $vendor_ids)->get();
+            $warehouses = InventoryVendor::with([
+                'warehouseProducts'
+            ])->whereIn('id', $vendor_ids);
+            if (@$request->title) {
+                $warehouses->where('slug', 'like', '%' . $request->title . '%');
+            }
+            $warehouses = $warehouses->get();
             $options = view("modals.inventory-vendors-ajax", compact([
                 'warehouses',
                 'product_ids'
@@ -3379,18 +3465,6 @@ class TaskController extends BaseController
         }
     }
 
-    public function createSubtask(Request $request)
-    {
-        $ids = array_unique($request->data);
-
-        $vendor_ids = Product::whereIn('id', $ids)->select('vendor_id')
-            ->groupBy('vendor_id')
-            ->get()
-            ->pluck('vendor_id');
-        echo "<pre>";
-        print_r($vendor_ids);
-        die();
-    }
 
     public function createProductRoute(Request $request)
     {
