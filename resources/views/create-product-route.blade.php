@@ -124,7 +124,7 @@
 				</div>
 			</div>
 			<a href="javascript: void(0);" id="create-subtask"
-				class="btn btn-blue waves-effect waves-light  mt-2"> <span>Create
+				class="btn btn-blue waves-effect waves-light  mt-2" readonly="readonly"> <span>Create
 					Sub Task</span>
 			</a>
 		</form>

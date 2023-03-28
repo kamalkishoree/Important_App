@@ -2,6 +2,10 @@
     a.choose_warehouse {
         text-decoration: underline;
     }
+    
+   .form-control.show-selected-warehouse {
+	background-color: #f4f3fd;
+}
 </style>
 
 <div class="row">
@@ -286,12 +290,7 @@
                                                                     </select>
                                                                 </div>
                                                             </div>
-                                                            @php $warehouse_mode = checkWarehouseMode(); @endphp
-                                                            @if($warehouse_mode['show_warehouse_module'] == 1)
-                                                            <h6 class="or-text text-center">OR</h6>
-                                                            <h6 class="choose_warehouse text-center text-primary" style="text-decoration: underline; cursor: pointer;">Choose
-                                                                Warehouse</h6>
-                                                            @endif
+                                                            
                                                         </div>
 
                                                         <div class="alContactOther col-6">
@@ -392,12 +391,12 @@
                                             <div class="row mb-2" style="padding: 0px 10px;">
                                                 <div class="alCol-12 mainaddress col-8">
                                                     <div class="row">
-                                                        <div class="col-6 addressDetails border-right">
-                                                            <h6>Address Details</h6>
-                                                            <div class="row location-section">
+                                                        <div class="col-6 addressDetails border-right " >
+                                                            <h6 style="display: none;">Address Details</h6>
+                                                            <div class="row location-section" style="display: none;">
                                                                 <div class="row" style="padding: 0px 10px;">
                                                                     <div class="form-group col-12 mb-1">{!!
-                                                                        Form::text('short_name[]', $vendor->slug, ['class' =>
+                                                                        Form::text('short_name[]', '', ['class' =>
                                                                         'form-control address','value' => $vendor->id
                                                                         ,'placeholder' => __('Short Name')]) !!}</div>
                                                                 </div>
@@ -425,9 +424,12 @@
                                                                     Code'),'id'=>'addHeader1-postcode']) !!}
                                                                 </div>
                                                             </div>
-                                                            <div class="warehouse-fields" style="display: none;">
+                                                            <div class="warehouse-fields" >
                                                                 <div class="form-group mb-1 select_warehouse-field">
-                                                                    <select class="form-control warehouse" name="warehouse_id[]" id="warehouse">
+                                                                  <select class="form-control show-selected-warehouse" name=""  disabled>
+                                                                        <option value="{{$vendor->id}}">{{$vendor->slug}}</option>
+                                                                    </select>
+                                                                    <select class="form-control warehouse d-none" name="warehouse_id[]" id="warehouse">
                                                                         <option value="">Select Warehouse</option> 
                                                                         @foreach($warehouses as $warehouse)
                                                                         <option value="{{$warehouse->id}}">{{$warehouse->name}}</option>
@@ -435,12 +437,7 @@
                                                                     </select>
                                                                 </div>
                                                             </div>
-                                                            @php $warehouse_mode = checkWarehouseMode(); @endphp
-                                                            @if($warehouse_mode['show_warehouse_module'] == 1)
-                                                            <h6 class="or-text text-center">OR</h6>
-                                                            <h6 class="choose_warehouse text-center text-primary" style="text-decoration: underline; cursor: pointer;">Choose
-                                                                Warehouse</h6>
-                                                            @endif
+                                                            
                                                         </div>
 
                                                         <div class="alContactOther col-6">
@@ -459,23 +456,6 @@
                                                                             address_phone_number','placeholder' => __('Phone
                                                                             Number'),'id'=>'addHeader1-address_phone_number']) !!}
                                                                         </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-6">
-                                                                    <h6>Other Details</h6>
-                                                                    <div class="row">
-                                                                        <div class="form-group mb-1 col-12">{!!
-                                                                            Form::text('barcode[]', null, ['class' =>
-                                                                            'form-control barcode','placeholder' => __('Task
-                                                                            Barcode')]) !!}</div>
-                                                                        <div class="form-group mb-1 col-12">{!!
-                                                                            Form::text('quantity[]', null, ['class' =>
-                                                                            'form-control quantity onlynumber','placeholder' =>
-                                                                            __('Quantity')]) !!}</div>
-                                                                        <span class="span1 pickup-barcode-error">{{__("Task
-																		Barcode is required for pickup")}}</span> <span class="span1 drop-barcode-error">{{__("Task Barcode is
-																		required for drop")}}</span> <span class="span1 appointment-barcode-error">{{ __("Task
-																		Barcode is required for appointment")}}</span>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -654,3 +634,12 @@
         </div>
     </div>
 </div>
+
+<script>
+
+
+$('.show-selected-warehouse').prop('disabled', true);
+$('.show-selected-warehouse').css('appearance', 'none');
+$('.show-selected-warehouse').css('-webkit-appearance', 'none');
+$('.show-selected-warehouse').css('-moz-appearance', 'none');
+</script>

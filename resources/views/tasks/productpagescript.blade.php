@@ -218,6 +218,12 @@
                     product_ids.push(id);
                    }
                    product_variant.length=0;
+                 
+                    $('#create-subtask').addClass('disabled');
+                     $('#create-subtask').on('click', function(event) {
+                        event.preventDefault();
+                    });
+
                    getProductWarehouses(product_ids)
                 },
                 error: () => {
@@ -272,6 +278,23 @@
         var item_count = [];
         var list= [];
         var selected_products = [];
+        
+           $(document).ready(function(){   
+   const myLink = $('#create-subtask');
+if (product_variant.length == 0) {
+    // Disable the link
+    myLink.addClass('disabled');
+    myLink.on('click', function(event) {
+        event.preventDefault();
+    });
+} else {
+    // Enable the link
+    myLink.removeClass('disabled');
+    myLink.off('click');
+}
+   
+   });
+        
         $(document).on('click','#create-subtask',function(e){
 
 
@@ -384,11 +407,12 @@
             });
         });
         
+  
         
         function getProductVariant(id)
         {
         selected_products.length = 0;
-  if ($('#vendor_product_'+id).prop("checked")) {
+   if ($('#vendor_product_'+id).prop("checked")) {
     product_variant.push(id);
   } else {
     let index = product_variant.indexOf(id);
@@ -396,7 +420,20 @@
       product_variant.splice(index, 1);
     }
   }
-        
+
+    
+    if (product_variant.length > 0) {
+    
+     $('#create-subtask').removeClass('disabled');
+     $('#create-subtask').off('click');
+    
+} else {
+    $('#create-subtask').addClass('disabled');
+     $('#create-subtask').on('click', function(event) {
+        event.preventDefault();
+    });
+}
+    
         }
         
         $(document).on('change','.product-geo',function()
