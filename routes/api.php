@@ -146,7 +146,7 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
     Route::post('accept/decline/bidRide/requests','Api\ActivityController@getAcceptDeclinedBidRideRequests');  // api to decline/accept bid requests placed from order side
 
     //Route::post('chat/userAgentChatRoom',      'Api\ChatController@startChat');
-    Route::get('agent/go-to-home-address', 'Api\AgentController@getAgentgotoHomeAddress'); // api for get status go to home address
+    //Route::get('agent/go-to-home-address', 'Api\AgentController@getAgentgotoHomeAddress'); // api for get status go to home address
     Route::post('agent/update-go-to-home-address-status', 'Api\AgentController@addAgentgotoHomeAddress'); // api for add go to home address enabled/disabled
     Route::post('agent/add-home-address', 'Api\AgentController@addagentAddress'); // api for add enable/disbale go to home address  
     Route::get('agent/home-address', 'Api\AgentController@allHomeAddress');        // api for get go to home address 

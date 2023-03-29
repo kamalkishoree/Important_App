@@ -172,4 +172,7 @@ class Agent extends Authenticatable implements  Wallet, WalletFloat
     public function ProductPrices(){
         return $this->hasMany('App\Model\AgentProductPrices', 'agent_id', 'id');
     }
+    public function homeAddress(){
+        return $this->hasOne('App\Model\DriverHomeAddress','agent_id', 'id')->where('is_default',1);
+    }
 }
