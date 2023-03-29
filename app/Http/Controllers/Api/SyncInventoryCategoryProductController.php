@@ -24,6 +24,8 @@ class SyncInventoryCategoryProductController extends Controller
 
     protected $vendor_data;
 
+    protected $database_name;
+
     public function SyncInventoryCategoryProduct(Request $request)
     {
         if (@$request['vendors'] && count($request['vendors']) > 0) {

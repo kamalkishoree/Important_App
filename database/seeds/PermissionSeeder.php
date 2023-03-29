@@ -72,6 +72,10 @@ class PermissionSeeder extends Seeder
             array(
                 'id' => 15,
                 'name' => 'ACL'
+            ),
+            array(
+                'id' => 16,
+                'name' => 'Agent Threshold'
             )
         );
         DB::table('permissions')->insert($type);

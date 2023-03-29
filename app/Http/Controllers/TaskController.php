@@ -332,17 +332,10 @@ class TaskController extends BaseController
             $q->where('manager_id', $user->id);
         })->pluck('tag_id');
 
-        $orders = Order::with([
-            'customer',
-            'task',
-            'location',
-            'taskFirst',
-            'agent',
-            'task.location'
-        ])->orderBy('id', 'DESC'); // , 'task.manager'
-
-        if (@$request->warehouseManagerId && ! empty($request->warehouseManagerId)) {
-            $orders->whereHas('task.warehouse.manager', function ($q) use ($request) {
+        $orders = Order::with(['customer', 'task', 'location', 'taskFirst', 'agent', 'task.location', 'task.warehouse'])->orderBy('id', 'DESC'); //, 'task.manager'
+       
+        if (@$request->warehouseManagerId && !empty($request->warehouseManagerId)) {
+            $orders->whereHas('task.warehouse.manager', function($q) use($request){
                 $q->where('clients.id', $request->warehouseManagerId);
             });
         }
@@ -381,56 +374,73 @@ class TaskController extends BaseController
             $orders = $orders->where('customer_id', $request->customer_id);
         }
 
-        $orders = $orders->where('status', $request->routesListingType)
-            ->where('status', '!=', null)
-            ->orderBy('updated_at', 'desc');
+        
 
-        $preference = ClientPreference::where('id', 1)->first([
-            'theme',
-            'date_format',
-            'time_format'
-        ]);
-        $getAdditionalPreference = getAdditionalPreference([
-            'pickup_type',
-            'drop_type'
-        ]);
-        return Datatables::of($orders)->addColumn('customer_id', function ($orders) use ($request) {
-            $customerID = ! empty($orders->customer->id) ? $orders->customer->id : '';
-            $length = strlen($customerID);
-            if ($length < 4) {
-                $customerID = str_pad($customerID, 4, '0', STR_PAD_LEFT);
-            }
-            return $customerID;
-        })
-            ->addColumn('customer_name', function ($orders) use ($request) {
-            $customerName = ! empty($orders->customer->name) ? $orders->customer->name : '';
-            return $customerName;
-        })
-            ->addColumn('phone_number', function ($orders) use ($request) {
-            $phoneNumber = ! empty($orders->customer->phone_number) ? $orders->customer->phone_number : '';
-            return $phoneNumber;
-        })
-            ->addColumn('type', function ($orders) use ($request) {
-            $type = 'Normal';
-            if (@$orders->task[0]->is_return && $orders->task[0]->is_return == 1) {
-                $type = 'Return';
-            }
-            return $type;
-        })
-            ->addColumn('agent_name', function ($orders) use ($request) {
-            $checkActive = (! empty($orders->agent->name) && $orders->agent->is_available == 1) ? ' ' . __('Active') : ' ' . __('InActive');
-            $agentName = ! empty($orders->agent->name) ? $orders->agent->name . $checkActive : '';
-            return $agentName;
-        })
-            ->addColumn('order_number', function ($orders) use ($request) {
-            return '<a href="' . route('tasks.edit', $orders->id) . '" title="Edit Route">' . $orders->order_number . '</a>';
-        })
-            ->addColumn('order_time', function ($orders) use ($request, $timezone, $preference) {
-            $tz = new Timezone();
-            $client_timezone = $tz->timezone_name($timezone);
-            if (! empty($orders->order_time)) :
-                $timeformat = $preference->time_format == '24' ? 'H:i:s' : 'g:i a';
-                $order = Carbon::createFromFormat('Y-m-d H:i:s', $orders->order_time, 'UTC');
+        $orders = $orders->where('status', $request->routesListingType)->where('status', '!=', null)->orderBy('updated_at', 'desc');
+        // dd($orders->get());
+        $preference = ClientPreference::where('id', 1)->first(['theme','date_format','time_format']);
+        $getAdditionalPreference = getAdditionalPreference(['pickup_type', 'drop_type']); 
+        return Datatables::of($orders)
+                ->addColumn('customer_id', function ($orders) use ($request) {
+                    $customerID = !empty($orders->customer->id)? $orders->customer->id : '';
+                    $length = strlen($customerID);
+                    if($length < 4){
+                        $customerID = str_pad($customerID, 4, '0', STR_PAD_LEFT);
+                    }
+                    return $customerID;
+                })
+                ->addColumn('customer_name', function ($orders) use ($request) {
+                    $customerName = !empty($orders->customer->name)? $orders->customer->name : '';
+                    return $customerName;
+                })
+                ->addColumn('phone_number', function ($orders) use ($request) {
+                    $phoneNumber = !empty($orders->customer->phone_number)? $orders->customer->phone_number : '';
+                    return $phoneNumber;
+                })
+                ->addColumn('type', function ($orders) use ($request) {
+                    $type = 'Normal';
+                    if(@$orders->task[0]->is_return && $orders->task[0]->is_return == 1){
+                        $type = 'Return';
+                    }
+                    return $type;
+                })
+                ->addColumn('agent_name', function ($orders) use ($request) {
+                    $checkActive = (!empty($orders->agent->name) && $orders->agent->is_available == 1) ? ' '.__('Active') : ' '. __('InActive');
+                    $agentName   = !empty($orders->agent->name)? $orders->agent->name.$checkActive : '';
+                    return $agentName;
+                })
+                ->addColumn('order_number', function ($orders) use ($request) {
+                    return '<a href="'.route('tasks.edit', $orders->id).'" title="Edit Route">'.$orders->order_number.'</a>';
+                })
+                ->addColumn('order_time', function ($orders) use ($request, $timezone, $preference) {
+                    $tz              = new Timezone();
+                    $client_timezone = $tz->timezone_name($timezone);
+                    if(!empty($orders->order_time)):
+                        $timeformat      = $preference->time_format == '24' ? 'H:i:s':'g:i a';
+                        $order           = Carbon::createFromFormat('Y-m-d H:i:s', $orders->order_time, 'UTC');
+                        
+                        $order->setTimezone($client_timezone);
+                        $preference->date_format = $preference->date_format ?? 'm/d/Y';
+                        $convertabledate = date(''.$preference->date_format.' '.$timeformat.'', strtotime($order));
+                        return $convertabledate.'<br/>'.$order->diffForHumans();
+                    else:
+                        return '';
+                    endif;
+                })
+                
+                ->addColumn('short_name', function ($orders) use ($request, $getAdditionalPreference) {
+                    $routes = array();
+                    foreach($orders->task as $task){
+                        if($task->task_type_id == 1){
+                            $taskType    = (($getAdditionalPreference['pickup_type'])?$getAdditionalPreference['pickup_type']: "Pickup");
+                            $pickupClass = "yellow_";
+                        }else if($task->task_type_id == 2){
+                            $taskType    =  (($getAdditionalPreference['drop_type'])?$getAdditionalPreference['drop_type']: "Dropoff");
+                            $pickupClass = "green_";
+                        }else{
+                            $taskType    = "Appointment";
+                            $pickupClass = "assign_";
+                        }
 
                 $order->setTimezone($client_timezone);
                 $preference->date_format = $preference->date_format ?? 'm/d/Y';
@@ -810,6 +820,15 @@ class TaskController extends BaseController
                     array_push($latitude, $location->latitude);
                     array_push($longitude, $location->longitude);
                 }
+
+                if($request->filled('warehouse_id') && @$request->warehouse_id[$key]){
+                    $warehouse_detail = Warehouse::find($request->warehouse_id[$key]);
+                    $Loction = Location::updateOrCreate(
+                        ['latitude' => $warehouse_detail->latitude, 'longitude' => $warehouse_detail->longitude, 'address' => $warehouse_detail->address,'warehouse_id'  => $request->warehouse_id[$key]]
+                    );
+                    $loc_id = $Loction->id;
+                }
+
                 $task_appointment_duration = empty($request->appointment_date[$key]) ? '0' : $request->appointment_date[$key];
 
                 $array = [

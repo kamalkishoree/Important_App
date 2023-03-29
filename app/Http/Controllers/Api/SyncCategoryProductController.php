@@ -9,38 +9,41 @@ use App\Model\{Category,CategoryTranslation,Product,ProductVariant,ProductCatego
 class SyncCategoryProductController extends Controller
 {
     protected $order_panel_id;
-    
+    protected $order_DB_Name;
 
     public function SyncCategoryProduct(Request $request){
         // dd($request['data']);
-        if(@$request['data'] && count($request['data']) > 0){
-            $this->order_panel_id = $request['order_panel_id'];
-            $this->importOrderSideCategory($request['data']);
-        }
         $order_details = OrderPanelDetail::find($request['order_panel_id']);
+        if( ($order_details) && @$request['data'] && count($request['data']) > 0){
+            $this->order_panel_id = $request['order_panel_id'];
+            $dataBaseName = $request['databaseName'];
+            $this->importOrderSideCategory($request['data'],  $dataBaseName);
+        }
         $order_details->sync_status = 2;
         $order_details->save();
         return true;
     }
     
-    public function importOrderSideCategory($categories){
+    public function importOrderSideCategory($categories,$dataBaseName=''){
         // $categories = ROCategory::with(['translation','products','products.variant','products.translation'])->get();
         foreach($categories as $cat){
-            $category_id = $this->syncSingleCategory($cat);
+          
+            $category_id = $this->syncSingleCategory($cat,$dataBaseName);
             if(!empty($cat['products']) && count($cat['products']) > 0){
                 foreach($cat['products'] as $product){
-                    $product_id = $this->syncSingleProduct($category_id, $product);
-                    $variantId = $this->syncProductVariant($product_id, $product);
+                    $product_id = $this->syncSingleProduct($category_id, $product,  $dataBaseName);
+                    $variantId = $this->syncProductVariant($product_id, $product,  $dataBaseName);
                 }
             }
         }
     }
 
-    public function syncSingleProduct($category_id, $product){
+    public function syncSingleProduct($category_id, $product,  $dataBaseName){
         // dd($product['translation']);
         if(checkTableExists('products')){ 
+            $Product_sku = str_replace(" ","_",$dataBaseName."_".$product['sku']);
             $product_update_create = [
-                "sku"                   => $product['sku'],
+                "sku"                   => $Product_sku,
                 "title"                 => $product['title'],
                 "url_slug"              => $product['url_slug'],
                 "description"           => $product['description'],
@@ -90,9 +93,9 @@ class SyncCategoryProductController extends Controller
                 //"store_id"              => $vid,
                 'order_panel_id' => $this->order_panel_id
             ];
-            $productSave = Product::updateOrCreate(['sku' => $product['sku'], 'order_panel_id' => $this->order_panel_id],$product_update_create);
-
-            foreach($product['translation'] as $translation){
+            $productSave = Product::updateOrCreate(['sku' => $Product_sku, 'order_panel_id' => $this->order_panel_id],$product_update_create);
+            $translation = @$product['primary'];
+           // foreach(@$product['primary'] as $translation){
 
                 $product_trans = [
                     'title'         => $translation['title'],
@@ -106,7 +109,7 @@ class SyncCategoryProductController extends Controller
 
                 ProductTranslation::updateOrCreate(['product_id' => $productSave->id],$product_trans);
 
-            }
+           // }
 
             // Sync Product Categories
             $data = ['product_id' => $productSave->id, 'category_id' => $category_id ];
@@ -118,13 +121,16 @@ class SyncCategoryProductController extends Controller
         }
     }
 
-    public function syncProductVariant($product_id, $product){
+    public function syncProductVariant($product_id, $product ,  $dataBaseName){
         if(checkTableExists('product_variants')){ 
-            $variants = $product['variant'];
+            $variants = @$product['variant'];
+
+          
             // # Add product variant
             foreach($variants as $variant) {     # import product variant
+                $Product_v_sku = str_replace(" ","_",$dataBaseName."_".$variant['sku']);
                 $product_variant = [
-                    "sku"           => $variant['sku'],
+                    "sku"           => $Product_v_sku,
                     "title"         => $variant['title'],
                     "quantity"      => $variant['quantity'],
                     "price"         => $variant['price'],
@@ -142,7 +148,7 @@ class SyncCategoryProductController extends Controller
                     "container_charges" => $variant['container_charges'] ?? '0.0000',
                     "product_id"    => $product_id,
                 ];
-                $product_variant_import = ProductVariant::updateOrInsert(['sku' => $variant['sku']],$product_variant);
+                $product_variant_import = ProductVariant::updateOrInsert(['sku' =>  $Product_v_sku],$product_variant);
             }
             return true;
         }else{
@@ -150,11 +156,12 @@ class SyncCategoryProductController extends Controller
         }
     }
 
-    public function syncSingleCategory($cat){
+    public function syncSingleCategory($cat,  $dataBaseName){
         if(checkTableExists('categories')){
+            $slug = str_replace(" ","_",$dataBaseName."_".$cat['slug']);
             $data = [
                 'icon' => $cat['icon']['icon'],
-                'slug' => $cat['slug'],
+                'slug' =>  $slug,
                 'type_id' => $cat['type_id'],
                 'image' => $cat['image']['image'],
                 'is_visible' => $cat['is_visible'],
@@ -172,16 +179,20 @@ class SyncCategoryProductController extends Controller
                 'order_panel_id' => $this->order_panel_id
             ];
             
-            $categorySave = Category::updateOrCreate([ 'slug' => $cat['slug'], 'order_panel_id' => $this->order_panel_id ], $data);
+            $categorySave = Category::updateOrCreate([ 'slug' =>  $slug], $data);
+            \Log::info( 'categorySave transl_data');
+            \Log::info(  $cat['primary']);
             $transl_data = [
-                'name' => $cat['translation']['name'] ?? $cat['slug'],
-                'trans-slug' => $cat['translation']['trans_slug'] ?? '',
-                'meta_title' => $cat['translation']['meta_title'] ?? '',
-                'meta_description' => $cat['translation']['meta_description'] ?? '',
-                'meta_keywords' => $cat['translation']['meta_keywords'] ?? '',
+                'name' => $cat['primary']['name'] ?? $categorySave->slug,
+                'trans-slug' => $cat['primary']['trans_slug'] ?? '',
+                'meta_title' => $cat['primary']['meta_title'] ?? '',
+                'meta_description' => $cat['primary']['meta_description'] ?? '',
+                'meta_keywords' => $cat['primary']['meta_keywords'] ?? '',
                 'category_id' => $categorySave->id ?? '',
                 'language_id' => 1
             ];
+          
+          
             $categoryTransSave = CategoryTranslation::updateOrCreate([ 'category_id' => $categorySave->id ], $transl_data);
             return $categorySave->id;
         }else{

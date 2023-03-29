@@ -12,4 +12,7 @@ class ProductVariant extends Model
     public function product(){
         return $this->hasOne('App\Model\Product','id','product_id');
     }
+    public function agentPrice(){
+	    return $this->hasOne('App\Model\AgentProductPrices'); 
+	}
 }

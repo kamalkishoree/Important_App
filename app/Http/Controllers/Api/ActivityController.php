@@ -6,7 +6,7 @@ use App\Http\Controllers\Api\BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use App\Model\{Agent, AgentLog, AllocationRule, Client, ClientPreference, Cms, Order, Task, TaskProof, Timezone, User, PaymentOption};
+use App\Model\{Agent, AgentLog, AllocationRule, Client, ClientPreference, Cms, Order, Task, TaskProof, Timezone, User, PaymentOption, UserBidRideRequest, DeclineBidRequest, DriverGeo,UserRating};
 use Validation;
 use DB, Log;
 use Illuminate\Support\Facades\Storage;
@@ -14,10 +14,12 @@ use App\Model\Roster;
 use Config;
 use Illuminate\Support\Facades\URL;
 use GuzzleHttp\Client as GClient;
-
+use App\Traits\FormAttributeTrait;
+use App\Traits\{GlobalFunction};
 class ActivityController extends BaseController
 {
-
+    use FormAttributeTrait;
+    use GlobalFunction;
     /**
      * Store/Update Client Preferences
      */
@@ -139,7 +141,7 @@ class ActivityController extends BaseController
 
         if (count($orders) > 0) {
             $tasks = Task::whereIn('order_id', $orders)->where('task_status', '!=', 4)->Where('task_status', '!=', 5)
-            ->with(['location','tasktype','order.customer','order.customer.resources','order.task.location'])->orderBy("order_id", "DESC")
+            ->with(['location','tasktype','order.customer','order.customer.resources','order.task.location','order.additionData'])->orderBy("order_id", "DESC")
             ->orderBy("id","ASC")
             ->get();
             if (count($tasks) > 0) {
@@ -232,7 +234,6 @@ class ActivityController extends BaseController
         $utc_end   = Carbon::parse($end . $client_code->timezone ?? 'UTC')->tz('UTC');
 
         $tasks   = [];
-
         $data =  [
             'agent_id'          => Auth::user()->id,
             'lat'               => $request->lat,
@@ -243,7 +244,8 @@ class ActivityController extends BaseController
             'current_speed'     => $request->current_speed,
             'on_route'          => $request->on_route,
             'device_type'       => ucwords($request->device_type),
-            'heading_angle'     => $request->heading_angle ?? 0,
+            'heading_angle'     => $request->heading_angle ?? 0
+           
         ];
 
         $is_cab_pooling_toggle = isset($preferences->is_cab_pooling_toggle)?$preferences->is_cab_pooling_toggle:0;
@@ -272,7 +274,7 @@ class ActivityController extends BaseController
                     //\Log::info('get order');
                     
                     //get agent current task
-                    $tasks = Task::whereIn('order_id', $orders)->where('task_status', 2)->with(['location','tasktype','order.customer'])->orderBy('order_id', 'desc')->orderBy('id', 'ASC')->get()->first();
+                    $tasks = Task::whereIn('order_id', $orders)->where('task_status', 2)->with(['location','tasktype','order.customer','order.additionData'])->orderBy('order_id', 'desc')->orderBy('id', 'ASC')->get()->first();
                     if (!empty($tasks)) {
 
                         //\Log::info('get tasks--');
@@ -344,7 +346,7 @@ class ActivityController extends BaseController
 
 
         if (count($orders) > 0) {
-            $tasks = Task::whereIn('order_id', $orders)->where('task_status', '!=', 4)->Where('task_status', '!=', 5)->with(['location','tasktype','order.customer'])->orderBy('order_id', 'desc')->orderBy('id', 'ASC')->get();
+            $tasks = Task::whereIn('order_id', $orders)->where('task_status', '!=', 4)->Where('task_status', '!=', 5)->with(['location','tasktype','order.customer','order.additionData'])->orderBy('order_id', 'desc')->orderBy('id', 'ASC')->get();
             if (count($tasks) > 0) {
                 //sort according to task_order
                 $tasks = $tasks->toArray();
@@ -369,12 +371,24 @@ class ActivityController extends BaseController
                 }
             }
         }
-
+        
+        $getAdditionalPreference = getAdditionalPreference([
+            'pickup_type',
+            'drop_type',
+            'is_attendence',
+            'idle_time'
+        ]);
+        $preferences['isAttendence'] = ($getAdditionalPreference['is_attendence'] == 1) ? $getAdditionalPreference['is_attendence'] : 0;
         $allcation = AllocationRule::first('request_expiry');
 
+        $datas['attribute_form'] = $this->getAttributeForm($request);
+
+        $averageTaskComplete   = $this->getDriverTaskDonePercentage( $agents->id);
         $preferences['alert_dismiss_time'] = (int)$allcation->request_expiry;
         $agents['client_preference']  = $preferences;
         $agents['task_proof']         = $taskProof;
+        $agents['averageTaskComplete']= $averageTaskComplete['averageRating'];
+        $agents['CompletedTasks']= $averageTaskComplete['CompletedTasks'];
         $datas['user']                = $agents;
         $datas['tasks']               = $tasks;
 
@@ -421,16 +435,23 @@ class ActivityController extends BaseController
     public function taskHistory(Request $request)
     {
         $id    = Auth::user()->id;
+        $orders = Order::where('driver_id', $id);
         if(!empty($request->from_date) && !empty($request->to_date)){
-            $orders = Order::where('driver_id', $id)->whereBetween('order_time', [$request->from_date." 00:00:00",$request->to_date." 23:59:59"])->pluck('id')->toArray();
-        }else{
-            $orders = Order::where('driver_id', $id)->pluck('id')->toArray();
+            $orders =  $orders->whereBetween('order_time', [$request->from_date." 00:00:00",$request->to_date." 23:59:59"])->pluck('id')->toArray();
+        }
+
+        $orders =  $orders->pluck('id')->toArray();
+        
+        $hisoryStatus = [4,5];
+
+        if($request->has('task_status') && $request->task_status !=''){
+            $hisoryStatus = [$request->task_status];
         }
         if (isset($orders)) {
-            $tasks = Task::with(['location','tasktype','order.customer','order.task.location'])
+            $tasks = Task::with(['location','tasktype','order.customer','order.task.location','order.additionData','order.userRating'])
             ->whereIn('order_id', $orders)
-            ->where(function($q){
-                $q->whereIn('task_status', [4,5])
+            ->where(function($q) use ($hisoryStatus){
+                $q->whereIn('task_status', $hisoryStatus)
                 ->orWhereHas('order', function($q1){
                     $q1->where('status', 'cancelled');
                 });
@@ -602,4 +623,139 @@ class ActivityController extends BaseController
             ]);
         }
     }
+
+    public function getReferOrder(Request $request)
+    {
+        $id     = Auth::user()->id;
+ 
+        $tasks   = [];
+      
+        $orders = Order::where('refer_driver_id', $id)->whereNull('driver_id')->where('status', 'unassigned')->orderBy("order_time","ASC")->orderBy("id","ASC")->pluck('id')->toArray();
+        
+
+
+        if (count($orders) > 0) {
+            $tasks = Task::whereIn('order_id', $orders)->where('task_status', '!=', 4)->Where('task_status', '!=', 5)
+            ->with(['location','tasktype','order.customer','order.customer.resources','order.task.location','order.additionData'])->orderBy("order_id", "DESC")
+            ->orderBy("id","ASC")
+            ->get();
+            if (count($tasks) > 0) {
+                //sort according to task_order
+                $tasks = $tasks->toArray();
+                if ($tasks[0]['task_order'] !=0) {
+                    usort($tasks, function ($a, $b) {
+                        return $a['task_order'] <=> $b['task_order'];
+                    });
+                }
+            }
+        }
+
+        return response()->json([
+            'data' => $tasks,
+            'status' => 200,
+            'message' => __('success')
+        ], 200);
+    }
+
+
+    //--------------------get bid request based on agent tag and geoid--------------
+    public function getBidRideRequests(Request $request)
+    {
+        $id        = Auth::user()->id;
+        $geo_ids   =  DriverGeo::where('driver_id', $id)->pluck('geo_id');
+        $agenttags =  Agent::with('tags')->where('id', $id)->first();
+        $tags = array();
+        foreach($agenttags->tags as $agenttags)
+        {
+            $tags[] = $agenttags->name;
+        }
+
+        if(count($tags) > 0 && count($geo_ids) > 0){
+            $currenttime = Carbon::now()->format('Y-m-d H:i:s');
+            $requestdata = UserBidRideRequest::whereIn('geo_id', $geo_ids)->whereIn('agent_tag', $tags)->where('expired_at', '>', $currenttime)
+                           ->whereDoesntHave('declinedbyAgent', function($q) use ($id){
+                            $q->where('agent_id', $id);
+                        })->get();
+        }else{
+            $requestdata = [];
+        }
+
+        return response()->json([
+            'data' => array('requestdata' =>$requestdata),
+            'status' => 200,
+            'message' => __('success')
+        ], 200);
+    }
+
+    public function getAcceptDeclinedBidRideRequests(Request $request)
+    {
+        $id        = Auth::user()->id;
+        $biddata =  UserBidRideRequest::where('id', $request->id)->first();
+        if(!empty($biddata)){
+            $inseted = DeclineBidRequest::insert(['bid_id' => $request->id, 'agent_id' => $id, 'status' => $request->status]);
+
+            if($request->status == 1){
+                return response()->json([
+                    'data' =>[],
+                    'status' => 200,
+                    'message' => __('Request accepted')
+                ], 200);
+            }else{
+                return response()->json([
+                    'data' =>[],
+                    'status' => 200,
+                    'message' => __('Request Declined')
+                ], 200);
+            }
+            
+        }else{
+            return response()->json([
+                'data' =>[],
+                'status' => 404,
+                'message' => __('!Error, Something went wrong.')
+            ], 200);
+        }
+    }
+    public function userRating(Request $request)
+    {
+       
+        $UserRating = UserRating::where('order_id',$request->order_id)->first() ?? new UserRating();
+        $UserRating->driver_id = Auth::user() ? Auth::user()->id :  $request->driver_id;
+        $UserRating->user_id = $request->user_id;
+        $UserRating->order_id = $request->order_id;
+        $UserRating->rating = $request->rating;
+        $UserRating->review = $request->review;
+        $UserRating->order_webhook = $request->order_webhook;
+        $UserRating->save() ;
+        $client = new GClient(['content-type' => 'application/json']);
+        $url = $request->order_webhook;
+        $res = $client->get($url);
+        $response = json_decode($res->getBody(), true);
+        return response()->json([
+            'data' => $UserRating ,
+            'status' => 200,
+            'message' => __('Rating Submited!')
+        ], 200);
+    }
+
+    public function pendingPaymentOrder(Request $request)
+    {
+        $id    = Auth::user()->id;
+        $orders = Order::where('driver_id', $id)->with(['task','task.location','additionData','userRating','customer']);
+        if(!empty($request->from_date) && !empty($request->to_date)){
+            $orders =  $orders->whereBetween('order_time', [$request->from_date." 00:00:00",$request->to_date." 23:59:59"]);
+        }
+        
+        $orders =  $orders->where('is_comm_settled','0')->where('driver_cost','>=',0)->whereHas('task', function ($query) {
+            $query->where('task_status', 4); // completed task
+        });
+        $orders = $orders->orderBy('id', 'DESC')->paginate(10);
+     
+        return response()->json([
+            'orders' => $orders,
+            'status' => 200,
+            'message' => __('success')
+        ], 200);
+    }
+
 }
