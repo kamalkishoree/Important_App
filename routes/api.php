@@ -207,7 +207,4 @@ Route::group(['middleware' => 'dbCheck','prefix' => 'public'], function() {
 });
 
 
-        Route::post('task/create', 'Api\TaskController@CreateTask');
-        Route::get('task/currentstatus', 'Api\TaskController@currentstatus');
-    });
 });
