@@ -218,7 +218,7 @@ class CategoryController extends Controller
             // // $statusCode = $response->status();
             // $checkAuth = json_decode($response->getBody(), true);
             
-            // if( @$checkAuth['status'] == 200){
+             if( @$checkAuth['status'] == 200){
                 $apiRequestURL = $url.'/api/v1/category-product-sync-dispatcher';
               
                 \Log::info('category-product-sync-dispatcher');

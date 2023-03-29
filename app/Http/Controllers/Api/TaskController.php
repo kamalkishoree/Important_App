@@ -24,7 +24,24 @@ use App\Model\ClientPreference;
 use App\Model\NotificationType;
 use App\Traits\agentEarningManager;
 use App\Model\BatchAllocationDetail;
-use App\Model\{PricingRule, TagsForAgent, AgentPayout, TagsForTeam, Team, PaymentOption, PayoutOption, AgentConnectedAccount, CustomerVerificationResource, SubscriptionInvoicesDriver, TaskType, AgentLogSlab, AgentFleet,OrderAdditionData, UserBidRideRequest, OrderFormAttribute};
+use App\Model\ {
+    PricingRule,
+    TagsForAgent,
+    AgentPayout,
+    TagsForTeam,
+    Team,
+    PaymentOption,
+    PayoutOption,
+    AgentConnectedAccount,
+    CustomerVerificationResource,
+    SubscriptionInvoicesDriver,
+    TaskType,
+    AgentLogSlab,
+    AgentFleet,
+    OrderAdditionData,
+    UserBidRideRequest,
+    OrderFormAttribute
+};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use PHPUnit\Framework\Constraint\Count;
@@ -37,7 +54,6 @@ use App\Model\NotificationEvent;
 use App\Jobs\scheduleNotification;
 use App\Traits\GlobalFunction;
 use App\Traits\sendCustomNotification;
-
 use App\Traits\FormAttributeTrait;
 use App;
 use Log;
@@ -781,7 +797,7 @@ class TaskController extends BaseController
         $percentage = 0;
         $agent_id =  $request->driver_id  ? $request->driver_id : null;
         $driver   = Agent::where('id', $agent_id)->first();
-
+        
         $orderdata = Order::where('id', $request->order_id)->first();
         if($driver->is_pooling_available == 1)
         {
@@ -793,86 +809,78 @@ class TaskController extends BaseController
                 $booked_seats     = $previous_seats + $this_order_seats;
                 if($available_seats < $booked_seats){
                     return response()->json([
-                        'message' => __('Available Seats are less than no of booked seats.')
+                        'message' => __('Available Seats are less than no of booked seats.'),
                     ], 404);
                 }
             }
         }
-
-        $assignedorder_data = Order::where('id', $request->order_id)->where('driver_id', '!=', $agent_id)
-            ->where('status', 'assigned')
-            ->first();
+        
+        $assignedorder_data = Order::where('id', $request->order_id)->where('driver_id', '!=', $agent_id)->where('status', 'assigned')->first();
         $unassignedorder_data = Order::where('id', $request->order_id)->where('status', 'unassigned')->first();
-        if (empty($unassignedorder_data) && ! empty($assignedorder_data)) {
+        if(empty($unassignedorder_data) && !empty($assignedorder_data)){
             return response()->json([
-                'message' => __('This task has already been accepted.')
+                'message' => __('This task has already been accepted.'),
             ], 404);
         }
-
+        
         $proof_face = null;
         if (isset($request->proof_face)) {
             if ($request->hasFile('proof_face')) {
                 $folder = str_pad($client_details->code, 8, '0', STR_PAD_LEFT);
-                $folder = 'client_' . $folder;
+                $folder = 'client_'.$folder;
                 $file = $request->file('proof_face');
-                $file_name = uniqid() . '.' . $file->getClientOriginalExtension();
-                $s3filePath = '/assets/' . $folder . '/orders' . $file_name;
+                $file_name = uniqid() .'.'.  $file->getClientOriginalExtension();
+                $s3filePath = '/assets/'.$folder.'/orders' . $file_name;
                 $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
                 $proof_face = $path;
             }
         }
-
+        
+        
         if (isset($check) && $check->driver_id != null) {
             if ($check && $check->call_back_url) {
-                $call_web_hook = $this->updateStatusDataToOrder($check, 2, 1); # task accepted
+                $call_web_hook = $this->updateStatusDataToOrder($check, 2,1);  # task accepted
             }
-            // Send SMS in case of friend's booking
-            if (isset($check->type) && $check->type == 1 && strlen($check->friend_phone_number) > 8) {
-                $friend_sms_body = 'Hi ' . ($check->friend_name) . ', ' . ($check->customer->name ?? 'Our customer') . ' has booked a ride for you.';
-                $send = $this->sendSms2($check->friend_phone_number, $friend_sms_body);
+            //Send SMS in case of friend's booking
+            if(isset($check->type) && $check->type == 1 && strlen($check->friend_phone_number) > 8)
+            {
+                $friend_sms_body = 'Hi '.($check->friend_name).', '.($check->customer->name??'Our customer').' has booked a ride for you.';
+                $send = $this->sendSms2($check->friend_phone_number , $friend_sms_body);
             }
             return response()->json([
-                'message' => __('Task Accecpted Successfully')
+                'message' => __('Task Accecpted Successfully'),
             ], 200);
-        } // need to we change
-
+        }  // need to we change
+        
         if ($request->status == 1) {
-
-            if ($request->type == 'B') {
-                // For Batch Order api
+            
+            if($request->type=='B')
+            {
+                //For Batch Order api
                 $check = BatchAllocation::where('batch_no', $request->order_id)->first();
                 if ($check->agent_id) {
                     return response()->json([
-                        'message' => __('This Batch has already been accepted.')
+                        'message' => __('This Batch has already been accepted.'),
                     ], 404);
                 }
-
+                
                 $batchNo = $request->order_id;
-                $this->dispatchNow(new RosterDelete($request->order_id, 'B'));
-
-                BatchAllocation::where([
-                    'batch_no' => $request->order_id
-                ])->update([
-                    'agent_id' => $agent_id
-                ]);
-                BatchAllocationDetail::where([
-                    'batch_no' => $request->order_id
-                ])->update([
-                    'agent_id' => $agent_id
-                ]);
-                $batchs = BatchAllocationDetail::where([
-                    'batch_no' => $request->order_id
-                ])->get();
-                foreach ($batchs as $batch) {
-
+                $this->dispatchNow(new RosterDelete($request->order_id,'B'));
+                
+                
+                BatchAllocation::where(['batch_no'=>$request->order_id])->update(['agent_id' => $agent_id]);
+                BatchAllocationDetail::where(['batch_no'=>$request->order_id])->update(['agent_id' => $agent_id]);
+                $batchs = BatchAllocationDetail::where(['batch_no'=>$request->order_id])->get();
+                foreach($batchs as $batch){
+                    
                     $task_id = Order::where('id', $batch->order_id)->first();
                     $pricingRule = PricingRule::where('id', 1)->first();
-                    // $agent_id = $request->driver_id ? $request->driver_id : null;
+                    // $agent_id =  $request->driver_id  ? $request->driver_id : null;
                     $agent_commission_fixed = $pricingRule->agent_commission_fixed;
                     $agent_commission_percentage = $pricingRule->agent_commission_percentage;
                     $freelancer_commission_fixed = $pricingRule->freelancer_commission_fixed;
                     $freelancer_commission_percentage = $pricingRule->freelancer_commission_percentage;
-
+                    
                     if ($task_id->driver_cost <= 0.00) {
                         $agent_details = Agent::where('id', $agent_id)->first();
                         if ($agent_details->type == 'Employee') {
@@ -880,16 +888,15 @@ class TaskController extends BaseController
                         } else {
                             $percentage = $freelancer_commission_fixed + (($task_id->order_cost / 100) * $freelancer_commission_percentage);
                         }
-                    } else {
+                    }
+                    else{
                         $percentage = $task_id->driver_cost;
                     }
-
-                    if ($agent_id) {
+                    
+                    if($agent_id){
                         $now = Carbon::now()->toDateString();
-                        $driver_subscription = SubscriptionInvoicesDriver::where('driver_id', $agent_id)->where('end_date', '>', $now)
-                            ->orderBy('end_date', 'desc')
-                            ->first();
-                        if ($driver_subscription && ($driver_subscription->driver_type == $agent_details->type)) {
+                        $driver_subscription = SubscriptionInvoicesDriver::where('driver_id', $agent_id)->where('end_date', '>', $now)->orderBy('end_date', 'desc')->first();
+                        if($driver_subscription && ($driver_subscription->driver_type == $agent_details->type)){
                             if ($driver_subscription->driver_type == 'Employee') {
                                 $agent_commission_fixed = $driver_subscription->driver_commission_fixed;
                                 $agent_commission_percentage = $driver_subscription->driver_commission_percentage;
@@ -908,61 +915,42 @@ class TaskController extends BaseController
                     Order::where('id', $batch->order_id)->update([
                         'driver_id' => $agent_id,
                         'status' => 'assigned',
-                        'fleet_id' => $agent_fleet,
-                        'driver_cost' => $percentage,
+                        'fleet_id'=> $agent_fleet,
+                        'driver_cost'=> $percentage,
                         'agent_commission_fixed' => $agent_commission_fixed,
                         'agent_commission_percentage' => $agent_commission_percentage,
                         'freelancer_commission_fixed' => $freelancer_commission_fixed,
                         'freelancer_commission_percentage' => $freelancer_commission_percentage
                     ]);
-                    Task::where('order_id', $batch->order_id)->update([
-                        'task_status' => 1
-                    ]);
-                    $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')
-                        ->where('id', $batch->order_id)
-                        ->first();
+                    
+                    Task::where('order_id', $batch->order_id)->update(['task_status' => 1]);
+                    $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')->where('id', $batch->order_id)->first();
                     // event(new \App\Events\loadDashboardData($orderdata));
                 }
-                $agent_fleet = AgentFleet::where('agent_id', $agent_id)->value('fleet_id');
-                Order::where('id', $batch->order_id)->update([
-                    'driver_id' => $agent_id,
-                    'status' => 'assigned',
-                    'fleet_id'=> $agent_fleet,
-                    'driver_cost'=> $percentage,
-                    'agent_commission_fixed' => $agent_commission_fixed,
-                    'agent_commission_percentage' => $agent_commission_percentage,
-                    'freelancer_commission_fixed' => $freelancer_commission_fixed,
-                    'freelancer_commission_percentage' => $freelancer_commission_percentage
-                ]);
-
-                Task::where('order_id', $batch->order_id)->update(['task_status' => 1]);
-                $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')->where('id', $batch->order_id)->first();
-               // event(new \App\Events\loadDashboardData($orderdata));
-            }
-            if ($check && $check->call_back_url) {
-                $call_web_hook = $this->updateStatusDataToOrder($check, 2,1);  # task accepted
-            }
-
-
+                if ($check && $check->call_back_url) {
+                    $call_web_hook = $this->updateStatusDataToOrder($check, 2,1);  # task accepted
+                }
+                
+                
             }else{
                 $check = Order::where('id', $request->order_id)->with(['agent','customer'])->first();
                 if (!isset($check)) {
                     return response()->json([
-                        'message' => __('This order has already been accepted.')
+                        'message' => __('This order has already been accepted.'),
                     ], 404);
                 }
-
-                // For order api
-                $this->dispatchNow(new RosterDelete($request->order_id, 'O'));
+                
+                //For order api
+                $this->dispatchNow(new RosterDelete($request->order_id,'O'));
                 $task_id = Order::where('id', $request->order_id)->first();
                 $pricingRule = PricingRule::where('id', 1)->first();
                 $agent_commission_fixed = $pricingRule->agent_commission_fixed;
                 $agent_commission_percentage = $pricingRule->agent_commission_percentage;
                 $freelancer_commission_fixed = $pricingRule->freelancer_commission_fixed;
                 $freelancer_commission_percentage = $pricingRule->freelancer_commission_percentage;
-
-                // $agent_id = isset($request->allocation_type) && $request->allocation_type == 'm' ? $request->driver_id : null;
-
+                
+                // $agent_id =  isset($request->allocation_type) && $request->allocation_type == 'm' ? $request->driver_id : null;
+                
                 if ($task_id->driver_cost <= 0.00) {
                     $agent_details = Agent::where('id', $agent_id)->first();
                     if ($agent_details->type == 'Employee') {
@@ -970,16 +958,15 @@ class TaskController extends BaseController
                     } else {
                         $percentage = $freelancer_commission_fixed + (($task_id->order_cost / 100) * $freelancer_commission_percentage);
                     }
-                } else {
+                }
+                else{
                     $percentage = $task_id->driver_cost;
                 }
-
-                if ($agent_id) {
+                
+                if($agent_id){
                     $now = Carbon::now()->toDateString();
-                    $driver_subscription = SubscriptionInvoicesDriver::where('driver_id', $agent_id)->where('end_date', '>', $now)
-                        ->orderBy('end_date', 'desc')
-                        ->first();
-                    if ($driver_subscription && ($driver_subscription->driver_type == $agent_details->type)) {
+                    $driver_subscription = SubscriptionInvoicesDriver::where('driver_id', $agent_id)->where('end_date', '>', $now)->orderBy('end_date', 'desc')->first();
+                    if($driver_subscription && ($driver_subscription->driver_type == $agent_details->type)){
                         if ($driver_subscription->driver_type == 'Employee') {
                             $agent_commission_fixed = $driver_subscription->driver_commission_fixed;
                             $agent_commission_percentage = $driver_subscription->driver_commission_percentage;
@@ -995,22 +982,22 @@ class TaskController extends BaseController
                     }
                 }
                 $agent_fleet = AgentFleet::where('agent_id', $agent_id)->value('fleet_id');
-
+                
                 Order::where('id', $request->order_id)->update([
                     'driver_id' => $agent_id,
                     'status' => 'assigned',
-                    'fleet_id' => $agent_fleet,
-                    'driver_cost' => $percentage,
+                    'fleet_id'=> $agent_fleet,
+                    'driver_cost'=> $percentage,
                     'agent_commission_fixed' => $agent_commission_fixed,
                     'agent_commission_percentage' => $agent_commission_percentage,
                     'freelancer_commission_fixed' => $freelancer_commission_fixed,
                     'freelancer_commission_percentage' => $freelancer_commission_percentage
                 ]);
-
+                
                 if(checkColumnExists('orders','rejectable_order')){
-                 
+                    
                     if(  $orderdata  && $orderdata->rejectable_order == 1){
-                       
+                        
                         $data['schedule_time']= $orderdata->scheduled_date_time!=''? $orderdata->scheduled_date_time : Carbon::now()->toDateTimeString();
                         $data['service_time'] = '60';
                         $data['order_id'] = $orderdata->id;
@@ -1018,38 +1005,42 @@ class TaskController extends BaseController
                         $data['booking_type'] = 'new_booking';
                         $data['memo']  = __("Booked for Order number:").$orderdata->order_number;
                         $data['agent'] = $agent_id;
-        
+                        
                         $bookingResponse =  $this->SlotBooking($data);
-        
+                        
                     }
                 }
                 Task::where('order_id', $request->order_id)->update(['task_status' => 1]);
                 if ($check && $check->call_back_url) {
-                    $call_web_hook = $this->updateStatusDataToOrder($check, 2, 1); # task accepted
+                    $call_web_hook = $this->updateStatusDataToOrder($check, 2,1);  # task accepted
                 }
             }
-
-            // Send SMS in case of friend's booking
-            if (isset($check->type) && $check->type == 1 && strlen($check->friend_phone_number) > 8) {
-                $friend_sms_body = 'Hi ' . ($check->friend_name) . ', ' . ($check->customer->name ?? 'Our customer') . ' has booked a ride for you.';
-                $send = $this->sendSms2($check->friend_phone_number, $friend_sms_body);
+            
+            
+            //Send SMS in case of friend's booking
+            if(isset($check->type) && $check->type == 1 && strlen($check->friend_phone_number) > 8)
+            {
+                $friend_sms_body = 'Hi '.($check->friend_name).', '.($check->customer->name??'Our customer').' has booked a ride for you.';
+                $send = $this->sendSms2($check->friend_phone_number , $friend_sms_body);
             }
             return response()->json([
-                'message' => __('Task Accecpted Successfully')
+                'message' => __('Task Accecpted Successfully'),
             ], 200);
+            
+            
         } else {
             if(checkColumnExists('orders','rejectable_order') && ( (isset($orderdata)  && $orderdata->rejectable_order == 1)) ){
                 $task_type         = 'failed';
-               
+                
                 $Order  = Order::where('id', $orderdata->id)->update(['status' => $task_type,'driver_id'=>$agent_id ]);
                 $task  = Task::where('order_id', $orderdata->id)->update(['task_status' =>'5','note' => '' ]);
-               
+                
                 if ($orderdata &&  $orderdata->call_back_url) {
                     $call_web_hook = $this->updateStatusDataToOrder($orderdata, 6,2);  # task rejected
                 }
-             
+                
             }else{
-
+                
                 $data = [
                     'order_id'          => $request->order_id,
                     'driver_id'         => $request->driver_id,
@@ -1060,7 +1051,7 @@ class TaskController extends BaseController
                 TaskReject::create($data);
             }
             
-
+            
             return response()->json([
                 'data' => __('Task Rejected Successfully'),
                 'status' => 200,
@@ -1068,6 +1059,7 @@ class TaskController extends BaseController
             ], 200);
         }
     }
+    
 
     public function CreateTask(CreateTaskRequest $request)
     {
@@ -1416,7 +1408,7 @@ class TaskController extends BaseController
                     'distance_fee'                    => 0,
                     'cancel_fee'                      => 0,
                     'agent_commission_percentage'     => 0,
-                    'agent_commission_fixed'          => 0,
+                    'agent_commissTion_fixed'          => 0,
                     'freelancer_commission_percentage'=> 0,
                     'freelancer_commission_fixed'     => 0,
                     'actual_time'                     => $getdata['duration'],
@@ -3044,30 +3036,7 @@ class TaskController extends BaseController
         }
     }
 
-    # notification data
-    public function notificationTrackingDetail(Request $request, $id)
-    {
-        $order = DB::table('orders')->where('id', $id)->first();
-        if (isset($order->id)) {
-            $order->order_cost = $order->cash_to_be_collected ?? $order->order_cost;
-            $tasks = DB::table('tasks')->where('order_id', $order->id)
-                ->leftJoin('locations', 'tasks.location_id', '=', 'locations.id')
-                ->select('tasks.*', 'locations.latitude', 'locations.longitude', 'locations.short_name', 'locations.address')
-                ->orderBy('task_order')
-                ->get();
-            $db_name = client::select('database_name')->orderBy('id', 'asc')->first()->database_name;
-            return response()->json([
-                'message' => 'Successfully',
-                'tasks' => $tasks,
-                'order' => $order,
-                'agent_dbname' => $db_name
-            ], 200);
-        } else {
-            return response()->json([
-                'message' => 'Error'
-            ], 400);
-        }
-    }
+
 
 
      # notification data

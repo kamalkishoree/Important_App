@@ -969,7 +969,7 @@ session('preferences.map_key_1'):'kdsjhfkjsdhfsf'; $theme =
             });
             if (response.status == 'Success') {
                     $("#task-modal-header .close").click();
-                    location.reload();
+                    location.href="/tasks";
             } else {
                 $("#task-modal-header .show_all_error.invalid-feedback").show();
                 $("#task-modal-header .show_all_error.invalid-feedback").text(response.message);

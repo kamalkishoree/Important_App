@@ -328,7 +328,7 @@ class TaskController extends BaseController
         $user = Auth::user();
         $timezone = $user->timezone ?? 251;
 
-        $team_tags = TeamTag::whereHas('team', function ($q) use ($user) {
+        $team_tags = TeamTag::whereHas('team', function($q) use($user){
             $q->where('manager_id', $user->id);
         })->pluck('tag_id');
 
@@ -341,35 +341,33 @@ class TaskController extends BaseController
         }
         if ($user->is_superadmin == 0 && $user->all_team_access == 0 && $user->manager_type == 0) {
             $agents = Agent::orderBy('id', 'DESC');
-            $agentids = $agents->whereHas('team.permissionToManager', function ($query) use ($user) {
+            $agentids = $agents->whereHas('team.permissionToManager', function ($query) use($user) {
                 $query->where('sub_admin_id', $user->id);
-            })
-                ->pluck('id');
+            })->pluck('id');
 
-            $orders = $orders->where(function ($q) use ($agentids) {
-                $q->whereIn('driver_id', $agentids)
-                    ->orWhereNull('driver_id');
+            $orders = $orders->where(function($q) use($agentids) {
+                $q->whereIn('driver_id', $agentids)->orWhereNull('driver_id');
             });
 
-            $orders = $orders->wherehas('allteamtags', function ($query) use ($team_tags) {
+            $orders = $orders->wherehas('allteamtags', function($query) use($team_tags) {
                 $query->whereIn('tag_id', $team_tags);
             });
-        } else if ($user->is_superadmin == 0 && $user->manager_type == 1) {
+        }else if($user->is_superadmin == 0 && $user->manager_type == 1){
             $manager_warehouses = Client::with('warehouse')->where('id', $user->id)->first();
             $mana_warehouseIds = $manager_warehouses->warehouse->pluck('id');
-            $orders = $orders->whereHas('task', function ($query) use ($mana_warehouseIds) {
+            $orders = $orders->whereHas('task', function($query) use ($mana_warehouseIds) {
                 $query->whereIn('warehouse_id', $mana_warehouseIds);
             });
         }
-        if ($searchWarehouse_id != null && $searchWarehouse_id != '') {
-            $orders = $orders->whereHas('task', function ($query) use ($searchWarehouse_id) {
+        if($searchWarehouse_id != null && $searchWarehouse_id != ''){
+            $orders = $orders->whereHas('task', function($query) use ($searchWarehouse_id) {
                 $query->where('warehouse_id', $searchWarehouse_id);
             });
         }
 
-        if ($request->has('customer_id') && $request->customer_id != '') {
+        if($request->has('customer_id') && $request->customer_id != ''){
             // $orders = $orders->whereHas('customer', function($query) use ($request) {
-            // $query->where('id', $request->customer_id);
+            //     $query->where('id', $request->customer_id);
             // });
             $orders = $orders->where('customer_id', $request->customer_id);
         }
@@ -442,105 +440,74 @@ class TaskController extends BaseController
                             $pickupClass = "assign_";
                         }
 
-                $order->setTimezone($client_timezone);
-                $preference->date_format = $preference->date_format ?? 'm/d/Y';
-                $convertabledate = date('' . $preference->date_format . ' ' . $timeformat . '', strtotime($order));
-                return $convertabledate . '<br/>' . $order->diffForHumans();
-            else :
-                return '';
-            endif;
-        })
-            ->addColumn('short_name', function ($orders) use ($request, $getAdditionalPreference) {
-            $routes = array();
-            foreach ($orders->task as $task) {
-                if ($task->task_type_id == 1) {
-                    $taskType = (($getAdditionalPreference['pickup_type']) ? $getAdditionalPreference['pickup_type'] : "Pickup");
-                    $pickupClass = "yellow_";
-                } else if ($task->task_type_id == 2) {
-                    $taskType = (($getAdditionalPreference['drop_type']) ? $getAdditionalPreference['drop_type'] : "Dropoff");
-                    $pickupClass = "green_";
-                } else {
-                    $taskType = "Appointment";
-                    $pickupClass = "assign_";
-                }
+                        $shortName  = (!empty($task->location->short_name)? $task->location->short_name:'');
+                        $address    = (!empty($task->location->address)? $task->location->address:'');
 
-                $shortName = (! empty($task->location->short_name) ? $task->location->short_name : '');
-                $address = (! empty($task->location->address) ? $task->location->address : '');
-
-                $addressArr = explode(' ', trim($address));
-                $finalAddress = (! empty($addressArr[0])) ? $addressArr[0] : '';
-                $finalAddress = (! empty($addressArr[1])) ? $addressArr[0] . ' ' . $addressArr[1] : $finalAddress . '';
-                $finalAddress = (! empty($addressArr[2])) ? $addressArr[0] . ' ' . $addressArr[1] . ' ' . $addressArr[2] : $finalAddress . '';
-                $finalAddress = (! empty($addressArr[3])) ? $addressArr[0] . ' ' . $addressArr[1] . ' ' . $addressArr[2] . ' ' . $addressArr[3] : $finalAddress . '';
-                $finalAddress = (! empty($addressArr[4])) ? $addressArr[0] . ' ' . $addressArr[1] . ' ' . $addressArr[2] . ' ' . $addressArr[3] . ' ' . $addressArr[4] : $finalAddress . '';
-                $finalAddress = (! empty($addressArr[5])) ? $addressArr[0] . ' ' . $addressArr[1] . ' ' . $addressArr[2] . ' ' . $addressArr[3] . ' ' . $addressArr[4] . ' ' . $addressArr[5] : $finalAddress . '';
-                $finalAddress = (! empty($addressArr[6])) ? $addressArr[0] . ' ' . $addressArr[1] . ' ' . $addressArr[2] . ' ' . $addressArr[3] . ' ' . $addressArr[4] . ' ' . $addressArr[5] . '' : $finalAddress;
-                $routes[] = array(
-                    'taskType' => __($taskType),
-                    'pickupClass' => $pickupClass,
-                    'shortName' => $shortName,
-                    'toolTipAddress' => $address,
-                    'address' => $finalAddress
-                );
-            }
-            return json_encode($routes, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE);
-        })
-            ->editColumn('updated_at', function ($orders) use ($request, $timezone, $preference) {
-            $tz = new Timezone();
-            $client_timezone = $tz->timezone_name($timezone);
-            $timeformat = $preference->time_format == '24' ? 'H:i:s' : 'g:i a';
-            $order = Carbon::createFromFormat('Y-m-d H:i:s', $orders->updated_at, 'UTC');
-            $order->setTimezone($client_timezone);
-            $preference->date_format = $preference->date_format ?? 'm/d/Y';
-            return date('' . $preference->date_format . ' ' . $timeformat . '', strtotime($order));
-        })
-            ->addColumn('action', function ($orders) use ($request) {
-            $action = '<div class="form-ul" style="width: 60px;">
+                        $addressArr   = explode(' ',trim($address));
+                        $finalAddress = (!empty($addressArr[0])) ? $addressArr[0] : '';
+                        $finalAddress = (!empty($addressArr[1])) ? $addressArr[0].' '.$addressArr[1] : $finalAddress.'';
+                        $finalAddress = (!empty($addressArr[2])) ? $addressArr[0].' '.$addressArr[1].' '.$addressArr[2] : $finalAddress.'';
+                        $finalAddress = (!empty($addressArr[3])) ? $addressArr[0].' '.$addressArr[1].' '.$addressArr[2].' '.$addressArr[3] : $finalAddress.'';
+                        $finalAddress = (!empty($addressArr[4])) ? $addressArr[0].' '.$addressArr[1].' '.$addressArr[2].' '.$addressArr[3].' '.$addressArr[4] : $finalAddress.'';
+                        $finalAddress = (!empty($addressArr[5])) ? $addressArr[0].' '.$addressArr[1].' '.$addressArr[2].' '.$addressArr[3].' '.$addressArr[4].' '.$addressArr[5] : $finalAddress.'';
+                        $finalAddress = (!empty($addressArr[6])) ? $addressArr[0].' '.$addressArr[1].' '.$addressArr[2].' '.$addressArr[3].' '.$addressArr[4].' '.$addressArr[5].'' : $finalAddress;
+                        $routes[]     = array('taskType'=>__($taskType), 'pickupClass'=>$pickupClass, 'shortName'=>$shortName, 'toolTipAddress'=>$address, 'address'=> $finalAddress);
+                    }
+                    return json_encode($routes, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE);
+                })
+                
+                ->editColumn('updated_at', function ($orders) use ($request, $timezone, $preference) {
+                    $tz              = new Timezone();
+                    $client_timezone = $tz->timezone_name($timezone);
+                    $timeformat      = $preference->time_format == '24' ? 'H:i:s':'g:i a';
+                    $order           = Carbon::createFromFormat('Y-m-d H:i:s', $orders->updated_at, 'UTC');
+                    $order->setTimezone($client_timezone);
+                    $preference->date_format = $preference->date_format ?? 'm/d/Y';
+                    return date(''.$preference->date_format.' '.$timeformat.'', strtotime($order));
+                })
+                ->addColumn('action', function ($orders) use ($request) {
+                    $action = '<div class="form-ul" style="width: 60px;">
                                     <div class="inner-div">
                                         <div class="set-size">
-                                            <a href1="#" href="' . route('tasks.edit', $orders->id) . '" class="action-icon editIconBtn mr-2" title="Edit Route">
+                                            <a href1="#" href="'.route('tasks.edit', $orders->id).'" class="action-icon editIconBtn mr-2" title="Edit Route">
                                                 <i class="mdi mdi-square-edit-outline"></i>
                                             </a>
                                         </div>
                                     </div>';
-            if ($orders->status != 'completed') :
-                $action .= '<div class="inner-div">
-                                        <form class="mb-0" id="taskdelete' . $orders->id . '" method="POST" action="' . route('tasks.destroy', $orders->id) . '">
-                                            <input type="hidden" name="_token" value="' . csrf_token() . '" />
+                        if($orders->status!='completed'):
+                         $action.='<div class="inner-div">
+                                        <form class="mb-0" id="taskdelete'.$orders->id.'" method="POST" action="'.route('tasks.destroy', $orders->id).'">
+                                            <input type="hidden" name="_token" value="'.csrf_token().'" />
                                             <input type="hidden" name="_method" value="DELETE">
                                             <div class="form-group">
-                                                <button type="button" class="btn btn-primary-outline action-icon"> <i class="mdi mdi-delete" taskid="' . $orders->id . '"></i></button>
+                                                <button type="button" class="btn btn-primary-outline action-icon"> <i class="mdi mdi-delete" taskid="'.$orders->id.'"></i></button>
                                             </div>
                                         </form>
                                     </div>';
                         endif;
-
-            $action .= '</div>';
-            return $action;
-        })
-            ->filter(function ($instance) use ($request) {
-            if (! empty($request->get('search'))) {
-
-                $search = $request->get('search');
-                $instance->where(function ($query) use ($search) {
-                    $query->where('order_number', 'Like', '%' . $search . '%')
-                        ->orWhereHas('customer', function ($q) use ($search) {
-                        $q->where('name', 'Like', '%' . $search . '%')
-                            ->orWhere('phone_number', 'Like', '%' . $search . '%');
-                    })
-                        ->orWhereHas('agent', function ($q) use ($search) {
-                        $q->where('name', 'Like', '%' . $search . '%');
-                    });
-                });
-            }
-        }, true)
-            ->rawColumns([
-            'action',
-            'order_number',
-            'order_time'
-        ])
-            ->make(true);
+                        $action.='</div>';
+                    return $action;
+                })
+                ->filter(function ($instance) use ($request) {
+                    if (!empty($request->get('search'))) {
+                       
+                        $search = $request->get('search');
+                        $instance->where(function($query) use($search){
+                            $query->where('order_number', 'Like', '%'.$search.'%')
+                            ->orWhereHas('customer', function($q) use($search){
+                                $q->where('name', 'Like', '%'.$search.'%')
+                                ->orWhere('phone_number', 'Like', '%'.$search.'%');
+                            })
+                            ->orWhereHas('agent', function($q) use($search){
+                                $q->where('name', 'Like', '%'.$search.'%');
+                            });
+                        });
+                    }
+                }, true)
+                ->rawColumns(['action', 'order_number', 'order_time'])
+                ->make(true);
     }
+
 
     public function tasksExport(Request $request)
     {
@@ -845,13 +812,13 @@ class TaskController extends BaseController
                     'task_type_id' => $value,
                     'location_id' => $loc_id,
                     'appointment_duration' => $task_appointment_duration,
-                    'dependent_task_id' => $dep_id,
+                    'dependent_task_id' => $dep_id ?? null,
                     'vendor_id' => ! empty($vendor_ids[$key]) ? $vendor_ids[$key] : '',
                     'task_status' => $agent_id != null ? 1 : 0,
-                    'created_at' => $notification_time,
-                    'assigned_time' => $notification_time,
-                    'barcode' => $request->barcode[$key],
-                    'quantity' => $request->quantity[$key],
+                    'created_at' => $notification_time ?? '',
+                    'assigned_time' => $notification_time ?? '',
+                    'barcode' => $request->barcode[$key] ?? '',
+                    'quantity' => $request->quantity[$key] ?? '',
                     'alcoholic_item' => ! empty($request->alcoholic_item[$key]) ? $request->alcoholic_item[$key] : ''
                 ];
                 if (checkColumnExists('tasks', 'warehouse_id')) {
@@ -890,9 +857,9 @@ class TaskController extends BaseController
 
                 // for net quantity
                 if ($value == 1) {
-                    $pickup_quantity = $pickup_quantity + $request->quantity[$key];
+                    $pickup_quantity = $pickup_quantity + !empty($request->quantity[$key]) ? $request->quantity[$key]:0;
                 } elseif ($value == 2) {
-                    $drop_quantity = $drop_quantity + $request->quantity[$key];
+                    $drop_quantity = $drop_quantity +  !empty($request->quantity[$key]) ? $request->quantity[$key]:0;
                 }
                 $net_quantity = $pickup_quantity - $drop_quantity;
             }
