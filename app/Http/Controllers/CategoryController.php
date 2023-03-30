@@ -67,7 +67,7 @@ class CategoryController extends Controller
             $sku_url = array_reverse(explode('.', $sku_url));
             $sku_url = implode(".", $sku_url);
         }
-        $orderDb_detail = OrderPanelDetail::where('type','0')->get();
+        $orderDb_detail = OrderPanelDetail::all();
 
         return view('category.index')->with([
             'order_panel' => $order_panel,
@@ -120,7 +120,7 @@ class CategoryController extends Controller
             $sku_url = implode(".", $sku_url);
         }
 
-        $orderDb_detail = OrderPanelDetail::where('type','1')->get();
+        $orderDb_detail = OrderPanelDetail::where('type', '1')->get();
         return view('category.inventory_index')->with([
             'order_panel' => $order_panel,
             'category' => $category,
@@ -188,70 +188,74 @@ class CategoryController extends Controller
         return redirect()->back()->with('success', 'Category Deleted Successfully');
     }
 
-    public function getOrderSideData(Request $request){
-        $order_panel_id =  $request->order_panel_id;
-        
-        if($order_panel_id != 'all'){
+    public function getOrderSideData(Request $request)
+    {
+        $order_panel_id = $request->order_panel_id;
+
+        if ($order_panel_id != 'all') {
             $order_details = OrderPanelDetail::find($order_panel_id);
+
+           
             $order_details->sync_status = 0;
             $order_details->save();
             $order_details = OrderPanelDetail::find($order_panel_id);
             $url = $order_details->url;
-            
+          
             // URL
             // $apiAuthCheckURL = $url.'/api/v1/dispatcher/check-order-keys';
-            
+
             // // POST Data
             // $postInput = [
-                
+
             // ];
-    
+
             // // Headers
             $headers = [
                 'shortcode' => $order_details->code,
-                'code' => $order_details->code,
+//                 'code' => $order_details->code,
                 'key' => $order_details->key
             ];
-          
+
             // $response = Http::withHeaders($headers)->post($apiAuthCheckURL, $postInput);
-             
+
             // // $statusCode = $response->status();
             // $checkAuth = json_decode($response->getBody(), true);
-            
-             if( @$checkAuth['status'] == 200){
-                $apiRequestURL = $url.'/api/v1/category-product-sync-dispatcher';
-              
-                \Log::info('category-product-sync-dispatcher');
-                // POST Data
-                $Dispatcher_url = $_SERVER['HTTP_ORIGIN']; // $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['HTTP_HOST'];
-                \Log::info($Dispatcher_url);
-                $clients = Client::where('is_superadmin', 1)->select('id','code')->first();
 
-                // POST Data
-                $postInput = [
+            // if( @$checkAuth['status'] == 200){
+            $apiRequestURL = $url . '/api/v1/category-product-sync-dispatcher';
+
+            \Log::info('category-product-sync-dispatcher');
+            // POST Data
+            $Dispatcher_url = $_SERVER['HTTP_ORIGIN']; // $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['HTTP_HOST'];
+            \Log::info($Dispatcher_url);
+            $clients = Client::where('is_superadmin', 1)->select('id', 'code')->first();
+
+            // POST Data
+            $postInput = [
                 'order_panel_id' => $order_panel_id,
                 'dispatcher_url' => $Dispatcher_url,
-                'dispatcher_code'=> $clients->code
-                ];
-                
-                // $headers['Authorization'] = $checkAuth['token'];
-                $response = Http::withHeaders($headers)->get($apiRequestURL, $postInput);
-                $responseBody = json_decode($response->getBody(), true);
-                \Log::info($responseBody);
-                if( @$responseBody['status'] == 200){
-                    $order_details = OrderPanelDetail::find($order_panel_id);
-                    $order_details->sync_status = 1;
-                    $order_details->save();
-                    // dd($responseBody);
-                    // $this->importOrderSideCategory($responseBody['data']);
-                } elseif (@$responseBody['error'] && ! empty($responseBody['error'])) {
-                    return redirect()->back()->with('error', $responseBody['error']);
-                }
-            } elseif (@$checkAuth['status'] == 401) {
-                return redirect()->back()->with('error', $checkAuth['message']);
-            } else {
-                return redirect()->back()->with('error', 'Invalid Order Panel Url.');
+                'dispatcher_code' => $clients->code
+            ];
+            // $headers['Authorization'] = $checkAuth['token'];
+            $response = Http::withHeaders($headers)->get($apiRequestURL, $postInput);
+            $responseBody = json_decode($response->getBody(), true);
+
+            \Log::info($responseBody);
+            
+            if (@$responseBody['status'] == 200) {
+                $order_details = OrderPanelDetail::find($order_panel_id);
+                $order_details->sync_status = 1;
+                $order_details->save();
+                // dd($responseBody);
+                // $this->importOrderSideCategory($responseBody['data'],$order_panel_id);
+            } elseif (@$responseBody['error'] && ! empty($responseBody['error'])) {
+                return redirect()->back()->with('error', $responseBody['error']);
             }
+            // } elseif( @$checkAuth['status'] == 401){
+            // return redirect()->back()->with('error', $checkAuth['message']);
+            // }else{
+            // return redirect()->back()->with('error', 'Invalid Order Panel Url.');
+            // }
             return redirect()->back()->with('success', 'Category & Product Import Is Processing.');
         } else {
             return redirect()->back()->with('error', 'Please select order panel DB.');
@@ -261,9 +265,9 @@ class CategoryController extends Controller
     public function getCategoryList(Request $request)
     {
         if ($request->ajax()) {
-          
+
             $category = Category::where('slug', 'like', '%' . $request->search . '%')->get();
-           
+
             $options = view("modals.category-list-ajax", compact('category'))->render();
             return $options;
         }
@@ -314,7 +318,6 @@ class CategoryController extends Controller
 
                 $response = Http::withHeaders($headers)->post($apiRequestURL, $postInput);
                 $responseBody = json_decode($response->getBody(), true);
-
                 if (@$responseBody['status'] == 200) {
                     $order_details = OrderPanelDetail::find($order_panel_id);
                     $order_details->sync_status = 1;
@@ -334,20 +337,21 @@ class CategoryController extends Controller
             return redirect()->back()->with('error', 'Please select order panel DB.');
         }
     }
-    public function importOrderSideCategory($categories,$order_panel_id){
-       
+
+    public function importOrderSideCategory($categories, $order_panel_id)
+    {
+
         // $categories = ROCategory::with(['translation','products','products.variant','products.translation'])->get();
-        foreach($categories as $cat){
-            $category_id = $this->syncSingleCategory($cat,$order_panel_id);
-            if(!empty($cat['products']) && count($cat['products']) > 0){
-                foreach($cat['products'] as $product){
-                    $product_id = $this->syncSingleProduct($category_id, $product,$order_panel_id);
+        foreach ($categories as $cat) {
+            $category_id = $this->syncSingleCategory($cat, $order_panel_id);
+            if (! empty($cat['products']) && count($cat['products']) > 0) {
+                foreach ($cat['products'] as $product) {
+                    $product_id = $this->syncSingleProduct($category_id, $product, $order_panel_id);
                     $variantId = $this->syncProductVariant($product_id, $product);
                 }
             }
         }
     }
-    
 
     /**
      * Display the specified resource.
@@ -362,8 +366,10 @@ class CategoryController extends Controller
 
     public function categoryFilter(Request $request)
     {
-        $category = Category::withCount('products')->with(['translation']);
-        if(checkColumnExists('categories', 'order_panel_id')){
+        $category = Category::withCount('products')->with([
+            'translation'
+        ]);
+        if (checkColumnExists('categories', 'order_panel_id')) {
             $order_panel_id = $request->order_panel_id;
             if ($order_panel_id != "" && $order_panel_id != null) {
                 $category = $category->where('order_panel_id', $order_panel_id);
@@ -374,8 +380,7 @@ class CategoryController extends Controller
             $category = $category->where('slug', 'Like', '%' . $search . '%');
         }
         $category = $category->orderBy('id', 'DESC')->get();
-        return Datatables::of($category)
-        ->addColumn('name', function ($category) use ($request) {
+        return Datatables::of($category)->addColumn('name', function ($category) use ($request) {
             $name = isset($category->translation) && isset($category->translation->name) ? $category->translation->name : $category->slug;
             return $name;
         })
@@ -390,8 +395,8 @@ class CategoryController extends Controller
             $created_at = ! empty($category->created_at) ? $category->created_at : '';
             return formattedDate($created_at);
         })
-        ->addColumn('total_products', function ($category) use ($request) {
-            $total_products = $category->products_count;// !empty($category->products) ? count($category->products) : '0';
+            ->addColumn('total_products', function ($category) use ($request) {
+            $total_products = $category->products_count; // !empty($category->products) ? count($category->products) : '0';
             return $total_products;
         })
             ->addColumn('action', function ($category) use ($request) {
@@ -509,123 +514,136 @@ class CategoryController extends Controller
             ->make(true);
     }
 
-    public function syncSingleProduct($category_id, $product,$order_panel_id){
+    public function syncSingleProduct($category_id, $product, $order_panel_id)
+    {
         // dd($product['translation']);
-        if(checkTableExists('products')){ 
+        if (checkTableExists('products')) {
             $product_update_create = [
-                "sku"                   => $product['sku'],
-                "title"                 => $product['title'],
-                "url_slug"              => $product['url_slug'],
-                "description"           => $product['description'],
-                "body_html"             => $product['body_html'],
-                "vendor_id"             => $product['vendor_id'],
-                "type_id"               => $product['type_id'],
-                "country_origin_id"     => $product['country_origin_id'],
-                "is_new"                => $product['is_new'],
-                "is_featured"           => $product['is_featured'],
-                "is_live"               => $product['is_live'],
-                "is_physical"           => $product['is_physical'],
-                "weight"                => $product['weight'],
-                "weight_unit"           => $product['weight_unit'],
-                "has_inventory"         => $product['has_inventory'],
-                "has_variant"           => $product['has_variant'],
+                "sku" => $product['sku'],
+                "title" => $product['title'],
+                "url_slug" => $product['url_slug'],
+                "description" => $product['description'],
+                "body_html" => $product['body_html'],
+                "vendor_id" => $product['vendor_id'],
+                "type_id" => $product['type_id'],
+                "country_origin_id" => $product['country_origin_id'],
+                "is_new" => $product['is_new'],
+                "is_featured" => $product['is_featured'],
+                "is_live" => $product['is_live'],
+                "is_physical" => $product['is_physical'],
+                "weight" => $product['weight'],
+                "weight_unit" => $product['weight_unit'],
+                "has_inventory" => $product['has_inventory'],
+                "has_variant" => $product['has_variant'],
                 "sell_when_out_of_stock" => $product['sell_when_out_of_stock'],
-                "requires_shipping"     => $product['requires_shipping'],
-                "Requires_last_mile"    => $product['Requires_last_mile'],
-                "averageRating"         => $product['averageRating'],
-                "inquiry_only"          => $product['inquiry_only'],
-                "publish_at"            => $product['publish_at'],
-                "created_at"            => $product['created_at'],
-                "updated_at"            => $product['updated_at'],
-                // "brand_id"              => $i_product['brand_id'],
-                "tax_category_id"       => $product['tax_category_id'] ?? null,
-                "deleted_at"            => $product['deleted_at'],
-                "pharmacy_check"        => $product['pharmacy_check'],
-                "tags"                  => $product['tags'],
+                "requires_shipping" => $product['requires_shipping'],
+                "Requires_last_mile" => $product['Requires_last_mile'],
+                "averageRating" => $product['averageRating'],
+                "inquiry_only" => $product['inquiry_only'],
+                "publish_at" => $product['publish_at'],
+                "created_at" => $product['created_at'],
+                "updated_at" => $product['updated_at'],
+                // "brand_id" => $i_product['brand_id'],
+                "tax_category_id" => $product['tax_category_id'] ?? null,
+                "deleted_at" => $product['deleted_at'],
+                "pharmacy_check" => $product['pharmacy_check'],
+                "tags" => $product['tags'],
                 "need_price_from_dispatcher" => $product['need_price_from_dispatcher'],
-                "mode_of_service"       => $product['mode_of_service'],
-                "delay_order_hrs"       => $product['delay_order_hrs'],
-                "delay_order_min"       => $product['delay_order_min'],
+                "mode_of_service" => $product['mode_of_service'],
+                "delay_order_hrs" => $product['delay_order_hrs'],
+                "delay_order_min" => $product['delay_order_min'],
                 "pickup_delay_order_hrs" => $product['pickup_delay_order_hrs'],
                 "pickup_delay_order_min" => $product['pickup_delay_order_min'],
                 "dropoff_delay_order_hrs" => $product['dropoff_delay_order_hrs'],
                 "dropoff_delay_order_min" => $product['dropoff_delay_order_min'],
-                "need_shipment"         => $product['need_shipment'],
-                "minimum_order_count"   => $product['minimum_order_count'],
-                "batch_count"           => $product['batch_count'],
+                "need_shipment" => $product['need_shipment'],
+                "minimum_order_count" => $product['minimum_order_count'],
+                "batch_count" => $product['batch_count'],
                 "delay_order_hrs_for_dine_in" => $product['delay_order_hrs_for_dine_in'],
                 "delay_order_min_for_dine_in" => $product['delay_order_min_for_dine_in'],
                 "delay_order_hrs_for_takeway" => $product['delay_order_hrs_for_takeway'],
                 "delay_order_min_for_takeway" => $product['delay_order_min_for_takeway'],
-                "age_restriction"       => $product['age_restriction'],
-                // 'brand_id'              => $product->deleted_at,
-                "category_id"           => $category_id,
-                //"store_id"              => $vid,
+                "age_restriction" => $product['age_restriction'],
+                // 'brand_id' => $product->deleted_at,
+                "category_id" => $category_id,
+                // "store_id" => $vid,
                 'order_panel_id' => $order_panel_id
             ];
-            $productSave = Product::updateOrCreate(['sku' => $product['sku'], 'order_panel_id' => $order_panel_id],$product_update_create);
+            $productSave = Product::updateOrCreate([
+                'sku' => $product['sku'],
+                'order_panel_id' => $order_panel_id
+            ], $product_update_create);
 
-            foreach($product['translation'] as $translation){
+            foreach ($product['translation'] as $translation) {
 
                 $product_trans = [
-                    'title'         => $translation['title'],
-                    'body_html'     => $translation['title'],
-                    'meta_title'    => $translation['title'],
-                    'meta_keyword'  => $translation['title'],
+                    'title' => $translation['title'],
+                    'body_html' => $translation['title'],
+                    'meta_title' => $translation['title'],
+                    'meta_keyword' => $translation['title'],
                     'meta_description' => $translation['title'],
-                    'product_id'    => $productSave->id,
-                    'language_id'   => $translation['language_id'],
+                    'product_id' => $productSave->id,
+                    'language_id' => $translation['language_id']
                 ];
 
-                ProductTranslation::updateOrCreate(['product_id' => $productSave->id],$product_trans);
-
+                ProductTranslation::updateOrCreate([
+                    'product_id' => $productSave->id
+                ], $product_trans);
             }
 
             // Sync Product Categories
-            $data = ['product_id' => $productSave->id, 'category_id' => $category_id ];
-            ProductCategories::updateOrCreate(['product_id' => $productSave->id],$product_update_create);
-            
+            $data = [
+                'product_id' => $productSave->id,
+                'category_id' => $category_id
+            ];
+            ProductCategories::updateOrCreate([
+                'product_id' => $productSave->id
+            ], $product_update_create);
+
             return $productSave->id;
-        }else{
+        } else {
             return '';
         }
     }
 
-    public function syncProductVariant($product_id, $product){
-        if(checkTableExists('product_variants')){ 
+    public function syncProductVariant($product_id, $product)
+    {
+        if (checkTableExists('product_variants')) {
             $variants = $product['variant'];
             // # Add product variant
-            foreach($variants as $variant) {     # import product variant
+            foreach ($variants as $variant) { # import product variant
                 $product_variant = [
-                    "sku"           => $variant['sku'],
-                    "title"         => $variant['title'],
-                    "quantity"      => $variant['quantity'],
-                    "price"         => $variant['price'],
-                    "position"      => $variant['position'],
+                    "sku" => $variant['sku'],
+                    "title" => $variant['title'],
+                    "quantity" => $variant['quantity'],
+                    "price" => $variant['price'],
+                    "position" => $variant['position'],
                     "compare_at_price" => $variant['compare_at_price'],
-                    "barcode"       => $variant['barcode'],
-                    "expiry_date"       => $variant['expiry_date'] ?? null,
-                    "cost_price"    => $variant['cost_price'],
-                    "currency_id"   => $variant['currency_id'],
+                    "barcode" => $variant['barcode'],
+                    "expiry_date" => $variant['expiry_date'] ?? null,
+                    "cost_price" => $variant['cost_price'],
+                    "currency_id" => $variant['currency_id'],
                     "tax_category_id" => $variant['tax_category_id'],
                     "inventory_policy" => $variant['inventory_policy'] ?? null,
-                    "fulfillment_service" => $variant['fulfillment_service']?? null,
-                    "inventory_management" => $variant['inventory_management']?? null,
-                    "status"        => $variant['status'] ?? 1,
+                    "fulfillment_service" => $variant['fulfillment_service'] ?? null,
+                    "inventory_management" => $variant['inventory_management'] ?? null,
+                    "status" => $variant['status'] ?? 1,
                     "container_charges" => $variant['container_charges'] ?? '0.0000',
-                    "product_id"    => $product_id,
+                    "product_id" => $product_id
                 ];
-                $product_variant_import = ProductVariant::updateOrInsert(['sku' => $variant['sku']],$product_variant);
+                $product_variant_import = ProductVariant::updateOrInsert([
+                    'sku' => $variant['sku']
+                ], $product_variant);
             }
             return true;
-        }else{
+        } else {
             return false;
         }
     }
 
-    public function syncSingleCategory($cat,$order_panel_id){
-      
-        if(checkTableExists('categories')){
+    public function syncSingleCategory($cat, $order_panel_id)
+    {
+        if (checkTableExists('categories')) {
             $data = [
                 'icon' => $cat['icon']['icon'],
                 'slug' => $cat['slug'],
@@ -645,8 +663,11 @@ class CategoryController extends Controller
                 'royo_order_category_id' => $cat['id'],
                 'order_panel_id' => $order_panel_id
             ];
-            
-            $categorySave = Category::updateOrCreate([ 'slug' => $cat['slug'], 'order_panel_id' => $order_panel_id ], $data);
+
+            $categorySave = Category::updateOrCreate([
+                'slug' => $cat['slug'],
+                'order_panel_id' => $order_panel_id
+            ], $data);
             $transl_data = [
                 'name' => $cat['translation']['name'] ?? $cat['slug'],
                 'trans-slug' => $cat['translation']['trans_slug'] ?? '',
@@ -656,9 +677,11 @@ class CategoryController extends Controller
                 'category_id' => $categorySave->id ?? '',
                 'language_id' => 1
             ];
-            $categoryTransSave = CategoryTranslation::updateOrCreate([ 'category_id' => $categorySave->id ], $transl_data);
+            $categoryTransSave = CategoryTranslation::updateOrCreate([
+                'category_id' => $categorySave->id
+            ], $transl_data);
             return $categorySave->id;
-        }else{
+        } else {
             return '';
         }
     }
