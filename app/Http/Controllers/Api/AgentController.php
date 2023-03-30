@@ -352,7 +352,7 @@ class AgentController extends BaseController
             $address->longitude     = $request->longitude;
             $address->short_name    = $request->short_name;
             $address->address       = $request->address;
-            $address->post_code     = $request->post_code;
+            $address->post_code     = $request->post_code ?? '';
             $address->is_default    = 1;
             $address->save();
            

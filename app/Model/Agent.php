@@ -175,4 +175,30 @@ class Agent extends Authenticatable implements  Wallet, WalletFloat
     public function homeAddress(){
         return $this->hasOne('App\Model\DriverHomeAddress','agent_id', 'id')->where('is_default',1);
     }
+    /**
+     * scopeOnlyGetingTaskByHomeAddress
+     *
+     * @param  mixed $query
+     * @param  mixed $dropLat
+     * @param  mixed $dropLong task de
+     * @param  mixed $radians from home addres 
+     * @return void
+     */
+    public function scopeOnlyGetingAgentByHomeAddress($query,$dropLat, $dropLong, $radians)
+    {  
+        $query = $query->where(function($q) use ($dropLat, $dropLong, $radians){
+                            $q->where('is_go_to_home_address',0 );
+                            $q->orWhere(function($qAddress) use ($dropLat, $dropLong, $radians){
+                                $qAddress->where('is_go_to_home_address',1 );
+                                $qAddress->whereHas('homeAddress', function($m) use ($dropLat, $dropLong, $radians){
+                                    $m->whereRaw("6371 * acos(cos(radians(" . $dropLat . ")) 
+                                        * cos(radians(latitude)) 
+                                        * cos(radians(longitude) - radians(" . $dropLong . ")) 
+                                        + sin(radians(" .$dropLat. ")) 
+                                        * sin(radians(latitude))) <= $radians");
+                                    });
+                            });
+                        });
+        return $query;
+    }
 }

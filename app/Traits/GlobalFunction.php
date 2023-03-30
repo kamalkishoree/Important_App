@@ -93,36 +93,14 @@ trait GlobalFunction{
             if(@$preference->manage_fleet){
                 $geoagents = $geoagents->whereHas('agentFleet');
             }
-         
+            // geting task only 
             if((@$preference->is_go_to_home ==1) && ($order_id!='')){
                 $dropOfTask = Task::with('location')->where(['order_id'=>$order_id,'task_type_id'=>2])->first();
                 $dropLat  = $dropOfTask ?  ($dropOfTask->location ? $dropOfTask->location->latitude : '' ) : '' ;
                 $dropLong =$dropOfTask ?  ($dropOfTask->location ? $dropOfTask->location->longitude : '') : '' ;
                 $radians = (int)($preference->go_to_home_radians ?? 0) ;
-           
                 if($dropLat !='' && $dropLong !='' ){
-
-                    $geoagents = $geoagents
-                        // ->with(['homeAddress'=>function($hq) use ($dropLat, $dropLong, $radians) {
-                        //     $hq->select('*',DB::Raw("6371 * acos(cos(radians(" . $dropLat . ")) 
-                        //             * cos(radians(latitude)) 
-                        //             * cos(radians(longitude) - radians(" . $dropLong . ")) 
-                        //             + sin(radians(" .$dropLat. ")) 
-                        //             * sin(radians(latitude))) AS dropoffdistance "));
-                        // }])
-                        ->where(function($q) use ($dropLat, $dropLong, $radians){
-                        $q->where('is_go_to_home_address',0 );
-                        $q->orWhere(function($qAddress) use ($dropLat, $dropLong, $radians){
-                            $qAddress->where('is_go_to_home_address',1 );
-                            $qAddress->whereHas('homeAddress', function($m) use ($dropLat, $dropLong, $radians){
-                                $m->whereRaw("6371 * acos(cos(radians(" . $dropLat . ")) 
-                                    * cos(radians(latitude)) 
-                                    * cos(radians(longitude) - radians(" . $dropLong . ")) 
-                                    + sin(radians(" .$dropLat. ")) 
-                                    * sin(radians(latitude))) <= $radians");
-                                });
-                        });
-                    });
+                    $geoagents = $geoagents->onlyGetingAgentByHomeAddress($dropLat, $dropLong, $radians);
                 }
             }
           
