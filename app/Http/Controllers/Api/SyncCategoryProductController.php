@@ -228,28 +228,7 @@ class SyncCategoryProductController extends Controller
         }
     }
 
-    public function syncProductImages($product_id, $product, $dataBaseName)
-    {
-        if (checkTableExists('product_images')) {
-            $images = @$product['pimage'];
-
-            // # Add product variant
-            foreach ($images as $variant) { # import product variant
-                $Product_v_sku = str_replace(" ", "_", $dataBaseName . "_" . $variant['sku']);
-                $product_variant = [
-                    "product_id" => $product_id,
-                    "media_id" => $variant['media_id'],
-                    "is_default" => $variant['is_default']
-                ];
-                // $product_variant_import = ProductImage::updateOrInsert([
-                // 'sku' => $Product_v_sku
-                // ], $product_variant);
-            }
-            return true;
-        } else {
-            return false;
-        }
-    }
+   
 
     public function syncSingleCategory($cat, $dataBaseName)
     {
