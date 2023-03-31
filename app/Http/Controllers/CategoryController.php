@@ -78,57 +78,6 @@ class CategoryController extends Controller
         ]);
     }
 
-    public function inventoryCategory(Request $request)
-    {
-        $category = [];
-        $product_category = [];
-        $sku_url = '';
-        $order_panel_id = $request->input('order_panel_id');
-
-        $order_panel = [];
-        if (@$order_panel_id && $order_panel_id != 'null') {
-            $order_panel = OrderPanelDetail::find($order_panel_id);
-
-            if ($order_panel->sync_status == 2) {
-                $orderpanel = OrderPanelDetail::find($order_panel_id);
-                $orderpanel->sync_status = 0;
-                $orderpanel->save();
-            }
-        }
-
-        if (checkTableExists('categories')) {
-            $category = Category::with('products')->orderBy('id', 'DESC')->paginate(10);
-            if (checkColumnExists('categories', 'order_panel_id')) {
-                if ($order_panel_id != "all" && $order_panel_id != null) {
-                    $category = Category::with('products')->where('order_panel_id', $order_panel_id)
-                        ->orderBy('id', 'DESC')
-                        ->paginate(10);
-                }
-            }
-
-            $product_category = Category::orderBy('id', 'DESC')->get();
-            $client_preferences = ClientPreference::first();
-
-            $client = Client::orderBy('id', 'asc')->first();
-
-            if (isset($client->custom_domain) && ! empty($client->custom_domain) && $client->custom_domain != $client->sub_domain)
-                $sku_url = ($client->custom_domain);
-            else
-                $sku_url = ($client->sub_domain . env('SUBMAINDOMAIN'));
-
-            $sku_url = array_reverse(explode('.', $sku_url));
-            $sku_url = implode(".", $sku_url);
-        }
-
-        $orderDb_detail = OrderPanelDetail::where('type', '1')->get();
-        return view('category.inventory_index')->with([
-            'order_panel' => $order_panel,
-            'category' => $category,
-            'product_category' => $product_category,
-            'sku_url' => $sku_url,
-            'order_db_detail' => $orderDb_detail
-        ]);
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -237,16 +186,19 @@ class CategoryController extends Controller
                 'dispatcher_code' => $clients->code
             ];
             // $headers['Authorization'] = $checkAuth['token'];
-            $response = Http::withHeaders($headers)->get($apiRequestURL, $postInput);
+            
+            
+            $response = Http::withHeaders($headers)->post($apiRequestURL, $postInput);
+        
+            
             $responseBody = json_decode($response->getBody(), true);
-
             \Log::info($responseBody);
             
             if (@$responseBody['status'] == 200) {
                 $order_details = OrderPanelDetail::find($order_panel_id);
                 $order_details->sync_status = 1;
                 $order_details->save();
-                // dd($responseBody);
+//                 dd($responseBody);
                 // $this->importOrderSideCategory($responseBody['data'],$order_panel_id);
             } elseif (@$responseBody['error'] && ! empty($responseBody['error'])) {
                 return redirect()->back()->with('error', $responseBody['error']);

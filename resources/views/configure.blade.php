@@ -1113,19 +1113,6 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                 </div>
                             </div>
 
-                            <div class="col-md-12">
-                                <div class="form-group d-flex justify-content-between mb-3">
-                                <label for="category_check" class="mr-2 mb-0">{{__("Show Inventory   Category Module")}} <small class="d-block pr-5">{{__('It will show  inventorycategory module from panel.')}}</small></label>
-                                <div class="d-flex align-items-center justify-content-between mt-1 mb-2">
-                                    <div class="custom-control custom-switch">
-                                            <input type="checkbox" class="custom-control-input" id="show_inventory_category_module_{{ !empty($warehoseMode->show_inventory_category_module)? $warehoseMode->show_inventory_category_module : 0 }}" name="warehouse_mode[show_inventory_category_module]" {{ (!empty($warehoseMode->show_inventory_category_module) && $warehoseMode->show_inventory_category_module == 1) ? 'checked' : '' }}>
-                                            <label class="custom-control-label" for="show_inventory_category_module_{{ !empty($warehoseMode->show_inventory_category_module)? $warehoseMode->show_inventory_category_module : 0 }}"></label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-
                         </div>
                     </div>
                 </form>

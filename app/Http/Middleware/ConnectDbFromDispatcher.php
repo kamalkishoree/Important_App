@@ -2,6 +2,9 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use App\Model\Client;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 
 class ConnectDbFromDispatcher
 {

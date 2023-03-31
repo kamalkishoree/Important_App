@@ -83,7 +83,8 @@ Route::group(['middleware' => ['dbCheck', 'apiLocalization']], function() {
 
 Route::group(['prefix' => 'auth'], function () {
 
-	Route::group(['middleware' => ['dbCheck', 'AppAuth', 'apiLocalization']], function() {
+	Route::group(['middleware' => [
+                    'dbCheck', 'AppAuth', 'apiLocalization']], function() {
         Route::get('logout', 'Api\AuthController@logout');
     });
 
@@ -198,8 +199,13 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
     Route::post('product_sku/bydb','Api\SalerController@getProductSkeParticulerDB');            // api for get task history
 });
 
-
-
+        
+    Route::group(['prefix' => 'v1', 'middleware' => ['apiLocalization']], function () {
+        
+        Route::post('check-order-keys', 'Api\BaseController@checkOrderPanelKeys')->middleware('ConnectDbFromDispatcher');
+        Route::post('get-order-panel-detail', 'Api\BaseController@getPanelDetail')->middleware('ConnectDbFromDispatcher');
+        
+    });
 Route::group(['middleware' => 'dbCheck','prefix' => 'public'], function() {
 
     Route::post('task/create', 'Api\TaskController@CreateTask');

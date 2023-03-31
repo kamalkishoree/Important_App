@@ -311,7 +311,6 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::resource('order-panel-db', 'orderPanelController');
 			Route::resource('amenities', 'AmenitiesController');
 			Route::resource('category', 'CategoryController');
-			Route::get('inventory-category', 'CategoryController@inventoryCategory')->name('category.inventory');
 			Route::resource('services', 'ServicesController');
 			Route::resource('product', 'ProductController');
 			Route::POST('check-sync-status', 'orderPanelController@checkSyncStatus');

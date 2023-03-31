@@ -427,7 +427,7 @@
                                                             <div class="warehouse-fields" >
                                                                 <div class="form-group mb-1 select_warehouse-field">
                                                                   <select class="form-control show-selected-warehouse" name="warehouse_id[]"  disabled>
-                                                                        <option value="{{$vendor->id}}" selected>{{$vendor->slug}}</option>
+                                                                        <option value="{{$vendor->id}}" selected>{{$vendor->name}}</option>
                                                                     </select>
                                                                     <select class="form-control warehouse d-none" name="warehouse_id[]" id="warehouse">
                                                                         <option value="">Select Warehouse</option> 

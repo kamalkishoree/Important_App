@@ -53,7 +53,6 @@ use App\Traits\ApiResponser;
 use App\Traits\TollFee;
 use App\Imports\OrderImport;
 use App\Model\Product;
-use App\Model\InventoryVendor;
 use App\Model\OrderVendorProduct;
 use App\Traits\inventoryManagement;
 use App\Model\ProductVariant;
@@ -220,9 +219,9 @@ class TaskController extends BaseController
 
     public function inventoryUpdate($ids, $flag = null)
     {
-        $token = $this->authenticateInventoryPanel();
+       // $token = $this->authenticateInventoryPanel();
 
-        $details = $this->getInventoryPanelDetails($token, $ids, $flag);
+      //  $details = $this->getInventoryPanelDetails($token, $ids, $flag);
         return true;
     }
 
@@ -1338,7 +1337,7 @@ class TaskController extends BaseController
                 ->get()
                 ->pluck('vendor_id');
 
-            $vendor = InventoryVendor::with('warehouseProducts')->whereIn('id', $vendor_ids)->get();
+            $vendor = Warehouse::with('warehouseProducts')->whereIn('id', $vendor_ids)->get();
         }
         $teamTag = TagsForTeam::OrderBy('id', 'asc');
         if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
@@ -1419,7 +1418,7 @@ class TaskController extends BaseController
             $vendor_ids = array_unique(array_column($product_data, 'vendor_id'));
             if (! empty($vendor_ids)) {
 
-                $vendor = InventoryVendor::with('warehouseProducts')->whereIn('id', $vendor_ids)->get();
+                $vendor = Warehouse::with('warehouseProducts')->whereIn('id', $vendor_ids)->get();
             }
         }
         $teamTag = TagsForTeam::OrderBy('id', 'asc');
@@ -3357,7 +3356,7 @@ class TaskController extends BaseController
                 ->groupBy('id')
                 ->get()
                 ->pluck('id');
-            $warehouses = InventoryVendor::with('warehouseProducts')->whereIn('id', $vendor_ids)
+                $warehouses = Warehouse::with('warehouseProducts')->whereIn('id', $vendor_ids)
                 ->where('slug', 'like', '%' . $request->title . '%')
                 ->get();
             $options = view("modals.inventory-vendors-ajax", compact([
@@ -3389,7 +3388,7 @@ class TaskController extends BaseController
                 ->groupBy('id')
                 ->get()
                 ->pluck('id');
-            $warehouses = InventoryVendor::with([
+                $warehouses = Warehouse::with([
                 'warehouseProducts'
             ])->whereIn('id', $vendor_ids);
             if (@$request->title) {
@@ -3401,7 +3400,7 @@ class TaskController extends BaseController
                     ->groupBy('vendor_id')
                     ->get()
                     ->pluck('vendor_id');
-                $warehouses = InventoryVendor::with([
+                    $warehouses = Warehouse::with([
                     'warehouseProducts'
                 ])->whereIn('id', $vendor_ids);
             }
@@ -3436,7 +3435,7 @@ class TaskController extends BaseController
                 ->groupBy('id')
                 ->get()
                 ->pluck('id');
-            $warehouses = InventoryVendor::with([
+                $warehouses = Warehouse::with([
                 'warehouseProducts'
             ])->whereIn('id', $vendor_ids);
             if (@$request->title) {

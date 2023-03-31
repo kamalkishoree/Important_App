@@ -15,7 +15,7 @@ $products = Product::where([
 
 <li id="warehouse_wise_product_{{ $warehouse->id}}">
 
-<label>{{ strToUpper($warehouse->slug)}}</label> @foreach($products as $key => $product)
+<label>{{ strToUpper($warehouse->name)}}</label> @foreach($products as $key => $product)
 
 
 	@foreach($product->variant as  $variant) @php if($variant->quantity <= 0 ){ continue; } @endphp

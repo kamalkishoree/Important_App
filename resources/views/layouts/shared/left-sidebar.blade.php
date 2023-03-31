@@ -110,14 +110,7 @@
               
                 @endif
               
-                @if($warehouse_mode['show_inventory_category_module'] == 1)
-                <li>
-                    <a href="{{route('category.inventory')}}">
-                        <i class="fe-package"></i>
-                        <span> {{__('Inventory Categories')}} </span>
-                    </a>
-                </li>
-                @endif
+               
                 <li>
                     <a href="{{route('driver-accountancy.index')}}">
                         <i class="fe-users"></i>

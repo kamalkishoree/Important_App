@@ -27,21 +27,20 @@ class SyncCategoryProductController extends Controller
 
     public function SyncCategoryProduct(Request $request)
     {
-        // dd($request['data']);
-        
+        // $request['data'] = json_decode($request['data'],true);
+        // $request['vendors'] = json_decode($request['vendors'],true);
         $order_details = OrderPanelDetail::find($request['order_panel_id']);
+        if (@$request['vendors'] && count($request['vendors']) > 0) {
+            $this->vendor_data = $request['vendors'];
 
+            $this->importVendorsData($request['vendors']);
+        }
         if (($order_details) && @$request['data'] && count($request['data']) > 0) {
             $this->order_panel_id = $request['order_panel_id'];
             $dataBaseName = $request['databaseName'];
             $this->importOrderSideCategory($request['data'], $dataBaseName);
         }
 
-        if (@$request['vendors'] && count($request['vendors']) > 0) {
-            $this->vendor_data = $request['vendors'];
-
-            $this->importVendorsData($request['vendors']);
-        }
         $order_details->sync_status = 2;
         $order_details->save();
         return true;
@@ -64,13 +63,12 @@ class SyncCategoryProductController extends Controller
             "address" => $data['address'],
             "latitude" => $data['latitude'],
             "longitude" => $data['longitude'],
-            "website" => $data['website'],
             "created_at" => $data['created_at'],
             "updated_at" => $data['updated_at']
         ];
 
         $warehouse = Warehouse::updateOrInsert([
-            'slug' => $data['slug']
+            'code' => $data['slug']
         ], $warehouse_data);
 
         return true;
@@ -98,13 +96,19 @@ class SyncCategoryProductController extends Controller
         // dd($product['translation']);
         if (checkTableExists('products')) {
             $Product_sku = str_replace(" ", "_", $dataBaseName . "_" . $product['sku']);
+            if (! empty($product['vendor_data'])) {
+                
+                $vendor = Warehouse::where([
+                    'code' => $product['vendor_data']['slug']
+                ])->first();
+            }
             $product_update_create = [
                 "sku" => $Product_sku,
                 "title" => $product['title'],
                 "url_slug" => $product['url_slug'],
                 "description" => $product['description'],
                 "body_html" => $product['body_html'],
-                "vendor_id" => $product['vendor_id'],
+                "vendor_id" => isset($vendor) ? $vendor->id :null,
                 "type_id" => $product['type_id'],
                 "country_origin_id" => $product['country_origin_id'],
                 "is_new" => $product['is_new'],
@@ -157,13 +161,13 @@ class SyncCategoryProductController extends Controller
             // foreach(@$product['primary'] as $translation){
 
             $product_trans = [
-                'title' => $translation['title'],
-                'body_html' => $translation['title'],
-                'meta_title' => $translation['title'],
-                'meta_keyword' => $translation['title'],
-                'meta_description' => $translation['title'],
+                'title' => $translation['title'] ?? "",
+                'body_html' => $translation['title'] ?? "",
+                'meta_title' => $translation['title'] ?? "",
+                'meta_keyword' => $translation['title'] ?? "",
+                'meta_description' => $translation['title'] ?? "",
                 'product_id' => $productSave->id,
-                'language_id' => $translation['language_id']
+                'language_id' => $translation['language_id'] ?? ""
             ];
 
             ProductTranslation::updateOrCreate([
@@ -252,10 +256,10 @@ class SyncCategoryProductController extends Controller
         if (checkTableExists('categories')) {
             $slug = str_replace(" ", "_", $dataBaseName . "_" . $cat['slug']);
             $data = [
-                'icon' => $cat['icon']['icon'],
+                'icon' => $cat['icon']['icon'] ?? "",
                 'slug' => $slug,
                 'type_id' => $cat['type_id'],
-                'image' => $cat['image']['image'],
+                'image' => $cat['image']['image'] ?? "",
                 'is_visible' => $cat['is_visible'],
                 'status' => $cat['status'],
                 'position' => $cat['position'],
@@ -275,9 +279,9 @@ class SyncCategoryProductController extends Controller
                 'slug' => $slug
             ], $data);
             \Log::info('categorySave transl_data');
-            \Log::info($cat['primary']);
+            \Log::info($cat['primary'] ?? "");
             $transl_data = [
-                'name' => $cat['primary']['name'] ?? $categorySave->slug,
+                'name' => $cat['primary']['name'] ?? $cat['slug'],
                 'trans-slug' => $cat['primary']['trans_slug'] ?? '',
                 'meta_title' => $cat['primary']['meta_title'] ?? '',
                 'meta_description' => $cat['primary']['meta_description'] ?? '',
