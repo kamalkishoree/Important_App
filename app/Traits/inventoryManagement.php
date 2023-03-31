@@ -16,6 +16,8 @@ trait inventoryManagement
         $order_panel_details = OrderPanelDetail::where([
             'type' => 1
         ])->first();
+        
+       
         // URL
         $url = $order_panel_details->url;
         $code = $order_panel_details->code;
@@ -27,12 +29,13 @@ trait inventoryManagement
         // Headers
         $headers = [
             'shortcode' => $code,
-            'code' => $code,
+//             'code' => $code,
             'key' => $code
         ];
         $response = Http::withHeaders($headers)->post($apiAuthCheckURL, $postInput);
         $checkAuth = json_decode($response->getBody(), true);
-
+        
+        
         if (@$checkAuth['status'] == 200) {
             return $checkAuth['token'];
         }
@@ -63,10 +66,10 @@ trait inventoryManagement
         ];
         $headers = [
             'shortcode' => $code,
-            'code' => $code,
+//             'code' => $code,
             'key' => $code
         ];
-
+       
         $headers['Authorization'] = $token;
         $response = Http::withHeaders($headers)->post($apiRequestURL, $postInput);
         $responseBody = json_decode($response->getBody(), true);

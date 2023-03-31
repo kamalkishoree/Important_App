@@ -219,9 +219,9 @@ class TaskController extends BaseController
 
     public function inventoryUpdate($ids, $flag = null)
     {
-       // $token = $this->authenticateInventoryPanel();
+       $token = $this->authenticateInventoryPanel();
 
-      //  $details = $this->getInventoryPanelDetails($token, $ids, $flag);
+       $details = $this->getInventoryPanelDetails($token, $ids, $flag);
         return true;
     }
 
@@ -849,7 +849,8 @@ class TaskController extends BaseController
                         }
                     }
                 }
-
+                
+    
                 $this->inventoryUpdate(json_encode($product_data));
 
                 $dep_id = $task->id;
