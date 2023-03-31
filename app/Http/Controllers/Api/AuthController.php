@@ -187,7 +187,7 @@ class AuthController extends BaseController
             return response()->json(['message' => __('Your account has been rejected. Please contact administration')], 422);
         }
 
-        $prefer = ClientPreference::with('currency')->select('theme', 'distance_unit', 'currency_id', 'language_id', 'agent_name', 'date_format', 'time_format', 'map_type', 'map_key_1', 'custom_mode', 'is_cab_pooling_toggle','is_edit_order_driver')->first();
+        $prefer = ClientPreference::with('currency')->select('theme', 'distance_unit', 'currency_id', 'language_id', 'agent_name', 'date_format', 'time_format', 'map_type', 'map_key_1', 'custom_mode', 'is_cab_pooling_toggle','is_edit_order_driver','is_go_to_home')->first();
         $allcation = AllocationRule::first('request_expiry');
         $prefer['alert_dismiss_time'] = (int)$allcation->request_expiry;
         $taskProof = TaskProof::all();
@@ -570,34 +570,7 @@ class AuthController extends BaseController
                 $agent_docs = AgentDocs::create($files[$key]);
             }
         }
-        
-        if (isset($request->bike_color)) {             
-            $agent_docs = AgentDocs::create( [
-                'file_type' => 'Text',
-                'agent_id' => $agent->id,
-                'file_name' => $request->bike_color,
-                'label_name' => 'Bike Color'
-            ]);
-        }
-        
-        if (isset($request->bike_type)) {          
-            $agent_docs = AgentDocs::create( [
-                'file_type' => 'Text',
-                'agent_id' => $agent->id,
-                'file_name' => $request->bike_type,
-                'label_name' => 'Bike Type'
-            ]);
-        }
-        
-        if (isset($request->bike_num_plate)) {          
-            $agent_docs = AgentDocs::create( [
-                'file_type' => 'Text',
-                'agent_id' => $agent->id,
-                'file_name' => $request->bike_num_plate,
-                'label_name' => 'Bike Number'
-            ]);
-        }
-
+                
         $clientContact = Client::first();
         $emailSmtpDetail = SmtpDetail::where('id', 1)->first();
         $smtp = SmtpDetail::where('id', 1)->first();

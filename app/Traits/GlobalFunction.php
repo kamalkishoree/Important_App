@@ -60,10 +60,10 @@ trait GlobalFunction{
     }
 
 
-    public function getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag = '', $date, $cash_at_hand)
+    public function getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag = '', $date, $cash_at_hand,$order_id='')
     {
         try {
-            $preference = ClientPreference::select('manage_fleet', 'is_cab_pooling_toggle', 'is_threshold')->first();
+            $preference = ClientPreference::select('manage_fleet', 'is_cab_pooling_toggle', 'is_threshold','is_go_to_home','go_to_home_radians')->first();
             $geoagents_ids =  DriverGeo::where('geo_id', $geo);
 
             if($preference->is_cab_pooling_toggle == 1 && $is_cab_pooling == 1){
@@ -89,12 +89,22 @@ trait GlobalFunction{
             if(@$preference->is_threshold == 1){
                 $geoagents = $geoagents->where('is_threshold', 1);
             }
-
-            $geoagents = $geoagents->orderBy('id', 'DESC');
-
+           
             if(@$preference->manage_fleet){
                 $geoagents = $geoagents->whereHas('agentFleet');
             }
+            // geting task only 
+            if((@$preference->is_go_to_home ==1) && ($order_id!='')){
+                $dropOfTask = Task::with('location')->where(['order_id'=>$order_id,'task_type_id'=>2])->first();
+                $dropLat  = $dropOfTask ?  ($dropOfTask->location ? $dropOfTask->location->latitude : '' ) : '' ;
+                $dropLong =$dropOfTask ?  ($dropOfTask->location ? $dropOfTask->location->longitude : '') : '' ;
+                $radians = (int)($preference->go_to_home_radians ?? 0) ;
+                if($dropLat !='' && $dropLong !='' ){
+                    $geoagents = $geoagents->onlyGetingAgentByHomeAddress($dropLat, $dropLong, $radians);
+                }
+            }
+          
+            $geoagents = $geoagents->orderBy('id', 'DESC');
             $geoagents = $geoagents->get()->where("agent_cash_at_hand", '<', $cash_at_hand);
             return $geoagents;
 
