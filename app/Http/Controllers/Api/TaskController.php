@@ -980,6 +980,7 @@ class TaskController extends BaseController
             else{
                $header['client'][0] = $client->database_name;
             }
+            
 
             if($request->task_type == 'later')
             $request->task_type = 'schedule';
@@ -4182,6 +4183,22 @@ class TaskController extends BaseController
             ], 200);
         } catch (Exception $e) {
             DB::rollback();
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 400);
+        }
+    }
+
+    public function addBufferTime(Request $request){
+      
+        try {
+             order::where(['order_vendor_id'=>$request->order_id,'vendor_id'=>$request->vendor_id])->update(['buffer_time'=>$request->time]);
+             return response()->json([
+                'message' => __('Time Added SuccessFully.'),
+                'status'  => "success",
+            ], 200);
+        }catch (Exception $e) {
+                
             return response()->json([
                 'message' => $e->getMessage()
             ], 400);

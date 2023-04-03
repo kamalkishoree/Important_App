@@ -25,6 +25,8 @@ Route::post('otp_test', 'Api\TaskController@smstest')->middleware('ConnectDbFrom
 Route::post('check-dispatcher-keys', 'Api\TaskController@checkDispatcherKeys')->middleware('ConnectDbFromOrder');
 Route::post('get-delivery-fee', 'Api\TaskController@getDeliveryFee')->middleware('ConnectDbFromOrder');
 Route::post('task/create', 'Api\TaskController@CreateTask')->middleware('ConnectDbFromOrder');
+Route::post('task/update_order_prepration_time', 'Api\TaskController@addBufferTime')->middleware('ConnectDbFromOrder');
+
 Route::post('return-to-warehouse-task', 'Api\TaskController@returnToWarehouseTask')->middleware('ConnectDbFromOrder');
 Route::post('get/agents', 'Api\AgentController@getAgents')->middleware('ConnectDbFromOrder');
 Route::get('get/agent_detail/{id?}', 'Api\AgentController@getAgentDetails')->middleware('ConnectDbFromOrder');
