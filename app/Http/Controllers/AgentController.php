@@ -979,24 +979,17 @@ class AgentController extends Controller
     {
         // ->limit(10)
         $search = $request->search;
-        $vehicle_type = $request->vehicle_type;
-        if (isset($search)) {
-            if ($search == '') {
-                $drivers = Agent::orderby('name', 'asc')->select('id', 'name', 'phone_number')
-                    ->where('is_approved', 1)
-                    ->get();
-            } elseif ($vehicle_type != '') {
-                $drivers = Agent::orderby('name', 'asc')->select('id', 'name', 'phone_number')
-                    ->where('is_approved', 1)
-                    ->where('name', 'like', '%' . $search . '%')
-                    ->whereIn('vehicle_type_id', $vehicle_type)
-                    ->get();
-            } else {
-                $drivers = Agent::orderby('name', 'asc')->select('id', 'name', 'phone_number')
-                    ->where('is_approved', 1)
-                    ->where('name', 'like', '%' . $search . '%')
-                    ->get();
-            }
+        $vehicle_type = $request->has('vehicle_type') ? $request->vehicle_type : '' ;
+        $drivers = Agent::orderby('name', 'asc')->select('id', 'name', 'phone_number')
+                    ->where('is_approved', 1);
+      
+            if ($search) {
+                $drivers =    $drivers->where('name', 'like', '%' . $search . '%');
+            } 
+            if ($vehicle_type) {
+                $drivers =    $drivers->whereIn('vehicle_type_id', $vehicle_type);   
+            } 
+            $drivers =    $drivers->get();
             $response = array();
             foreach ($drivers as $driver) {
                 $response[] = array(
@@ -1006,9 +999,7 @@ class AgentController extends Controller
             }
 
             return response()->json($response);
-        } else {
-            return response()->json([]);
-        }
+        
     }
 
     protected function sendSms2($to, $body)
