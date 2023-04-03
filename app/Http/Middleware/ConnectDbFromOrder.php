@@ -21,11 +21,9 @@ class ConnectDbFromOrder
      */
     public function handle($request, Closure $next)
     {
-       
         config(['auth.guards.api.provider' => 'agents']);
         $database_name = $database = 'royodelivery_db';
-        $header = $request->header(); 
-        Log::info("This is the short code".$header['shortcode'][0]);       
+        $header = $request->header();        
         if (array_key_exists("shortcode", $header)){
             $shortcode =  $header['shortcode'][0];
         }
