@@ -183,7 +183,7 @@ class SyncCategoryProductController extends Controller
             ];
             ProductCategories::updateOrCreate([
                 'product_id' => $productSave->id
-            ], $product_update_create);
+            ], $data);
 
             return $productSave->id;
         } else {
