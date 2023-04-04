@@ -4192,11 +4192,12 @@ class TaskController extends BaseController
     public function addBufferTime(Request $request){
       
         try {
-             order::where(['order_vendor_id'=>$request->order_id,'vendor_id'=>$request->vendor_id])->update(['buffer_time'=>$request->time]);
+             order::where(['sync_order_id'=>$request->order_id,'vendor_id'=>$request->vendor_id])->update(['buffer_time'=>$request->time]);
              return response()->json([
                 'message' => __('Time Added SuccessFully.'),
                 'status'  => "success",
             ], 200);
+
         }catch (Exception $e) {
                 
             return response()->json([
