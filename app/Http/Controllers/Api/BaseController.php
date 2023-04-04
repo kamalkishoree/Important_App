@@ -131,9 +131,9 @@ class BaseController extends Controller
                 $inventory_url = $request->inventory_url;
                 $inventory_code = $request->inventory_code;
 
-                $client = Client::select('database_name')->where('id', '>', 0)->first();
+                $client = Client::select('database_name')->first();
                 if ($client) {
-                    $client_prefrence = ClientPreference::where('id', '>', 0)->first();
+                    $client_prefrence = ClientPreference::first();
                     $client_prefrence->inventory_service_key_url = $inventory_url;
                     $client_prefrence->inventory_service_key_code = $inventory_code;
                     $client_prefrence->update();
