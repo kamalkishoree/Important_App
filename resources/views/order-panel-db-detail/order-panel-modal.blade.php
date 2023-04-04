@@ -55,6 +55,15 @@
                                 </select>                                        
                             </div>
                         </div>
+                        <div class="col-md-6">
+                            <div class="form-group selected-type">
+                                <label for="panel_type" class="control-label">Panel Type</label>
+                                <select name="type" id="panel_type" class="form-control">
+                                    <option value="0" >Order Panel</option>
+                                    <option value="1">Dispatcher Panel</option>
+                                </select>                                        
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer border-0">

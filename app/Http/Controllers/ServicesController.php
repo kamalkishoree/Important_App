@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Model\{Category,CategoryTranslation,Product,ProductVariant,ProductCategories,ProductTranslation, ClientPreference, Client, OrderPanelDetail};
-use App\Model\Order\{Category as ROCategory};
 use Illuminate\Support\Facades\Http;
 use App\Model\Customer;
 use DataTables;

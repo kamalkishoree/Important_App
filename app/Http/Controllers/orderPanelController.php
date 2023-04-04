@@ -29,14 +29,18 @@ class orderPanelController extends Controller
      */
     public function store(Request $request)
     {
+
+      
         if(checkTableExists('order_panel_details')){
             $data = [
                 "name"                   => $request->input('name'),
                 "url"                 => $request->input('url'),
                 "code"              => $request->input('code'),
                 "key"           => $request->input('key'),
-                "status"             => $request->input('status')
+                "status"             => $request->input('status'),
+                "type"             => $request->input('type')
             ];
+
             $updateOrCreate = OrderPanelDetail::updateOrCreate(['id' => $request->order_panel_id],$data);
             // $OrderPanelDetail = new OrderPanelDetail;
             // $OrderPanelDetail->name = $request->input('name');

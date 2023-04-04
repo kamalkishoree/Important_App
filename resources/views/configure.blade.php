@@ -1132,7 +1132,6 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                 </div>
                             </div>
 
-
                         </div>
                     </div>
                 </form>

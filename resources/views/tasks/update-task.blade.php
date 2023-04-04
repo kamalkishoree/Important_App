@@ -13,8 +13,28 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
 @section('content')
 
 <style> .addTaskModalHeader{display: none;}
+#route-btn {
+display:none;
+}
 .map_box #map_canvas{
     height:300px;
+}
+#show-product-modal .modal-dialog {
+	box-shadow: 0 0 10px 0 #ddd;
+	border-radius: 10px;
+}
+#show-product-modal .modal-dialog {
+	box-shadow: 0 0 10px 0 #8e8e8e;
+	border-radius: 10px;
+}
+
+.modal-backdrop.show {
+	background: #000;
+}
+
+.product-modal.show-product.text-center.text-primary {
+	color: #3283f6 !important;
+	text-align: center !important;
 }
 </style>
     <!-- Start Content-->
@@ -303,6 +323,10 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
                                                     if($item->warehouse_id != ""){ $style = "block"; }else{ $style = "none"; }
                                                 @endphp
                                                 <div class="col-md-3">
+                                                  @if(($item->task_type_id == 1) && (count($item->orderVendorProducts) > 0))
+                                                 <h6 id="#show-product_{{$item->id}}" class="product-modal show-product text-center text-primary" style="cursor: pointer;" onclick="showProductDetail({{$item->id}})"  data-id="{{ $item->id}}">Show Product Details</h6>
+                                                    
+                                                      @endif
                                                     <div class="form-group select_category-field mt-1 mb-1" style="display: {{$style}};">
                                                         <select class="form-control category_id" name="category_id" id="category_id">
                                                             <option value="">Select Category</option>
@@ -375,6 +399,8 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
                                                                     <h6 class="or-text text-center">OR</h6>
                                                                     <h6 class="choose_warehouse text-center text-primary" style="text-decoration: underline;cursor: pointer;">{{$choose_text}}</h6>
                                                                 @endif
+                                                                
+                                                               
                                                             </div>
 
                                                             <div class="alContactOther col-6">
@@ -395,6 +421,8 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
                                                                         <div class="row">
                                                                             <div class="form-group mb-1 col-12">
                                                                                 {!! Form::text('barcode[]', $item->barcode, ['class' => 'form-control barcode','placeholder' => __('Task Barcode')]) !!}
+                                                                                {!! Form::hidden('vendor_id[]', $item->vendor_id, ['class' => 'form-control vendor_id']) !!}
+                                                                            
                                                                             </div>
                                                                             <div class="form-group mb-1 col-12">
                                                                                 {!! Form::text('quantity[]', $item->quantity, ['class' => 'form-control quantity onlynumber','placeholder' => __('Quantity')]) !!}
@@ -408,6 +436,18 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
                                                             </div>
                                                         </div>
                                                     </div>
+                                                    @php $vendor_data = []; @endphp
+                                                    @foreach($item->orderVendorProducts as $product )
+                                                    
+                                                      {!! Form::hidden('product_variant_id[]', $product->product_id, ['class' => 'form-control product_id']) !!}
+
+                                                      {!! Form::hidden('product_vendor_id[]', $product->vendor_id, ['class' => 'form-control product_vendor_id']) !!}
+                                                 
+                                                      {!! Form::hidden('product_quantity[]', $product->quantity, ['class' => 'form-control product_quantity']) !!}
+                                                    
+
+                                                    @endforeach
+                                                    
                                                     <div class="col-4 alsavedaddress" id="alsavedaddress" style="display:none;">
                                                         <h6>Saved Addresses</h6>
                                                         <div class="form-group editwithradio" id="typeInputss">
@@ -704,6 +744,25 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
             </div>
         </div>
     </div>
+    
+    <div id="show-product-modal" class="modal fade" role="dialog">
+       <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title text-dark product-title"></h4>
+      </div>
+      <div class="modal-body product-body">
+      
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
 @endsection
 
 @section('script')
@@ -714,6 +773,8 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
     <script src="{{ asset('tracking/js/common.js') }}"></script>
     <script>
         var savedFileListArray = {!! json_encode($images) !!};
+    
+
     </script>
     @include('tasks.updatepagescript')
     @include('tasks.tracking_url_script')
