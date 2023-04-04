@@ -13,9 +13,7 @@ use App\Model\ {
     Client,
     OrderPanelDetail
 };
-use App\Model\Order\ {
-    Category as ROCategory
-};
+
 use Illuminate\Support\Facades\Http;
 use App\Model\Customer;
 use DataTables;
@@ -293,7 +291,6 @@ class CategoryController extends Controller
     public function importOrderSideCategory($categories, $order_panel_id)
     {
 
-        // $categories = ROCategory::with(['translation','products','products.variant','products.translation'])->get();
         foreach ($categories as $cat) {
             $category_id = $this->syncSingleCategory($cat, $order_panel_id);
             if (! empty($cat['products']) && count($cat['products']) > 0) {
