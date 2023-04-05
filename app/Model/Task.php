@@ -40,7 +40,7 @@ class Task extends Model
 
     public function order()
     {
-        return $this->belongsTo('App\Model\Order', 'order_id', 'id')->select('id', 'customer_id', 'driver_id', 'recipient_phone', 'Recipient_email', 'task_description', 'auto_alloction', 'order_time', 'status', 'cash_to_be_collected', 'cash_to_be_collected as amount', 'driver_cost', 'images_array as task_images', 'unique_id', 'call_back_url', 'actual_distance', 'actual_time','is_restricted', 'vendor_id', 'order_vendor_id', 'sync_order_id','order_number','dbname','rejectable_order','order_pre_time'); 
+        return $this->belongsTo('App\Model\Order', 'order_id', 'id')->select('id', 'customer_id', 'driver_id', 'recipient_phone', 'Recipient_email', 'task_description', 'auto_alloction', 'order_time', 'status', 'cash_to_be_collected', 'cash_to_be_collected as amount', 'driver_cost', 'images_array as task_images', 'unique_id', 'call_back_url', 'actual_distance', 'actual_time','is_restricted', 'vendor_id', 'order_vendor_id', 'sync_order_id','order_number','dbname','rejectable_order','order_pre_time','buffer_time'); 
     }
 
     public function location()

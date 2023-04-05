@@ -1073,6 +1073,7 @@ class TaskController extends BaseController
             if (isset($header['client'][0])) {} else {
                 $header['client'][0] = $client->database_name;
             }
+            
 
             if ($request->task_type == 'later')
                 $request->task_type = 'schedule';
@@ -4343,6 +4344,23 @@ class TaskController extends BaseController
             ], 200);
         } catch (Exception $e) {
             DB::rollback();
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 400);
+        }
+    }
+
+    public function addBufferTime(Request $request){
+      Log::info($request);
+        try {
+             order::where(['unique_id'=>$request->tracking_id])->update(['buffer_time'=>$request->time]);
+             return response()->json([
+                'message' => __('Time Added SuccessFully.'),
+                'status'  => "success",
+            ], 200);
+
+        }catch (Exception $e) {
+                
             return response()->json([
                 'message' => $e->getMessage()
             ], 400);
