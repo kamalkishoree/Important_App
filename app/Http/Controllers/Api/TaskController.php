@@ -4355,9 +4355,10 @@ class TaskController extends BaseController
         try {
             $order= order::where(['unique_id'=>$request->tracking_id])->update(['buffer_time'=>$request->time]);
             $order_data= order::where(['unique_id'=>$request->tracking_id])->first();
-            Log::info($order_data);
             if(!empty($order_data->driver_id)){
+               
                 $user = Agent::where('id', $order_data->driver_id)->first();
+                Log::info("devic token is ".$user->device_token);
                 $client_prefrerence = ClientPreference::where('id', 1)->first();
                 $data = [
                   
