@@ -4359,7 +4359,7 @@ class TaskController extends BaseController
                
                 $user = Agent::where('id', $order_data->driver_id)->first();
                 Log::info("devic token is ".$user->device_token);
-                $client_prefrerence = ClientPreference::where('id', 1)->first();
+                $client_prefrerence = ClientPreference::first();
                 $data = [
                   
                     'notification_time'   => Carbon::now()->addSeconds(2)->format('Y-m-d H:i:s'),
