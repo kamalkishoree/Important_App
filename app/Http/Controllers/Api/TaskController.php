@@ -4351,7 +4351,6 @@ class TaskController extends BaseController
     }
 
     public function addBufferTime(Request $request){
-      Log::info($request);
         try {
             $order= order::where(['unique_id'=>$request->tracking_id])->update(['buffer_time'=>$request->time]);
             $order_data= order::where(['unique_id'=>$request->tracking_id])->first();
