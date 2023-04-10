@@ -43,13 +43,13 @@ use App\Exports\RoutesExport;
 use Excel;
 use GuzzleHttp\Client as Gclient;
 use App\Http\Controllers\Api\BaseController;
-use App\Traits\ApiResponser;
+use App\Traits\{ApiResponser,GlobalFunction};
 use App\Traits\TollFee;
 use App\Imports\OrderImport;
 
 class TaskController extends BaseController
 {
-    use ApiResponser;
+    use ApiResponser,GlobalFunction;
     use TollFee;
     /**
      * Display a listing of the resource.
@@ -1671,10 +1671,12 @@ class TaskController extends BaseController
             $extra      = [];
             $remening   = [];
 
-            $geoagents_ids =  DriverGeo::where('geo_id', $geo)->pluck('driver_id');
-            $geoagents = Agent::whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
-                $f->whereDate('order_time', $date)->with('task');
-            }])->orderBy('id', 'DESC')->get()->where("agent_cash_at_hand", '<', $cash_at_hand);
+            // $geoagents_ids =  DriverGeo::where('geo_id', $geo)->pluck('driver_id');
+            // $geoagents = Agent::whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
+            //     $f->whereDate('order_time', $date)->with('task');
+            // }])->orderBy('id', 'DESC')->get()->where("agent_cash_at_hand", '<', $cash_at_hand);
+            $geoagents = $this->getGeoBasedAgentsData($geo, '0', '', $date, $cash_at_hand,$orders_id);
+
     
 
             $totalcount = $geoagents->count();
@@ -1867,10 +1869,11 @@ class TaskController extends BaseController
             }
         } else {
             
-            $geoagents_ids =  DriverGeo::where('geo_id', $geo)->pluck('driver_id');
-            $geoagents = Agent::whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
-                $f->whereDate('order_time', $date)->with('task');
-            }])->orderBy('id', 'DESC')->get()->where("agent_cash_at_hand", '<', $cash_at_hand);
+            // $geoagents_ids =  DriverGeo::where('geo_id', $geo)->pluck('driver_id');
+            // $geoagents = Agent::whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
+            //     $f->whereDate('order_time', $date)->with('task');
+            // }])->orderBy('id', 'DESC')->get()->where("agent_cash_at_hand", '<', $cash_at_hand);
+            $geoagents = $this->getGeoBasedAgentsData($geo, '0', '', $date, $cash_at_hand,$orders_id);
 
             for ($i = 0; $i <= $try-1; $i++) {
                 foreach ($geoagents as $key =>  $geoitem) {
@@ -1980,10 +1983,11 @@ class TaskController extends BaseController
                 $this->dispatch(new RosterCreate($data, $extraData));
             }
         } else {
-            $geoagents_ids =  DriverGeo::where('geo_id', $geo)->pluck('driver_id');
-            $geoagents = Agent::whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
-                $f->whereDate('order_time', $date)->with('task');
-            }])->orderBy('id', 'DESC')->get()->where("agent_cash_at_hand", '<', $cash_at_hand)->toArray();
+            // $geoagents_ids =  DriverGeo::where('geo_id', $geo)->pluck('driver_id');
+            // $geoagents = Agent::whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
+            //     $f->whereDate('order_time', $date)->with('task');
+            // }])->orderBy('id', 'DESC')->get()->where("agent_cash_at_hand", '<', $cash_at_hand)->toArray();
+            $geoagents = $this->getGeoBasedAgentsData($geo, '0', '', $date, $cash_at_hand,$orders_id);
 
             //this function is give me nearest drivers list accourding to the the task location.
 
@@ -2102,10 +2106,11 @@ class TaskController extends BaseController
                 $this->dispatch(new RosterCreate($data, $extraData));
             }
         } else {
-            $geoagents_ids =  DriverGeo::where('geo_id', $geo)->pluck('driver_id');
-            $geoagents = Agent::whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
-                $f->whereDate('order_time', $date)->with('task');
-            }])->orderBy('id', 'DESC')->get()->where("agent_cash_at_hand", '<', $cash_at_hand)->toArray();
+            // $geoagents_ids =  DriverGeo::where('geo_id', $geo)->pluck('driver_id');
+            // $geoagents = Agent::whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
+            //     $f->whereDate('order_time', $date)->with('task');
+            // }])->orderBy('id', 'DESC')->get()->where("agent_cash_at_hand", '<', $cash_at_hand)->toArray();
+            $geoagents = $this->getGeoBasedAgentsData($geo, '0', '', $date, $cash_at_hand,$orders_id);
 
             //this function give me the driver list accourding to who have liest task for the current date
 

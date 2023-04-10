@@ -760,7 +760,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                         <div class="row">
                             <div class="col-12">
                                 <div class="d-flex align-items-center justify-content-between mt-3 mb-2">
-                                    <h5 class="font-weight-normal m-0">{{ Session::get('agent_name') ? Session::get('agent_name') : 'Agent' }} {{ __('Freelancing mode') }} </h5>
+                                    <h5 class="font-weight-normal m-0">{{ Session::has('agent_name') ? Session::get('agent_name') : 'Agent' }} {{ __('Freelancing mode') }} </h5>
                                     <div class="custom-control custom-switch">
                                         <input type="checkbox" class="custom-control-input"
                                             id="is_freelancer_{{ $preference->is_freelancer }}"
@@ -786,6 +786,25 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                             for="editBidRideSwitch"></label>
                                     </div>
                                 </div>
+                            </div>
+                        </div> 
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="d-flex align-items-center justify-content-between mt-3 mb-2">
+                                    <h5 class="font-weight-normal m-0">{{ Session::has('agent_name') ? Session::get('agent_name') : 'Agent' }} {{ __('Geting task on Route of Home address') }}</h5>
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox" class="custom-control-input"
+                                            id="is_go_to_home"
+                                            name="is_go_to_home"
+                                            {{ $preference->is_go_to_home == 1 ? 'checked' : '' }}>
+                                            <label class="custom-control-label" for="is_go_to_home"></label>
+                                           
+                                          
+                                    </div>
+                                </div>
+                            </div>
+                            <div id='go_to_home_radians' class="col-12 {{ $preference->is_go_to_home == 1 ? '' : 'd-none' }}">
+                                <input type="number"  class="form-control" placeholder="{{ __('Go to home Radians in KM') }}"  id="" value="{{ $preference->go_to_home_radians }}" name="go_to_home_radians" >
                             </div>
                         </div>       
                     </form>
@@ -1719,6 +1738,13 @@ $sms_crendential = json_decode($preference->sms_credentials);
                 $('#radius_for_pooling_div').show();
             }else{
                 $('#radius_for_pooling_div').hide();
+            }
+        });
+        $('#is_go_to_home').on('change',function(){
+            if ($(this).is(":checked")) {
+                $('#go_to_home_radians').show();
+            }else{
+                $('#go_to_home_radians').hide();
             }
         });
     </script>
