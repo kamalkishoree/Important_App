@@ -95,13 +95,13 @@ class TaskController extends BaseController
         $orderAll       = Task::where('order_id', $orderId->order_id)->get();
         $order_details  = Order::where('id', $orderId->order_id)->with(['agent','customer'])->first();
 
-        if($order_details->status == '' || $order_details->driver_id != $user->id):
-            return response()->json([
-                'data' => [],
-                'status' => 403,
-                'message' => "You can not complete this order."
-            ]);
-        endif;
+//         if($order_details->status == '' || $order_details->driver_id != $user->id):
+//             return response()->json([
+//                 'data' => [],
+//                 'status' => 403,
+//                 'message' => "You can not complete this order."
+//             ]);
+//         endif;
 
         // dd($order_details->toArray());
         if(isset($request->qr_code) && ($order_details && $order_details->call_back_url)){
