@@ -725,7 +725,7 @@ class AgentController extends Controller
             $order = $agent->order->sum('order_cost');
             $credit = $agent->agentPayment->sum('cr');
             $debit = $agent->agentPayment->sum('dr');
-            $final_balance = agentEarningManager::getAgentEarning($agent->id,1);
+            $final_balance = agentEarningManager::getAgentEarning($agent->id,0);
         } else {
             $cash  = 0;
             $order = 0;
