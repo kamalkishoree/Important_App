@@ -53,6 +53,11 @@
          
             $(document).on('keyup','#warehouse-search',function()
          {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                }
+            });
            
            var search = $('#warehouse-search').val();
             $.ajax({
@@ -201,6 +206,12 @@
    
      function getProductName(id){
         
+        $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            
            $.ajax({
                 url: "/get-product-name",
                 type: "get",
