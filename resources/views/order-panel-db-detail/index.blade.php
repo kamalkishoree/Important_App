@@ -1,5 +1,10 @@
+<?php
+use Illuminate\Support\Facades\Session;
+?>
 @extends('layouts.vertical', ['title' =>  'Order Panel DB Detail' ])
 @section('content')
+
+
     <div class="container-fluid">
         <!-- start page title -->
         <div class="row">
@@ -41,7 +46,9 @@
                                         <th>{{__("Code")}}</th>
                                         <th>{{__("Key")}}</th>
                                         <th>{{__("Created Date")}}</th>
+                                        <th>{{__("Type")}}</th>
                                         <th>{{__("Action")}}</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -52,8 +59,15 @@
                                                 <td>{{ $data->name }}</td>
                                                 <td>{{ $data->url }}</td>
                                                 <td>{{ $data->code }}</td>
-                                                <td>{{ $data->key }}</td>                                  
-                                                <td>{{ formattedDate($data->created_at) }}</td>                                    
+                                                <td>{{ $data->key }}</td> 
+                                                <td>{{ formattedDate($data->created_at) }}</td> 
+                                                @if($data->type == 0)
+                                                
+                                                <td>Order Panel</td>   
+                                                @else
+                                                <td>Inventory Panel</td>
+                                                @endif          
+                                                                                 
                                                 <td>
                                                     <div class="form-ul" style="width: 60px;">
                                                         
@@ -69,6 +83,18 @@
                                                             </form>
                                                         </div> --}}
                                                     </div>
+                                                </td>
+                                                <td>
+                                                  @php
+                    $warehouse_mode = checkWarehouseMode();
+                @endphp
+                                                @if($warehouse_mode['show_inventory_module'] == 1)
+                <a class="nav-link" href="#">   <!-- addTaskModalHeader -->
+                    <button id="route-btn" type="button" class="btn btn-blue waves-effect waves-light klklkl" data-id="{{ $data->id}}" data-toggle="modal" data-target="#addRouteModal" data-backdrop="static" title="{{__('Add Route')}}" data-keyboard="false"><span><i class="mdi mdi-plus-circle mr-1"></i> {{__('Add Route')}}</span></button>
+                </a>
+            @endif
+
+                                                
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -92,7 +118,14 @@
     </div>
 @endsection
 @include('order-panel-db-detail.order-panel-modal')
+
+
 @section('script')
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
     @include('order-panel-db-detail.order-panel-script')
+    
+  
+    
+
 @endsection

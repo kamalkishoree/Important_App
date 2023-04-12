@@ -20,6 +20,7 @@ use App\Model\ {
 use App\Model\Users;
 use JWT\Token;
 use App\Model\UserDevice;
+use App\Model\OrderPanelDetail;
 
 class BaseController extends Controller
 {
@@ -178,7 +179,15 @@ class BaseController extends Controller
     {
         if (checkTableExists('clients')) {
             $user = Client::first();
-
+            
+            $order_panel = OrderPanelDetail::where(['token' => $request->token])->first();
+            if(empty($order_panel)){
+                
+                return response()->json([
+                    'status' => 401,
+                    'message' => 'Authentication failed'
+                ]);
+            }
             $token1 = new Token();
             $token = $token1->make([
                 'key' => 'royoorders-jwt',

@@ -111,6 +111,7 @@ class ClientController extends Controller
             $warehouseMode['show_warehouse_module'] = (!empty($request->warehouse_mode['show_warehouse_module']) && $request->warehouse_mode['show_warehouse_module'] == 'on')? 1 : 0;
 
             $warehouseMode['show_category_module'] = (!empty($request->warehouse_mode['show_category_module']) && $request->warehouse_mode['show_category_module'] == 'on')? 1 : 0;
+            $warehouseMode['show_inventory_module'] = (!empty($request->warehouse_mode['show_inventory_module']) && $request->warehouse_mode['show_inventory_module'] == 'on')? 1 : 0;
             $data = [];
             if(checkColumnExists('client_preferences', 'warehouse_mode')){
                 $data = ['warehouse_mode'=>json_encode($warehouseMode)];

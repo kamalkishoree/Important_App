@@ -289,7 +289,7 @@ button.close.imagepri_close {
 			<div class="modal-body row justify-content-center">
 				<button type="button" class="btn btn-success addTaskModalHeader mr-3"
 					data-toggle="modal" data-dismiss="modal">Pick-Drop</button>
-				<a href="{{ route('create-product-route')}}"><button type="button"
+				<a id="create-route" href="#"><button type="button"
 						class="btn btn-primary">Select Product</button></a>
 
 

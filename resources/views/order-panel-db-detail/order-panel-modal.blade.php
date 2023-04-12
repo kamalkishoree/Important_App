@@ -60,7 +60,7 @@
                                 <label for="panel_type" class="control-label">Panel Type</label>
                                 <select name="type" id="panel_type" class="form-control">
                                     <option value="0" >Order Panel</option>
-                                    <option value="1">Dispatcher Panel</option>
+                                    <option value="1">Inventory Panel</option>
                                 </select>                                        
                             </div>
                         </div>
@@ -73,3 +73,33 @@
         </div>
     </div>
 </div>
+
+
+@if(session('showModal'))
+<!-- Modal -->
+<div class="modal fade" id="hashKeyModal" tabindex="-1" role="dialog" aria-labelledby="hashKeyModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="hashKeyModalLabel">Hash Key Generated</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+             <p>The following hash key has been generated:</p>
+   			 <input type="text" value="{{ session('hashKey') ?? '' }}" style="width:100%;" id="hashKeyInput" readonly>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" onclick="copyHashKey()">Copy</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+
+</script>
+@endif
