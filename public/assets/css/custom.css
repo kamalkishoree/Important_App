@@ -40,8 +40,8 @@
     height: auto !important;
 } */
 span.select2-selection.select2-selection--multiple {
-    height: calc(1.5em + 0.9rem + 2px);
-    padding: 0.45rem 0.9rem;
+    /* height: calc(1.5em + 0.9rem + 2px); */
+    padding: 4px 2px;
 }
 form#StoreWarehouse label.checkbox-inline {
     margin-right: 10px;
@@ -49,6 +49,16 @@ form#StoreWarehouse label.checkbox-inline {
 form#submitAgent .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
     left: -10px;
     position: relative;
+    color:#fff !important;
+}
+.select2-container .select2-selection--multiple .select2-selection__rendered{
+    height: 40px;
+    overflow-y: auto !important;
+}
+ul.select2-selection__rendered li {
+    margin: 5px 2px;
+}
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove{
     color:#fff !important;
 }
 #warehouse_idInputEdit .select2-container--default .select2-selection--multiple .select2-selection__choice__remove{
@@ -2264,7 +2274,7 @@ body.dark div#pending_payouts .card {
     border-radius: 0 0 16px 16px !important;
 }
 body.dark .content h1, .content h2, .content h3, .content h4, .content h5{
-   color: #acbfd2;
+   color: #000 !important;
 }
 body.dark div#edit_page_content button{
    color:#fff;
