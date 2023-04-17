@@ -3,9 +3,10 @@ namespace App\Traits;
 use DB;
 use Illuminate\Support\Collection;
 use Log;
-use App\Model\{ChatSocket, Client, Agent, ClientPreference, DriverGeo,Order,Task,OrderAdditionData, PricingRule};
+use App\Model\{ChatSocket, Client, Agent, ClientPreference, DriverGeo,Order,Task,OrderAdditionData, PricingRule, DriverHomeAddress, Location};
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Config;
+use PhpParser\Node\Stmt\Else_;
 
 
 trait GlobalFunction{
@@ -59,10 +60,10 @@ trait GlobalFunction{
     }
 
 
-    public function getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag = '', $date, $cash_at_hand)
+    public function getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag = '', $date, $cash_at_hand,$order_id='')
     {
         try {
-            $preference = ClientPreference::select('manage_fleet', 'is_cab_pooling_toggle', 'is_threshold')->first();
+            $preference = ClientPreference::select('manage_fleet', 'is_cab_pooling_toggle', 'is_threshold','is_go_to_home','go_to_home_radians')->first();
             $geoagents_ids =  DriverGeo::where('geo_id', $geo);
 
             if($preference->is_cab_pooling_toggle == 1 && $is_cab_pooling == 1){
@@ -88,12 +89,22 @@ trait GlobalFunction{
             if(@$preference->is_threshold == 1){
                 $geoagents = $geoagents->where('is_threshold', 1);
             }
-
-            $geoagents = $geoagents->orderBy('id', 'DESC');
-
+           
             if(@$preference->manage_fleet){
                 $geoagents = $geoagents->whereHas('agentFleet');
             }
+            // geting task only 
+            if((@$preference->is_go_to_home ==1) && ($order_id!='')){
+                $dropOfTask = Task::with('location')->where(['order_id'=>$order_id,'task_type_id'=>2])->first();
+                $dropLat  = $dropOfTask ?  ($dropOfTask->location ? $dropOfTask->location->latitude : '' ) : '' ;
+                $dropLong =$dropOfTask ?  ($dropOfTask->location ? $dropOfTask->location->longitude : '') : '' ;
+                $radians = (int)($preference->go_to_home_radians ?? 0) ;
+                if($dropLat !='' && $dropLong !='' ){
+                    $geoagents = $geoagents->onlyGetingAgentByHomeAddress($dropLat, $dropLong, $radians);
+                }
+            }
+          
+            $geoagents = $geoagents->orderBy('id', 'DESC');
             $geoagents = $geoagents->get()->where("agent_cash_at_hand", '<', $cash_at_hand);
             return $geoagents;
 
@@ -193,6 +204,121 @@ trait GlobalFunction{
         }
         return 1;
         
+    }
+
+
+    
+    /**
+     * Check agent go to home address Distance enable or disabled
+     */
+    public function CheckAgentHomeAddress($finalLocation,$id)
+    {
+        try {
+            $checkHomeaddress   =  Agent::where(['id'=>$id,'is_go_to_home_address'=>1])->count();
+            $max_distance       =  5;
+            if($checkHomeaddress > 0){
+                $address = DriverHomeAddress::where(['agent_id'=>$id,'is_default'=>1])->first();
+                if(!empty($address)){
+                    $latitude       =   $address->latitude;
+                    $longitude      =   $address->longitude;
+                    $distance       =   $this->DistanceAgentHomeAddess($finalLocation->latitude,$finalLocation->longitude,$latitude,$longitude);
+                    if($distance <= $max_distance){
+                        return true;
+                    }else{
+                        return false;
+                    }
+                    
+                }else{
+                    $location =  $this->lastAgentDropoffLocation($id);
+                   
+                    if(isset($location) && !empty($location)){
+                        $location   = $location->location;
+                        $latitude   = $location->latitude;
+                        $longitude  = $location->longitude;
+                        $distance   = $this->DistanceAgentHomeAddess($finalLocation->latitude,$finalLocation->longitude,$latitude,$longitude);
+                        
+                        if($distance <= $max_distance){
+                            return true;
+                        }else{
+                            return false;
+                        }
+                    }else{
+                        return false;
+                    }
+                }
+            }
+        }catch (\Throwable $th) {
+            return response()->json([
+                'message' => $th->getMessage()
+            ], 400);
+        }
+    }
+
+
+    /**
+     *  Distance between go to home address and customer final location
+     */
+    public function DistanceAgentHomeAddess($client_lat,$client_long,$agent_home_addres_lat,$agent_home_addres_long){
+        $client = ClientPreference::where('id', 1)->first();
+        $value = [];
+        $send   = [];
+        $ch = curl_init();
+            $headers = array('Accept: application/json',
+                    'Content-Type: application/json',
+                    );
+            $url =  'https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins='.$client_lat.','.$client_long.'&destinations='.$agent_home_addres_lat.','.$agent_home_addres_long.'&key='.$client->map_key_1.'';
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            $response = curl_exec($ch);
+            $result = json_decode($response);
+            curl_close($ch); // Close the connection
+            $new =   $result;
+            if(count($result->rows) > 0){
+                array_push($value, $result->rows[0]->elements);
+            }
+            if (isset($value)) {
+                $totalDistance = 0;
+                $totalDuration = 0;
+                foreach ($value as $i => $item) {
+                    //dd($item);
+                    $totalDistance = $totalDistance + (isset($item[$i]->distance) ? $item[$i]->distance->value : 0);
+                    $totalDuration = $totalDuration + (isset($item[$i]->duration) ? $item[$i]->duration->value : 0);
+                }
+    
+    
+                if ($client->distance_unit == 'metric') {
+                    $send['distance'] = round($totalDistance/1000, 2);      //km
+                } else {
+                    $send['distance'] = round($totalDistance/1609.34, 2);  //mile
+                }
+                //
+                $newvalue = round($totalDuration/60, 2);
+                $whole = floor($newvalue);
+                $fraction = $newvalue - $whole;
+    
+                if ($fraction >= 0.60) {
+                    $send['duration'] = $whole + 1;
+                } else {
+                    $send['duration'] = $whole;
+                }
+            }
+            return $send;
+            
+    }
+   
+   /**
+     *  Distance between go to home address and agent last frop off location
+     */
+    public function lastAgentDropoffLocation($id){
+        $count = Order::where('driver_id', $id)->where('status', 'completed')->orderBy('id', 'desc')->count();
+        if($count > 0){
+            $order = Order::where('driver_id', $id)->where('status', 'completed')->orderBy('id', 'desc')->first();
+            $drop_off = task::where('task_type_id',2)->where('order_id',$order->id)->with('location')->first();
+            if(isset($drop_off) && !empty($drop_off)){
+                return $drop_off;
+            }
+        }
     }
 }
 
