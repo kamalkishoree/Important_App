@@ -58,7 +58,7 @@
                                                     <div class="form-ul" style="width: 60px;">
                                                         
 
-                                                        <div class="inner-div"> <a href="javascript:void(0);" class="action-icon editIconBtn" data-name="{{$data->name}}" data-url="{{$data->url}}" data-code="{{$data->code}}" data-key="{{$data->key}}" data-id="{{$data->id}}"> <i class="mdi mdi-square-edit-outline"></i></a></div>
+                                                        <div class="inner-div"> <a href="javascript:void(0);" class="action-icon editIconBtn" data-name="{{$data->name}}" data-url="{{$data->url}}" data-code="{{$data->code}}" data-key="{{$data->key}}" data-type="{{$data->type}}" data-id="{{$data->id}}"> <i class="mdi mdi-square-edit-outline"></i></a></div>
                                                         {{-- <div class="inner-div">
                                                             <form method="POST" action="{{route('order-panel-db.destroy', $data->id)}}">
                                                                 @csrf

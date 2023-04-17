@@ -318,8 +318,9 @@ if (!function_exists('checkWarehouseMode')) {
                 $data['show_warehouse_module'] = 1;
             }
             if(!empty($warehouseMode->show_category_module) && $warehouseMode->show_category_module == 1){
-                $data['show_category_module'] = 1;
-            }
+                $data['show_category_module'] = 1; 
+            }    
+                  
         }
         return $data;
     }
