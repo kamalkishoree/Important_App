@@ -18,9 +18,7 @@ class orderPanelController extends Controller
     {
         $Order_panel_Data = [];
         if (checkTableExists('warehouses')) {
-            $Order_panel_Data = OrderPanelDetail::where([
-                'type' => 0
-            ])->paginate(10);
+            $Order_panel_Data = OrderPanelDetail::getOrderData(0);
         }
         return view('order-panel-db-detail.index')->with([
             'Order_panel_Data' => $Order_panel_Data
@@ -33,9 +31,8 @@ class orderPanelController extends Controller
 
         $Order_panel_Data = [];
         if (checkTableExists('warehouses')) {
-            $Order_panel_Data = OrderPanelDetail::where([
-                'type' => 1
-            ])->paginate(10);
+            $Order_panel_Data = OrderPanelDetail::getOrderData(1);
+            
         }
         return view('order-panel-db-detail.index')->with([
             'Order_panel_Data' => $Order_panel_Data
