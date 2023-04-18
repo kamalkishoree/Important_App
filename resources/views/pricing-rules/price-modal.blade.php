@@ -1,5 +1,5 @@
 <div id="add-pricing-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-dialog modal-dialog-centered modal-lg price_geo-fence">
         <div class="modal-content">
             <div class="modal-header border-0">
                 <h4 class="modal-title">{{__("Add Pricing Rule")}}</h4>
@@ -361,7 +361,7 @@
 </div>
 
 <div id="edit-price-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-dialog modal-dialog-centered modal-lg price_geo-fence">
         <div class="modal-content">
             <div class="modal-header border-0">
                 <h4 class="modal-title">{{__("Pricing Edit")}}</h4>
