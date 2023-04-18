@@ -841,19 +841,27 @@ class AgentController extends Controller
                         'Wallet has been <b>Credited</b>'
                     ]);
                 } elseif ($request->payment_type == 2) {
-                    if ($amount > $agent->balanceFloat) {
-                        return $this->error(__('Amount is greater than ' . getAgentNomenclature() . ' available funds'), 422);
+                    $final_balance = agentEarningManager::getAgentEarning($agent->id,0);
+                    if($request->payment_from == 1){
+                        if ($amount > $agent->balanceFloat) {
+                            return $this->error(__('Amount is greater than ' . getAgentNomenclature() . ' available funds'), 422);
+                        }
+                        $wallet->withdrawFloat($amount, [
+                            'Wallet has been <b>Dedited</b>'
+                        ]);
+                    }else{
+                        if($amount > abs($final_balance)){
+                            return $this->error(__('Amount is greater than ' . getAgentNomenclature() . ' final balance'), 422);
+                        }
                     }
-                    $wallet->withdrawFloat($amount, [
-                        'Wallet has been <b>Dedited</b>'
-                    ]);
                 } else {
                     return $this->error(__('Invalid Data'), 422);
                 }
                 $data = [
                     'driver_id' => $request->driver_id,
                     'cr' => $request->payment_type == 1 ? $request->amount : null,
-                    'dr' => $request->payment_type == 2 ? $request->amount : null
+                    'dr' => $request->payment_type == 2 ? $request->amount : null,
+                    'payment_from' => $request->payment_from == 2 ? 1:0
                 ];
                 $agent = AgentPayment::create($data);
                 return $this->success('', __('Payment is successfully completed'), 201);
@@ -870,13 +878,17 @@ class AgentController extends Controller
     {
         $data = [];
         $agent = Agent::where('id', $id)->first();
+        $wallet_balance = 0;
         if (isset($agent)) {
+            if($agent->wallet){
+                $wallet_balance = $agent->balanceFloat;
+            }
             $cash = $agent->order->sum('cash_to_be_collected');
             $driver_cost = $agent->order->sum('driver_cost');
             $order = $agent->order->sum('order_cost');
             $credit = $agent->agentPayment->sum('cr');
             $debit = $agent->agentPayment->sum('dr');
-            $final_balance = agentEarningManager::getAgentEarning($agent->id, 1);
+            $final_balance = agentEarningManager::getAgentEarning($agent->id,0);
         } else {
             $cash = 0;
             $order = 0;
@@ -892,6 +904,7 @@ class AgentController extends Controller
         $data['credit'] = $credit;
         $data['debit'] = $debit;
         $data['final_balance'] = $final_balance;
+        $data['wallet'] = $wallet_balance;
 
         return response()->json($data);
     }
