@@ -18,7 +18,7 @@ getAdditionalPreference(['pickup_type',
 	color: #777;
 }
 #agentTablePopup{
-    z-index:9999;
+    z-index:1045;
 }
 #agentTablePopup .modal-body {
 	padding-top: 0px;
