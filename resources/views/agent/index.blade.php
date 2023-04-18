@@ -823,9 +823,11 @@ $is_driver_slot = getClientPreferenceDetail()->is_driver_slot;
                 var cash = round(data.cash_to_be_collected, 2);
                 var final = round(cash - driver_cost, 2);
                 var new_final = round(data.final_balance, 2);
+                  var wallet = round(data.wallet, 2);
                 $("#order_earning").text(driver_cost);
                 $("#cash_collected").text(cash);
                 $("#final_balance").text(new_final);
+                $("#wallet_balance").text(wallet);
             },
         });
 
@@ -873,6 +875,16 @@ $is_driver_slot = getClientPreferenceDetail()->is_driver_slot;
         });
         stay.preventDefault();
     });
+    
+     $(document).on("click","input[name='payment_type']",function() {
+        var test = $(this).val();
+		if(test == 2){
+			  $("#receive_from").removeClass("d-none");
+		}else{
+			  $("#receive_from").addClass("d-none");    		
+		}         
+    });
+    
 </script>
 @include('agent.pagescript')
 @endsection
