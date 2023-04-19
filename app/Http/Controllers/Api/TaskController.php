@@ -287,16 +287,16 @@ class TaskController extends BaseController
             $updateData = [
                 'base_waiting'                    => $request->waiting_time,
                 'waiting_price'                   => $pricingRule->duration_price * $waiting_time,
-                // 'base_price'                      => $pricingRule->base_price,
-                // 'base_duration'                   => $pricingRule->base_duration,
-                // 'base_distance'                   => $pricingRule->base_distance,
-                // 'duration_price'                  => $pricingRule->duration_price,
-                // 'distance_fee'                    => $pricingRule->distance_fee,
-                // 'cancel_fee'                      => $pricingRule->cancel_fee,
-                // 'agent_commission_percentage'     => $pricingRule->agent_commission_percentage,
-                // 'agent_commission_fixed'          => $pricingRule->agent_commission_fixed,
-                // 'freelancer_commission_percentage'=> $pricingRule->freelancer_commission_percentage,
-                // 'freelancer_commission_fixed'     => $pricingRule->freelancer_commission_fixed,
+                'base_price'                      => $pricingRule->base_price,
+                'base_duration'                   => $pricingRule->base_duration,
+                'base_distance'                   => $pricingRule->base_distance,
+                'duration_price'                  => $pricingRule->duration_price,
+                'distance_fee'                    => $pricingRule->distance_fee,
+                'cancel_fee'                      => $pricingRule->cancel_fee,
+                'agent_commission_percentage'     => $pricingRule->agent_commission_percentage,
+                'agent_commission_fixed'          => $pricingRule->agent_commission_fixed,
+                'freelancer_commission_percentage'=> $pricingRule->freelancer_commission_percentage,
+                'freelancer_commission_fixed'     => $pricingRule->freelancer_commission_fixed,
             ];
 
             Order::find($orderId->order_id)->update($updateData);
