@@ -269,6 +269,39 @@ class TaskController extends BaseController
 
         }
 
+        if(isset($request->wait_time)){
+            $task = Task::where('order_id', $orderId->order_id)->where('task_type_id',1)->with(['location'])->orderBy('task_type_id', 'ASC')->orderBy("id","ASC")->first();
+            $client =  Client::first();
+            $timezone = Timezone::find($client->timezone)->timezone;
+            $pickup_location = $task->location ?? null;
+
+            $geoid = '';
+            if(($pickup_location->latitude!='' || $pickup_location->latitude!='0.0000') && ($pickup_location->longitude !='' || $pickup_location->longitude!='0.0000')):
+                $geoid = $this->findLocalityByLatLng($pickup_location->latitude, $pickup_location->longitude);
+            endif;
+
+            $agent_tags = $request->order_agent_tag ?? '';
+            $pricingRule = $this->getPricingRuleData($geoid, $agent_tags, $this->getConvertUTCToLocalTime($orders->order_time, $timezone));
+
+            $waiting_time = explode(":",$request->wait_time)[0];
+            $updateData = [
+                'base_waiting'                    => $request->waiting_time,
+                'waiting_price'                   => $pricingRule->duration_price * $waiting_time,
+                // 'base_price'                      => $pricingRule->base_price,
+                // 'base_duration'                   => $pricingRule->base_duration,
+                // 'base_distance'                   => $pricingRule->base_distance,
+                // 'duration_price'                  => $pricingRule->duration_price,
+                // 'distance_fee'                    => $pricingRule->distance_fee,
+                // 'cancel_fee'                      => $pricingRule->cancel_fee,
+                // 'agent_commission_percentage'     => $pricingRule->agent_commission_percentage,
+                // 'agent_commission_fixed'          => $pricingRule->agent_commission_fixed,
+                // 'freelancer_commission_percentage'=> $pricingRule->freelancer_commission_percentage,
+                // 'freelancer_commission_fixed'     => $pricingRule->freelancer_commission_fixed,
+            ];
+
+            Order::find($orderId->order_id)->update($updateData);
+        }
+
         if(isset($request->qr_code))
         {
             $task = Task::where('id', $request->task_id)->update(['bag_qrcode' => $request->qr_code]);
