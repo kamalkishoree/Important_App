@@ -327,7 +327,7 @@ display:none;
                                                  <h6 id="#show-product_{{$item->id}}" class="product-modal show-product text-center text-primary" style="cursor: pointer;" onclick="showProductDetail({{$item->id}})"  data-id="{{ $item->id}}">Show Product Details</h6>
                                                     
                                                       @endif
-                                                    <div class="form-group select_category-field mt-1 mb-1" style="display: {{$style}};">
+                                                    <div class="form-group select_category-field mt-1 mb-1" style="display:{{$style}};">
                                                         <select class="form-control category_id" name="category_id" id="category_id">
                                                             <option value="">Select Category</option>
                                                             @foreach ($category as $cat)
@@ -352,6 +352,25 @@ display:none;
                                                                         $style = "block";
                                                                     }
                                                                 @endphp
+                                                                @if(($item->task_type_id == 1) && (count($item->orderVendorProducts) > 0))
+                                                                
+                                                             
+
+                                                            <div class="warehouse-fields" >
+                                                                <div class="form-group mb-1 select_warehouse-field">
+                                                                  <select class="form-control show-selected-warehouse" name="warehouse_id[]"  disabled>
+                                                                        <option value="{{$item->vendor_id}}" selected>{{ !empty($item->vendor) ? $item->vendor->name:''}}</option>
+                                                                    </select>
+                                                                    <select class="form-control warehouse d-none" name="warehouse_id[]" id="warehouse">
+                                                                        <option value="">Select Warehouse</option> 
+                                                                        @foreach($warehouses as $warehouse)
+                                                                        <option value="{{$warehouse->id}}">{{$warehouse->name}}</option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+
+                                                                @else
                                                                 <div class="row location-section" style="display: {{$style}}">
                                                                     <div class="row">
                                                                         <div class="form-group col-12 mb-1">
@@ -373,6 +392,7 @@ display:none;
                                                                         {!! Form::text('post_code[]', null, ['class' => 'form-control address postcode','placeholder' => __('Post Code'),'id'=>'add'.$newcount.'-postcode']) !!}
                                                                     </div>
                                                                 </div>
+                                                               
                                                                 @php
                                                                     if($item->warehouse_id != ""){
                                                                         $style = "block";
@@ -400,7 +420,7 @@ display:none;
                                                                     <h6 class="choose_warehouse text-center text-primary" style="text-decoration: underline;cursor: pointer;">{{$choose_text}}</h6>
                                                                 @endif
                                                                 
-                                                               
+                                                                @endif 
                                                             </div>
 
                                                             <div class="alContactOther col-6">

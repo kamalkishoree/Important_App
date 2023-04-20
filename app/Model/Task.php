@@ -65,7 +65,7 @@ class Task extends Model
 
     public function vendor()
     {
-        return $this->hasOne('App\Model\InventoryVendor', 'id', 'vendor_id')->select('id', 'name', 'slug');
+        return $this->hasOne('App\Model\Warehouse', 'id', 'vendor_id')->select('id', 'name', 'code','address','latitude','longitude');
     }
 
     /*

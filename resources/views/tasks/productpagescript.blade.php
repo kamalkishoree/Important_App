@@ -8,6 +8,14 @@
         
      });
     
+    $(document).ready(function(){
+    
+      $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                }
+            });
+    });
     
          var product_variant =[];
           var arr = [];
@@ -53,6 +61,7 @@
          
             $(document).on('keyup','#warehouse-search',function()
          {
+          
            
            var search = $('#warehouse-search').val();
             $.ajax({
@@ -245,11 +254,6 @@
 
         function getProductWarehouses(data) {
 
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
-                }
-            });
 
             $.ajax({
                 url: "/get-selected-warehouses",
@@ -298,13 +302,6 @@ if (product_variant.length == 0) {
         $(document).on('click','#create-subtask',function(e){
 
 
-
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
-                }
-            });
-             
                 
                 $("input:checkbox[name=vendor_product]:checked").each(function(){
                     selected_products.push({"product_variant_id":parseInt($(this).val()),'quantity':$('#range_input_'+$(this).val()).val(),'vendor_id':$('#vendor_id_'+$(this).val()).val()});
@@ -383,10 +380,6 @@ if (product_variant.length == 0) {
         $(document).on('click','.sort-by',function()
         {
         
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
-                }});
             $.ajax({
                 url: "/sort-products",
                 type: "post",

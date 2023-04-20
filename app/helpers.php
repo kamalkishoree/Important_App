@@ -309,7 +309,8 @@ if (!function_exists('checkWarehouseMode')) {
         $preference = checkColumnExists('client_preferences','warehouse_mode') ? ClientPreference::select('id', 'warehouse_mode')->first() :'';
         $data = [
             'show_warehouse_module' => 0,
-            'show_category_module' => 0
+            'show_category_module' => 0,
+            'show_inventory_module' => 0
         ];
         if($preference){
             $warehouseMode = isset($preference->warehouse_mode) ? json_decode($preference->warehouse_mode) : '';
@@ -319,6 +320,9 @@ if (!function_exists('checkWarehouseMode')) {
             }
             if(!empty($warehouseMode->show_category_module) && $warehouseMode->show_category_module == 1){
                 $data['show_category_module'] = 1; 
+            }    
+            if(!empty($warehouseMode->show_inventory_module) && $warehouseMode->show_inventory_module == 1){
+                $data['show_inventory_module'] = 1; 
             }    
                   
         }

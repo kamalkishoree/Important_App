@@ -5,7 +5,24 @@
 		<div class="prod-pic">
 			<img src="images/no-img.jpg" alt="image">
 		</div>
-		{{$product->title}}
+   @php
+     if(!empty($product->translation_one)){
+		
+		$title = $product->translation_one->title;
+		}else{
+		$title = $product->title;
+		}
+		@endphp
+		
+		
+		@if(empty($title))
+           {{$product->sku}}
+        @else
+        {{$title}}
+        
+        @endif
+		
+	</div>
 	</div>
 	<div class="form-check">
 		<input type="checkbox" class="form-check-input"
