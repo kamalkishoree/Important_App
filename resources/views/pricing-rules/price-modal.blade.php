@@ -122,6 +122,9 @@
                                     <div class="col-md-12">
                                         <div class="form-group" id="">
                                             {!! Form::label('title', __('Base Price'),['class' => 'control-label']) !!}
+
+                                            <a href="javascript:void(0)" class="add_more_button float-right" id="add_button" data-id="1" style=""><i class="fa fa-plus-circle" aria-hidden="true"></i></a>
+
                                             {!! Form::text('base_price', 10, ['class' => 'form-control','required' => 'required']) !!}
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
@@ -176,6 +179,8 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <span id="new-rows"></span>
                                 @if(checkColumnExists('client_preferences', 'is_bid_ride_toggle')) @if($client->getPreference->is_bid_ride_toggle == 1)
                                 <hr>
                                 <h5 class="text-uppercase bg-light-yellopink p-2 mt-0 mb-3">Pricing Values (Minimum)</h5>
@@ -382,3 +387,30 @@
         </div>
     </div>
 </div>
+<script>
+ $(document).on('click','.add_more_button',function(){
+    var main_id = $(this).attr('data-id');
+    section_id                = parseInt(main_id);
+    id                        = section_id +1;
+
+        addTemplate(id);
+        $('#add_button').attr('data-id',id);
+
+    });
+
+    function addTemplate(section_id){
+        id = section_id;
+        var data  = '';
+
+        var data = '<div class="row" id="remove'+id+'"><div class="col-md-6"><div class="form-group" id="">{!! Form::label('title', __('Price(per km)'),['class' => 'control-label']) !!}{!! Form::text('duration_price[id]', 1, ['class' => 'form-control']) !!}</div></div><div class="col-md-6"><div class="form-group" id="">{!! Form::label('title', __('Distance km'),['class' => 'control-label']) !!}<a href="javascript:void(0)" class="action-icon remove_more_button float-right" id="remove_button" data-rid="'+id+'"> <i class="mdi mdi-delete"></i></a>{!! Form::text('distance_fee[id]', 1, ['class' => 'form-control']) !!}</div></div></div>';
+        $('#new-rows').append(data);
+    }
+
+
+    $(document).on('click','.remove_more_button',function(){
+    var id = $(this).attr('data-rid');
+    console.log('#remove'+id);
+    $('#remove'+ id).remove();
+
+    });
+</script>
