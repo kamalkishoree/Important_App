@@ -502,7 +502,11 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                     }},
                     {data: 'status', class:'text-center', name: 'status', orderable: false, searchable: false, "mRender":function(data, type, full){
                         if(full.status == 'Pending'){
-                            return "<button class='btn btn-sm btn-info payout_btn' data-id='"+full.id+"' data-payout_method='"+full.payout_option_id+"' data-agent='"+full.aegnt_id+"'>{{__('Payout')}}</button>";
+                            var html ="<button class='btn btn-sm btn-info payout_btn' data-id='"+full.id+"' data-payout_method='"+full.payout_option_id+"' data-agent='"+full.aegnt_id+"'>{{__('Payout')}}</button>";
+                            if(full.order_id){
+                                html += `<a class='m-2' href="/order/invoice/${full.order_id}" target="_blank"><i class="fa fa-file-code fa-lg" aria-hidden="true"></i></a>`;
+                            }
+                            return html;
                         }else{
                             return full.status;
                         }
@@ -524,7 +528,11 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                     }},
                     {data: 'status', class:'text-center', name: 'status', orderable: false, searchable: false, "mRender":function(data, type, full){
                         if(full.status == 'Pending'){
-                            return "<button class='btn btn-sm btn-info payout_btn' data-id='"+full.id+"'>{{__('Payout')}}</button>";
+                            var html = "<button class='btn btn-sm btn-info payout_btn' data-id='"+full.id+"'>{{__('Payout')}}</button>";
+                            if(full.order_id){
+                                html += `<a class='m-2' href="/order/invoice/${full.order_id}" target="_blank"><i class="fa fa-file-code fa-lg" aria-hidden="true"></i></a>`;
+                            }
+                            return html;
                         }else{
                             return full.status;
                         }

@@ -85,8 +85,8 @@ body.light .address_box label {
 body.light div#agents-datatable_wrapper .dataTables_scrollHead thead th {
 }
 button[type="submit"]:hover {
-    background-color: transparent;
-    border-color: transparent;
+    /* background-color: transparent;
+    border-color: transparent; */
     cursor: pointer;
     font-size: 14px;
 }
@@ -429,11 +429,11 @@ body .navbar-custom .topnav-menu .nav-link {
     display: none;
 }
 .login-form input[type="radio"]:checked + label {
-        background-color: #6658dd;
-        color:#fff;
-       font-size: 13px;
-        letter-spacing: 0.5px;
-    }
+    background-color: #6658dd;
+    color:#fff;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+}
 .login-form input[type="radio"]:checkedlabel {
     border-color: #6658dd;
     font-size: 13px;
@@ -954,11 +954,11 @@ hr.new3 {
     padding: 4px 5px;
     border-radius: 5px;
     color: #fff;
-    font-size: 12px;
+    font-size: 11px;
     transition: all 0.5s;
     font-weight: 700;
     margin: 0 0 10px;
-    height: 25px;
+    height: 22px;
 }
 .address_box span.short_name {
     color: #6658dd;
@@ -2442,6 +2442,17 @@ body.dark .modal-title {
 }
 body.dark div#edit-price-modal label{
    color: #dbe9f9 !important;
+}
+
+.select2-container .select2-selection--multiple .select2-selection__rendered{
+    height: 40px;
+    overflow-y: auto !important;
+}
+ul.select2-selection__rendered li {
+    margin: 5px 2px;
+}
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove{
+    color:#fff !important;
 }
 body.dark div#add-pricing-modal label{
    color: #dbe9f9 !important;

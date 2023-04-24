@@ -10,9 +10,10 @@ class PermissionSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('permissions')->delete();
+        //DB::table('permissions')->delete();
+        $option_count = DB::table('permissions')->count();
  
-        $type = array(
+        $types = array(
             array(
                 'id' => 1,
                 'name' => 'Dashboard'
@@ -72,8 +73,29 @@ class PermissionSeeder extends Seeder
             array(
                 'id' => 15,
                 'name' => 'ACL'
+            ),
+            array(
+                'id' => 16,
+                'name' => 'Agent Threshold'
             )
         );
-        DB::table('permissions')->insert($type);
+        if($option_count == 0)
+        {
+          DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+          DB::table('permissions')->truncate();
+          DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+  
+          DB::table('permissions')->insert($types);
+        }
+        else{
+            foreach ($types as $type) {
+                $permissions =DB::table('permissions')->where('id',$type['id'])->first();
+   
+                if (!$permissions) {
+                    DB::table('permissions')->insert($type);
+                }
+            }
+        }
+       // DB::table('permissions')->insert($type);
     }
 }

@@ -46,6 +46,8 @@
                         }else{
                             array_push($allowed,'99999');
                         }
+
+                      
                         ?>
 
         <!--- Sidemenu -->
@@ -94,11 +96,18 @@
                 @endif
                 @if($warehouse_mode['show_category_module'] == 1)
                 <li>
+                    <a href="{{route('order-panel-db.index')}}">
+                        <i class="fe-users"></i>
+                        <span> {{__('Order Panel DB Details')}} </span>
+                    </a>
+                </li> 
+                <li>
                     <a href="{{route('category.index')}}">
                         <i class="fe-package"></i>
                         <span> {{__('Categories')}} </span>
                     </a>
                 </li>
+              
                 @endif
 
                 <li>
@@ -108,12 +117,7 @@
                     </a>
                 </li>
 
-                {{-- <li>
-                    <a href="{{route('order-panel-db.index')}}">
-                        <i class="fe-users"></i>
-                        <span> {{__('Order Panel DB Details')}} </span>
-                    </a>
-                </li> --}}
+               
                 
                 <li class="menu-title mt-2">{{__('Settings')}}</li>
 
@@ -282,6 +286,19 @@
                     </a>
                 </li>
                 @endif
+                {{-- <li>
+                    <a href="{{route('services.index')}}">
+                        <i class="fe-package"></i>
+                        <span> {{__('Services')}} </span>
+                    </a>
+                </li> --}}
+
+                {{-- <li>
+                    <a href="{{route('general_slots')}}">
+                        <i class="fe-package"></i>
+                        <span> {{__('General Slots')}} </span>
+                    </a>
+                </li> --}}
 
                 @if(in_array('Notifications',$allowed) || Auth::user()->is_superadmin == 1)
                  <li>

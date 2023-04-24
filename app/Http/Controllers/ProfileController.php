@@ -94,7 +94,7 @@ class ProfileController extends Controller
         ]);
             
         if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator, 'update');
+            return redirect()->back()->withInput()->withErrors($validator);
         }
 
         $user = Auth::user();
@@ -166,7 +166,7 @@ class ProfileController extends Controller
 
         $password = null;
         $this->dispatchNow(new UpdatePassword($password, $alldata));
-        
+  
         return redirect()->back()->with('success', 'Profile Updated successfully!');
     }
 
