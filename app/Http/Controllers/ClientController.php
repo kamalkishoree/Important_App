@@ -345,7 +345,7 @@ class ClientController extends Controller
                     'api_key' => $request->sms_partner_api_key,
                     'sender_id' => $request->sms_partner_sender_id,
                 ];
-            } elseif($request->sms_provider == 8) // for NaDelivery
+            } elseif($request->sms_provider == 8) // for ethiopia
             {
                 $sms_credentials = [
                     'sms_username' => $request->sms_username,
