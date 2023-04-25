@@ -71,7 +71,7 @@ class ClientController extends Controller
      */
     public function storePreference(Request $request, $domain = '', $id)
     {
-  
+
         try {
             $this->updatePreferenceAdditional($request);
             // return redirect()->back()->with('success', 'Client settings updated successfully!');
@@ -80,7 +80,7 @@ class ClientController extends Controller
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', 'Something went wrong!!');
         }
-    
+
 
         $customerDistenceNotification = '';
         if(!empty($request->customer_notification)){
@@ -97,11 +97,11 @@ class ClientController extends Controller
 
             $data = ['custom_mode'=>json_encode($customMode)];
             ClientPreference::where('client_id', $id)->update($data);
-        
+
             $customMode['show_vehicle_type_icon'] = implode(',',$request->custom_mode['show_vehicle_type_icon']);
             $data = ['custom_mode'=>json_encode($customMode)];
             ClientPreference::where('client_id', $id)->update($data);
-            
+
 
             return redirect()->back()->with('success', 'Preference updated successfully!');
         }
@@ -115,7 +115,7 @@ class ClientController extends Controller
                 $data = ['warehouse_mode'=>json_encode($warehouseMode)];
             }
             ClientPreference::where('client_id', $id)->update($data);
-            
+
 
             return redirect()->back()->with('success', 'Preference updated successfully!');
         }
@@ -128,7 +128,7 @@ class ClientController extends Controller
             if(checkColumnExists('client_preferences', 'dashboard_mode')){
                 $data = ['dashboard_mode'=>json_encode($dashboardMode)];
             }
-            
+
             ClientPreference::where('client_id', $id)->update($data);
 
             return redirect()->back()->with('success', 'Preference updated successfully!');
@@ -146,7 +146,7 @@ class ClientController extends Controller
             ClientPreference::where('client_id', $id)->update($data);
         }
         if(!empty($request->toll_key)){
-           
+
 
             return redirect()->back()->with('success', 'Preference updated successfully!');
         }
@@ -188,12 +188,12 @@ class ClientController extends Controller
         }
 
         if(checkColumnExists('client_preferences', 'charge_percent_from_agent') && $request->has('charge_percent_from_agent')){
-            
+
             $data = ['charge_percent_from_agent'=> trim($request->charge_percent_from_agent)];
             ClientPreference::where('client_id', $id)->update($data);
             return redirect()->back()->with('success', 'Preference updated successfully!');
         }
-        
+
         $client = Client::where('code', $id)->firstOrFail();
         # if submit custom domain by client
         if ($request->custom_domain && $request->custom_domain != $client->custom_domain) {
@@ -316,9 +316,16 @@ class ClientController extends Controller
                     'sender_id' => $request->arkesel_sender_id,
                 ];
             }
+            elseif($request->sms_provider == 6) // for NaDelivery
+            {
+                $sms_credentials = [
+                    'sms_username' => $request->sms_username,
+                    'sms_password' => $request->sms_password,
+                ];
+            }
             //for static otp
             $sms_credentials['static_otp'] = ($request->has('static_otp') && $request->static_otp == 'on') ? 1 : 0;
-         
+
             $request->merge(['sms_credentials'=>json_encode($sms_credentials)]);
         }
 
@@ -360,8 +367,8 @@ class ClientController extends Controller
         if($request->has('address_limit_order_config')){
             $request->request->add(['show_limited_address' => ($request->has('show_limited_address') && $request->show_limited_address == 'on') ? 1 : 0]);
         }
-        
-        
+
+
         $request->request->add(['toll_fee' => ($request->has('toll_fee') && $request->toll_fee == 'on') ? 1 : 0]);
         $updatePreference = ClientPreference::updateOrCreate([
             'client_id' => $id

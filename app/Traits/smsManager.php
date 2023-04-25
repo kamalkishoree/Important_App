@@ -3,6 +3,7 @@ namespace App\Traits;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Collection;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Http;
 use Log;
 use Unifonic;
 use Twilio\Rest\Client as TwilioClient;
@@ -48,8 +49,13 @@ trait smsManager{
                 if( isset($send->code) && $send->code != 'ok'){
                     return $this->error($send->message, 404);
                 }
-
-            }else{
+            }
+            elseif($client_preference->sms_provider == 6) //for SMS NaDelivery gateway
+            {
+            $crendentials = json_decode($client_preference->sms_credentials);
+            $send = $this->naDelivery($to,$body,$crendentials);
+            }
+            else{
                 $credentials = json_decode($client_preference->sms_credentials);
                 $sms_key = (isset($credentials->sms_key)) ? $credentials->sms_key : $client_preference->sms_provider_key_1;
                 $sms_secret = (isset($credentials->sms_secret)) ? $credentials->sms_secret : $client_preference->sms_provider_key_2;
@@ -66,7 +72,7 @@ trait smsManager{
     }
 
 
-  
+
 
 
     public function mTalkz_sms($to,$message,$crendentials,$template_id = '')
@@ -127,9 +133,9 @@ trait smsManager{
         return json_decode($result);
     }
     public function unifonic($recipient,$message,$crendentials)
-    { 
-      
-        //$crendentials = (object)$crendentials; 
+    {
+
+        //$crendentials = (object)$crendentials;
         try{
             $crendential = [
                 'app_id'=> $crendentials->unifonic_app_id,
@@ -138,7 +144,7 @@ trait smsManager{
             ];
             config(['services.unifonic' => $crendential]);
             $to_number = substr($recipient, 1);
-            $respont = Unifonic::send( $to_number, $message, $senderID = null);            
+            $respont = Unifonic::send( $to_number, $message, $senderID = null);
             //Log::info($respont);
             Log::info("unifonic sms respont");
             return 1;
@@ -198,6 +204,23 @@ trait smsManager{
             return $res->getStatusCode(); // 200
         }catch(Exception $e) {
             dd($e);
+        }
+    }
+
+    public function naDelivery($to, $message, $crendentials){
+        $to_number = substr($to, 1);
+        try{
+            $apiurl = 'http://197.156.70.196:9095/api/send_sms';
+            $rawData = json_encode([
+                    "username" => $crendentials->sms_username,
+                    "password" => $crendentials->sms_password,
+                    "to"=> $to_number,
+                    "text"=> $message,
+            ]);
+            $response = Http::withBody($rawData, 'application/json')->post($apiurl);
+            return $response;
+        }catch(\Exception $e) {
+            return response()->json(['data' => $e->getMessage()]);
         }
     }
 

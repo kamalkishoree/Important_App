@@ -71,7 +71,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                     @endif
                                 </div>
                             </div>
-                            <div class="col-md-12"> 
+                            <div class="col-md-12">
                                 <div class="form-group d-flex justify-content-between mb-3">
                                 <label for="" class="mr-2 mb-0">{{__("Toll Api")}} </label>
                                 <div class="d-flex align-items-center justify-content-between mb-2">
@@ -97,18 +97,18 @@ $sms_crendential = json_decode($preference->sms_credentials);
                         <p class="sub-header">{{ __("View and update your SMS Gateway and it's API keys.") }}</p>
                         <div class="d-flex align-items-center justify-content-between mt-3 mb-2">
                             <h5 class="font-weight-normal m-0">{{ __('Send Static Otp ') }} {{ __(getAgentNomenclature()) }}</h5>
-                            
+
                             <div class="custom-control custom-switch">
-     
+
                                 <input type="checkbox" class="custom-control-input"
                                     id="cancelOrderCustomSwitch_static_otp"
                                     name="static_otp"
                                     {{ (isset( $sms_crendential->static_otp ) && $sms_crendential->static_otp == 1) ? 'checked' : '' }}>
                                 <label class="custom-control-label"
                                     for="cancelOrderCustomSwitch_static_otp"></label>
-                                
+
                             </div>
-                            
+
                         </div>
                         <div class="row mb-2">
                             <div class="col-md-12">
@@ -353,6 +353,39 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                 </div>
                             </div>
                         </div>
+
+                         <!-- For NaDelivery -->
+                         <div class="sms_fields row mx-0" id="na_delivery_fields"
+                         style="display : {{ $preference->sms_provider == 6  ? 'flex' : 'none' }};">
+                         <div class="col-12">
+                             <span  class="text-danger">{{ __('Only Available For +251, +09 And +9 Country Code') }}</span>
+                             <div class="form-group mb-2">
+                                 <label for="sms_username">{{ __('Username') }}</label>
+                                 <input type="text" name="sms_username" id="sms_username" placeholder=""
+                                     class="form-control" value="{{ old('sms_username', $sms_crendential->sms_username ?? '') }}">
+                                 @if ($errors->has('sms_username'))
+                                     <span class="text-danger" role="alert">
+                                         <strong>{{ $errors->first('sms_username') }}</strong>
+                                     </span>
+                                 @endif
+                             </div>
+                         </div>
+                         <div class="col-12">
+                             <div class="form-group mb-2">
+                                 <label for="sms_secret">{{ __('Password') }}</label>
+                                 <input type="password" name="sms_password" id="sms_password" placeholder=""
+                                     class="form-control"
+                                     value="{{ old('sms_password', $sms_crendential->sms_password ?? '') }}">
+                                 @if ($errors->has('sms_password'))
+                                     <span class="text-danger" role="alert">
+                                         <strong>{{ $errors->first('sms_password') }}</strong>
+                                     </span>
+                                 @endif
+                             </div>
+                         </div>
+                     </div>
+
+
                     </div>
                 </form>
             </div>
@@ -687,7 +720,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                     </div>
                                 </div>
                             </div>
-                        </div>  
+                        </div>
                         <div class="row" id="radius_for_pooling_div" style="display:{{ $preference->is_cab_pooling_toggle == 1 ? '' : 'none' }}">
                             <div class="col-9">
                                 <div class=" align-items-center justify-content-between mt-3 mb-2">
@@ -697,7 +730,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                             <div class="col-3 pt-2">
                                 <input class="form-control" type="number" id="radius_for_pooling_km" name="radius_for_pooling_km" value="{{ old('radius_for_pooling_km', $preference->radius_for_pooling_km ?? '0') }}" min="0">
                             </div>
-                        </div>       
+                        </div>
                     </form>
                 </div>
             </div>
@@ -1057,7 +1090,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                 </form>
                 <!-- Custom Mods start -->
             </div> --}}
-            
+
 
             <div class="col-md-4 mb-3">
                 <!-- Custom Mods start -->
@@ -1222,7 +1255,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
         </div>
 
 
-        
+
 
         <!-- end page title -->
         {{-- <div class="row">
