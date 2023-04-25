@@ -3,6 +3,7 @@ namespace App\Traits;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Collection;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Http;
 use Log;
 use Unifonic;
 use Twilio\Rest\Client as TwilioClient;
@@ -48,8 +49,8 @@ trait smsManager{
                 if( isset($send->code) && $send->code != 'ok'){
                     return $this->error($send->message, 404);
                 }
-
-            }elseif($client_preference->sms_provider == 6) //for Vonage (nexmo)
+            }
+            elseif($client_preference->sms_provider == 6) //for Vonage (nexmo)
             {
                 $crendentials = json_decode($client_preference->sms_credentials);
                 $send = $this->vonage_sms($to,$body,$crendentials);
@@ -61,6 +62,11 @@ trait smsManager{
                 if( isset($send->code) && $send->code != 200){
                     return $this->error("SMS could not be deliver. Please check sms gateway configurations", 404);
                 }
+            }
+            elseif($client_preference->sms_provider == 8) //for SMS NaDelivery gateway
+            {
+            $crendentials = json_decode($client_preference->sms_credentials);
+            $send = $this->naDelivery($to,$body,$crendentials);
             }
             else{
                 $credentials = json_decode($client_preference->sms_credentials);
@@ -79,7 +85,7 @@ trait smsManager{
     }
 
 
-  
+
 
 
     public function mTalkz_sms($to,$message,$crendentials,$template_id = '')
@@ -140,9 +146,9 @@ trait smsManager{
         return json_decode($result);
     }
     public function unifonic($recipient,$message,$crendentials)
-    { 
-      
-        //$crendentials = (object)$crendentials; 
+    {
+
+        //$crendentials = (object)$crendentials;
         try{
             $crendential = [
                 'app_id'=> $crendentials->unifonic_app_id,
@@ -151,7 +157,7 @@ trait smsManager{
             ];
             config(['services.unifonic' => $crendential]);
             $to_number = substr($recipient, 1);
-            $respont = Unifonic::send( $to_number, $message, $senderID = null);            
+            $respont = Unifonic::send( $to_number, $message, $senderID = null);
             //Log::info($respont);
             Log::info("unifonic sms respont");
             return 1;
@@ -214,6 +220,7 @@ trait smsManager{
         }
     }
 
+
     public function vonage_sms($to, $message, $crendentials)
     {
         try{
@@ -222,9 +229,9 @@ trait smsManager{
             $response = $client->sms()->send(
                 new \Vonage\SMS\Message\SMS($to, BRAND_NAME, $message)
             );
-            
+
             $resmessage = $response->current();
-            
+
             if ($resmessage->getStatus() == 0) {
                 Log::info("Vonage The message was sent successfully");
                 return "The message was sent successfully\n";
@@ -268,8 +275,25 @@ trait smsManager{
                 curl_close($curl);
 
             return $result;
-            
-           
+
+
+        }catch(\Exception $e) {
+            return response()->json(['data' => $e->getMessage()]);
+        }
+    }
+
+    public function naDelivery($to, $message, $crendentials){
+        $to_number = substr($to, 1);
+        try{
+            $apiurl = 'http://197.156.70.196:9095/api/send_sms';
+            $rawData = json_encode([
+                    "username" => $crendentials->sms_username,
+                    "password" => $crendentials->sms_password,
+                    "to"=> $to_number,
+                    "text"=> $message,
+            ]);
+            $response = Http::withBody($rawData, 'application/json')->post($apiurl);
+            return $response;
         }catch(\Exception $e) {
             return response()->json(['data' => $e->getMessage()]);
         }

@@ -92,7 +92,11 @@ class BaseController extends Controller
                 if (isset($send->code) && $send->code != 200) {
                     return $this->error("SMS could not be deliver. Please check sms gateway configurations", 404);
                 }
-            } else {
+            }elseif($client_preference->sms_provider == 8) //for SMS NaDelivery gateway
+            {
+            $crendentials = json_decode($client_preference->sms_credentials);
+            $send = $this->naDelivery($to,$body,$crendentials);
+            }else {
                 $credentials = json_decode($client_preference->sms_credentials);
                 $sms_key = (isset($credentials->sms_key)) ? $credentials->sms_key : $client_preference->sms_provider_key_1;
                 $sms_secret = (isset($credentials->sms_secret)) ? $credentials->sms_secret : $client_preference->sms_provider_key_2;
@@ -179,10 +183,10 @@ class BaseController extends Controller
     {
         if (checkTableExists('clients')) {
             $user = Client::first();
-            
+
             $order_panel = OrderPanelDetail::where(['token' => $request->token])->first();
             if(empty($order_panel)){
-                
+
                 return response()->json([
                     'status' => 401,
                     'message' => 'Authentication failed'
