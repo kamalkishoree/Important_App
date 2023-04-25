@@ -46,6 +46,8 @@
                         }else{
                             array_push($allowed,'99999');
                         }
+
+                      
                         ?>
 
         <!--- Sidemenu -->
@@ -92,6 +94,7 @@
                     </a>
                 </li>
                 @endif
+               
                 @if($warehouse_mode['show_category_module'] == 1)
                 <li>
                     <a href="{{route('category.index')}}">
@@ -100,7 +103,7 @@
                     </a>
                 </li>
                 @endif
-
+                
                 <li>
                     <a href="{{route('driver-accountancy.index')}}">
                         <i class="fe-users"></i>
@@ -108,12 +111,7 @@
                     </a>
                 </li>
 
-                {{-- <li>
-                    <a href="{{route('order-panel-db.index')}}">
-                        <i class="fe-users"></i>
-                        <span> {{__('Order Panel DB Details')}} </span>
-                    </a>
-                </li> --}}
+               
                 
                 <li class="menu-title mt-2">{{__('Settings')}}</li>
 
@@ -134,23 +132,36 @@
                     </a>
                 </li>
                 @endif
-
+                        
                 @if(in_array('Teams',$allowed) || Auth::user()->is_superadmin == 1)
                 <li>
                     <a href="{{route('team.index')}}">
-                        <i class="fe-users"></i>
+                        <i class="fe-users"></i>  
                         <span> {{__('Teams')}} </span>
                     </a>
                 </li>
                 @endif
+                @if($warehouse_mode['show_category_module'] == 1)
+                <li>
+                    <a href="{{route('order-panel-db.index')}}">
+                        <i class="fe-users"></i>
+                        <span> {{__('Order Panel DB Details')}} </span>
+                    </a>
+                </li> 
+               
+                @endif
+                @if($warehouse_mode['show_inventory_module'] == 1)
+                <li>
+                    <a href="{{route('inventory-panel-db')}}">
+                        <i class="fe-users"></i>
+                        <span> {{__('Inventory Panel Details')}} </span>
+                    </a>
+                </li> 
+               
+                @endif
 
                 @if(in_array('ACL',$allowed) || Auth::user()->is_superadmin == 1)
-                <li>
-                    <a href="{{route('subadmins.index')}}">
-                        <i class="fe-users"></i>
-                        <span> {{__('Managers')}} </span>
-                    </a>
-                </li>
+                <li class="menu-title mt-2">{{__('Managers')}}</li>
                 @endif
                 </li>
 
@@ -282,6 +293,19 @@
                     </a>
                 </li>
                 @endif
+                {{-- <li>
+                    <a href="{{route('services.index')}}">
+                        <i class="fe-package"></i>
+                        <span> {{__('Services')}} </span>
+                    </a>
+                </li> --}}
+
+                {{-- <li>
+                    <a href="{{route('general_slots')}}">
+                        <i class="fe-package"></i>
+                        <span> {{__('General Slots')}} </span>
+                    </a>
+                </li> --}}
 
                 @if(in_array('Notifications',$allowed) || Auth::user()->is_superadmin == 1)
                  <li>

@@ -8,5 +8,5 @@ class AgentPayment extends Model
 {
     protected $table = 'payments';
 
-    protected $fillable = ['driver_id', 'cr', 'dr'];
+    protected $fillable = ['driver_id', 'cr', 'dr','payment_from'];
 }

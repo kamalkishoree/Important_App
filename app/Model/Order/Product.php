@@ -9,7 +9,7 @@ class Product extends Model
 {
   use SoftDeletes;
   
-  protected $connection = 'royoorder';
+  // protected $connection = 'royoorder';
   
   public function variant(){
     return $this->hasMany('App\Model\Order\ProductVariant')->select('id', 'sku', 'product_id', 'title', 'quantity', 'price', 'position', 'compare_at_price', 'barcode', 'cost_price', 'currency_id', 'tax_category_id','container_charges','markup_price')->where('status', 1);

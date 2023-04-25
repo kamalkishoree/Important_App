@@ -104,6 +104,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                 </div>
                             @endif
                         </div>
+                        
                         <div class="col-sm-12 text-right btn-auto d-flex custom_top_bar">
                             <form method="get" id="db_form">
                                 <div class="form-group">
@@ -121,7 +122,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                             <form action="{{route('category.importOrderSideCategory')}}" method="post">
                             @csrf
                                 <input type="hidden" name="order_panel_id" value="{{app('request')->input('order_panel_id') ?? 'all'}}">
-                                <button type="submit" class="btn btn-blue waves-effect waves-light"><i class="mdi mdi-plus-circle mr-1"></i> {{__("Import Order Side Category")}}</button>
+                                <button type="submit" class="btn btn-blue waves-effect waves-light"><i class="mdi mdi-plus-circle mr-1"></i> {{__("Import Order/Dispatch Side Category")}}</button>
                             </form>
                         </div>
                     </div>

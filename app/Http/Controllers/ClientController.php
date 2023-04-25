@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+
 use Illuminate\Http\Request;
 
 use App\Model\ClientPreference;
@@ -22,7 +23,7 @@ use App\Model\TaskProof;
 use App\Model\TaskType;
 use App\Model\DriverRegistrationDocument;
 use App\Model\OrderPanelDetail;
-use App\Model\{SmtpDetail, SmsProvider, VehicleType, ClientPreferenceAdditional};
+use App\Model\{SmtpDetail, SmsProvider, VehicleType,Agent, ClientPreferenceAdditional, FormAttribute, FormAttributeOption};
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
 use Session;
@@ -110,6 +111,7 @@ class ClientController extends Controller
             $warehouseMode['show_warehouse_module'] = (!empty($request->warehouse_mode['show_warehouse_module']) && $request->warehouse_mode['show_warehouse_module'] == 'on')? 1 : 0;
 
             $warehouseMode['show_category_module'] = (!empty($request->warehouse_mode['show_category_module']) && $request->warehouse_mode['show_category_module'] == 'on')? 1 : 0;
+            $warehouseMode['show_inventory_module'] = (!empty($request->warehouse_mode['show_inventory_module']) && $request->warehouse_mode['show_inventory_module'] == 'on')? 1 : 0;
             $data = [];
             if(checkColumnExists('client_preferences', 'warehouse_mode')){
                 $data = ['warehouse_mode'=>json_encode($warehouseMode)];
@@ -179,6 +181,20 @@ class ClientController extends Controller
                 return redirect()->back()->with('success', 'Preference updated successfully!');
             }
         }
+
+         //Threshold Code
+         if($request->has('threshold')){
+             $recursive_type    = $request->recursive_type;
+             $threshold_amount  = $request->threshold_amount;
+             $stripe_connect_id = $request->stripe_connect_id;
+             $threshold_data    = json_encode(['recursive_type'=>$recursive_type,'threshold_amount'=>$threshold_amount,'stripe_connect_id'=>$stripe_connect_id]);
+             $data = [
+                'is_threshold'=>($request->has('is_threshold') && $request->is_threshold == 'on') ? 1 : 0,
+                'threshold_data'=>$threshold_data,
+
+            ];
+            ClientPreference::where('client_id', $id)->update($data);
+         }
 
         if($request->has('autopay_submit')){//dd($request->auto_payout);
             $auto_payout = !empty($request->auto_payout)?(($request->auto_payout == "on")?1:0):0;
@@ -316,7 +332,20 @@ class ClientController extends Controller
                     'sender_id' => $request->arkesel_sender_id,
                 ];
             }
-            elseif($request->sms_provider == 6) // for NaDelivery
+            elseif($request->sms_provider == 6) // for Vonage (nexmo)
+            {
+                $sms_credentials = [
+                    'api_key' => $request->vonage_api_key,
+                    'secret_key' => $request->vonage_secret_key,
+                ];
+            }
+            elseif($request->sms_provider == 7) // for SMS Partner France
+            {
+                $sms_credentials = [
+                    'api_key' => $request->sms_partner_api_key,
+                    'sender_id' => $request->sms_partner_sender_id,
+                ];
+            } elseif($request->sms_provider == 8) // for NaDelivery
             {
                 $sms_credentials = [
                     'sms_username' => $request->sms_username,
@@ -339,25 +368,36 @@ class ClientController extends Controller
         unset($request['mazinhost_api_key']);
         unset($request['mazinhost_sender_id']);
 
+        unset($request['vonage_api_key']);
+        unset($request['vonage_secret_key']);
+
         unset($request['unifonic_app_id']);
         unset($request['unifonic_account_email']);
         unset($request['unifonic_account_password']);
 
         unset($request['arkesel_api_key']);
         unset($request['arkesel_sender_id']);
+
+        unset($request['sms_partner_api_key']);
+        unset($request['sms_partner_sender_id']);
+
         if( isset($request['charge_percent_from_agent']) ) {
             unset($request['charge_percent_from_agent']);
         }
 
         if($request->has('cancel_verify_edit_order_config')){
+
             $request->request->add(['verify_phone_for_driver_registration' => ($request->has('verify_phone_for_driver_registration') && $request->verify_phone_for_driver_registration == 'on') ? 1 : 0]);
             $request->request->add(['is_edit_order_driver' => ($request->has('is_edit_order_driver') && $request->is_edit_order_driver == 'on') ? 1 : 0]);
             $request->request->add(['is_cancel_order_driver' => ($request->has('is_cancel_order_driver') && $request->is_cancel_order_driver == 'on') ? 1 : 0]);
             $request->request->add(['is_driver_slot' => ($request->has('is_driver_slot') && $request->is_driver_slot == 'on') ? 1 : 0]);
+            $request->request->add(['is_freelancer' => ($request->has('is_freelancer') && $request->is_freelancer == 'on') ? 1 : 0]);
             $request->request->add(['manage_fleet' => ($request->has('manage_fleet') && $request->manage_fleet == 'on') ? 1 : 0]);
             $request->request->add(['is_cab_pooling_toggle' => ($request->has('is_cab_pooling_toggle') && $request->is_cab_pooling_toggle == 'on') ? 1 : 0]);
-            //$request->request->add(['radius_for_pooling_km' => ($request->has('is_cab_pooling_toggle') && $request->is_cab_pooling_toggle == 'on') ? $request->radius_for_pooling_km : 0]);
             $request->radius_for_pooling_km = ($request->has('is_cab_pooling_toggle') && $request->is_cab_pooling_toggle == 'on') ? $request->radius_for_pooling_km : 0;
+            $request->request->add(['is_bid_ride_toggle' => ($request->has('is_bid_ride_toggle') && $request->is_bid_ride_toggle == 'on') ? 1 : 0]);
+            $request->request->add(['is_go_to_home' => ($request->has('is_go_to_home') && $request->is_go_to_home == 'on') ? 1 : 0]);
+            //pr($request->all());
         }
 
         if($request->has('refer_and_earn')){
@@ -460,6 +500,9 @@ class ClientController extends Controller
      */
     public function ShowPreference()
     {
+
+        $attributes = FormAttribute::getFormAttribute(1);
+
         $preference  = ClientPreference::where('client_id', Auth::user()->code)->first();
         $currencies  = Currency::orderBy('iso_code')->get();
         $cms         = Cms::all('content');
@@ -469,7 +512,7 @@ class ClientController extends Controller
         $client      = Client::where('code', $user->code)->first();
         $subClients  = SubClient::all();
         $order_panel_detail = OrderPanelDetail::first();
-        return view('customize')->with(['clientContact'=>$client, 'preference' => $preference, 'currencies' => $currencies,'cms'=>$cms,'task_proofs' => $task_proofs,'task_list' => $task_list,'order_panel_detail'=>$order_panel_detail]);
+        return view('customize')->with(['clientContact'=>$client,'attributes'=> $attributes, 'preference' => $preference, 'currencies' => $currencies,'cms'=>$cms,'task_proofs' => $task_proofs,'task_list' => $task_list,'order_panel_detail'=>$order_panel_detail]);
     }
 
     public function updateContactUs(Request $request){
@@ -502,9 +545,12 @@ class ClientController extends Controller
         $subClients  = SubClient::all();
         $smtp        = SmtpDetail::where('id', 1)->first();
         $vehicleType = VehicleType::latest()->get();
-        $agent_docs=DriverRegistrationDocument::get();
+        $agent_docs = DriverRegistrationDocument::get();
+        $driverRatingQuestion = FormAttribute::getFormAttribute(2); // 2 for driverRatingQuestion 1 for defoult FormAttribute
+
+        $agents    = Agent::where('is_activated','1')->get();
         $smsTypes = SmsProvider::where('status', '1')->get();
-        return view('configure')->with(['preference' => $preference, 'customMode' => $customMode, 'client' => $client,'subClients'=> $subClients,'smtp_details'=>$smtp, 'agent_docs' => $agent_docs,'smsTypes'=>$smsTypes,'vehicleType'=>$vehicleType, 'warehoseMode' => $warehoseMode, 'dashboardMode' => $dashboardMode]);
+        return view('configure')->with(['preference' => $preference, 'customMode' => $customMode, 'client' => $client,'subClients'=> $subClients,'smtp_details'=>$smtp, 'agent_docs' => $agent_docs,'smsTypes'=>$smsTypes,'vehicleType'=>$vehicleType, 'warehoseMode' => $warehoseMode, 'dashboardMode' => $dashboardMode,'agents'=>$agents,'driverRatingQuestion'=>$driverRatingQuestion]);
     }
 
 

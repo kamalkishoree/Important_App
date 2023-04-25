@@ -179,7 +179,6 @@
 
         $(document).ready(function() {
             $('#wrapper').addClass('dshboard');
-            $('#shortclick').trigger('click');
             $(".timeago").timeago();
             $('.checkUserStatus').click(function() {
                 loadTeams(1, 1);
@@ -409,9 +408,13 @@ function addMarker(location, lables, images, data, type) {
             '<div class="col-sm-4">'+
                 '<div class="img_box mb-sm-0 mb-2"> <img src="https://imgproxy.royodispatch.com/insecure/fit/200/200/sm/0/plain/'+data["image_url"]+'"/></div> </div>'+
             '<div class="col-sm-8 pl-2 user_info">'+
-                '<div class="user_name mb-2"><label class="d-block m-0">'+data["name"]+'</label><span> <i class="fas fa-phone-alt"></i>'+data["phone_number"]+'</span></div>'+
+                '<div class="user_name mb-2 11"><label class="d-block m-0">'+data["name"]+'</label><span> <i class="fas fa-phone-alt"></i>'+data["phone_number"]+'</span></div>'+
                 '<div><b class="d-block mb-2"><i class="far fa-clock"></i> <span> '+jQuery.timeago(new Date(data['agentlog']['created_at']))+
-                ' </span></b> <b><i class="fas fa-mobile-alt"></i> '+data['agentlog']['device_type']+'</b> <b class="ml-2"> <i class="fas fa-battery-half"></i>  '+data['agentlog']['battery_level']+'%</b> </div>'
+                ' </span></b> <b><i class="fas fa-mobile-alt"></i> '+data['agentlog']['device_type']+'</b> <b class="ml-2"> <i class="fas fa-battery-half"></i>  '+data['agentlog']['battery_level']+'%</b>';
+               if(data['get_driver'][0]){
+                    contentString +='<a target="_blank" href="fleet/details/'+btoa(data['get_driver'][0]['id'])+'"><b class="d-block mt-2"><i class="fa fa-car"></i><span>'+data['get_driver'][0]['name']+' </span></b></a>';
+                }
+                contentString +='</div>';
             '</div>'+
         '</div>';
     }
