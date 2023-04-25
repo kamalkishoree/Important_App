@@ -1268,9 +1268,7 @@ class TaskController extends BaseController
             $client_notification_time = Carbon::parse($notification_time, 'UTC')->setTimezone($clienttimezone)->format('Y-m-d H:i:s');
             $agent_tags = (isset($request->order_agent_tag) && !empty($request->order_agent_tag)) ? $request->order_agent_tag : '';
             $pricingRule = $this->getPricingRuleData($geoid, $agent_tags, $client_notification_time);
-
-
-            
+            $pricingRuleDistance = $this->getPricingRuleDynamic($pricingRule,$getdata['distance']);
 
 
             $paid_duration = $getdata['duration'] - $pricingRule->base_duration;
@@ -1279,6 +1277,9 @@ class TaskController extends BaseController
             $paid_distance = $paid_distance < 0 ? 0 : $paid_distance;
             $total         = $pricingRule->base_price + ($paid_distance * $pricingRule->distance_fee) + ($paid_duration * $pricingRule->duration_price);
 
+            if(@$pricingRuleDistance && $pricingRuleDistance>0){
+                $total         = $pricingRule->base_price + $pricingRuleDistance + ($paid_duration * $pricingRule->duration_price);
+            }
             if($orders->is_cab_pooling == 1){
                 $total       = ($total/$orders->available_seats)*$orders->no_seats_for_pooling;
                 $toll_amount = ($toll_amount/$orders->available_seats)*$orders->no_seats_for_pooling;

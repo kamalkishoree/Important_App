@@ -3,7 +3,7 @@ namespace App\Traits;
 use DB;
 use Illuminate\Support\Collection;
 use Log;
-use App\Model\{ChatSocket, Client, Agent, ClientPreference, DriverGeo,Order,Task,OrderAdditionData, PricingRule, DriverHomeAddress, Location};
+use App\Model\{ChatSocket, Client, Agent, ClientPreference, DistanceWisePricingRule, DriverGeo,Order,Task,OrderAdditionData, PricingRule, DriverHomeAddress, Location};
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Config;
 use PhpParser\Node\Stmt\Else_;
@@ -175,6 +175,46 @@ trait GlobalFunction{
             }
 
             return $pricingRule;
+
+        } catch (\Throwable $th) {
+            return [];
+        }
+    
+    }
+
+// $numbers = ['10'=>7,'20'=>5,'50'=>2]; // array of numbers}
+// $distanceTotal = '55'; // array to store differences
+// $last = 1;
+// $sum = 0;
+// foreach ($numbers as $key => $number) {
+//     $no = ($key -$last);
+//     // echo $no.'---';
+//     $pr = $no * $number;
+//     // echo $pr.'=';
+//    $sum +=  $pr; 
+//    $last = $key;
+// }
+// echo $sum;
+
+    //---------function to get pricing rule based on agent_tag/geo fence/timetable/day/time
+    public function getPricingRuleDynamic($pricingRule,$distance)
+    {
+        try {
+                $distancePricing = [];
+                if(!empty($pricingRule) && $distance>1){
+                    $distancePricing = DistanceWisePricingRule::where('price_rule_id',$pricingRule->id)->where('distance_fee','<=',$distance)->get();
+                }
+            $last = 1;
+            $sum = 0;
+            foreach($distancePricing as $key => $number)
+            {
+                $no = ($key -$last);
+                $pr = $no * $number;
+                $sum +=  $pr; 
+                $last = $key;
+            }
+
+            return $sum??0;
 
         } catch (\Throwable $th) {
             return [];

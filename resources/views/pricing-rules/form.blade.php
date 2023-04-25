@@ -148,16 +148,27 @@
         <hr>
         <h5 class="text-uppercase bg-light-yellopink p-2 mt-0 mb-3">Pricing Values @if(checkColumnExists('client_preferences', 'is_bid_ride_toggle')) @if($client_pre->is_bid_ride_toggle == 1) (Recommendation) @endif @endif</h5>
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-6">
                 <div class="form-group" id="">
                     
                     {!! Form::label('title', __('Base Price'),['class' => 'control-label']) !!}
                     {{isset($client_pre->currency)?'('.$client_pre->currency->iso_code.')':''}}
-                    <a href="javascript:void(0)" class="btn btn-success btn-sm mb-1  add_more_button float-right add_button" data-id="1" style=""><i class="mdi mdi-plus-circle mr-1" aria-hidden="true"></i> Add Distance wise Price</a>
+                   
                     {!! Form::text('base_price', $pricing->base_price, ['class' => 'form-control','required' => 'required']) !!}
                     <span class="invalid-feedback" role="alert">
                         <strong></strong>
                     </span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group" id="">
+                    {!! Form::label('title', __('Waiting Price'),['class' => 'control-label']) !!}
+                    <a href="javascript:void(0)" class="btn btn-success btn-sm mb-1  add_more_button float-right add_button" data-id="1" style=""><i class="mdi mdi-plus-circle mr-1" aria-hidden="true"></i> Add Distance wise Price</a>
+                    {!! Form::number('waiting_price', $pricing->waiting_price, ['class' => 'form-control']) !!}
+                    <span class="invalid-feedback" role="alert">
+                        <strong></strong>
+                    </span>
+
                 </div>
             </div>
         </div>
