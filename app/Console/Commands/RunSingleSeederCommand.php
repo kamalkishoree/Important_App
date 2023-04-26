@@ -49,7 +49,7 @@ class RunSingleSeederCommand extends Command
         $clients = Client::where('status', 1)->get();
         //$clients = Client::all();
         foreach ($clients as $key => $client) {
-            $database_name = 'royo_' . $client->database_name;
+            $database_name = 'db_' . $client->database_name;
             $this->info("select database start: {$database_name}!");
             $query = "SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME =  ?";
             $db = DB::select($query, [$database_name]);
