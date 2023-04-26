@@ -13,9 +13,11 @@ class AddColumnBufferTimeTableOrders extends Migration
      */
     public function up()
     {
-        Schema::table('orders', function (Blueprint $table) {
-           $table->integer('buffer_time')->default(null);
-        });
+        if(!checkColumnExists('orders','buffer_time')){
+            Schema::table('orders', function (Blueprint $table) {
+               $table->integer('buffer_time')->default(null);
+            });
+        }
     }
 
     /**
