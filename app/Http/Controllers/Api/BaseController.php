@@ -92,10 +92,10 @@ class BaseController extends Controller
                 if (isset($send->code) && $send->code != 200) {
                     return $this->error("SMS could not be deliver. Please check sms gateway configurations", 404);
                 }
-            }elseif($client_preference->sms_provider == 8) //for SMS NaDelivery gateway
+            }elseif($client_preference->sms_provider == 8) //for ethiopia 
             {
             $crendentials = json_decode($client_preference->sms_credentials);
-            $send = $this->naDelivery($to,$body,$crendentials);
+            $send = $this->ethiopia($to,$body,$crendentials);
             }else {
                 $credentials = json_decode($client_preference->sms_credentials);
                 $sms_key = (isset($credentials->sms_key)) ? $credentials->sms_key : $client_preference->sms_provider_key_1;

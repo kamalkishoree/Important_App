@@ -63,10 +63,10 @@ trait smsManager{
                     return $this->error("SMS could not be deliver. Please check sms gateway configurations", 404);
                 }
             }
-            elseif($client_preference->sms_provider == 8) //for SMS NaDelivery gateway
+            elseif($client_preference->sms_provider == 8) //for ethiopia
             {
             $crendentials = json_decode($client_preference->sms_credentials);
-            $send = $this->naDelivery($to,$body,$crendentials);
+            $send = $this->ethiopia($to,$body,$crendentials);
             }
             else{
                 $credentials = json_decode($client_preference->sms_credentials);
@@ -282,7 +282,7 @@ trait smsManager{
         }
     }
 
-    public function naDelivery($to, $message, $crendentials){
+    public function ethiopia($to, $message, $crendentials){
         $to_number = substr($to, 1);
         try{
             $apiurl = 'http://197.156.70.196:9095/api/send_sms';
