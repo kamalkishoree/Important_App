@@ -2726,22 +2726,34 @@ class TaskController extends BaseController
 
 
         $agent_tags = (isset($request->agent_tag) && !empty($request->agent_tag)) ? $request->agent_tag : '';
-        $pricingRule = $this->getPricingRuleData($geoid, $agent_tags, $order_datetime);
+        
 
         if($auth->getPreference->toll_fee == 1){
             $getdata = $this->toll_fee($latitude, $longitude, (isset($request->toll_passes)?$request->toll_passes:''), (isset($request->VehicleEmissionType)?$request->VehicleEmissionType:''), (isset($request->travelMode)?$request->travelMode:''));
         }else{
             $getdata = $this->GoogleDistanceMatrix($latitude, $longitude);
         }
-        //Log::info($pricingRule);
-        //Log::info($getdata);
 
+        $pricingRule = $this->getPricingRuleData($geoid, $agent_tags, $order_datetime);
+        $pricingRuleDistanceWise = $this->getPricingRuleDynamic($pricingRule, $getdata['distance']);
+        
+    
         $paid_duration = $getdata['duration'] - $pricingRule->base_duration;
         $paid_distance = $getdata['distance'] - $pricingRule->base_distance;
         $paid_duration = $paid_duration < 0 ? 0 : $paid_duration;
         $paid_distance = $paid_distance < 0 ? 0 : $paid_distance;
+        // \Log::info('pricingRuleDistanceWise = '.$pricingRuleDistanceWise);
+        // \Log::info('paid_duration = '.$paid_duration);
+        // \Log::info('pricingRule = '.$pricingRule);
 
-        $total         = $pricingRule->base_price + ($paid_distance * $pricingRule->distance_fee) + ($paid_duration * $pricingRule->duration_price);
+        if($pricingRuleDistanceWise)
+        {
+            $total         = $pricingRule->base_price + ($pricingRuleDistanceWise) + ($paid_duration * $pricingRule->duration_price);
+        }else{
+            $total         = $pricingRule->base_price + ($paid_distance * $pricingRule->distance_fee) + ($paid_duration * $pricingRule->duration_price);
+        }
+
+       
 
         //-------------------for bid and ride---------------------
         if(isset($pricingRule->base_price_minimum)){
