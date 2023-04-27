@@ -273,8 +273,8 @@ class TaskController extends BaseController
            
             $waiting_time = explode(":",$request->wait_time)[0];
             $updateData = [
-                'base_waiting'    => $request->waiting_time,
-                'waiting_price'   => $orderId->duration_price * $waiting_time,
+                'base_waiting'    => $request->wait_time,
+                'waiting_price'   => $orderId->order->duration_price * $waiting_time,
             ];
 
             Order::find($orderId->order_id)->update($updateData);
