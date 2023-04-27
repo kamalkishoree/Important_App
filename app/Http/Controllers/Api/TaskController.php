@@ -1277,8 +1277,11 @@ class TaskController extends BaseController
             $paid_distance = $paid_distance < 0 ? 0 : $paid_distance;
             $total         = $pricingRule->base_price + ($paid_distance * $pricingRule->distance_fee) + ($paid_duration * $pricingRule->duration_price);
 
-            if(@$pricingRuleDistance && $pricingRuleDistance>0){
-                $total         = $pricingRule->base_price + $pricingRuleDistance + ($paid_duration * $pricingRule->duration_price);
+            if($pricingRuleDistance)
+            {
+                $total         = $pricingRule->base_price + ($pricingRuleDistance) + ($paid_duration * $pricingRule->duration_price);
+            }else{
+                $total         = $pricingRule->base_price + ($paid_distance * $pricingRule->distance_fee) + ($paid_duration * $pricingRule->duration_price);
             }
             if($orders->is_cab_pooling == 1){
                 $total       = ($total/$orders->available_seats)*$orders->no_seats_for_pooling;
@@ -3862,8 +3865,7 @@ class TaskController extends BaseController
 
             //get pricing rule  for save with every order based on geo fence and agent tags
             $agent_tags = (isset($request->order_agent_tag) && !empty($request->order_agent_tag)) ? $request->order_agent_tag : '';
-            $pricingRule = $this->getPricingRuleData($geoid, $agent_tags, $this->getConvertUTCToLocalTime($notification_time, $auth->timezone));
-
+           
             
             if($auth->getPreference->toll_fee == 1){
                 $getdata = $this->toll_fee($latitude, $longitude, (isset($request->toll_passes)?$request->toll_passes:''), (isset($request->VehicleEmissionType)?$request->VehicleEmissionType:''), (isset($request->travelMode)?$request->travelMode:''));
@@ -3872,6 +3874,10 @@ class TaskController extends BaseController
                 $getdata = $this->GoogleDistanceMatrix($latitude, $longitude);
                 $toll_amount = 0;
             }
+
+            $pricingRule = $this->getPricingRuleData($geoid, $agent_tags, $this->getConvertUTCToLocalTime($notification_time, $auth->timezone));
+            $pricingRuleDistance = $this->getPricingRuleDynamic($pricingRule,$getdata['distance']);
+
 
 
             $paid_duration = $getdata['duration'] - $pricingRule->base_duration;
