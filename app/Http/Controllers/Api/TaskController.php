@@ -1290,7 +1290,7 @@ class TaskController extends BaseController
             $paid_distance = $paid_distance < 0 ? 0 : $paid_distance;
             $total         = $pricingRule->base_price + ($paid_distance * $pricingRule->distance_fee) + ($paid_duration * $pricingRule->duration_price);
 
-            if($orders->is_cab_pooling == 1){
+            if($orders->is_cab_pooling == 1 && $orders->available_seats != 0){
                 $total       = ($total/$orders->available_seats)*$orders->no_seats_for_pooling;
                 $toll_amount = ($toll_amount/$orders->available_seats)*$orders->no_seats_for_pooling;
             }
