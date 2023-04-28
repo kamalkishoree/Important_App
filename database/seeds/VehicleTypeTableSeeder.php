@@ -33,6 +33,10 @@ class VehicleTypeTableSeeder extends Seeder
             array(
                 'id' => 5,
                 'name' => 'truck'
+            ),
+            array(
+                'id' => 6,
+                'name' => 'auto'
             )
         );
         DB::table('vehicle_types')->insert($type);
