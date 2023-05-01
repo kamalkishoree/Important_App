@@ -88,19 +88,19 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
         <div class="row mt-3 ml-4">
             <div class="col-md-12">
                 <span class="price"><h4>Base Price </h4> </span> 
-                <span> {{ Session::get('currencySymbol') ?? '$'}} {{ $order->base_price ?? 0.00 }}</span>
+                <span> {{ $client->currency->symbol }} {{ $order->base_price ?? 0.00 }}</span>
             </div>
             <div class="col-md-12">
                 <span class="price"><h4>Wating Price per min </h4> </span> 
-                <span > {{ Session::get('currencySymbol') ?? '$'}} {{ $order->base_duration ?? 0.00 }}/min</span>
+                <span > {{ $client->currency->symbol }} {{ $order->base_duration ?? 0.00 }}/min</span>
             </div>
             <div class="col-md-12">
                 <span class="price"><h4>Wating Price </h4> </span>
-                <span > {{ Session::get('currencySymbol') ?? '$'}} {{ $order->waiting_price ?? 0.00 }}</span>
+                <span > {{ $client->currency->symbol }} {{ $order->waiting_price ?? 0.00 }}</span>
             </div>
             <div class="col-md-12">
                 <span class="price"><h4>Cash Collected </h4> </span> 
-                <span > {{ Session::get('currencySymbol') ?? '$'}} {{ ($order->cash_to_be_collected + $order->waiting_price) ?? 0.00 }}</span>
+                <span > {{ $client->currency->symbol }} {{ ($order->cash_to_be_collected + $order->waiting_price) ?? 0.00 }}</span>
             </div>
         </div>
 

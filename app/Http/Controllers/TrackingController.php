@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Config;
 use Storage,PDF;
 use Carbon\Carbon;
-use App\Model\{Client, Order,DriverRegistrationDocument, OrderFormAttribute};
+use App\Model\{Client, ClientPreference, Order,DriverRegistrationDocument, OrderFormAttribute};
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -40,7 +40,9 @@ class TrackingController extends Controller
                 
                 $mapkey = $map_key->map_key_1 ?? '';
 
-                return view('tracking/tracking', compact('tasks', 'order', 'agent_location','mapkey'));
+                $client = ClientPreference::where('client_id', $user)->first();
+
+                return view('tracking/tracking', compact('tasks', 'order', 'agent_location','mapkey','client'));
             } else {
                 return view('tracking/order_not_found');
             }
