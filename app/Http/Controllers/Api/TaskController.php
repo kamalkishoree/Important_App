@@ -1451,7 +1451,7 @@ class TaskController extends BaseController
                     ->addMinutes($finaldelay)
                     ->format('Y-m-d H:i:s');
                     $schduledata['geo']               = $geo;
-                    $schduledata['notification_time'] = $notification_time;
+                    $schduledata['notification_time'] = $time;
                     $schduledata['notification_befor_time'] = $notification_time;
                     $schduledata['agent_id']          = $agent_id;
                     $schduledata['orders_id']         = $orders->id;
