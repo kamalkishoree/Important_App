@@ -273,7 +273,7 @@ class TaskController extends BaseController
                 $task = Task::where('order_id', $orderId->order_id)->update(['task_status' => $request->task_status,'note' => $note ]);
                 ////
                 if(checkColumnExists('orders','rejectable_order')){
-                    if($order_details && isset( $order_details->rejectable_order) && $  $order_details->rejectable_order ==1){
+                    if($order_details && isset( $order_details->rejectable_order) && $order_details->rejectable_order ==1){
                         if ($order_details &&  $order_details->call_back_url) {
                             $call_web_hook = $this->updateStatusDataToOrder($order_details, 6,2);  # task rejected
                         }
@@ -295,10 +295,20 @@ class TaskController extends BaseController
             }
         }
 
-        if (isset($request->qr_code)) {
-            $task = Task::where('id', $request->task_id)->update([
-                'bag_qrcode' => $request->qr_code
-            ]);
+        if(isset($request->wait_time)){
+           
+            $waiting_time = explode(":",$request->wait_time)[0];
+            $updateData = [
+                'base_waiting'    => $request->waiting_time,
+                'waiting_price'   => $orderId->duration_price * $waiting_time,
+            ];
+
+            Order::find($orderId->order_id)->update($updateData);
+        }
+
+        if(isset($request->qr_code))
+        {
+            $task = Task::where('id', $request->task_id)->update(['bag_qrcode' => $request->qr_code]);
         }
 
         $task = Task::where('id', $request->task_id)->update([
@@ -1522,7 +1532,7 @@ class TaskController extends BaseController
                     ->addMinutes($finaldelay)
                     ->format('Y-m-d H:i:s');
                     $schduledata['geo']               = $geo;
-                    $schduledata['notification_time'] = $notification_time;
+                    $schduledata['notification_time'] = $time;
                     $schduledata['notification_befor_time'] = $notification_time;
                     $schduledata['agent_id']          = $agent_id;
                     $schduledata['orders_id']         = $orders->id;
