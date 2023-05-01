@@ -180,7 +180,7 @@ class BaseController extends Controller
         if (checkTableExists('clients')) {
             $user = Client::first();
             
-            $order_panel = OrderPanelDetail::where(['token' => $request->token])->first();
+            $order_panel = OrderPanelDetail::first();
             if(empty($order_panel)){
                 
                 return response()->json([

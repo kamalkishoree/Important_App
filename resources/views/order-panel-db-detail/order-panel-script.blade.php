@@ -27,7 +27,7 @@
     });
     
         <?php if(session('hashKey')) {?>
-              $('#hashKeyModal').modal('show');
+              //$('#hashKeyModal').modal('show');
         <?php }?>
         
    
