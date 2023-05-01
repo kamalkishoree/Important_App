@@ -10,7 +10,16 @@ use Illuminate\Support\Facades\Session;
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box">
-                    <h4 class="page-title">{{__("Order Panel DB Detail")}}</h4>
+                    
+                @if (Route::currentRouteName() == 'inventory-panel-db')
+                
+                 <h4 class="page-title">{{__("Inventory Panel DB Detail")}}</h4>
+
+                @else
+                <h4 class="page-title">{{__("Order Panel DB Detail")}}</h4>
+                @endif
+
+                
                 </div>
             </div>
         </div>
