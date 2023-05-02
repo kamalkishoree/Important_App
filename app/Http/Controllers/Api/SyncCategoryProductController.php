@@ -235,14 +235,9 @@ class SyncCategoryProductController extends Controller
                 "media_type" => $image['media_type'],
                 "path" => $image['path'],
             ];
-            $product_media = VendorMedia::updateOrCreate([
-                'path' => $image['path']
-            ], $product_variant_image);
+            $product_media = VendorMedia::create($product_variant_image);
            
-            $product_media = ProductImage::updateOrCreate([
-                'product_id' => $product_id,
-                'media_id' => $product_media->id
-            ], [
+            $product_media_image = ProductImage::create([
                 'product_id' => $product_id,
                 'media_id' => $product_media->id ,
                 'is_default' => $image['is_default'] 
@@ -277,8 +272,8 @@ class SyncCategoryProductController extends Controller
         $categorySave = Category::updateOrCreate([
             'slug' => $slug
         ], $data);
-        \Log::info('categorySave transl_data');
-        \Log::info($cat['primary'] ?? "");
+         \Log::info('categorySave transl_data');
+         \Log::info($cat['primary'] ?? "");
         $transl_data = [
             'name' => $cat['primary']['name'] ?? $cat['slug'],
             'trans-slug' => $cat['primary']['trans_slug'] ?? '',
