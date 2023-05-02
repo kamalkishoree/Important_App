@@ -37,7 +37,7 @@
 									<div class="form-check">
 										<input type="checkbox" class="form-check-input"
 											onchange="getCategory({{$cat->id}})" name="category-check"
-											id="category-check_{{$cat->id}}"> <label class="label-check" for="category-check_{{$cat->id}}">{{ $cat->slug}}</label>
+											id="category-check_{{$cat->id}}"> <label class="label-check" for="category-check_{{$cat->id}}">{{ $cat->translation->name}}</label>
 									</div>
 								</li> @endforeach
 
