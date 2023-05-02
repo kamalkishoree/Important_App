@@ -197,38 +197,49 @@ trait GlobalFunction{
 // echo $sum;
 
     //---------function to get pricing rule based on agent_tag/geo fence/timetable/day/time
-    public function getPricingRuleDynamic($pricingRule,$distance)
+    public function getPricingRuleDynamic($pricingRule,$distance,$perKm=0)
     {
         try {
             $lastDistance = $distance - $pricingRule->base_distance??1;
-                $distancePricing = [];
-                if(!empty($pricingRule) && $distance>1){
-                    $distancePricing = DistanceWisePricingRule::where('price_rule_id',$pricingRule->id)->where('distance_fee','<=',$lastDistance)->orderBy('distance_fee','asc')->get();
-                }
-            $last = $pricingRule->base_distance??1;
-            $sum = 0;
-            foreach($distancePricing as $key => $number)
-            {
-                $no = ($number->distance_fee - $last);
-                if($lastDistance >= $number->distance_fee)
-                {
-                    $pr = $no * $number->duration_price;
-                    $sum +=  $pr; 
-                }
-                $lastDistance = $lastDistance - $no;
-                $last = $number->distance_fee;
-            }
 
-            if($lastDistance){
-                $upperPrice = DistanceWisePricingRule::where('price_rule_id',$pricingRule->id)->where('distance_fee','>',$lastDistance)->value('duration_price');
-                $pr = $lastDistance * $upperPrice;
-                $sum +=  $pr; 
-                \Log::info($lastDistance.' --- lastDistance sum: '.$sum.' upperPrice : '.$upperPrice);
-            }
-            return $sum??0;
+
+            if($perKm)
+            {
+                    $distancePricing = [];
+                    if(!empty($pricingRule) && $distance>1){
+                        $distancePricing = DistanceWisePricingRule::where('price_rule_id',$pricingRule->id)->where('distance_fee','<=',$lastDistance)->orderBy('distance_fee','asc')->get();
+                    }
+                    $last = $pricingRule->base_distance??1;
+                    $sum = 0;
+                    foreach($distancePricing as $key => $number)
+                    {
+                        $no = ($number->distance_fee - $last);
+                        if($lastDistance >= $number->distance_fee)
+                        {
+                            $pr = $no * $number->duration_price;
+                            $sum +=  $pr; 
+                        }
+                        $lastDistance = $lastDistance - $no;
+                        $last = $number->distance_fee;
+                    }
+
+                    if($lastDistance){
+                        $upperPrice = DistanceWisePricingRule::where('price_rule_id',$pricingRule->id)->where('distance_fee','>',$lastDistance)->value('duration_price');
+                        $pr = $lastDistance * $upperPrice;
+                        $sum +=  $pr; 
+                        \Log::info($lastDistance.' --- lastDistance sum: '.$sum.' upperPrice : '.$upperPrice);
+                    }
+                }else{
+
+                    $distancePricing = DistanceWisePricingRule::where('price_rule_id',$pricingRule->id)->where('distance_fee','>=',$lastDistance)->where('distance_fee','<=',$lastDistance)->orderBy('distance_fee','asc')->first();
+
+                    $sum = $lastDistance * $distancePricing->duration_price;
+
+                }
+                    return $sum??0;
 
         } catch (\Throwable $th) {
-          //\Log::info(json_encode($th->getMessage()));
+          \Log::info(json_encode($th->getMessage()));
         }
     
     }
