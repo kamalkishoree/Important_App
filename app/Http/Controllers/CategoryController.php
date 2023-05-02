@@ -193,8 +193,7 @@ class CategoryController extends Controller
             
             $responseBody = json_decode($response->getBody(), true);
 
-            // pr($postInput);
-            \Log::info($responseBody);
+         
             
             if (@$responseBody['status'] == 200) {
                 $order_details = OrderPanelDetail::find($order_panel_id);
