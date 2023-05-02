@@ -3,7 +3,7 @@
 <li>
 	<div class="prod">
 		<div class="prod-pic">
-			<img src="images/no-img.jpg" alt="image">
+			<img src="{{ asset('assets/images/bg-material.png')}}" alt="image">
 		</div>
    @php
      if(!empty($product->translation_one)){

@@ -2,7 +2,13 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header border-0">
+                
+                @if (Route::currentRouteName() == 'inventory-panel-db')
+                <h4 class="modal-title">{{__("Add Inventory Panel DB")}}</h4>
+                @else
                 <h4 class="modal-title">{{__("Add Order Panel DB")}}</h4>
+                @endif
+
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
             <form id="add-order-panel-db" action="{{ route('order-panel-db.store') }}" method="POST">
@@ -58,7 +64,7 @@
                         <div class="col-md-6">
                             <div class="form-group selected-type">
                                 <label for="panel_type" class="control-label">Panel Type</label>
-                                <select name="type" id="panel_type" class="form-control">
+                                <select name="type" id="panel_type" class="form-control" disabled>
                                     <option value="0" >Order Panel</option>
                                     <option value="1">Inventory Panel</option>
                                 </select>                                        

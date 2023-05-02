@@ -33,7 +33,16 @@ use Illuminate\Support\Facades\Session;
                                 
                             </div>
                             <div class="col-sm-4 text-right btn-auto">
-                                <button type="button" class="btn btn-blue waves-effect waves-light openModal" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> {{__("Add Order DB")}}</button>
+                                <button type="button" class="btn btn-blue waves-effect waves-light openModal" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> 
+                             
+                                @if (Route::currentRouteName() == 'inventory-panel-db')
+                                {{__("Add Inventory DB")}}
+                                @else
+                                {{__("Add Order DB")}}
+                                @endif
+
+                            
+                            </button>
                             </div>
                             <div class="col-sm-12">
                                 <div class="text-sm-left">

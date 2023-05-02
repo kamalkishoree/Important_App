@@ -29,7 +29,7 @@ $products = Product::where([
 							value="{{$variant->id}}"  onclick="getProductVariant({{$product->id}})"> <label></label>
 					</div>
 					<div class="prod-pic">
-						<img src="images/no-img.jpg" alt="image">
+						<img src="{{ asset('assets/images/bg-material.png')}}" alt="image">
 					</div>
 					<input type="hidden" name="vendor_id"
 						id="vendor_id_{{$variant->id}}"
