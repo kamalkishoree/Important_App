@@ -3430,7 +3430,9 @@ class TaskController extends BaseController
 
     public function createProductRoute(Request $request)
     {
-        $category = Category::where('status', 1)->get();
+
+      
+        $category = Category::where(['status' =>  1,'order_panel_id' => $request->id])->get();
 
         return view('create-product-route', compact('category'));
     }
