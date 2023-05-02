@@ -18,6 +18,7 @@ trait inventoryManagement
         ])->first();
         
        
+       
         // URL
         $url = $order_panel_details->url;
         $code = $order_panel_details->code;
@@ -29,7 +30,7 @@ trait inventoryManagement
         // Headers
         $headers = [
             'shortcode' => $code,
-//          'code' => $code,
+//\\          'code' => $code,
             'key' => $code
         ];
         $response = Http::withHeaders($headers)->post($apiAuthCheckURL, $postInput);
