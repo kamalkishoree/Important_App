@@ -148,6 +148,8 @@ class CategoryController extends Controller
             $order_details = OrderPanelDetail::find($order_panel_id);
             $url = $order_details->url;
           
+
+            
             // URL
             // $apiAuthCheckURL = $url.'/api/v1/dispatcher/check-order-keys';
 
@@ -190,7 +192,8 @@ class CategoryController extends Controller
         
             
             $responseBody = json_decode($response->getBody(), true);
-            \Log::info($responseBody);
+
+         
             
             if (@$responseBody['status'] == 200) {
                 $order_details = OrderPanelDetail::find($order_panel_id);

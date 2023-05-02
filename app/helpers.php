@@ -301,6 +301,18 @@ if (!function_exists('checkTableExists')) {
 
 }
 
+
+function checkImageExtension($image)
+{
+    $ch =  substr($image, strpos($image, ".") + 1);
+    $ex = "@webp";
+    if($ch == 'svg')
+    {
+        $ex = "";
+    }
+    return $ex;
+}
+
 if (!function_exists('checkWarehouseMode')) {
     /** check if column exits in table
     * @param string $tableName

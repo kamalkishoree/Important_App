@@ -12,9 +12,11 @@ use App\Model\ {
     ProductTranslation,
     ClientPreference,
     Client,
-    OrderPanelDetail
+    OrderPanelDetail,
+    ProductImage
 };
 use App\Model\Warehouse;
+use App\Model\VendorMedia;
 
 class SyncCategoryProductController extends Controller
 {
@@ -29,6 +31,9 @@ class SyncCategoryProductController extends Controller
     {
         // $request['data'] = json_decode($request['data'],true);
         // $request['vendors'] = json_decode($request['vendors'],true);
+
+
+       
         $order_details = OrderPanelDetail::find($request['order_panel_id']);
         if (@$request['vendors'] && count($request['vendors']) > 0) {
             $this->vendor_data = $request['vendors'];
@@ -81,8 +86,8 @@ class SyncCategoryProductController extends Controller
             if (! empty($cat['products']) && count($cat['products']) > 0) {
                 foreach ($cat['products'] as $product) {
                     $product_id = $this->syncSingleProduct($category_id, $product, $dataBaseName);
-                    // $product_images = $this->syncProductImages($product_id, $product, $dataBaseName);
                     $variantId = $this->syncProductVariant($product_id, $product, $dataBaseName);
+                    $product_images = $this->syncProductImages($product_id, $product, $dataBaseName);
                 }
             }
         }
@@ -213,6 +218,35 @@ class SyncCategoryProductController extends Controller
             $product_variant_import = ProductVariant::updateOrInsert([
                 'sku' => $Product_v_sku
             ], $product_variant);
+        }
+        return true;
+    }
+    public function syncProductImages($product_id, $product, $dataBaseName)
+    {
+        $images = @$product['pimage'];
+       
+        if(empty($images))
+        {
+            return true;
+        }
+        // # Add product variant
+        foreach ($images as $image) { # import product variant
+            $product_variant_image = [
+                "media_type" => $image['media_type'],
+                "path" => $image['path'],
+            ];
+            $product_media = VendorMedia::updateOrCreate([
+                'path' => $image['path']
+            ], $product_variant_image);
+           
+            $product_media = ProductImage::updateOrCreate([
+                'product_id' => $product_id,
+                'media_id' => $product_media->id
+            ], [
+                'product_id' => $product_id,
+                'media_id' => $product_media->id ,
+                'is_default' => $image['is_default'] 
+            ]);
         }
         return true;
     }
