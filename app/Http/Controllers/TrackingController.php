@@ -20,7 +20,7 @@ class TrackingController extends Controller
         $respnse = $this->connection($user);
         if ($respnse['status'] == 'connected') {
             $order   = DB::connection($respnse['database'])->table('orders')->where('unique_id', $id)->leftJoin('agents', 'orders.driver_id', '=', 'agents.id')
-                ->select('orders.*', 'agents.name', 'agents.profile_picture', 'agents.phone_number')->first();
+                ->select('orders.*', 'agents.name','agents.vehicle_type_id', 'agents.profile_picture', 'agents.phone_number')->first();
             if (isset($order->id)) {
                 $tasks = DB::connection($respnse['database'])->table('tasks')->where('order_id', $order->id)->leftJoin('locations', 'tasks.location_id', '=', 'locations.id')
                     ->select('tasks.*', 'locations.latitude', 'locations.longitude', 'locations.short_name', 'locations.address')->orderBy('task_order')->get();
@@ -142,7 +142,7 @@ class TrackingController extends Controller
         $agent = [];
         if ($respnse['status'] == 'connected') {
             $order = DB::connection($respnse['database'])->table('orders')->where('unique_id', $id)->leftJoin('agents', 'orders.driver_id', '=', 'agents.id')
-                ->select('orders.*', 'agents.name','agents.name','agents.color','agents.plate_number', 'agents.profile_picture', 'agents.phone_number')->first();
+                ->select('orders.*', 'agents.name','agents.vehicle_type_id','agents.color','agents.plate_number', 'agents.profile_picture', 'agents.phone_number')->first();
             if (isset($order->id)) {
                 $tasks = DB::connection($respnse['database'])->table('tasks')->where('order_id', $order->id)->leftJoin('locations', 'tasks.location_id', '=', 'locations.id')
                     ->select('tasks.*', 'locations.latitude', 'locations.longitude', 'locations.short_name', 'locations.address')->orderBy('task_order')->get();

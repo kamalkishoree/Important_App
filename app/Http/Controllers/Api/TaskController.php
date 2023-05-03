@@ -1456,7 +1456,7 @@ class TaskController extends BaseController
                     ->addMinutes($finaldelay)
                     ->format('Y-m-d H:i:s');
                     $schduledata['geo']               = $geo;
-                    $schduledata['notification_time'] = $notification_time;
+                    $schduledata['notification_time'] = $time;
                     $schduledata['notification_befor_time'] = $notification_time;
                     $schduledata['agent_id']          = $agent_id;
                     $schduledata['orders_id']         = $orders->id;
@@ -4208,4 +4208,41 @@ class TaskController extends BaseController
         }
     }
 
+
+    public function addBufferTime(Request $request){
+        try {
+            $order= order::where(['unique_id'=>$request->tracking_id])->update(['buffer_time'=>$request->time]);
+            $order_data= order::where(['unique_id'=>$request->tracking_id])->first();
+            if(!empty($order_data->driver_id)){
+               
+                $user = Agent::where('id', $order_data->driver_id)->first();
+                Log::info("devic token is ".$user->device_token);
+                $client_prefrerence = ClientPreference::first(['fcm_server_key']);
+                $data = [
+                  
+                    'notification_time'   => Carbon::now()->addSeconds(2)->format('Y-m-d H:i:s'),
+                    'notificationType'    => 'delay_time',
+                    'created_at'          => Carbon::now()->toDateTimeString(),
+                    'updated_at'          => Carbon::now()->toDateTimeString(),
+                    'device_type'         => $user->device_type,
+                    'device_token'        => $user->device_token,
+                    'title'               => 'Order Delayed',
+                    'body'                => 'Your order with Order Number #'.$order_data->order_number.' has been delayed by '.$order_data->buffer_time.' minutes',
+                ];
+                $this->sendnotification($data, $client_prefrerence);
+    
+            }
+           
+             return response()->json([
+                'message' => __('Time Added SuccessFully.'),
+                'status'  => "success",
+            ], 200);
+
+        }catch (Exception $e) {
+                
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 400);
+        }
+    }
 }
