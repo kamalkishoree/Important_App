@@ -117,9 +117,9 @@ use Illuminate\Support\Facades\Session;
                                                   @php
                     $warehouse_mode = checkWarehouseMode();
                 @endphp
-                                                @if($warehouse_mode['show_inventory_module'] == 1)
+               @if($warehouse_mode['show_inventory_module'] == 1)
                 <a class="nav-link" href="#">   <!-- addTaskModalHeader -->
-                    <button id="route-btn" type="button" class="btn btn-blue waves-effect waves-light klklkl" data-id="{{ $data->id}}" data-toggle="modal" data-target="#addRouteModal" data-backdrop="static" title="{{__('Add Route')}}" data-keyboard="false"><span><i class="mdi mdi-plus-circle mr-1"></i> {{__('Add Route')}}</span></button>
+                    <button  type="button" class="btn btn-blue waves-effect waves-light klklkl" data-id="{{ $data->id}}" data-toggle="modal" data-target="#addRouteModal" data-backdrop="static" title="{{__('Add Route')}}" data-keyboard="false"><span><i class="mdi mdi-plus-circle mr-1"></i> {{__('Add Route')}}</span></button>
                 </a>
             @endif
 

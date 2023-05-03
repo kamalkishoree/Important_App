@@ -261,7 +261,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			
 			
 
-			Route::get('create-product-route/{id}', 'TaskController@createProductRoute')->name('create-product-route');
+			Route::get('create-product-route', 'TaskController@createProductRoute')->name('create-product-route');
 			
 			Route::get('dispatcher-add-route', 'TaskController@dispatcherAddRoute')->name('dispatcher-add-route');
 			
