@@ -65,6 +65,7 @@ use Illuminate\Support\Facades\Session;
                                         <th>{{__("Key")}}</th>
                                         <th>{{__("Created Date")}}</th>
                                         <th>{{__("Type")}}</th>
+                                        <th>{{__("Sync Data")}}</th>
                                         <th>{{__("Action")}}</th>
                                         <th></th>
                                     </tr>
@@ -84,8 +85,18 @@ use Illuminate\Support\Facades\Session;
                                                 <td>Order Panel</td>   
                                                 @else
                                                 <td>Inventory Panel</td>
-                                                @endif          
-                                                                                 
+                                                @endif       
+                                                <td>
+
+                                                <form action="{{route('category.importOrderSideCategory')}}" method="post">
+                                                @csrf
+                                                    <input type="hidden" name="order_panel_id" value="{{ $data->id}}">
+                                                    <button type="submit" ><i class="fa fa-sync"></i></button>
+                                                </form>
+
+                                                </td>     
+                                                <td>{{ $data->key }}</td>                                 
+                                                                             
                                                 <td>
                                                     <div class="form-ul" style="width: 60px;">
                                                         

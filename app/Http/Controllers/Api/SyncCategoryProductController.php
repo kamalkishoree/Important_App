@@ -225,6 +225,8 @@ class SyncCategoryProductController extends Controller
     {
         $images = @$product['pimage'];
        
+            \Log::info('images'.$product_id);
+            \Log::info($images);
         if(empty($images))
         {
             return true;
@@ -235,9 +237,14 @@ class SyncCategoryProductController extends Controller
                 "media_type" => $image['media_type'],
                 "path" => $image['path'],
             ];
-            $product_media = VendorMedia::create($product_variant_image);
-           
-            $product_media_image = ProductImage::create([
+            $product_media = VendorMedia::updateOrCreate([
+                "media_type" => $image['media_type'],
+                "path" => $image['path']
+            ],$product_variant_image);
+            
+            $product_media_image = ProductImage::updateOrCreate([
+                'product_id' => $product_id,
+            ],[
                 'product_id' => $product_id,
                 'media_id' => $product_media->id ,
                 'is_default' => $image['is_default'] 
