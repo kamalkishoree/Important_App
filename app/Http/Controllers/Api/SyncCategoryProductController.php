@@ -224,9 +224,7 @@ class SyncCategoryProductController extends Controller
     public function syncProductImages($product_id, $product, $dataBaseName)
     {
         $images = @$product['pimage'];
-       
-            \Log::info('images'.$product_id);
-            \Log::info($images);
+    
         if(empty($images))
         {
             return true;
