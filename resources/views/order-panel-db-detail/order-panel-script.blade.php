@@ -46,11 +46,5 @@ function copyHashKey() {
     alert("Hash key copied to clipboard!");
 }
 
-$('#route-btn').click(function(){
-
-   var id = $(this).attr('data-id');
-      var url = "{{ route('create-product-route', ['id' => ':id']) }}".replace(':id', id);
-	 $('#create-route').attr('href',url);
-});
 </script>
 
