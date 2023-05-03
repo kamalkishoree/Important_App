@@ -118,6 +118,10 @@
                                     <input type="radio" id="truck" value="5" name="vehicle_type_id" act="add">
                                     <img id="trucks_add" src="{{asset('assets/icons/truck.png')}}">
                                 </div>
+                                <div class="radio radio-warning form-check-inline click cursors mt-2">
+                                    <input type="radio" id="auto" value="6" name="vehicle_type_id" act="add">
+                                    <img id="auto_add" src="{{asset('assets/icons/auto.png')}}">
+                                </div>
                                 <span class="invalid-feedback" role="alert">
                                     <strong></strong>
                                 </span>
