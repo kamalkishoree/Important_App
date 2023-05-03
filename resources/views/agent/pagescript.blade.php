@@ -314,7 +314,7 @@
             radi.prop('checked', true);
             var check = radi.val();
             var act = radi.attr('act');
-            console.log(check);
+            
             switch (check) {
                 case "1":
                     $("#foot_" + act).attr("src", "{{ asset('assets/icons/walk_blue.png') }}");
