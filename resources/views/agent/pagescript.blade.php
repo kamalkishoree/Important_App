@@ -314,6 +314,7 @@
             radi.prop('checked', true);
             var check = radi.val();
             var act = radi.attr('act');
+            console.log(check);
             switch (check) {
                 case "1":
                     $("#foot_" + act).attr("src", "{{ asset('assets/icons/walk_blue.png') }}");
@@ -321,6 +322,7 @@
                     $("#bike_" + act).attr("src", "{{ asset('assets/icons/bike.png') }}");
                     $("#cars_" + act).attr("src", "{{ asset('assets/icons/car.png') }}");
                     $("#trucks_" + act).attr("src", "{{ asset('assets/icons/truck.png') }}");
+                    $("#auto_" + act).attr("src", "{{ asset('assets/icons/auto.png') }}");
                     break;
                 case "2":
                     $("#foot_" + act).attr("src", "{{ asset('assets/icons/walk.png') }}");
@@ -328,6 +330,8 @@
                     $("#bike_" + act).attr("src", "{{ asset('assets/icons/bike.png') }}");
                     $("#cars_" + act).attr("src", "{{ asset('assets/icons/car.png') }}");
                     $("#trucks_" + act).attr("src", "{{ asset('assets/icons/truck.png') }}");
+                    $("#auto_" + act).attr("src", "{{ asset('assets/icons/auto.png') }}");
+                    
                     break;
                 case "3":
                     $("#foot_" + act).attr("src", "{{ asset('assets/icons/walk.png') }}");
@@ -335,6 +339,7 @@
                     $("#bike_" + act).attr("src", "{{ asset('assets/icons/bike_blue.png') }}");
                     $("#cars_" + act).attr("src", "{{ asset('assets/icons/car.png') }}");
                     $("#trucks_" + act).attr("src", "{{ asset('assets/icons/truck.png') }}");
+                    $("#auto_" + act).attr("src", "{{ asset('assets/icons/auto.png') }}");
                     break;
                 case "4":
                     $("#foot_" + act).attr("src", "{{ asset('assets/icons/walk.png') }}");
@@ -342,6 +347,7 @@
                     $("#bike_" + act).attr("src", "{{ asset('assets/icons/bike.png') }}");
                     $("#cars_" + act).attr("src", "{{ asset('assets/icons/car_blue.png') }}");
                     $("#trucks_" + act).attr("src", "{{ asset('assets/icons/truck.png') }}");
+                    $("#auto_" + act).attr("src", "{{ asset('assets/icons/auto.png') }}");
                     break;
                 case "5":
                     $("#foot_" + act).attr("src", "{{ asset('assets/icons/walk.png') }}");
@@ -349,6 +355,15 @@
                     $("#bike_" + act).attr("src", "{{ asset('assets/icons/bike.png') }}");
                     $("#cars_" + act).attr("src", "{{ asset('assets/icons/car.png') }}");
                     $("#trucks_" + act).attr("src", "{{ asset('assets/icons/truck_blue.png') }}");
+                    $("#auto_" + act).attr("src", "{{ asset('assets/icons/auto.png') }}");
+                    break;
+                case "6":
+                    $("#foot_" + act).attr("src", "{{ asset('assets/icons/walk.png') }}");
+                    $("#cycle_" + act).attr("src", "{{ asset('assets/icons/cycle.png') }}");
+                    $("#bike_" + act).attr("src", "{{ asset('assets/icons/bike.png') }}");
+                    $("#cars_" + act).attr("src", "{{ asset('assets/icons/car.png') }}");
+                    $("#trucks_" + act).attr("src", "{{ asset('assets/icons/truck.png') }}");
+                    $("#auto_" + act).attr("src", "{{ asset('assets/icons/auto_blue.png') }}");
                     break;
             }
         });
