@@ -186,6 +186,11 @@ class TaskController extends BaseController
                     }
                 }
 
+                if (isset($request->customer_phone_number)) {
+                    $dispatch_traking_url = $client_url.'/order/tracking/'.$client_details->code.'/'.$order_details->unique_id;
+                    $this->sendSms2($request->customer_phone_number,$dispatch_traking_url);
+                }
+                
                 if(!empty($errorMsgOtp)){
                     return response()->json([
                         'data' => [],
