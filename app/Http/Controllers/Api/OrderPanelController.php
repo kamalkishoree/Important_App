@@ -39,7 +39,9 @@ class OrderPanelController extends BaseController
         $geoagents_ids    = DriverGeo::where('geo_id', $geoid)->pluck('driver_id');
    
    
-        $agent = Agent::whereIn('id',  $geoagents_ids)->whereHas('slots',function($q) use($myDate,$start_time,$end_time){
+        $agent = Agent::whereIn('id',  $geoagents_ids)->with(['agentRating'=>function($q){
+            $q->where('review','!=','');
+        }])->whereHas('slots',function($q) use($myDate,$start_time,$end_time){
             $q->whereDate('schedule_date', $myDate)
             ->where('start_time', '<=', $start_time)
             ->where('end_time', '>=', $end_time);

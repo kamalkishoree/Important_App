@@ -36,7 +36,6 @@ class SyncCategoryProductJob implements ShouldQueue
 
 
     public function importOrderSideCategory($categories){
-        // $categories = ROCategory::with(['translation','products','products.variant','products.translation'])->get();
         foreach($categories as $cat){
             $category_id = $this->syncSingleCategory($cat);
             if(!empty($cat['products']) && count($cat['products']) > 0){
