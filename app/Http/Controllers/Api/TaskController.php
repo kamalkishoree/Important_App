@@ -1219,7 +1219,8 @@ class TaskController extends BaseController
                 'sync_order_id' => $request->order_id,
                 'available_seats' => isset($request->available_seats) ? $request->available_seats : 0,
                 'no_seats_for_pooling' => isset($request->no_seats_for_pooling) ? $request->no_seats_for_pooling : 0,
-                'is_cab_pooling' => isset($request->is_cab_pooling) ? $request->is_cab_pooling : 0
+                'is_cab_pooling' => isset($request->is_cab_pooling) ? $request->is_cab_pooling : 0,
+                'driver_id'     => $request->driver_id ?? null,
             ];
 
             if(checkColumnExists('orders', 'rejectable_order')){
@@ -1370,7 +1371,7 @@ class TaskController extends BaseController
             $paid_distance = $paid_distance < 0 ? 0 : $paid_distance;
             $total = $pricingRule->base_price + ($paid_distance * $pricingRule->distance_fee) + ($paid_duration * $pricingRule->duration_price);
 
-            if ($orders->is_cab_pooling == 1) {
+            if ($orders->is_cab_pooling == 1 && $orders->available_seats != 0) {
                 $total = ($total / $orders->available_seats) * $orders->no_seats_for_pooling;
                 $toll_amount = ($toll_amount / $orders->available_seats) * $orders->no_seats_for_pooling;
             }
@@ -4039,7 +4040,7 @@ class TaskController extends BaseController
             $paid_distance = $paid_distance < 0 ? 0 : $paid_distance;
             $total = $pricingRule->base_price + ($paid_distance * $pricingRule->distance_fee) + ($paid_duration * $pricingRule->duration_price);
 
-            if ($orders->is_cab_pooling == 1) {
+            if ($orders->is_cab_pooling == 1 && $orders->available_seats != 0) {
                 $total = ($total / $orders->available_seats) * $orders->no_seats_for_pooling;
                 $toll_amount = ($toll_amount / $orders->available_seats) * $orders->no_seats_for_pooling;
             }
