@@ -235,7 +235,6 @@ class SyncCategoryProductController extends Controller
     {
         $images = @$product['pimage'];
     
-        \Log::info('aws url'.$aws_url);
         if(empty($images))
         {
             return true;
