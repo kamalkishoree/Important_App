@@ -3306,14 +3306,16 @@ class TaskController extends BaseController
 
     public function getInventoryProducts(Request $request)
     {
+        
         if ($request->ajax()) {
             $category_id = $request->cat_id;
 
             if (! empty($request->title)) {
-                $products = Product::where('category_id', $category_id)->where('title', 'like', '%' . $request->title . '%')->get();
+                $products = Product::with('variant')->where('category_id', $category_id)->where('title', 'like', '%' . $request->title . '%')->whereNotNull('vendor_id')->get();
             } else {
-                $products = Product::where('category_id', $category_id)->get();
+                $products = Product::with('variant')->where('category_id', $category_id)->whereNotNull('vendor_id')->get();
             }
+            
             $options = view("modals.inventory-products-ajax", compact('products'))->render();
             return $options;
         }
@@ -3432,7 +3434,7 @@ class TaskController extends BaseController
     {
 
       
-        $category = Category::where(['status' =>  1,'order_panel_id' => $request->id])->get();
+        $category = Category::where(['status' =>  1])->get();
 
         return view('create-product-route', compact('category'));
     }

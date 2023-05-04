@@ -65,6 +65,7 @@ use Illuminate\Support\Facades\Session;
                                         <th>{{__("Key")}}</th>
                                         <th>{{__("Created Date")}}</th>
                                         <th>{{__("Type")}}</th>
+                                        <th>{{__("Sync Data")}}</th>
                                         <th>{{__("Action")}}</th>
                                         <th></th>
                                     </tr>
@@ -84,8 +85,18 @@ use Illuminate\Support\Facades\Session;
                                                 <td>Order Panel</td>   
                                                 @else
                                                 <td>Inventory Panel</td>
-                                                @endif          
-                                                                                 
+                                                @endif       
+                                                <td>
+
+                                                <form action="{{route('category.importOrderSideCategory')}}" method="post">
+                                                @csrf
+                                                    <input type="hidden" name="order_panel_id" value="{{ $data->id}}">
+                                                    <button type="submit" ><i class="fa fa-sync"></i></button>
+                                                </form>
+
+                                                </td>     
+                                                                             
+                                                                             
                                                 <td>
                                                     <div class="form-ul" style="width: 60px;">
                                                         
@@ -102,18 +113,7 @@ use Illuminate\Support\Facades\Session;
                                                         </div> --}}
                                                     </div>
                                                 </td>
-                                                <td>
-                                                  @php
-                    $warehouse_mode = checkWarehouseMode();
-                @endphp
-                                                @if($warehouse_mode['show_inventory_module'] == 1)
-                <a class="nav-link" href="#">   <!-- addTaskModalHeader -->
-                    <button id="route-btn" type="button" class="btn btn-blue waves-effect waves-light klklkl" data-id="{{ $data->id}}" data-toggle="modal" data-target="#addRouteModal" data-backdrop="static" title="{{__('Add Route')}}" data-keyboard="false"><span><i class="mdi mdi-plus-circle mr-1"></i> {{__('Add Route')}}</span></button>
-                </a>
-            @endif
-
-                                                
-                                                </td>
+                                              
                                             </tr>
                                         @endforeach
                                         @else

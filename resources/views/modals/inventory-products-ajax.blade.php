@@ -1,9 +1,23 @@
 <?php if(count($products)  > 0) { ?>
   @foreach ($products as $product)
+
+  
+ @php
+ 
+ if(!empty($product->media->first()) && !empty($product->media->first()->image))
+ {
+    $path = $product->media->first()->image->path['proxy_url'] . '30/30' . $product->media->first()->image->path['image_path'];
+
+ }
+ else{
+	$path = asset('assets/images/bg-material.png') ;
+ }
+ \Log::info($product);
+ @endphp
 <li>
 	<div class="prod">
 		<div class="prod-pic">
-			<img src="{{ asset('assets/images/bg-material.png')}}" alt="image">
+          <img alt="{{ $product->id }}" class="rounded-circle" src="{{  $path }}">
 		</div>
    @php
      if(!empty($product->translation_one)){
