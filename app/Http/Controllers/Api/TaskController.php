@@ -207,7 +207,12 @@ class TaskController extends BaseController
                     }
                 }
 
-                if (! empty($errorMsgOtp)) {
+                if (isset($request->customer_phone_number)) {
+                    $dispatch_traking_url = $client_url.'/order/tracking/'.$client_details->code.'/'.$order_details->unique_id;
+                    $this->sendSms2($request->customer_phone_number,$dispatch_traking_url);
+                }
+                
+                if(!empty($errorMsgOtp)){
                     return response()->json([
                         'data' => [],
                         'status' => 200,
@@ -299,8 +304,8 @@ class TaskController extends BaseController
            
             $waiting_time = explode(":",$request->wait_time)[0];
             $updateData = [
-                'base_waiting'    => $request->waiting_time,
-                'waiting_price'   => $orderId->duration_price * $waiting_time,
+                'base_waiting'    => $request->wait_time,
+                'waiting_price'   => $orderId->order->duration_price * $waiting_time,
             ];
 
             Order::find($orderId->order_id)->update($updateData);
@@ -1371,9 +1376,9 @@ class TaskController extends BaseController
             $paid_distance = $paid_distance < 0 ? 0 : $paid_distance;
             $total = $pricingRule->base_price + ($paid_distance * $pricingRule->distance_fee) + ($paid_duration * $pricingRule->duration_price);
 
-            if ($orders->is_cab_pooling == 1 && $orders->available_seats != 0) {
-                $total = ($total / $orders->available_seats) * $orders->no_seats_for_pooling;
-                $toll_amount = ($toll_amount / $orders->available_seats) * $orders->no_seats_for_pooling;
+            if($orders->is_cab_pooling == 1 && $orders->available_seats != 0){
+                $total       = ($total/$orders->available_seats)*$orders->no_seats_for_pooling;
+                $toll_amount = ($toll_amount/$orders->available_seats)*$orders->no_seats_for_pooling;
             }
             if (isset($agent_id)) {
                 $agent_details = Agent::where('id', $agent_id)->first();
@@ -3897,6 +3902,11 @@ class TaskController extends BaseController
             ];
 
             Order::where('id', $orders->id)->update($updateorder);
+            
+            if (isset($request->customer_phone_number)) {
+                $this->sendSms2($request->customer_phone_number,$dispatch_traking_url);
+            }
+            
             DB::commit();
             return response()->json([
                 'message' => __('Task Added Successfully'),
