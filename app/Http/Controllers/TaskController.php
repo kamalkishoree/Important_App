@@ -3371,7 +3371,7 @@ class TaskController extends BaseController
                 'warehouseProducts'
             ])->whereIn('id', $vendor_ids);
             if (@$request->title) {
-                $warehouses->where('slug', 'like', '%' . $request->title . '%');
+                $warehouses->where('name', 'like', '%' . $request->title . '%');
             }
 
             if (@$request->filter) {
