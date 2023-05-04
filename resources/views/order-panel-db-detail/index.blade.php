@@ -95,7 +95,7 @@ use Illuminate\Support\Facades\Session;
                                                 </form>
 
                                                 </td>     
-                                                <td>{{ $data->key }}</td>                                 
+                                                                             
                                                                              
                                                 <td>
                                                     <div class="form-ul" style="width: 60px;">
@@ -113,18 +113,7 @@ use Illuminate\Support\Facades\Session;
                                                         </div> --}}
                                                     </div>
                                                 </td>
-                                                <td>
-                                                  @php
-                    $warehouse_mode = checkWarehouseMode();
-                @endphp
-               @if($warehouse_mode['show_inventory_module'] == 1)
-                <a class="nav-link" href="#">   <!-- addTaskModalHeader -->
-                    <button  type="button" class="btn btn-blue waves-effect waves-light klklkl" data-id="{{ $data->id}}" data-toggle="modal" data-target="#addRouteModal" data-backdrop="static" title="{{__('Add Route')}}" data-keyboard="false"><span><i class="mdi mdi-plus-circle mr-1"></i> {{__('Add Route')}}</span></button>
-                </a>
-            @endif
-
-                                                
-                                                </td>
+                                              
                                             </tr>
                                         @endforeach
                                         @else
