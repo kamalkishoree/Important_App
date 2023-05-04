@@ -39,8 +39,7 @@ $products = Product::where([
 						id="vendor_id_{{$variant->id}}"
 						value="{{$variant->product->vendor_id}}">
 					
-					  <?php  $title = !empty($variant->title) ? $variant->title :$product->title ?>
-					  <span class="variant-title" ><?=   $product->title."(".$title." )" ?></span>
+					  <span class="variant-title" ><?=   $product->title ?></span>
 					  
 				</div>
 			</div>
