@@ -314,44 +314,44 @@
             radi.prop('checked', true);
             var check = radi.val();
             var act = radi.attr('act');
+            var walk = "{{ asset('assets/icons/walk.png') }}";
+            var cycle ="{{ asset('assets/icons/cycle.png') }}";
+            var bike ="{{ asset('assets/icons/bike.png') }}";
+            var car ="{{ asset('assets/icons/car.png') }}";
+            var truck = "{{ asset('assets/icons/truck.png') }}";
+            var auto = "{{ asset('assets/icons/auto.png') }}";
             switch (check) {
-                case "1":
-                    $("#foot_" + act).attr("src", "{{ asset('assets/icons/walk_blue.png') }}");
-                    $("#cycle_" + act).attr("src", "{{ asset('assets/icons/cycle.png') }}");
-                    $("#bike_" + act).attr("src", "{{ asset('assets/icons/bike.png') }}");
-                    $("#cars_" + act).attr("src", "{{ asset('assets/icons/car.png') }}");
-                    $("#trucks_" + act).attr("src", "{{ asset('assets/icons/truck.png') }}");
-                    break;
-                case "2":
-                    $("#foot_" + act).attr("src", "{{ asset('assets/icons/walk.png') }}");
-                    $("#cycle_" + act).attr("src", "{{ asset('assets/icons/cycle_blue.png') }}");
-                    $("#bike_" + act).attr("src", "{{ asset('assets/icons/bike.png') }}");
-                    $("#cars_" + act).attr("src", "{{ asset('assets/icons/car.png') }}");
-                    $("#trucks_" + act).attr("src", "{{ asset('assets/icons/truck.png') }}");
-                    break;
-                case "3":
-                    $("#foot_" + act).attr("src", "{{ asset('assets/icons/walk.png') }}");
-                    $("#cycle_" + act).attr("src", "{{ asset('assets/icons/cycle.png') }}");
-                    $("#bike_" + act).attr("src", "{{ asset('assets/icons/bike_blue.png') }}");
-                    $("#cars_" + act).attr("src", "{{ asset('assets/icons/car.png') }}");
-                    $("#trucks_" + act).attr("src", "{{ asset('assets/icons/truck.png') }}");
-                    break;
-                case "4":
-                    $("#foot_" + act).attr("src", "{{ asset('assets/icons/walk.png') }}");
-                    $("#cycle_" + act).attr("src", "{{ asset('assets/icons/cycle.png') }}");
-                    $("#bike_" + act).attr("src", "{{ asset('assets/icons/bike.png') }}");
-                    $("#cars_" + act).attr("src", "{{ asset('assets/icons/car_blue.png') }}");
-                    $("#trucks_" + act).attr("src", "{{ asset('assets/icons/truck.png') }}");
-                    break;
-                case "5":
-                    $("#foot_" + act).attr("src", "{{ asset('assets/icons/walk.png') }}");
-                    $("#cycle_" + act).attr("src", "{{ asset('assets/icons/cycle.png') }}");
-                    $("#bike_" + act).attr("src", "{{ asset('assets/icons/bike.png') }}");
-                    $("#cars_" + act).attr("src", "{{ asset('assets/icons/car.png') }}");
-                    $("#trucks_" + act).attr("src", "{{ asset('assets/icons/truck_blue.png') }}");
-                    break;
+            case "1":
+            walk = "{{ asset('assets/icons/walk_blue.png') }}";
+            break;
+            case "2":
+            cycle = "{{ asset('assets/icons/cycle_blue.png') }}";
+            break;
+            case "3":
+            bike = "{{ asset('assets/icons/bike_blue.png') }}";
+            break;
+            case "4":
+            car = "{{ asset('assets/icons/car_blue.png') }}";
+            break;
+            case "5":
+            truck = "{{ asset('assets/icons/truck_blue.png') }}";
+            break;          
+            case "6":
+            auto = "{{ asset('assets/icons/auto_blue.png') }}";
+            break;          
             }
-        });
+            setIcon (act ,walk,cycle,bike,car,truck,auto);
+    
+            });
+            function setIcon (act ,walk,cycle,bike,car,truck,auto){
+
+            $("#foot_" + act).attr("src", walk);
+            $("#cycle_" + act).attr("src",cycle);
+            $("#bike_" + act).attr("src", bike);
+            $("#cars_" + act).attr("src",car);
+            $("#trucks_" + act).attr("src",truck);
+            $("#auto_" + act).attr("src",auto);
+        }
 
         function select2(){
             $("#warehouse_id").select2({
