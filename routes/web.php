@@ -256,6 +256,8 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 
 			Route::get('get-category-warehouse', 'TaskController@getCategoryWarehouse')->name('getCategoryWarehouse');
 
+			Route::get('dispatcher-autoallocation', 'TaskController@dispatcherAutoAllocation');
+			
 			Route::post('optimize-route', 'DashBoardController@optimizeRoute');
 			Route::post('arrange-route', 'DashBoardController@arrangeRoute');
 			Route::post('optimize-arrange-route', 'DashBoardController@optimizeArrangeRoute');

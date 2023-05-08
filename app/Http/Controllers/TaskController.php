@@ -2874,4 +2874,70 @@ class TaskController extends BaseController
             ]);
         }
     }
+    
+    public function dispatcherAutoAllocation()
+    {
+        
+        // Define the user location as latitude and longitude coordinates
+        $user_location = "30.7333,76.7794"; // Chandigarh location
+        
+        // Get all warehouses
+        $warehouses = Warehouse::all();
+        
+        // Extract latitudes and longitudes into separate arrays
+        $latitudes = $warehouses->pluck('latitude')->toArray();
+        $longitudes = $warehouses->pluck('longitude')->toArray();
+        
+        // Combine latitudes and longitudes into comma-separated strings for each warehouse
+        $destinations = array_map(function($lat, $lng) {
+            return $lat . ',' . $lng;
+        }, $latitudes, $longitudes);
+            
+            // Construct API request URL
+            // Construct API request URLs for all origin and destination combinations
+            $url_format = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=%s&destinations=%s&key=AIzaSyAJgoJnT57PuPJDSTrLIVOa2-cq4FO3p0k";
+            $url_list = [];
+            for ($i = 0; $i < count($destinations); $i++) {
+                for ($j = $i + 1; $j < count($destinations); $j++) {
+                    $origin = $destinations[$i];
+                    $destination = $destinations[$j];
+                    $url = sprintf($url_format, $origin, $destination);
+                    $url_list[] = $url;
+                }
+            }
+            
+            
+            // Make API requests and parse responses
+            $distance_matrix = [];
+            foreach ($url_list as $url) {
+                $response = file_get_contents($url);
+                $data = json_decode($response);
+                $distance = ($data->rows[0]->elements[0]->distance->value)/1000;
+                $distance_matrix[] = $distance;
+            }
+            $n = count($warehouses);
+            
+            // Convert 1D distance matrix to 2D adjacency matrix
+            $adjacency_matrix = [];
+            for ($i = 0; $i < $n; $i++) {
+                $row = [];
+                for ($j = 0; $j < $n; $j++) {
+                    if ($i == $j) {
+                        $row[] = 0;
+                    } else {
+                        if ($i < $j) {
+                            $index = (($n - 1) * $i) - (($i * ($i + 1)) / 2) + $j - 1;
+                        } else {
+                            $index = (($n - 1) * $j) - (($j * ($j + 1)) / 2) + $i - 1;
+                        }
+                        $row[] = $distance_matrix[$index];
+                    }
+                }
+                $adjacency_matrix[] = $row;
+            }
+            
+            
+            print_r($adjacency_matrix);
+            
+    }
 }
