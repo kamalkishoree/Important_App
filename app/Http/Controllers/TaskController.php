@@ -2877,34 +2877,60 @@ class TaskController extends BaseController
     
     public function dispatcherAutoAllocation()
     {
+
+
         
         // Define the user location as latitude and longitude coordinates
-        $user_location = "30.7333,76.7794"; // Chandigarh location
+        $user_lat = "30.7333"; // Chandigarh location
+        $user_long = "76.7794"; // Chandigarh location
         
         // Get all warehouses
         $warehouses = Warehouse::all();
         
+        $dest = [];
+        $list = [];
+          
+
         // Extract latitudes and longitudes into separate arrays
-        $latitudes = $warehouses->pluck('latitude')->toArray();
-        $longitudes = $warehouses->pluck('longitude')->toArray();
-        
-        // Combine latitudes and longitudes into comma-separated strings for each warehouse
-        $destinations = array_map(function($lat, $lng) {
-            return $lat . ',' . $lng;
-        }, $latitudes, $longitudes);
-            
+       foreach($warehouses as $warehouse)
+       {
+              $list['id'] = $warehouse->id;
+              $list['lat'] = $warehouse->latitude;
+              $list['long'] = $warehouse->longitude;
+              $dest[] = $list;
+       }
+      
+
+       
+       $distances = [];
+       $arr = [];
+       foreach($dest as $data)
+       {
+          $arr['id'] = $data['id'];
+          $arr['distance'] = round($this->getDistance($user_lat,$user_long,$data['lat'],$data['long']));
+          $distances[] = $arr;
+       }
+       $keys = array_column($distances, 'distance');
+       array_multisort($keys, SORT_ASC, $distances);
+
+      if(count($distances) > 0)
+      {
+        $closest_warehouse = Warehouse::find($distances['id']);
+
+      }
+           pr($closest_warehouse);
             // Construct API request URL
             // Construct API request URLs for all origin and destination combinations
-            $url_format = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=%s&destinations=%s&key=AIzaSyAJgoJnT57PuPJDSTrLIVOa2-cq4FO3p0k";
-            $url_list = [];
-            for ($i = 0; $i < count($destinations); $i++) {
-                for ($j = $i + 1; $j < count($destinations); $j++) {
-                    $origin = $destinations[$i];
-                    $destination = $destinations[$j];
-                    $url = sprintf($url_format, $origin, $destination);
-                    $url_list[] = $url;
-                }
-            }
+            // $url_format = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=%s&destinations=%s&key=AIzaSyAJgoJnT57PuPJDSTrLIVOa2-cq4FO3p0k";
+            // $url_list = [];
+            // for ($i = 0; $i < count($destinations); $i++) {
+            //     for ($j = $i + 1; $j < count($destinations); $j++) {
+            //         $origin = $destinations[$i];
+            //         $destination = $destinations[$j];
+            //         $url = sprintf($url_format, $origin, $destination);
+            //         $url_list[] = $url;
+            //     }
+            // }
             
             
             // Make API requests and parse responses
@@ -2940,4 +2966,14 @@ class TaskController extends BaseController
             print_r($adjacency_matrix);
             
     }
+    public function getDistance($lat1, $lon1, $lat2, $lon2) {
+        $earthRadius = 6371; // in kilometers
+        $deltaLat = deg2rad($lat2 - $lat1);
+        $deltaLon = deg2rad($lon2 - $lon1);
+        $a = sin($deltaLat / 2) * sin($deltaLat / 2) + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * sin($deltaLon / 2) * sin($deltaLon / 2);
+        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+        $distance = $earthRadius * $c;
+        return $distance; // in kilometers
+      }
+      
 }
