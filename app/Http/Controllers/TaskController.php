@@ -2912,10 +2912,12 @@ class TaskController extends BaseController
        }
        $keys = array_column($distances, 'distance');
        array_multisort($keys, SORT_ASC, $distances);
+ 
+
 
       if(count($distances) > 0)
       {
-        $closest_warehouse = Warehouse::find($distances['id']);
+        $closest_warehouse = Warehouse::find($distances[0]['id']);
 
       }
            pr($closest_warehouse);
