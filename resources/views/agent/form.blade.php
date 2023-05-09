@@ -127,6 +127,10 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                 <img id="trucks_edit"
                     src="{{ $agent->vehicle_type_id == '5' ? asset('assets/icons/truck_blue.png') : asset('assets/icons/truck.png') }}">
             </div>
+            <div class="radio  radio-info form-check-inline click cursors mt-2">
+                <input type="radio" id="auto" value="6" name="vehicle_type_id" act="edit" @if ($agent->vehicle_type_id == '6') checked @endif>
+                <img id="auto_edit"  src="{{ $agent->vehicle_type_id == '6' ? asset('assets/icons/auto_blue.png') : asset('assets/icons/auto.png') }}">
+            </div>
             <span class="invalid-feedback" role="alert">
                 <strong></strong>
             </span>
