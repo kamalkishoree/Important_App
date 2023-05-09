@@ -26,6 +26,7 @@ class SyncCategoryProductController extends Controller
     protected $order_DB_Name;
 
     protected $vendor_data;
+    protected $aws_url;
 
     public function SyncCategoryProduct(Request $request)
     {
@@ -43,7 +44,16 @@ class SyncCategoryProductController extends Controller
         if (($order_details) && @$request['data'] && count($request['data']) > 0) {
             $this->order_panel_id = $request['order_panel_id'];
             $dataBaseName = $request['databaseName'];
-            $this->importOrderSideCategory($request['data'], $dataBaseName);
+          
+
+            if(isset($request['aws_url'])){
+                $this->aws_url = $request['aws_url'];
+                $this->importOrderSideCategory($request['data'], $dataBaseName, $request['aws_url']);
+
+            }else{
+                $this->importOrderSideCategory($request['data'], $dataBaseName);
+
+            }
         }
 
         $order_details->sync_status = 2;
@@ -78,7 +88,7 @@ class SyncCategoryProductController extends Controller
         return true;
     }
 
-    public function importOrderSideCategory($categories, $dataBaseName = '')
+    public function importOrderSideCategory($categories, $dataBaseName = '',$aws_url = null)
     {
         foreach ($categories as $cat) {
 
@@ -87,7 +97,7 @@ class SyncCategoryProductController extends Controller
                 foreach ($cat['products'] as $product) {
                     $product_id = $this->syncSingleProduct($category_id, $product, $dataBaseName);
                     $variantId = $this->syncProductVariant($product_id, $product, $dataBaseName);
-                    $product_images = $this->syncProductImages($product_id, $product, $dataBaseName);
+                    $product_images = $this->syncProductImages($product_id, $product, $dataBaseName,$aws_url);
                 }
             }
         }
@@ -221,7 +231,7 @@ class SyncCategoryProductController extends Controller
         }
         return true;
     }
-    public function syncProductImages($product_id, $product, $dataBaseName)
+    public function syncProductImages($product_id, $product, $dataBaseName,$aws_url = null)
     {
         $images = @$product['pimage'];
     
@@ -233,7 +243,7 @@ class SyncCategoryProductController extends Controller
         foreach ($images as $image) { # import product variant
             $product_variant_image = [
                 "media_type" => $image['media_type'],
-                "path" => $image['path'],
+                "path" => $aws_url.$image['path'],
             ];
             $product_media = VendorMedia::updateOrCreate([
                 "media_type" => $image['media_type'],
