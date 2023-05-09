@@ -332,11 +332,13 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-4 alsavedaddress" id="alsavedaddress" style="display: none;">
-                                                    <h6>Saved Addresses</h6>
-                                                    <div class="form-group withradio" id="typeInputss">
+                                                    <h6>Saved Addresses  Test</h6>
+                                                    <div class="form-group withradio" id="typeInputss" >
                                                         <div class="oldhide text-center">
                                                             <img class="showsimage" src="{{url('assets/images/ic_location_placeholder.png')}}" alt="">
                                                         </div>
+
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -462,14 +464,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-4 alsavedaddress" id="alsavedaddress" style="display: none;">
-                                                    <h6>Saved Addresses</h6>
-                                                    <div class="form-group withradio" id="typeInputss">
-                                                        <div class="oldhide text-center">
-                                                            <img class="showsimage" src="{{url('assets/images/ic_location_placeholder.png')}}" alt="">
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                
                                             </div>
                                         </div>
                                     </div>
@@ -612,6 +607,7 @@
                                                     <div class="form-group withradio" id="typeInputss">
                                                         <div class="oldhide text-center">
                                                             <img class="showsimage" src="{{url('assets/images/ic_location_placeholder.png')}}" alt="">
+                                                        
                                                         </div>
                                                     </div>
                                                 </div>
