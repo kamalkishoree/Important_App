@@ -142,8 +142,8 @@
                                     <select name="type" class="form-control" id="warehhouse-type">
                                        
                                      <option value=""  >Select</option>
-                                     <option value="0" {{ ($warehouse->type == 0) ? 'selected':'' }} >Small Hub</option>
-                                     <option value="1" {{ ($warehouse->type == 1) ? 'selected':'' }}>Large Hub</option>
+                                     <option value="0" {{ ($warehouse->type ?? '' == 0) ? 'selected':'' }} >Small Hub</option>
+                                     <option value="1" {{ ($warehouse->type ?? '' == 1) ? 'selected':'' }}>Large Hub</option>
                                       
                                     </select>
                                                                          
