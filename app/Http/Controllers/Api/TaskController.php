@@ -66,7 +66,6 @@ class TaskController extends BaseController
     }
     public function updateTaskStatus(Request $request)
     {
-        \Log::info($request->all());
         $header = $request->header();
         $tasks = null;
         $client_details = Client::where('database_name', $header['client'][0])->first();
@@ -87,10 +86,10 @@ class TaskController extends BaseController
 
         //set dynamic smtp for email send
         $this->setMailDetail($client_details);
-
+        $waiting_time = $request->waiting_time??0;
         $orderId        = Task::where('id', $request->task_id)->with(['tasktype'])->first();
         $user           = Auth::user();
-
+        
 
         $orderAll       = Task::where('order_id', $orderId->order_id)->get();
         $order_details  = Order::where('id', $orderId->order_id)->with(['agent','customer'])->first();
@@ -210,12 +209,23 @@ class TaskController extends BaseController
         //for recipient email and sms
         $send_recipient_sms_status   = isset($sms_final_status['client_notification']['recipient_request_recieved_sms'])? $sms_final_status['client_notification']['recipient_request_recieved_sms']:0;
         $send_recipient_email_status = isset($sms_final_status['client_notification']['recipient_request_received_email'])? $sms_final_status['client_notification']['recipient_request_received_email']:0;
+        $waitingPrice = 0;
 
+        if($waiting_time){
+            Task::where('id',$request->task_id)->update(['waiting_time'=>$waiting_time]); 
+        }
         if ($request->task_status == 4) {
+          
             if ($check == 1) {
-                $Order  = Order::where('id', $orderId->order_id)->update(['status' => $task_type]);
+                Order::where('id', $orderId->order_id)->update(['status' => $task_type,'waiting_time'=>$waiting_time]);
+                //If waiting time came then all price will be updated
+                if($waiting_time){
+                    // Task::where('id',$request->task_id)->update(['waiting_time'=>$waiting_time]); 
+                    $waitingPrice =  $this->setPricingRuleDynamic($orderId->order_id,$waiting_time);
+                }
+
                 if($order_details && $order_details->call_back_url){
-                    $call_web_hook = $this->updateStatusDataToOrder($order_details,5,$orderId->task_type_id);  # call web hook when order completed
+                    $call_web_hook = $this->updateStatusDataToOrder($order_details,5,$orderId->task_type_id,$waitingPrice);  # call web hook when order completed
                 }
                 if(isset($request->qr_code)){
                    $codeVendor = $this->checkQrcodeStatusDataToOrderPanel($order_details,$request->qr_code,5);
@@ -609,7 +619,7 @@ class TaskController extends BaseController
     }
 
     /////////////////// **********************   update status in order panel also **********************************  ///////////////////////
-    public function updateStatusDataToOrder($order_details,$dispatcher_status_option_id,$task_type){
+    public function updateStatusDataToOrder($order_details,$dispatcher_status_option_id,$task_type,$waitIngPrice=0){
         try {
             $auth =  Client::with(['getAllocation', 'getPreference'])->first();
             if ($auth->custom_domain && !empty($auth->custom_domain)) {
@@ -621,7 +631,7 @@ class TaskController extends BaseController
 
                 $client = new GClient(['content-type' => 'application/json']);
                 $url = $order_details->call_back_url;
-                $res = $client->get($url.'?dispatcher_status_option_id='.$dispatcher_status_option_id.'&dispatch_traking_url='.$dispatch_traking_url.'&task_type='.$task_type);
+                $res = $client->get($url.'?dispatcher_status_option_id='.$dispatcher_status_option_id.'&dispatch_traking_url='.$dispatch_traking_url.'&task_type='.$task_type.'&newDeliveryFee='.$waitIngPrice);
                 $response = json_decode($res->getBody(), true);
                 if($response){
                 //    Log::info($response);
@@ -1130,7 +1140,6 @@ class TaskController extends BaseController
             }
             if(checkColumnExists('orders', 'order_pre_time')){
                 $order['order_pre_time']=isset($request->order_pre_time)?$request->order_pre_time:0;
-
             }
 
             $is_order_updated = 0;
@@ -1275,11 +1284,11 @@ class TaskController extends BaseController
             $paid_distance = $getdata['distance'] - $pricingRule->base_distance;
             $paid_duration = $paid_duration < 0 ? 0 : $paid_duration;
             $paid_distance = $paid_distance < 0 ? 0 : $paid_distance;
-            $total         = $pricingRule->base_price + ($paid_distance * $pricingRule->distance_fee) + ($paid_duration * $pricingRule->duration_price);
-
+            //$total         = $pricingRule->base_price + ($paid_distance * $pricingRule->distance_fee) + ($paid_duration * $pricingRule->duration_price);
             if($pricingRuleDistance)
             {
                 $total         = $pricingRule->base_price + ($pricingRuleDistance) + ($paid_duration * $pricingRule->duration_price);
+
             }else{
                 $total         = $pricingRule->base_price + ($paid_distance * $pricingRule->distance_fee) + ($paid_duration * $pricingRule->duration_price);
             }
@@ -2740,18 +2749,16 @@ class TaskController extends BaseController
         $pricingRule = $this->getPricingRuleData($geoid, $agent_tags, $order_datetime);
         $pricingRuleDistanceWise = $this->getPricingRuleDynamic($pricingRule, $getdata['distance']);
         
-    
         $paid_duration = $getdata['duration'] - $pricingRule->base_duration;
         $paid_distance = $getdata['distance'] - $pricingRule->base_distance;
         $paid_duration = $paid_duration < 0 ? 0 : $paid_duration;
         $paid_distance = $paid_distance < 0 ? 0 : $paid_distance;
-        // \Log::info('pricingRuleDistanceWise = '.$pricingRuleDistanceWise);
-        // \Log::info('paid_duration = '.$paid_duration);
-        // \Log::info('pricingRule = '.$pricingRule);
+       
 
         if($pricingRuleDistanceWise)
         {
             $total         = $pricingRule->base_price + ($pricingRuleDistanceWise) + ($paid_duration * $pricingRule->duration_price);
+            //\Log::info($pricingRule->base_price.' +  '.$pricingRuleDistanceWise.' + '.($paid_duration * $pricingRule->duration_price));
         }else{
             $total         = $pricingRule->base_price + ($paid_distance * $pricingRule->distance_fee) + ($paid_duration * $pricingRule->duration_price);
         }
@@ -4200,6 +4207,22 @@ class TaskController extends BaseController
             ], 200);
         } catch (Exception $e) {
             DB::rollback();
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 400);
+        }
+    }
+
+    public function addWaitingTime(Request $request){
+        try {
+            $task= Task::where(['id'=>$request->task_id])->update(['waiting_time'=>$request->waiting_time]);           
+             return response()->json([
+                'message' => __('Time Added SuccessFully.'),
+                'status'  => "success",
+            ], 200);
+
+        }catch (\Exception $e) {
+                
             return response()->json([
                 'message' => $e->getMessage()
             ], 400);
