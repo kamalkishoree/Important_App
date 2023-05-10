@@ -2878,86 +2878,42 @@ class TaskController extends BaseController
     public function dispatcherAutoAllocation()
     {
 
-
-        
-        // Define the user location as latitude and longitude coordinates
-        $user_lat = "30.7333"; // Chandigarh location
-        $user_long = "76.7794"; // Chandigarh location
+        $user_lat = "30.7333"; 
+        $user_long = "76.7794";
         
         $warehouse_banglore = Warehouse::find(1);
         
-        $distance_between_user_and_final_warehouse = round($this->getDistance($user_lat, $user_long, $warehouse_banglore->latitude, $warehouse_banglore->longitude));
-        
-        $nearest_warehouse = $warehouse_banglore;
-        
-        if ($distance_between_user_and_final_warehouse > 50) {
-            $nearest_warehouse = $this->findNearestWarehouse($nearest_warehouse);
-        }
-        
-        $distance = $this->getDistance($user_lat, $user_long, $nearest_warehouse->latitude, $nearest_warehouse->longitude);
-        
-        pr($nearest_warehouse);
-        
-        // Get all warehouses
-        $warehouses = Warehouse::all();
-        
-        $dest = [];
-        $list = [];
-          
-
-        // Extract latitudes and longitudes into separate arrays
-       foreach($warehouses as $warehouse)
-       {
-              $list['id'] = $warehouse->id;
-              $list['lat'] = $warehouse->latitude;
-              $list['long'] = $warehouse->longitude;
-              $dest[] = $list;
-       }
-      
-
+        $distance_to_product = round($this->getDistance($user_lat, $user_long, $warehouse_banglore->latitude, $warehouse_banglore->longitude));
        
-       $distances = [];
-       $arr = [];
-       foreach($dest as $data)
-       {
-          $arr['id'] = $data['id'];
-          $arr['distance'] = round($this->getDistance($user_lat,$user_long,$data['lat'],$data['long']));
-          $distances[] = $arr;
-       }
-       $keys = array_column($distances, 'distance');
-       array_multisort($keys, SORT_ASC, $distances);
- 
-     $arr1 = [];
-     $arr1[] = $warehouse_banglore->id;
+        $ids = [];
+        $ids[] = $warehouse_banglore->id;
+        $nearest_warehouse = $warehouse_banglore;
+       
+        while($distance_to_product > 50)
+        {
+            $nearest_warehouse = $this->findNearestWarehouse($nearest_warehouse,$ids);
+            $distance_to_product = $this->getDistance($user_lat, $user_long, $nearest_warehouse->latitude, $nearest_warehouse->longitude);
+            $ids[] = $nearest_warehouse->id;
 
-    
-      if(count($distances) > 0)
-      {
-        $closest_warehouse = Warehouse::find(1);
-
-      }
-
-
-        
-        $selected_warehouse = 0;
-         if($distance_between_user_and_final_warehouse > 50)
-         {
-           
-          
-
-            foreach($warehouse as $data)
-            {
-                $distance_one = $this->getDistance($warehouse_banglore->latitude,$warehouse_banglore->longitude,$data->latitude,$data->longitude);
-                
-            }
-
-         }
+        }
+        $final_route =[];
+        $list =[];
+        foreach($ids as $id)
+        {
+           $warehouse = Warehouse::find($id);
+           $list['warehouse_name'] = $warehouse->name;
+           $list['address'] = $warehouse->address;
+           $final_route[] = $list;
+        }
+       
+        pr($final_route);
+       
     }
 
 
-    public function findNearestWarehouse($data)
+    public function findNearestWarehouse($data,$ids)
     {
-        $warehouses = Warehouse::where('type','1')->whereNotIn('id',[$data->id])->get();
+        $warehouses = Warehouse::where('type','1')->whereNotIn('id',$ids)->get();
 
         $distances = array();
         foreach ($warehouses as $name => $war) {
