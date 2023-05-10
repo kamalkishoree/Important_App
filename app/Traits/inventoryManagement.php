@@ -78,6 +78,6 @@ trait inventoryManagement
         if (@$responseBody['status'] == 200) {
             return $responseBody;
         }
-        throw new \ErrorException('', 400);
+        return;
     }
 }
