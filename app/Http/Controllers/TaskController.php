@@ -2884,6 +2884,20 @@ class TaskController extends BaseController
         $user_lat = "30.7333"; // Chandigarh location
         $user_long = "76.7794"; // Chandigarh location
         
+        $warehouse_banglore = Warehouse::find(1);
+        
+        $distance_between_user_and_final_warehouse = round($this->getDistance($user_lat, $user_long, $warehouse_banglore->latitude, $warehouse_banglore->longitude));
+        
+        $nearest_warehouse = $warehouse_banglore;
+        
+        if ($distance_between_user_and_final_warehouse > 50) {
+            $nearest_warehouse = $this->findNearestWarehouse($nearest_warehouse);
+        }
+        
+        $distance = $this->getDistance($user_lat, $user_long, $nearest_warehouse->latitude, $nearest_warehouse->longitude);
+        
+        pr($nearest_warehouse);
+        
         // Get all warehouses
         $warehouses = Warehouse::all();
         
@@ -2913,62 +2927,52 @@ class TaskController extends BaseController
        $keys = array_column($distances, 'distance');
        array_multisort($keys, SORT_ASC, $distances);
  
+     $arr1 = [];
+     $arr1[] = $warehouse_banglore->id;
 
-
+    
       if(count($distances) > 0)
       {
-        $closest_warehouse = Warehouse::find($distances[0]['id']);
+        $closest_warehouse = Warehouse::find(1);
 
       }
-           pr($closest_warehouse);
-            // Construct API request URL
-            // Construct API request URLs for all origin and destination combinations
-            // $url_format = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=%s&destinations=%s&key=AIzaSyAJgoJnT57PuPJDSTrLIVOa2-cq4FO3p0k";
-            // $url_list = [];
-            // for ($i = 0; $i < count($destinations); $i++) {
-            //     for ($j = $i + 1; $j < count($destinations); $j++) {
-            //         $origin = $destinations[$i];
-            //         $destination = $destinations[$j];
-            //         $url = sprintf($url_format, $origin, $destination);
-            //         $url_list[] = $url;
-            //     }
-            // }
-            
-            
-            // Make API requests and parse responses
-            $distance_matrix = [];
-            foreach ($url_list as $url) {
-                $response = file_get_contents($url);
-                $data = json_decode($response);
-                $distance = ($data->rows[0]->elements[0]->distance->value)/1000;
-                $distance_matrix[] = $distance;
+
+
+        
+        $selected_warehouse = 0;
+         if($distance_between_user_and_final_warehouse > 50)
+         {
+           
+          
+
+            foreach($warehouse as $data)
+            {
+                $distance_one = $this->getDistance($warehouse_banglore->latitude,$warehouse_banglore->longitude,$data->latitude,$data->longitude);
+                
             }
-            $n = count($warehouses);
-            
-            // Convert 1D distance matrix to 2D adjacency matrix
-            $adjacency_matrix = [];
-            for ($i = 0; $i < $n; $i++) {
-                $row = [];
-                for ($j = 0; $j < $n; $j++) {
-                    if ($i == $j) {
-                        $row[] = 0;
-                    } else {
-                        if ($i < $j) {
-                            $index = (($n - 1) * $i) - (($i * ($i + 1)) / 2) + $j - 1;
-                        } else {
-                            $index = (($n - 1) * $j) - (($j * ($j + 1)) / 2) + $i - 1;
-                        }
-                        $row[] = $distance_matrix[$index];
-                    }
-                }
-                $adjacency_matrix[] = $row;
-            }
-            
-            
-            print_r($adjacency_matrix);
-            
+
+         }
     }
-    public function getDistance($lat1, $lon1, $lat2, $lon2) {
+
+
+    public function findNearestWarehouse($data)
+    {
+        $warehouses = Warehouse::where('type','1')->whereNotIn('id',[$data->id])->get();
+
+        $distances = array();
+        foreach ($warehouses as $name => $war) {
+            $distance = $this->getDistance($data->latitude,$data->longitude,$war->latitude,$war->longitude);
+            $distances[$war->id]= $distance;
+        }
+        asort($distances);
+
+      
+        $nearestWarehouse = reset($distances);
+        $nearestWarehouse = Warehouse::find(key($distances));
+        return $nearestWarehouse;
+    }
+
+     public function getDistance($lat1, $lon1, $lat2, $lon2) {
         $earthRadius = 6371; // in kilometers
         $deltaLat = deg2rad($lat2 - $lat1);
         $deltaLon = deg2rad($lon2 - $lon1);
@@ -2977,5 +2981,7 @@ class TaskController extends BaseController
         $distance = $earthRadius * $c;
         return $distance; // in kilometers
       }
+
+      
       
 }

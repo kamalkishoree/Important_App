@@ -135,6 +135,20 @@
                                     @endif                                        
                                 </div>
                             </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="category" class="control-label">{{__("Warehouse Type")}}</label>
+                                   
+                                    <select name="type" class="form-control" id="warehhouse-type">
+                                       
+                                     <option value=""  >Select</option>
+                                     <option value="0" {{ ($warehouse->type == 0) ? 'selected':'' }} >Small Hub</option>
+                                     <option value="1" {{ ($warehouse->type == 1) ? 'selected':'' }}>Large Hub</option>
+                                      
+                                    </select>
+                                                                         
+                                </div>
+                            </div>
                         </div>
                         <div class="row mb-2 mt-2">
                             <div class="col-12">
