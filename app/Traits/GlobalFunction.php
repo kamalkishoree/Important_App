@@ -200,10 +200,10 @@ trait GlobalFunction{
     public function setPricingRuleDynamic($id,$time)
     {
         try {         
-            \Log::info('first time '.$time);   
+            // \Log::info('first time '.$time);   
             $order  = Order::where('id', $id)->first();
             $timeTotal = Task::where('order_id',$order->id)->sum('waiting_time');
-            \Log::info('total time '.$timeTotal);   
+            // \Log::info('total time '.$timeTotal);   
             $time = $timeTotal??$time;
 
             if(isset($order)) {
@@ -218,10 +218,12 @@ trait GlobalFunction{
             }
             $data['order_cost'] = $total;
             $data['driver_cost'] = $percentage;
+            $data['waiting_time'] = $time;
             $data['cash_to_be_collected'] = $order->cash_to_be_collected + $waitPrice;
             $order->update($data);
+            // \Log::info(json_encode(['total_waiting_time'=>$time,'total_waiting_price'=>$waitPrice]));
 
-            return $waitPrice??0;
+            return ['total_waiting_time'=>$time,'total_waiting_price'=>$waitPrice];
 
         } catch (\Throwable $th) {
             \Log::info(json_encode($th->getMessage()));

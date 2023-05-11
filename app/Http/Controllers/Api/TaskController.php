@@ -214,18 +214,25 @@ class TaskController extends BaseController
         if($waiting_time){
             Task::where('id',$request->task_id)->update(['waiting_time'=>$waiting_time]); 
         }
+       
         if ($request->task_status == 4) {
           
             if ($check == 1) {
-                Order::where('id', $orderId->order_id)->update(['status' => $task_type,'waiting_time'=>$waiting_time]);
+                Order::where('id', $orderId->order_id)->update(['status' => $task_type]);
+               
                 //If waiting time came then all price will be updated
                 if($waiting_time){
                     // Task::where('id',$request->task_id)->update(['waiting_time'=>$waiting_time]); 
-                    $waitingPrice =  $this->setPricingRuleDynamic($orderId->order_id,$waiting_time);
+                    $waitingDetails =  (object)$this->setPricingRuleDynamic($orderId->order_id,$waiting_time);
                 }
 
+
                 if($order_details && $order_details->call_back_url){
-                    $call_web_hook = $this->updateStatusDataToOrder($order_details,5,$orderId->task_type_id,$waitingPrice);  # call web hook when order completed
+
+                    // \Log::info(json_encode($waitingDetails));
+                    // \Log::info(' total_waiting_time  - '.$waitingDetails->total_waiting_time??0);
+                    // \Log::info(' total_waiting_price - '.$waitingDetails->total_waiting_price??0);
+                    $call_web_hook = $this->updateStatusDataToOrder($order_details,5,$orderId->task_type_id,$waitingDetails->total_waiting_price??0,$waitingDetails->total_waiting_time??0);  # call web hook when order completed
                 }
                 if(isset($request->qr_code)){
                    $codeVendor = $this->checkQrcodeStatusDataToOrderPanel($order_details,$request->qr_code,5);
@@ -619,7 +626,7 @@ class TaskController extends BaseController
     }
 
     /////////////////// **********************   update status in order panel also **********************************  ///////////////////////
-    public function updateStatusDataToOrder($order_details,$dispatcher_status_option_id,$task_type,$waitIngPrice=0){
+    public function updateStatusDataToOrder($order_details,$dispatcher_status_option_id,$task_type,$total_waiting_price=0,$total_waiting_time=0){
         try {
             $auth =  Client::with(['getAllocation', 'getPreference'])->first();
             if ($auth->custom_domain && !empty($auth->custom_domain)) {
@@ -631,7 +638,7 @@ class TaskController extends BaseController
 
                 $client = new GClient(['content-type' => 'application/json']);
                 $url = $order_details->call_back_url;
-                $res = $client->get($url.'?dispatcher_status_option_id='.$dispatcher_status_option_id.'&dispatch_traking_url='.$dispatch_traking_url.'&task_type='.$task_type.'&newDeliveryFee='.$waitIngPrice);
+                $res = $client->get($url.'?dispatcher_status_option_id='.$dispatcher_status_option_id.'&dispatch_traking_url='.$dispatch_traking_url.'&task_type='.$task_type.'&waiting_price='.$total_waiting_price.'&waiting_time='.$total_waiting_time);
                 $response = json_decode($res->getBody(), true);
                 if($response){
                 //    Log::info($response);
