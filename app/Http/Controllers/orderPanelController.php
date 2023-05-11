@@ -98,8 +98,14 @@ class orderPanelController extends Controller
      * @param \App\OrderPanelDetail $orderPanelDetail
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {}
+    public function destroy($domain='',$id)
+    {
+        $order_panel = OrderPanelDetail::where('id',$id)->delete();
+          
+       
+      
+       return redirect()->back()->with('success', 'Inventory Details Deleted Successfully');
+    }
 
     public function checkSyncStatus(Request $request)
     {
