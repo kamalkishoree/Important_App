@@ -65,7 +65,7 @@ use Illuminate\Support\Facades\Session;
                                         <th>{{__("Key")}}</th>
                                         <th>{{__("Created Date")}}</th>
                                         <th>{{__("Type")}}</th>
-                                        <th>{{__("Sync Data")}}</th>
+                                        <th>{{__("Sync")}}</th>
                                         <th>{{__("Action")}}</th>
                                         <th></th>
                                     </tr>
@@ -91,7 +91,7 @@ use Illuminate\Support\Facades\Session;
                                                 <form action="{{route('category.importOrderSideCategory')}}" method="post">
                                                 @csrf
                                                     <input type="hidden" name="order_panel_id" value="{{ $data->id}}">
-                                                    <button type="submit" ><i class="fa fa-sync"></i></button>
+                                                    <button type="submit" class="ml-2 border-0" ><i class="fa fa-sync"></i></button>
                                                 </form>
 
                                                 </td>     
