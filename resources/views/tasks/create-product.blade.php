@@ -20,6 +20,9 @@
 	height: 500px;
 	overflow: hidden auto;
 }
+.content-page.main_outter_box{
+	max-height: 100vh;
+}
 
 .warehouses #create-subtask {
 	margin: 40px auto !important;
@@ -325,6 +328,16 @@ p.title {
 	text-align: left;
 	word-break: break-all;
 }
+
+@media only screen and (max-width: 1400px) {
+	.warehouses .prod-list ul{
+		max-height:310px;
+	}
+	.warehouses .prod-list ul{
+		height: 310px;
+	}
+
+}	
 
 @media only screen and (max-width: 575px) {
 	.prod-list.prod-details .prod {
