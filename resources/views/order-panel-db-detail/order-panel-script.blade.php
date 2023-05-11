@@ -16,10 +16,17 @@
             backdrop: 'static',
             keyboard: false
         });
+     
         $("#name").val($(this).data('name'));
         $("#url").val($(this).data('url'));
         $("#code").val($(this).data('code'));
         $("#key").val($(this).data('key'));
+        $('.selected-type option[value='+$(this).data('type')+']').attr('selected','selected');
+
         $("#order_panel_id").val($(this).data('id'));
     });
+    
+  
+
 </script>
+

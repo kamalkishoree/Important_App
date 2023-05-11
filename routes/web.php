@@ -249,13 +249,34 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::get('batchs/', 'TaskController@batchlist')->name('batch.list');
 			Route::POST('batchDetails/', 'TaskController@batchDetails')->name('batchDetails');
 			Route::resource('tasks', 'TaskController');
-
+			Route::post('get-warehouse-products', 'TaskController@getWarehouseProducts')->name('getWarehouseProducts');
 			Route::post('newtasks', 'TaskController@newtasks');
 			Route::any('updatetasks/tasks/{id}', 'TaskController@update');
 			Route::post('single_taskdelete', 'TaskController@deleteSingleTask')->name('tasks.single.destroy');
 
 			Route::get('get-category-warehouse', 'TaskController@getCategoryWarehouse')->name('getCategoryWarehouse');
+			Route::get('get-inventory-products', 'TaskController@getInventoryProducts')->name('getInventoryProducts');
+			
+			Route::get('get-product-detail', 'TaskController@getProductDetail')->name('get-product-detail');
+			
+			
 
+			Route::get('create-product-route', 'TaskController@createProductRoute')->name('create-product-route');
+			
+			Route::get('dispatcher-add-route', 'TaskController@dispatcherAddRoute')->name('dispatcher-add-route');
+			
+			Route::get('get-category-list', 'CategoryController@getCategoryList')->name('get-category-list');
+			
+			Route::get('inventory-update', 'TaskController@inventoryUpdate')->name('inventory-update');
+			Route::get('get-warehouse-data', 'TaskController@getWarehouseData')->name('get-warehouse-data');
+			Route::post('sort-products', 'TaskController@sortProducts')->name('sort-products');
+			
+			
+		 	Route::get('get-product-name', 'TaskController@getProductName')->name('getProductName');
+			Route::post('get-selected-warehouses', 'TaskController@getSelectedWarehouses')->name('getSelectedWarehouses');
+
+			Route::post('create-subtask', 'TaskController@createSubtask')->name('createSubtask');
+			
 			Route::post('optimize-route', 'DashBoardController@optimizeRoute');
 			Route::post('arrange-route', 'DashBoardController@arrangeRoute');
 			Route::post('optimize-arrange-route', 'DashBoardController@optimizeArrangeRoute');
@@ -288,6 +309,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 
 			Route::resource('warehouse', 'WarehouseController');
 			Route::resource('order-panel-db', 'orderPanelController');
+			Route::get('inventory-panel-db', 'orderPanelController@inventoryIndex')->name('inventory-panel-db');
 			Route::resource('amenities', 'AmenitiesController');
 			Route::resource('category', 'CategoryController');
 			Route::resource('services', 'ServicesController');
@@ -299,6 +321,8 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			// Route::get('cat-product/{$id}', 'ProductController@showProduct')->name('showProduct');
 
 			Route::post('/import-order-side-category', 'CategoryController@getOrderSideData')->name('category.importOrderSideCategory');
+			
+			Route::post('/import-dispatch-side-category', 'CategoryController@getDispatchSideData')->name('category.importDispatchSideCategory');
 
 			Route::get('/order/feedback/{clientcode}/{order_id}', 'TrackingController@OrderFeedback')->name('order.feedback');
 
