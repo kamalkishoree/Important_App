@@ -91,7 +91,7 @@ use Illuminate\Support\Facades\Session;
                                                 <form action="{{route('category.importOrderSideCategory')}}" method="post">
                                                 @csrf
                                                     <input type="hidden" name="order_panel_id" value="{{ $data->id}}">
-                                                    <button type="submit" ><i class="fa fa-sync"></i></button>
+                                                    <button type="submit" class="ml-3 border-0" ><i class="fa fa-sync"></i></button>
                                                 </form>
 
                                                 </td>     
