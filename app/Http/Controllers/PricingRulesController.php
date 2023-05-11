@@ -276,6 +276,7 @@ class PricingRulesController extends Controller
             'base_distance'                   => $request->base_distance,
             'duration_price'                  => $request->duration_price,
             'distance_fee'                    => $request->distance_fee,
+            'waiting_price'                   => $request->waiting_price,
 
             'base_price_minimum'              => $request->base_price_minimum,
             'base_duration_minimum'           => $request->base_duration_minimum,
