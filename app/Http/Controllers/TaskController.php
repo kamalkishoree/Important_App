@@ -2874,24 +2874,42 @@ class TaskController extends BaseController
             ]);
         }
     }
-    
-    public function dispatcherAutoAllocation()
+
+    public function dispatcherIndex()
     {
 
-        $user_lat = "30.7333"; 
-        $user_long = "76.7794";
+      
+        return view('tasks.autoallocation');
+
+    }
+    
+    public function dispatcherAutoAllocation(Request $request)
+    {
+
+
         
-        $warehouse_banglore = Warehouse::find(1);
+        $user_lat = $request->lat1; 
+        $user_long = $request->long1;
+    
+
+        $warehouse_banglore = Warehouse::find($request->to_location);
         
+
         $distance_to_product = round($this->getDistance($user_lat, $user_long, $warehouse_banglore->latitude, $warehouse_banglore->longitude));
        
+
         $ids = [];
         $ids[] = $warehouse_banglore->id;
+        
         $nearest_warehouse = $warehouse_banglore;
        
         while($distance_to_product > 50)
         {
             $nearest_warehouse = $this->findNearestWarehouse($nearest_warehouse,$ids);
+            if(empty($nearest_warehouse))
+            {
+                break;
+            }
             $distance_to_product = $this->getDistance($user_lat, $user_long, $nearest_warehouse->latitude, $nearest_warehouse->longitude);
             $ids[] = $nearest_warehouse->id;
 
@@ -2905,7 +2923,9 @@ class TaskController extends BaseController
            $list['address'] = $warehouse->address;
            $final_route[] = $list;
         }
-       
+        $list = [];
+        $list['user_location']= $request->from_location;
+        $final_route[] = $list;
         pr($final_route);
        
     }

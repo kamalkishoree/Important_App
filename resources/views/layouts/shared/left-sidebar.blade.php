@@ -116,6 +116,12 @@
                         <span> {{__('Driver Accountancy')}} </span>
                     </a>
                 </li>
+                <li>
+                    <a href="{{route('dispatcher-index')}}">
+                        <i class="fe-users"></i>
+                        <span> {{__('Dispatcher AutoAllocation')}} </span>
+                    </a>
+                </li>
 
                
                 
