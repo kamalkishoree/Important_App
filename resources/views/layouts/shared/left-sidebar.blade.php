@@ -145,7 +145,7 @@
                 <li>
                     <a href="{{route('order-panel-db.index')}}">
                         <i class="fe-users"></i>
-                        <span> {{__('Order Panel DB Details')}} </span>
+                        <span> {{__('Order Panel')}} </span>
                     </a>
                 </li> 
                
@@ -154,7 +154,7 @@
                 <li>
                     <a href="{{route('inventory-panel-db')}}">
                         <i class="fe-users"></i>
-                        <span> {{__('Inventory Panel Details')}} </span>
+                        <span> {{__('Inventory Panel')}} </span>
                     </a>
                 </li> 
                
