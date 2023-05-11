@@ -64,7 +64,7 @@
                         <div class="col-md-6">
                             <div class="form-group selected-type">
                                 <label for="panel_type" class="control-label">Panel Type</label>
-                                <select name="type" id="panel_type" class="form-control">
+                                <select name="type" id="panel_type" class="form-control" >
                                     <option value="0" >Order Panel</option>
                                     <option value="1">Inventory Panel</option>
                                 </select>                                        

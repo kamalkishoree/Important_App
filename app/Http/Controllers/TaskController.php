@@ -3146,7 +3146,10 @@ class TaskController extends BaseController
         } catch (\Exception $e) {}
 
         Order::where('id', $id)->delete();
+        if(!empty($product_variant_ids))
+        {
         $this->inventoryUpdate($product_variant_ids, true);
+        }
         $orderdata->status = "Deleted";
         // event(new \App\Events\loadDashboardData($orderdata));
         return redirect()->back()->with('success', 'Task deleted successfully!');
