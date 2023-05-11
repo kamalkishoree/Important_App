@@ -831,6 +831,7 @@ class TaskController extends BaseController
                 ])->first();
 
                 if (! empty($new_task)) {
+                  if(isset($product_data)){
                     foreach ($product_data as $data) {
 
                         if (($new_task->vendor_id == $data['vendor_id']) && $new_task->task_type_id == 1) {
@@ -848,11 +849,12 @@ class TaskController extends BaseController
                             $product_variant->save();
                         }
                     }
+                  }
                 }
                 
-    
+                if(isset($product_data)){
                 $this->inventoryUpdate(json_encode($product_data));
-
+                }
                 $dep_id = $task->id;
 
                 // for net quantity
@@ -3144,7 +3146,10 @@ class TaskController extends BaseController
         } catch (\Exception $e) {}
 
         Order::where('id', $id)->delete();
+        if(!empty($product_variant_ids))
+        {
         $this->inventoryUpdate($product_variant_ids, true);
+        }
         $orderdata->status = "Deleted";
         // event(new \App\Events\loadDashboardData($orderdata));
         return redirect()->back()->with('success', 'Task deleted successfully!');
@@ -3184,6 +3189,7 @@ class TaskController extends BaseController
     public function search(Request $request, $domain = '')
     {
         $search = $request->search;
+      
         if (isset($search)) {
             if ($search == '') {
                 $employees = Customer::orderby('name', 'asc')->select('id', 'name')
@@ -3204,7 +3210,7 @@ class TaskController extends BaseController
                     "label" => $employee->name
                 );
             }
-
+           
             return response()->json($response);
         } else {
             $id = $request->id;

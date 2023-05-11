@@ -1,7 +1,13 @@
 <?php
 use Illuminate\Support\Facades\Session;
+
 ?>
-@extends('layouts.vertical', ['title' =>  'Order Panel DB Detail' ])
+ @if (Route::currentRouteName() == 'inventory-panel-db')
+  @php  $title = "Inventory Panel DB Detail";  @endphp
+ @else
+ @php  $title = "Order Panel DB Detail";  @endphp
+ @endif
+@extends('layouts.vertical', ['title' =>  $title  ])
 @section('content')
 
 
@@ -12,10 +18,8 @@ use Illuminate\Support\Facades\Session;
                 <div class="page-title-box">
                     
                 @if (Route::currentRouteName() == 'inventory-panel-db')
-                
                  <h4 class="page-title">{{__("Inventory Panel DB Detail")}}</h4>
-
-                @else
+                 @else
                 <h4 class="page-title">{{__("Order Panel DB Detail")}}</h4>
                 @endif
 
@@ -91,7 +95,7 @@ use Illuminate\Support\Facades\Session;
                                                 <form action="{{route('category.importOrderSideCategory')}}" method="post">
                                                 @csrf
                                                     <input type="hidden" name="order_panel_id" value="{{ $data->id}}">
-                                                    <button type="submit" ><i class="fa fa-sync"></i></button>
+                                                    <button type="submit" class="ml-2 border-0" ><i class="fa fa-sync"></i></button>
                                                 </form>
 
                                                 </td>     
@@ -101,8 +105,10 @@ use Illuminate\Support\Facades\Session;
                                                     <div class="form-ul" style="width: 60px;">
                                                         
 
-                                                        <div class="inner-div"> <a href="javascript:void(0);" class="action-icon editIconBtn" data-name="{{$data->name}}" data-url="{{$data->url}}" data-code="{{$data->code}}" data-key="{{$data->key}}" data-type="{{$data->type}}" data-id="{{$data->id}}"> <i class="mdi mdi-square-edit-outline"></i></a></div>
-                                                        {{-- <div class="inner-div">
+                                                      <div class="inner-div"> <a href="javascript:void(0);" class="action-icon editIconBtn" data-name="{{$data->name}}" data-url="{{$data->url}}" data-code="{{$data->code}}" data-key="{{$data->key}}" data-type="{{$data->type}}" data-id="{{$data->id}}"> <i class="mdi mdi-square-edit-outline"></i></a></div>
+                                                        
+                                                      
+                                                        <div class="inner-div">
                                                             <form method="POST" action="{{route('order-panel-db.destroy', $data->id)}}">
                                                                 @csrf
                                                                 @method('DELETE')
@@ -110,7 +116,7 @@ use Illuminate\Support\Facades\Session;
                                                                     <button type="submit" class="btn btn-primary-outline action-icon"> <i class="mdi mdi-delete"></i></button>
                                                                 </div>
                                                             </form>
-                                                        </div> --}}
+                                                        </div> 
                                                     </div>
                                                 </td>
                                               

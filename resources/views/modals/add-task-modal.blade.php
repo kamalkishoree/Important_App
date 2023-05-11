@@ -332,11 +332,13 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-4 alsavedaddress" id="alsavedaddress" style="display: none;">
-                                                    <h6>Saved Addresses</h6>
-                                                    <div class="form-group withradio" id="typeInputss">
+                                                    <h6>Saved Addresses  Test</h6>
+                                                    <div class="form-group withradio" id="typeInputss" >
                                                         <div class="oldhide text-center">
                                                             <img class="showsimage" src="{{url('assets/images/ic_location_placeholder.png')}}" alt="">
                                                         </div>
+
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -462,14 +464,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-4 alsavedaddress" id="alsavedaddress" style="display: none;">
-                                                    <h6>Saved Addresses</h6>
-                                                    <div class="form-group withradio" id="typeInputss">
-                                                        <div class="oldhide text-center">
-                                                            <img class="showsimage" src="{{url('assets/images/ic_location_placeholder.png')}}" alt="">
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                
                                             </div>
                                         </div>
                                     </div>
@@ -562,10 +557,9 @@
                                                                 </div>
                                                             </div>
                                                             @php $warehouse_mode = checkWarehouseMode(); @endphp
-                                                            @if($warehouse_mode['show_warehouse_module'] == 1)
+                                                            @if($warehouse_mode['show_inventory_module'] == 1)
                                                             <h6 class="or-text text-center">OR</h6>
-                                                            <h6 class="choose_warehouse text-center text-primary" style="text-decoration: underline; cursor: pointer;">Choose
-                                                                Warehouse</h6>
+                                                            <h6 class="choose_warehouse text-center text-primary" style="text-decoration: underline; cursor: pointer;">Choose Warehouse</h6>
                                                             @endif
                                                         </div>
 
@@ -612,6 +606,7 @@
                                                     <div class="form-group withradio" id="typeInputss">
                                                         <div class="oldhide text-center">
                                                             <img class="showsimage" src="{{url('assets/images/ic_location_placeholder.png')}}" alt="">
+                                                        
                                                         </div>
                                                     </div>
                                                 </div>

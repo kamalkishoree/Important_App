@@ -185,7 +185,6 @@ class BaseController extends Controller
             $user = Client::first();
             
             $order_panel = OrderPanelDetail::first();
-
             if(empty($order_panel)){
 
                 return response()->json([

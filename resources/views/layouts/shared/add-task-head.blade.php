@@ -528,7 +528,7 @@ session('preferences.map_key_1'):'kdsjhfkjsdhfsf'; $theme =
             preferredCountries:["{{getCountryCode()}}"],
             initialCountry:"{{getCountryCode()}}",
             hiddenInput: "full_number",
-            utilsScript: "//cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.3/js/utils.js"
+            utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.3/js/utils.js"
         });
 
         document.querySelector("#taskFormHeader .phone_number").addEventListener("countrychange", function() {
@@ -614,10 +614,7 @@ session('preferences.map_key_1'):'kdsjhfkjsdhfsf'; $theme =
                     $("#taskFormHeader").find("input[name='phone_number']").val(customerdata.phone_number);
                     $("#taskFormHeader #dialCode").val(customerdata.dial_code);
                     
-                    //getting instance of intlTelInput
-                    var input = document.querySelector("#taskFormHeader .phone_number");
-                    var iti = window.intlTelInputGlobals.getInstance(input);
-                    iti.setCountry(countrycode);
+                  
 
                     $("#taskFormHeader").find("input[name='email']").val(customerdata.email);
 
@@ -634,6 +631,12 @@ session('preferences.map_key_1'):'kdsjhfkjsdhfsf'; $theme =
                         countz = count + 1;
                     });
                   });
+                  
+                    //getting instance of intlTelInput
+                    var input = document.querySelector("#taskFormHeader .phone_number");
+                    
+                    var iti = window.intlTelInputGlobals.getInstance(input);
+                    iti.setCountry(countrycode);
 
               }
           });
