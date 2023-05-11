@@ -14,7 +14,7 @@ class AddCoulmnWaitingTimeInOrdersTable extends Migration
     public function up()
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->decimal('waiting_time','10,2')->default(null);
+            $table->decimal('waiting_time','10,2')->default(0);
          });
     }
 

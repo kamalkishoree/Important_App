@@ -105,7 +105,7 @@ class TaskController extends BaseController
 
         // set dynamic smtp for email send
         $this->setMailDetail($client_details);
-
+ 	    $waiting_time = $request->waiting_time??0;
         $orderId = Task::where('id', $request->task_id)->with([
             'tasktype'
         ])->first();
