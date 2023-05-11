@@ -14,7 +14,7 @@ class AddCoulmnWaitingTimeIntaskTable extends Migration
     public function up()
     {
         Schema::table('tasks', function (Blueprint $table) {
-            $table->decimal('waiting_time','10,2')->default(0);
+            $table->decimal('waiting_time',10,2)->default(0);
          });
     }
 
