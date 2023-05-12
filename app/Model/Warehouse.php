@@ -21,4 +21,8 @@ class Warehouse extends Model
     public function manager(){
         return $this->belongsToMany('App\Model\Client', 'warehouse_manager_relation');
     }
+    
+    public function warehouseProducts(){
+        return $this->hasMany('App\Model\Product', 'vendor_id','id')->select('id', 'title', 'sku');
+    }
 }

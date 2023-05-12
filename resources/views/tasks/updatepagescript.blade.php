@@ -163,11 +163,13 @@ $(document).ready(function(){
                     });
                    
                     var num = parseInt( $div.prop("id").match(/\d+/g), 10 ) +1;
-                    var $clone = $div.clone().prop('class', 'alTaskType copyin check-validation');
+                    var $clone = $div.clone();
+                    $clone.find('h6.show-product').remove();
+                    $clone=$clone.prop('class', 'alTaskType copyin check-validation');
                     $clone.insertAfter('[class^="alTaskType copyin check-validation"]:last');
                     // get all the inputs inside the clone
                     var inputs = $clone.find('.redio');
-
+                   
                     $clone.find('.mainaddress').prop('id', 'add' + countEdit);
                     $clone.find('.cust1_add').prop('id', 'add' + countEdit +'-input');
                     $clone.find('.cust1_btn').prop('num', 'add' + countEdit);
@@ -748,6 +750,31 @@ $(document).on('click', '.mdi-delete-single-task', function() {
 
             }
         });
+
+       function showProductDetail(id){          
+ 
+       $.ajax({
+                url: "/get-product-detail",
+                type: "get",
+                datatype: "html",
+                data: {
+                    id: id,
+                },
+                success: (data) => {
+                 $('.product-title').empty().append(data.title);
+                 $('.product-body').empty().append(data.html);
+                 $("#show-product-modal").modal("show");
+                },
+                error: () => {
+//                     $(".inventory-products").empty().html(data);
+                },
+                complete: function(data) {
+                    // hideLoader();
+                }
+            });
+ 
+ }
+
 
 
 </script>
