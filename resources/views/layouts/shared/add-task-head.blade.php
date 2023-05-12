@@ -613,9 +613,7 @@ session('preferences.map_key_1'):'kdsjhfkjsdhfsf'; $theme =
                     var countrycode = customerdata.countrycode;
                     $("#taskFormHeader").find("input[name='phone_number']").val(customerdata.phone_number);
                     $("#taskFormHeader #dialCode").val(customerdata.dial_code);
-                    
                   
-
                     $("#taskFormHeader").find("input[name='email']").val(customerdata.email);
 
                     $('.withradio .append').remove();
@@ -642,6 +640,11 @@ session('preferences.map_key_1'):'kdsjhfkjsdhfsf'; $theme =
           });
       }
       var post_count = 2;
+      var warehouse_count = 2;
+      var email_count = 2;
+      var phone_no_count = 2;
+      var address_count = 2;
+      var choose_warehouse_count = 2;
     $(document).on('click', '.subTaskHeader', function(){
         var cur = countZ;
         countZ = countZ + 1;
@@ -732,6 +735,53 @@ session('preferences.map_key_1'):'kdsjhfkjsdhfsf'; $theme =
             jElem.prop('id', name);
               post_count++;
               console.log(post_count);
+          });
+          var warehouse_clone = $clone.find('.warehouse');
+          $.each(warehouse_clone, function(index, elem){
+            var jElem = $(elem);
+            var name = jElem.prop('id');
+            name = name.replace(/\d+/g, '');
+            name = 'addHeader'+warehouse_count+'-warehouse';
+            jElem.prop('id', name);
+            jElem.attr('data-id', warehouse_count);
+            warehouse_count++;
+              console.log(warehouse_count);
+          });
+          var address_email = $clone.find('.address_email');
+          $.each(address_email, function(index, elem){
+            var jElem = $(elem);
+            var name = jElem.prop('id');
+            name = name.replace(/\d+/g, '');
+            name = 'addHeader'+email_count+'-address_email';
+            jElem.prop('id', name);
+            jElem.attr('data-id', email_count);
+            email_count++;
+          });
+          var choose_warehouse = $clone.find('.choose_warehouse');
+          $.each(choose_warehouse, function(index, elem){
+            var jElem = $(elem);
+            jElem.attr('data-id', choose_warehouse_count);
+            choose_warehouse_count++;
+          });
+          var address_phone_number = $clone.find('.address_phone_number');
+          $.each(address_phone_number, function(index, elem){
+            var jElem = $(elem);
+            var name = jElem.prop('id');
+            name = name.replace(/\d+/g, '');
+            name = 'addHeader'+phone_no_count+'-address_phone_number';
+            jElem.prop('id', name);
+            jElem.attr('data-id', phone_no_count);
+            phone_no_count++;
+          });
+          var saved_address = $clone.find('.alsavedaddress');
+          $.each(saved_address, function(index, elem){
+            var jElem = $(elem);
+            jElem.find('.append').remove();
+            var name = jElem.prop('id');
+            name = name.replace(/\d+/g, '');
+            name = 'alsavedaddress'+address_count;
+            jElem.prop('id', name);
+            address_count++;
           });
 
         $clone.find('.appoint').hide();
