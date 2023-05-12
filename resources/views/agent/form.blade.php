@@ -127,6 +127,10 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                 <img id="trucks_edit"
                     src="{{ $agent->vehicle_type_id == '5' ? asset('assets/icons/truck_blue.png') : asset('assets/icons/truck.png') }}">
             </div>
+            <div class="radio  radio-info form-check-inline click cursors mt-2">
+                <input type="radio" id="auto" value="6" name="vehicle_type_id" act="edit" @if ($agent->vehicle_type_id == '6') checked @endif>
+                <img id="auto_edit"  src="{{ $agent->vehicle_type_id == '6' ? asset('assets/icons/auto_blue.png') : asset('assets/icons/auto.png') }}">
+            </div>
             <span class="invalid-feedback" role="alert">
                 <strong></strong>
             </span>
@@ -217,8 +221,8 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     <div class="col-md-6">
         <div class="form-group" id="{{$driver_registration_document->name}}Input">
             <label for="" class="control-label d-flex align-items-center justify-content-between">{{$driver_registration_document->name ? ucwords($driver_registration_document->name)  : ''}} 
-                @if(strtolower($driver_registration_document->file_type) == 'pdf' && (!empty($field_value)))
-                <a href="{{ Storage::disk('s3')->url($field_value) }}" download target="_blank"><i class="fa fa-eye" aria-hidden="true"></i></a>
+                @if(in_array(strtolower($driver_registration_document->file_type), ['pdf','image']) && (!empty($field_value)))
+                    <a href="{{ Storage::disk('s3')->url($field_value) }}" download target="_blank"><i class="fa fa-eye" aria-hidden="true"></i></a>
                 @endif
             </label>
             @if(strtolower($driver_registration_document->file_type) == 'text' || strtolower($driver_registration_document->file_type) == 'date')
@@ -227,7 +231,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             @if(strtolower($driver_registration_document->file_type) == 'image')
             <input type="file" data-plugins="dropify" name="{{$driver_registration_document->name}}" accept="image/*" data-default-file="{{ (!empty($field_value)) ? $imgproxyurl.Storage::disk('s3')->url($field_value) : '' }}" class="dropify" />
             @elseif(strtolower($driver_registration_document->file_type) == 'pdf')
-            <input type="file" data-plugins="dropify" name="{{$driver_registration_document->name}}" accept=".pdf" class="dropify" />
+            <input type="file" data-plugins="dropify" name="{{$driver_registration_document->name}}" accept=".pdf" class="dropify" data-default-file="{{ $field_value ?? '' }}"/>
             @endif
             <span class="invalid-feedback" role="alert">
                 <strong></strong>

@@ -13,8 +13,8 @@ use Carbon\Carbon;
 use App\Http\Controllers\Api\BaseController;
 use Illuminate\Support\Facades\Log;
 use App\Http\Requests\UserLogin;
-use App\Traits\ApiResponser;
-use App\Traits\smsManager;
+use App\Traits\{ApiResponser,GlobalFunction,smsManager};
+use App\Traits\{ FormAttributeTrait};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -28,7 +28,8 @@ use App\Model\{User, Agent, AgentDocs, AgentFleet, AllocationRule, AgentSmsTempl
 class AuthController extends BaseController
 {
     use ApiResponser;
-    use smsManager;
+    use smsManager, FormAttributeTrait;
+    use GlobalFunction;
 
 
     /**
@@ -186,7 +187,7 @@ class AuthController extends BaseController
             return response()->json(['message' => __('Your account has been rejected. Please contact administration')], 422);
         }
 
-        $prefer = ClientPreference::with('currency')->select('theme', 'distance_unit', 'currency_id', 'language_id', 'agent_name', 'date_format', 'time_format', 'map_type', 'map_key_1', 'custom_mode', 'is_cab_pooling_toggle')->first();
+        $prefer = ClientPreference::with('currency')->select('theme', 'distance_unit', 'currency_id', 'language_id', 'agent_name', 'date_format', 'time_format', 'map_type', 'map_key_1', 'custom_mode', 'is_cab_pooling_toggle','is_edit_order_driver','is_go_to_home')->first();
         $allcation = AllocationRule::first('request_expiry');
         $prefer['alert_dismiss_time'] = (int)$allcation->request_expiry;
         $taskProof = TaskProof::all();
@@ -221,6 +222,11 @@ class AuthController extends BaseController
         //$data['token_type'] = 'Bearer';
         $agent['access_token'] = $token;
 
+        $agent['attribute_form'] = $this->getAttributeForm($request);
+
+        $averageTaskComplete   = $this->getDriverTaskDonePercentage( $agent->id);
+        $agent['averageTaskComplete'] =  $averageTaskComplete['averageRating'];
+        $agent['CompletedTasks'] =  $averageTaskComplete['CompletedTasks'];
 
         $schemaName = 'royodelivery_db';
         $default = [
@@ -564,7 +570,7 @@ class AuthController extends BaseController
                 $agent_docs = AgentDocs::create($files[$key]);
             }
         }
-
+                
         $clientContact = Client::first();
         $emailSmtpDetail = SmtpDetail::where('id', 1)->first();
         $smtp = SmtpDetail::where('id', 1)->first();
@@ -599,7 +605,10 @@ class AuthController extends BaseController
         }
 
         if ($agent->wasRecentlyCreated ) {
-            return response()->json(['status' => 200, 'message' => 'Your account created successfully. Please login'], 200);
+            return response()->json([   'status' => 200, 
+                                        'message' => 'Your account created successfully. Please login',
+                                        'data' =>  $agent 
+                                    ], 200);
         } else {
             return response()->json([
                 'status' => 400,

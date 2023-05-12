@@ -16,7 +16,7 @@ use Maatwebsite\Excel\Facades\Excel;
 // use App\Exports\OrderVendorListExport;
 use App\Http\Controllers\Api\BaseController;
 use App\Traits\agentEarningManager;
-use App\Model\{Client, ClientPreference, User, Agent, Order, PaymentOption, PayoutOption, AgentPayout, AgentBankDetail, AgentConnectedAccount};
+use App\Model\{Client, ClientPreference, User, Agent, Order, PaymentOption, PayoutOption, AgentPayout, AgentBankDetail, AgentConnectedAccount,AgentCashCollectPop};
 
 class AgentPayoutController extends BaseController{
     use ApiResponser;
@@ -45,7 +45,7 @@ class AgentPayoutController extends BaseController{
             ],[
                 'payout_option_id.required' => 'Payout option field is required'
             ]);
-    
+
             if ($validator->fails()) {
                 return $this->error($validator->errors()->first(), 422);
             }
@@ -59,6 +59,9 @@ class AgentPayoutController extends BaseController{
             //-----------------Code modified by Surendra Singh--------------------------//
             $pending_payout_value  = AgentPayout::where('agent_id', $agent_id)->whereIn('status', [0])->sum('amount');
             $available_funds = agentEarningManager::getAgentEarning($agent_id, 1) - $pending_payout_value;
+         
+            \Log::info('available_funds '.$available_funds);
+            \Log::info('amount '.$request->amount);
             //-------------------------------------------------------------------------//
             if($request->amount > $available_funds){
                 return $this->error(__('Payout amount is greater than available funds'), 402);
@@ -76,7 +79,7 @@ class AgentPayoutController extends BaseController{
                     'beneficiary_account_number' => 'required',
                     'beneficiary_ifsc' => 'required'
                 ]);
-        
+
                 if ($validator->fails()) {
                     return $this->error($validator->errors()->first(), 422);
                 }
@@ -97,7 +100,7 @@ class AgentPayoutController extends BaseController{
                     $agent_bank_account->update();
                 }
                 else{
-                    
+
                     // find any other account of current agent and inactive that account
                     $get_agent_existing_account = AgentBankDetail::where('agent_id', $agent_id)->where('status', 1)->orderBy('id', 'desc')->first();
                     if($get_agent_existing_account){
@@ -117,7 +120,10 @@ class AgentPayoutController extends BaseController{
                     $agent_bank_account->save();
                 }
             }
-
+            $order_id = $request->has('order_id') ? $request->order_id : '';
+           
+            
+            
             $payout = new AgentPayout();
             $payout->agent_id = $id;
             $payout->payout_option_id = $pay_option;
@@ -125,6 +131,10 @@ class AgentPayoutController extends BaseController{
             $payout->amount = $request->amount;
             $payout->currency = $preferences->currency_id;
             $payout->requested_by = $agent->id;
+            if($order_id){
+                $payout->order_id = $order_id;
+                Order::where('id',$order_id)->update(['is_comm_settled'=>1]);
+            }
             $payout->status = 0;
             if($pay_option == 4){
                 $payout->agent_bank_detail_id = $agent_bank_account->id;
@@ -152,14 +162,14 @@ class AgentPayoutController extends BaseController{
         $agent_id = $agent->id;
 
         $client_preferences = ClientPreference::with('currency')->where('id', '>', 0)->first();
-       
+
         $agent_payout_list  = AgentPayout::select('*','status as status_id')->with('payoutOption')->where('agent_id', $agent_id)->orderBy('id','desc')->paginate($limit, $page);
         $past_payout_value  = AgentPayout::where('agent_id', $agent_id)->whereIn('status', [1])->sum('amount');
         $pending_payout_value  = AgentPayout::where('agent_id', $agent_id)->whereIn('status', [0])->sum('amount');
 
-        
+
         $available_funds    = agentEarningManager::getAgentEarning($agent->id, 1) - $pending_payout_value;
-        
+
         $available_funds    = number_format($available_funds, 2, '.', ',');
         $past_payout_value  = number_format($past_payout_value, 2, '.', ',');
 
@@ -186,11 +196,11 @@ class AgentPayoutController extends BaseController{
 
 
         $data = array(
-            'agent' => $agent, 
+            'agent' => $agent,
             'payout_options' => $payout_options,
             'client_preferences' => $client_preferences,
             'agent_payout_list' => $agent_payout_list,
-            'past_payout_value' => $past_payout_value, 
+            'past_payout_value' => $past_payout_value,
             'available_funds' => $available_funds
         );
 
@@ -207,9 +217,9 @@ class AgentPayoutController extends BaseController{
 
         $client_preferences = ClientPreference::with('currency')->where('id', '>', 0)->first();
         $agent_bank_details = AgentBankDetail::with(['payoutOption'])->where('agent_id', $agent_id)->where('status', 1)->orderBy('id','desc')->first();
-        
+
         $data = array(
-            'agent' => $agent, 
+            'agent' => $agent,
             'client_preferences' => $client_preferences,
             'agent_bank_details' => $agent_bank_details
         );
@@ -217,7 +227,7 @@ class AgentPayoutController extends BaseController{
         return $this->success($data, __('Success'), 201);
     }
 
-    
+
     // Driver payout connect details
 
     public function payoutConnectDetails($driver)
@@ -265,5 +275,76 @@ class AgentPayoutController extends BaseController{
         // }
 
         return $payout_creds;
+    }
+
+    public function AgentUploadPop(Request $request){
+
+        try{
+        $user           = Agent::where('id', Auth::user()->id)->first();
+        $header         = $request->header();
+        $client         = Client::where('database_name', $header['client'][0])->first('code');
+        $code           = $client->code;
+        $rules          = array(
+                                'amount' => [ "required", "regex:/^(\d+|\d+(\.\d{1,2})?|(\.\d{1,2}))$/" ],
+                                'date' => 'required',
+                                'file' => 'required|string',
+                                'type' => 'required'
+                            );
+
+            $validation  = Validator::make($request->all(), $rules);
+            if ($validation->fails()) {
+                return response()->json(['message' => $validation->errors()->first()], 422);
+            }
+            $img                    = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $request->file));
+			$imgType                = ($request->has('type')) ? $request->type : 'jpg';
+			$code                   = Client::orderBy('id','asc')->value('code');
+			$imageName              = $code.'/agent-ofp-pop/'.$user->id.substr(md5(microtime()), 0, 15).'.'.$imgType;
+            $path                   = Storage::disk('s3')->put($imageName, $img, 'public');
+            $url                    = Storage::disk('s3')->url($imageName);
+
+            $threshold              = ClientPreference::with('currency')->where('id', 1)->first();
+
+            if($threshold->is_threshold == 1 && !empty($threshold->threshold_data)){
+                $threshold_data     = json_decode($threshold->threshold_data,true);
+                $threshold_type     = $threshold_data['recursive_type'];
+
+                $agent                  = new AgentCashCollectPop();
+                $agent->agent_id        = $user->id;
+                $agent->amount          = $request->amount;
+                $agent->date            = $request->date;
+                $agent->payment_type    = 0;
+                $agent->threshold_type  = $threshold_type;
+                $agent->file            = $url;
+
+                if ($agent->save()) {
+                    return $this->success($agent, __('Success'), 201);
+                }
+            }
+        }
+        catch(Exception $ex){
+            return $this->error($ex->getMessage(), $ex->getCode());
+        }
+
+
+
+    }
+
+    public function AgentThresholdPayments(Request $request){
+        try{
+            $user                               = Agent::where('id', Auth::user()->id)->first();
+            if($user){
+                $preferences                    = ClientPreference::with('currency')->where('id', 1)->first();
+                $threshold_data                 = json_decode($preferences->threshold_data,true);
+                $threshold_detail               = array('is_threshold'=>$preferences->is_threshold,'threshold_data'=>$threshold_data);
+                $agentDebitPayments             = AgentCashCollectPop::where('agent_id',Auth::user()->id)->get();
+                $user->admin_threshold_detail   = $threshold_detail;
+                $user->agentDebitPayments       = $agentDebitPayments;
+
+
+                return $this->success($user, __('Success'), 201);
+            }
+        }catch(Exception $ex){
+            return $this->error($ex->getMessage(), $ex->getCode());
+        }
     }
 }

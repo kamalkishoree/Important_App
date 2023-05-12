@@ -245,27 +245,29 @@ if( !function_exists('formattedDate') ) {
         return ;
     }
 }
+if (!function_exists('connect_with_order_panel')) {
+    function connect_with_order_panel() {
+        $order_panel_details = OrderPanelDetail::first();
 
-function connect_with_order_panel() {
-    $order_panel_details = OrderPanelDetail::first();
-    
-    $default = [
-        'prefix' => '',
-        'engine' => null,
-        'strict' => false,
-        'charset' => 'utf8mb4',
-        'host' => $order_panel_details->db_host,
-        'port' => $order_panel_details->db_port,
-        'prefix_indexes' => true,
-        'database' => $order_panel_details->db_name,
-        'username' => $order_panel_details->db_username,
-        'password' => $order_panel_details->db_password,
-        'collation' => 'utf8mb4_unicode_ci',
-        'driver' => env('DB_CONNECTION', 'mysql'),
-    ];
-    Config::set("database.connections.$order_panel_details->db_name", $default);
-    return \DB::connection($order_panel_details->db_name);    
+        $default = [
+            'prefix' => '',
+            'engine' => null,
+            'strict' => false,
+            'charset' => 'utf8mb4',
+            'host' => $order_panel_details->db_host,
+            'port' => $order_panel_details->db_port,
+            'prefix_indexes' => true,
+            'database' => $order_panel_details->db_name,
+            'username' => $order_panel_details->db_username,
+            'password' => $order_panel_details->db_password,
+            'collation' => 'utf8mb4_unicode_ci',
+            'driver' => env('DB_CONNECTION', 'mysql'),
+        ];
+        Config::set("database.connections.$order_panel_details->db_name", $default);
+        return \DB::connection($order_panel_details->db_name);
+    }
 }
+
 
 // Returns the values of the additional preferences.
 if (!function_exists('checkColumnExists')) {
@@ -299,6 +301,18 @@ if (!function_exists('checkTableExists')) {
 
 }
 
+
+function checkImageExtension($image)
+{
+    $ch =  substr($image, strpos($image, ".") + 1);
+    $ex = "@webp";
+    if($ch == 'svg')
+    {
+        $ex = "";
+    }
+    return $ex;
+}
+
 if (!function_exists('checkWarehouseMode')) {
     /** check if column exits in table
     * @param string $tableName
@@ -307,17 +321,22 @@ if (!function_exists('checkWarehouseMode')) {
         $preference = checkColumnExists('client_preferences','warehouse_mode') ? ClientPreference::select('id', 'warehouse_mode')->first() :'';
         $data = [
             'show_warehouse_module' => 0,
-            'show_category_module' => 0
+            'show_category_module' => 0,
+            'show_inventory_module' => 0
         ];
-        if($preference){            
+        if($preference){
             $warehouseMode = isset($preference->warehouse_mode) ? json_decode($preference->warehouse_mode) : '';
-        
+
             if(!empty($warehouseMode->show_warehouse_module) && $warehouseMode->show_warehouse_module == 1){
-                $data['show_warehouse_module'] = 1; 
+                $data['show_warehouse_module'] = 1;
             }
             if(!empty($warehouseMode->show_category_module) && $warehouseMode->show_category_module == 1){
                 $data['show_category_module'] = 1; 
-            }            
+            }    
+            if(!empty($warehouseMode->show_inventory_module) && $warehouseMode->show_inventory_module == 1){
+                $data['show_inventory_module'] = 1; 
+            }    
+                  
         }
         return $data;
     }
@@ -334,12 +353,12 @@ if (!function_exists('checkDashboardMode')) {
         $data = [
             'show_dashboard_by_agent_wise' => 0
         ];
-        if($preference){            
+        if($preference){
             $dashboardMode = isset($preference->dashboard_mode) ? json_decode($preference->dashboard_mode) : '';
-        
+
             if(!empty($dashboardMode->show_dashboard_by_agent_wise) && $dashboardMode->show_dashboard_by_agent_wise == 1){
-                $data['show_dashboard_by_agent_wise'] = 1; 
-            }            
+                $data['show_dashboard_by_agent_wise'] = 1;
+            }
         }
         return $data;
     }
@@ -361,21 +380,24 @@ if (!function_exists('decimal_format')) {
  /**
      * sendSmsTemplate dynamic selection and replace tags
      */
-    function sendSmsTemplate($slug,$data)
-    {
-        $smsTemp = AgentSmsTemplate::where('slug',$slug)->select('content','tags','template_id')->first();
-        $smsBody = $smsTemp->content;
-        if(isset($smsTemp->tags) && !empty($smsTemp->tags))
+
+     if (!function_exists('sendSmsTemplate')) {
+        function sendSmsTemplate($slug,$data)
         {
-            $tages = explode(',',$smsTemp->tags);
-            foreach($tages as $tag)
+            $smsTemp = AgentSmsTemplate::where('slug',$slug)->select('content','tags','template_id')->first();
+            $smsBody = $smsTemp->content;
+            if(isset($smsTemp->tags) && !empty($smsTemp->tags))
             {
-                $value = $data[$tag]??'';
-                $smsBody = str_replace($tag,$value,$smsBody);
+                $tages = explode(',',$smsTemp->tags);
+                foreach($tages as $tag)
+                {
+                    $value = $data[$tag]??'';
+                    $smsBody = str_replace($tag,$value,$smsBody);
+                }
             }
+            $sms = array('body'=>$smsBody,'template_id'=>$smsTemp->template_id??'');
+            return $sms;
         }
-        $sms = array('body'=>$smsBody,'template_id'=>$smsTemp->template_id??'');
-        return $sms;
     }
 
 

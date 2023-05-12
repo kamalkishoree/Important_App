@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\BaseController;
-use App\Model\Client;
+use App\Model\{Client,ClientPreference};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
@@ -20,9 +20,8 @@ class ShortcodeController extends BaseController
      */
     public function validateCompany(Request $request)
     {
-        $client = Client::where('is_deleted', 0)->where('code', $request->shortCode)->select('id','country_id', 'name', 'phone_number', 'email', 'database_name', 'timezone', 'custom_domain', 'database_host', 'database_port', 'database_username', 'database_password', 'logo', 'dark_logo', 'company_name', 'company_address', 'is_blocked', 'socket_url')->with('getCountrySet')->first();
-
-      
+        $client = Client::where('is_deleted', 0)->where('code', $request->shortCode)->select('id','country_id', 'name', 'phone_number', 'email', 'database_name', 'timezone', 'custom_domain', 'database_host', 'database_port', 'database_username', 'database_password', 'logo', 'dark_logo', 'company_name', 'company_address', 'is_blocked', 'socket_url')->with('getCountrySet','getPreference')->first();
+        //$client_id = ClientPreference::where('client_id', $request->shortCode)->first();
         if (!$client) {
             return response()->json([
                 'error' => 'Company not found',
@@ -72,12 +71,23 @@ class ShortcodeController extends BaseController
             Config::set("database.connections.$database_name", $default);
             Config::set("client_connected", true);
             DB::setDefaultConnection($database_name);
+
             DB::purge($database_name);
            
-            $client_db_data = Client::where('is_deleted', 0)->where('code',$request->shortCode)->select('id', 'code')->first();
+            $client_db_data = Client::where('is_deleted', 0)->where('code',$request->shortCode)->select('id', 'code')->with('getPreference')->first();
+            $getAdditionalPreference = getAdditionalPreference([
+                'pickup_type',
+                'drop_type',
+                'is_attendence',
+                'idle_time'
+            ]);
             if(!empty($client_db_data)){
                 $client->client_db_id = $client_db_data->id;
                 $client->client_db_code = $client_db_data->code;
+                $client->is_driver_slot = !empty($client_db_data->getPreference) && isset($client_db_data->getPreference->is_driver_slot) ? $client_db_data->getPreference->is_driver_slot : 0;
+                $client->is_freelancer = !empty($client_db_data->getPreference) && isset($client_db_data->getPreference->is_freelancer) ? $client_db_data->getPreference->is_freelancer : 0;
+                $client['isAttendence'] = ($getAdditionalPreference['is_attendence'] == 1) ? $getAdditionalPreference['is_attendence'] : 0;
+                
             }
         }
         unset($client->database_host);

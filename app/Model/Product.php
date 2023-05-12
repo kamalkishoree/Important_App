@@ -11,12 +11,33 @@ class Product extends Model
     public function variant(){
         return $this->hasMany('App\Model\ProductVariant')->select('id', 'sku', 'product_id', 'title', 'quantity', 'price', 'position', 'compare_at_price', 'barcode', 'cost_price', 'currency_id', 'tax_category_id','container_charges')->where('status', 1);
     }
+    public function pvariant(){
+        return $this->hasOne('App\Model\ProductVariant')->select('id', 'sku', 'product_id', 'title', 'quantity', 'price', 'position', 'compare_at_price', 'barcode', 'cost_price', 'currency_id', 'tax_category_id','container_charges')->where('status', 1);
+    }
+   
 
     public function category(){
         return $this->hasOne('App\Model\ProductCategory')->select('product_id', 'category_id');
     }
 
-    public function primary(){
-        return $this->hasOne('App\Model\ProductTranslation');
+    public function translation(){
+        return $this->hasOne('App\Model\ProductTranslation','product_id','id');
     }
+
+    public function primary(){
+        $langData = $this->hasOne('App\Model\ProductTranslation');
+        return $langData;
+    }
+    
+    public function media(){
+        return $this->hasMany('App\Model\ProductImage')->select('product_id', 'media_id', 'is_default');
+    }
+    
+    
+    
+    public function pimage()
+    {
+        return $this->hasMany('App\Model\ProductImage')->select('product_images.product_id', 'product_images.media_id', 'product_images.is_default', 'vendor_media.media_type', 'vendor_media.path')->join('vendor_media', 'vendor_media.id', 'product_images.media_id')->limit(1);
+    }
+
 }

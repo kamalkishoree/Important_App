@@ -147,7 +147,7 @@
                             </p>
                             <div class="row mb-3">
                                 <div class="col-md-7">
-                                    <div class="row d-flex align-items-center mb-3">
+                                    <div class="row d-flex align-items-start mb-3">
                                         <div class="col-md-4 upload_box">
                                             <input type="file" data-plugins="dropify" name="logo" data-default-file="{{isset(Auth::user()->logo) ? Storage::disk('s3')->url(Auth::user()->logo) : ''}}" />
                                             <p class="text-muted text-center mt-2 mb-0">{{__("Upload Light Logo")}} </p>
