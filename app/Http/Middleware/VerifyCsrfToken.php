@@ -17,6 +17,7 @@ class VerifyCsrfToken extends Middleware
         "payment/vnpay/api",
         "payment/ccavenue/pay",
         "payment/ccavenue/success",
-        "payment/gateway/returnResponse"
+        "payment/gateway/returnResponse",
+        "order/submit_driver_additional_rating/*"
     ];
 }

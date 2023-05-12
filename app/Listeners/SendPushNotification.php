@@ -87,7 +87,7 @@ class SendPushNotification
         'roster_details.short_name','roster_details.address','roster_details.lat','roster_details.long','roster_details.task_count')->get();
         $getids           = $get->pluck('id');
         //$qr           = $get->toSql();
-       // Log::info($qr);
+        // Log::info($qr);
         //Log::info($getids);
         DB::connection($schemaName)->table('rosters')->where('status',10)->delete();
         if(count($get) > 0){
@@ -128,8 +128,8 @@ class SendPushNotification
                 $item['title']     = 'Pickup Request';
                 $item['body']      = 'Check All Details For This Request In App';
                 $new = [];
-               // Log::info($item);
-               // Log::info('token=');
+               Log::info('sendnotification lister');
+               Log::info( $item);
 
                $item['notificationType'] = $item['type'];
                unset($item['type']); // done by Preet due to notification title is displaying like AR in iOS 
@@ -137,9 +137,14 @@ class SendPushNotification
                 array_push($new,$item['device_token']);
                // Log::info($new);
 
-                $clientRecord = Client::where('code', '=', $item['client_code'])->first();
+
+                $clientRecord = Client::where('code', $item['client_code'])->first();
+
                 $this->seperate_connection('db_'.$clientRecord->database_name);
                 $client_preferences = DB::connection('db_'.$clientRecord->database_name)->table('client_preferences')->where('client_id', $item['client_code'])->first();
+                
+                $client_preferences = DB::connection('db_'.$clientRecord->database_name)->table('client_preferences')->where('client_id', $item['client_code'])->first();
+
                    // Log::info('Fcm Response');
 
                 if(isset($new)){
@@ -161,9 +166,8 @@ class SendPushNotification
                                             'show_in_foreground' => true,
                                         ])
                                         ->send();
-
-                                           // Log::info('Fcm Response in');
-                                            //Log::info($fcm_store);
+                                        Log::info('Fcm Response in');
+                                        Log::info($fcm_store);
                     }
                     catch(Exception $e){
                         Log::info($e->getMessage());
@@ -196,10 +200,13 @@ class SendPushNotification
                                 ->orWhere('notification_befor_time', '<=', $date);
                         })
                     ->get();
+                    Log::info('extraTime check');      
+                    Log::info($check);
          Log::info(DB::connection($schemaName)->table('rosters')
          ->get()->pluck('id'));
         if(count($check) > 0){
             sleep(15);
+            Log::info('extraTime getData');
             $this->getData();
         }else{
             return;

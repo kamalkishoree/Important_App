@@ -14,7 +14,8 @@
 @php $theme = \App\Model\ClientPreference::where(['id' => 1])->first('theme');@endphp
 <?php $body = ((isset($theme) && $theme->theme == 'dark'))? "dark":"light";?>
 
-
+@include('layouts.shared.language')
+@yield('headerJs')
 
     <body @yield('body-extra') class="{{$body}}" @if( session()->get('applocale')=="ar") dir="rtl" @endif>
         <!-- Begin page -->
@@ -47,7 +48,7 @@
                             @if(session('preferences.twilio_status') == 'invalid_key')
                             <span><i class="mdi mdi-block-helper mr-2"></i> <strong>Twilio</strong> key is not valid</span> <br/>
                             @endif
-                        </div>
+                        </div>  
                     </div>
 
 

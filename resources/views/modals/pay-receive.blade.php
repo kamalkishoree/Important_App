@@ -53,23 +53,46 @@
                             </div>
                         </div>
                     </div>
+                    
+                     <div class="row d-none" id="receive_from" >
+                        <div class="col-md-12">
+                            {!! Form::label('title', __('Receive From'),['class' => 'control-label']) !!} <br>
+                           <ul class="list-inline">
+                        <li class="d-inline-block mr-2">
+                            <input type="radio" id="wallet" name="payment_from"  value="1" checked>
+                            <label for="teacher"><span class="showspan">{{__("Wallet")}}</span></label>
+                            </li>
+                        <li class="d-inline-block mr-2">
+                            <input type="radio" id="off_the_platform"  name="payment_from" value="2">
+                            <label for="student"><span class="showspan">{{__("Off the Platform")}}</span></label>
+                        </li>
+                        </ul>
+                        </div>
+                    </div>
+                    
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="card-box dispaly-cards">
                             {!! Form::label('title', __('Order Earning'),['class' => 'control-label']) !!} <br>
                             <span id="order_earning"></span>
                             </div>
                         </div>
-                        <div class="col-md-4 ">
+                        <div class="col-md-6">
                             <div class="card-box dispaly-cards">
                             {!! Form::label('title', __('Cash Collected'),['class' => 'control-label']) !!} <br>
                             <span id="cash_collected"></span>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="card-box dispaly-cards">
                             {!! Form::label('title', __('Final Balance'),['class' => 'control-label']) !!} <br>
                             <span id="final_balance"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card-box dispaly-cards">
+                            {!! Form::label('title', __('Wallet Balance'),['class' => 'control-label']) !!} <br>
+                            <span id="wallet_balance"></span>
                             </div>
                         </div>
                         <div class="col-md-12">

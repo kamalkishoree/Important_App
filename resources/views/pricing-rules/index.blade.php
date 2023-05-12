@@ -114,10 +114,6 @@
                         </div>
                         <div class="col-sm-4 text-right">
                             <button type="button" class="btn btn-blue waves-effect waves-light openModal" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> {{__("Add Pricing Rules")}}</button>
-
-                            <!--<a href="{{ route('pricing-rules.create') }}"
-                                class="btn btn-blue waves-effect waves-light"><i class="mdi mdi-plus-circle mr-1"></i>
-                                Add Pricing Rules</a> -->
                         </div>
 
                     </div>

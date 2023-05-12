@@ -18,4 +18,7 @@ class Category extends Model
     {
         return $this->hasMany(Product::class, 'category_id', 'id');
     }
+    public function translation(){
+        return $this->hasOne('App\Model\CategoryTranslation','category_id','id');
+    }
 }

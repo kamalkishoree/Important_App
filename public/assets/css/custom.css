@@ -36,8 +36,12 @@
 .select2-container--default .select2-selection--multiple .select2-selection__choice {
     padding: 0 10px 0 20px !important;
 }
-span.select2-selection.select2-selection--multiple {
+/* span.select2-selection.select2-selection--multiple {
     height: auto !important;
+} */
+span.select2-selection.select2-selection--multiple {
+    /* height: calc(1.5em + 0.9rem + 2px); */
+    padding: 4px 2px;
 }
 form#StoreWarehouse label.checkbox-inline {
     margin-right: 10px;
@@ -45,6 +49,16 @@ form#StoreWarehouse label.checkbox-inline {
 form#submitAgent .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
     left: -10px;
     position: relative;
+    color:#fff !important;
+}
+.select2-container .select2-selection--multiple .select2-selection__rendered{
+    height: 40px;
+    overflow-y: auto !important;
+}
+ul.select2-selection__rendered li {
+    margin: 5px 2px;
+}
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove{
     color:#fff !important;
 }
 #warehouse_idInputEdit .select2-container--default .select2-selection--multiple .select2-selection__choice__remove{
@@ -71,8 +85,8 @@ body.light .address_box label {
 body.light div#agents-datatable_wrapper .dataTables_scrollHead thead th {
 }
 button[type="submit"]:hover {
-    background-color: transparent;
-    border-color: transparent;
+    /* background-color: transparent;
+    border-color: transparent; */
     cursor: pointer;
     font-size: 14px;
 }
@@ -413,6 +427,12 @@ body .navbar-custom .topnav-menu .nav-link {
 }
 .login-form .blank-label {
     display: none;
+}
+.login-form input[type="radio"]:checked + label {
+    background-color: #6658dd;
+    color:#fff;
+    font-size: 13px;
+    letter-spacing: 0.5px;
 }
 .login-form input[type="radio"]:checkedlabel {
     border-color: #6658dd;
@@ -934,11 +954,11 @@ hr.new3 {
     padding: 4px 5px;
     border-radius: 5px;
     color: #fff;
-    font-size: 12px;
+    font-size: 11px;
     transition: all 0.5s;
     font-weight: 700;
     margin: 0 0 10px;
-    height: 25px;
+    height: 22px;
 }
 .address_box span.short_name {
     color: #6658dd;
@@ -1249,7 +1269,128 @@ body .tagsinput .tag {
 body[dir="rtl"] .card_outer{
     height: auto !important;
 }
+
+/*==========  15-03-2023 ===========*/
+div#scrollbar .side_head > .d-flex {
+    width: 100%;
+    justify-content: space-between!important;
+}
+.left-sidebar #teams_container .card .card-header {
+    display: grid;
+    align-items: baseline;
+    justify-content: space-between;
+    grid-template-columns: 1fr 50px;
+    grid-gap: 0 20px;
+}
+.left-sidebar #teams_container .offline {
+    color: red;
+}
+.left-sidebar #teams_container .online {
+    color: green;
+}
+.content-page .content .card-body button.btn.btn-blue {
+    height: calc(1.5em + 0.9rem + 2px);
+}
+.content-page .content .card-body button.btn.btn-blue:hover{
+    color: #fff;
+    background-color: #6658dd;
+    border-color: #6658dd;
+}
+.left-sidebar #teams_container .card .card-header img.profile-circle {
+    padding: 0;
+}
+.left-sidebar #teams_container .card .card-header .header-title {
+    margin-bottom: 5px!important;
+}
+.left-sidebar #teams_container .card .card-header  p span.badge-blue {
+    margin: 0px 0 3px;
+}
+#agent_route_container h6.d-inline span.d-block {
+    padding: 5px 0;
+}
+#agent_route_container h6.d-inline > p {
+    margin-bottom: 10px;
+}
+.main_outter_box .content .row .table-responsive .dataTables_wrapper .dataTables_scroll .dataTables_scrollBody tr td:first-child {
+    padding: 10px 20px 10px 15px;
+}
+form#UpdateClient div#favicon_container {
+    width: 100%!important;
+}
+#UpdateClient .dropify-wrapper.touch-fallback {
+    height: auto!important;
+    min-height: 189px;
+    display: flex;
+    align-items: center;
+}   
+.pick_drop_item_list {
+    position: relative;
+    padding: 10px 15px 10px 25px;
+}
+.pick_drop_item_list .col-12 h5.w-100.d-flex.align-items-center.justify-content-between {
+    padding: 10px 25px 3px!important;
+}
+#accordion .card-body .assigned-block h6{
+    margin-left:0!important;
+}
+#accordion .card-body .assigned-block h5 {
+    font-weight: 900!important;
+}
+#accordion .card-body .assigned-block h5 span{
+    font-weight: 900!important;
+}
+.pick_drop_item_list i.fas.fa-bars {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: -10px;
+}
+.pick_drop_item_list .col-12 .second_list_pick {
+    padding: 0 25px!important;
+    margin-top: 10px!important;
+}
+.pick_drop_item_list > .col-12 {
+    padding: 0!important;
+}
+.pick_drop_item_list .col-12 h5.w-100.d-flex.align-items-center.justify-content-between > p {
+    margin: 0;
+}
+@media(max-width:1670px) {
+    div#agent_route_container .card-body.ui-sortable-handle .assigned-block .col-12.d-flex {
+        flex-wrap: wrap;
+    }
+
+}
+@media(max-width:1600px) {
+    div#scrollbar .side_head > .d-flex .form-check-inline {
+        margin: 0 auto!important;
+    }
+    #accordion .card-body .assigned-block h6{
+        margin-left:0;
+        width:100%;
+    }
+    .left-side-menu{
+        width:210px;
+    }
+    .dshboard .content-page{
+        margin-left: 210px;
+        padding-left: 0!important;
+    }
+    .left-sidebar #teams_container .card .card-header{
+        grid-gap: 0;
+        padding:10px;
+    }
+
+}
 @media(max-width:1366px) {
+    div#agent_route_container .assigned-btn{
+        /* margin-left: 0!important; */
+        width: auto!important;
+        max-width: inherit!important;
+    }
+    .left-sidebar #teams_container .card .card-header{
+        grid-template-columns: 1fr;
+    }
     #map-canvas {
         height: calc(100vh - 284px);
    }
@@ -1260,6 +1401,19 @@ body[dir="rtl"] .card_outer{
     body[dir="rtl"] .card_outer{
         height: auto !important;
    }
+   div#scrollbar .side_head > .d-flex{
+    flex-wrap:wrap;
+    justify-content: flex-start!important;
+   }
+   div#scrollbar .side_head > .d-flex .form-check-inline {
+    margin: 0 0 5px !important;
+}
+div#scrollbar .side_head > .d-flex .mdi.mdi-sync {
+    margin-left: -10px;
+}
+div#scrollbar .side_head > .row.search_bar .col-md-6 {
+    padding: 0 5px;
+}
 }
 @media(min-width:1200px){
     .geo_middle {
@@ -1575,6 +1729,23 @@ span.copied_txt {
    }
 }
 @media (max-width:767px) {
+    #UpdateClient .dropify-wrapper.touch-fallback{
+        min-height: 120px!important;
+    }
+    .left-sidebar #teams_container .card .card-header {
+        grid-template-columns: 1fr 0.5fr;
+    }
+    .left-sidebar #teams_container .card .card-header .col-md-12  > span {
+        width: 100%;
+        display: block;
+        text-align: right;
+    }
+    div#scrollbar .side_head > .d-flex{
+        flex-wrap: unset;
+    }
+    div#scrollbar .side_head > .d-flex .form-check-inline{
+        margin:0 0 0px !important;
+    }
     .btn.btn-blue.btn-block {
         width: 100%;
    }
@@ -2103,7 +2274,7 @@ body.dark div#pending_payouts .card {
     border-radius: 0 0 16px 16px !important;
 }
 body.dark .content h1, .content h2, .content h3, .content h4, .content h5{
-   color: #acbfd2;
+   color: #000 !important;
 }
 body.dark div#edit_page_content button{
    color:#fff;
@@ -2271,6 +2442,17 @@ body.dark .modal-title {
 }
 body.dark div#edit-price-modal label{
    color: #dbe9f9 !important;
+}
+
+.select2-container .select2-selection--multiple .select2-selection__rendered{
+    height: 40px;
+    overflow-y: auto !important;
+}
+ul.select2-selection__rendered li {
+    margin: 5px 2px;
+}
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove{
+    color:#fff !important;
 }
 body.dark div#add-pricing-modal label{
    color: #dbe9f9 !important;
@@ -3016,6 +3198,24 @@ body.light .card.main-table-card div#pricing-datatable_length label:after {
     flex: 100%;
     min-width: 100%;
 }
+
+
+.agent_tabel_block table.table.table-striped {
+    table-layout: fixed;
+}
+
+.agent_tabel_block table.table.table-striped td, .main_outter_box th {
+    width: 160px !important;
+    overflow: hidden;    
+    /* white-space: nowrap;
+    -moz-text-overflow: ellipsis;        
+       -ms-text-overflow: ellipsis;
+        -o-text-overflow: ellipsis;
+           text-overflow: ellipsis */
+
+}
+
+
 /*----------laptop view media css--------------*/
 
 @media (max-width: 1600px){
@@ -3457,7 +3657,7 @@ div#scrollbar {
         margin: 10px !important;
     }
     .left-sidebar .side_head span {
-        margin: 10px 4px;
+        margin: 10px 0;
         display: block;
     }
     form#taskFormHeader .radio.radio-info.form-check-inline {
@@ -3625,4 +3825,5 @@ div#scrollbar {
     body.dark.iti-mobile.sidebar-enable ul.list-unstyled.topnav-menu.float-right.mb-0.d-flex.align-items-center {
         margin: 0;
     }
+   
 }

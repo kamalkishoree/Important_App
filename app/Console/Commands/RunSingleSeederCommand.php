@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Artisan;
 use Config;
 use App\Model\Client;
 use Exception;
+use DB;
+
 
 class RunSingleSeederCommand extends Command
 {
@@ -47,33 +49,40 @@ class RunSingleSeederCommand extends Command
         $clients = Client::where('status', 1)->get();
         //$clients = Client::all();
         foreach ($clients as $key => $client) {
-
-
-          
-
             $database_name = 'db_' . $client->database_name;
-            $default = [
-                'driver' => env('DB_CONNECTION', 'mysql'),
-                'host' => env('DB_HOST'),
-                'port' => env('DB_PORT'),
-                'database' => $database_name,
-                'username' => env('DB_USERNAME'),
-                'password' => env('DB_PASSWORD'),
-                'charset' => 'utf8mb4',
-                'collation' => 'utf8mb4_unicode_ci',
-                'prefix' => '',
-                'prefix_indexes' => true,
-                'strict' => false,
-                'engine' => null
-            ];
+            $this->info("select database start: {$database_name}!");
+            $query = "SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME =  ?";
+            $db = DB::select($query, [$database_name]);
+            if ($db) {
+
+
+                $database_name = 'db_' . $client->database_name;
+                $default = [
+                    'driver' => env('DB_CONNECTION', 'mysql'),
+                    'host' => env('DB_HOST'),
+                    'port' => env('DB_PORT'),
+                    'database' => $database_name,
+                    'username' => env('DB_USERNAME'),
+                    'password' => env('DB_PASSWORD'),
+                    'charset' => 'utf8mb4',
+                    'collation' => 'utf8mb4_unicode_ci',
+                    'prefix' => '',
+                    'prefix_indexes' => true,
+                    'strict' => false,
+                    'engine' => null
+                ];
 
 
 
-            Config::set("database.connections.$database_name", $default);
+                Config::set("database.connections.$database_name", $default);
 
-            Artisan::call('db:seed', ['--class'=>$seeder_name,'--database' => $database_name]);
+                Artisan::call('db:seed', ['--class'=>$seeder_name,'--database' => $database_name]);
 
-            \DB::disconnect($database_name);
+                \DB::disconnect($database_name);
+            }else{
+                DB::disconnect($database_name);
+                $this->info("migrate database end: {$database_name}!");
+            }
         }
 
         return 0;

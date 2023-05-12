@@ -151,6 +151,24 @@
                     searchable: false
                 },
                 {
+                    data: 'state',
+                    name: 'state',
+                    orderable: false,
+                    searchable: false,
+                    "mRender": function(data, type, full) {
+                        var val = '<span class="badge badge-pill badge-success pill-state">Active</span>';
+                           if(data == 1){
+                            val = '<span class="badge badge-pill badge-success pill-state">Active</span>';
+                           } else if(data == 2){
+                            val = '<span class="badge badge-pill badge-secondary pill-state">Blocked</span>';
+                           }else{
+                            val = '<span class="badge badge-pill badge-danger pill-state">Deleted</span>';
+                           }
+
+                         return val;
+                    }
+                },
+                {
                     data: 'agent_rating',
                     name: 'agent_rating',
                     orderable: false,

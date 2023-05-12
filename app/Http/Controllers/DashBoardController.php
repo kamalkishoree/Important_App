@@ -768,7 +768,7 @@ class DashBoardController extends Controller
                         $query->where('is_available', '=', $userstatus)
                             ->with(['agentlog', 
                                 'order'  => function ($q) use ($startdate, $enddate){
-                                $q->where('order_time', '>=', $startdate)->where('order_time', '<=', $enddate)->with(['customer', 'task.location']);
+                                $q->where('order_time', '>=', $startdate)->where('order_time', '<=', $enddate)->where('status','!=','completed')->with(['customer', 'task.location']);
                                 }
                             ]
                         );
@@ -779,7 +779,7 @@ class DashBoardController extends Controller
             $teams  = Team::with(
                 [
                     'agents.order' => function ($o) use ($startdate, $enddate) {
-                        $o->where('order_time', '>=', $startdate)->where('order_time', '<=', $enddate)->with(['customer', 'task.location']);
+                    $o->where('order_time', '>=', $startdate)->where('order_time', '<=', $enddate)->where('status','!=','completed')->with(['customer', 'task.location']);
                     },
                 ]
             );
@@ -846,7 +846,7 @@ class DashBoardController extends Controller
         }
 
         //create array for map marker
-        $allTasks = Order::where('order_time', '>=', $startdate)->where('order_time', '<=', $enddate)->with(['customer', 'task.location', 'agent.team'])->get();
+        $allTasks = Order::where('order_time', '>=', $startdate)->where('order_time', '<=', $enddate)->where('status','!=','completed')->with(['customer', 'task.location', 'agent.team'])->get();
         $newmarker = [];
 
         foreach ($allTasks as $key => $tasks) {
