@@ -349,7 +349,7 @@
                             @foreach ($vendors as $vendor)
 
 
-                            <div class="alTaskType pt-1 pb-1 copyin1 cloningDiv check-validation mb-2" id="copyin1">
+                            <div class="alTaskType pt-1 pb-1 copyin1  check-validation mb-2" id="copyin1">
                                 <div class="alFormTaskType row m-0">
                                     <div class="col-md-12">
                                         <div class="row firstclone1">
@@ -473,7 +473,7 @@
                             @endforeach
                         <?php } else { ?>
 
-                            <div class="alTaskType pt-1 pb-1 copyin1 cloningDiv check-validation" id="copyin1">
+                            <div class="alTaskType pt-1 pb-1 copyin1 cloningDiv warehouse_id_1 check-validation" id="copyin1">
                                 <div class="alFormTaskType row m-0">
                                     <div class="col-md-12">
                                         <div class="row firstclone1">

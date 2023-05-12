@@ -90,16 +90,19 @@
         $(document).on('click', '.choose_warehouse', function() {
 
              var data_id = $(this).attr('data-id');
-             
+
             if ($(this).text() == "Choose Warehouse") {
                 $(this).text("Choose Location");
                 $(this).closest(".firstclone1").find(".select_category-field").show();
-             
+                $(this).parent().closest('.warehouse_id_'+data_id).addClass('is_warehouse_selected');
             } else {
                 $(this).text("Choose Warehouse");
                 $(this).closest(".firstclone1").find(".select_category-field").hide();
                 $(this).closest(".firstclone1").find(".warehouse").val('');
-            };
+                $(this).parent().closest('.warehouse_id_'+data_id).removeClass('is_warehouse_selected');            };
+
+            
+
             $("#alsavedaddress"+data_id).find('.withradio .append').remove();
             $(this).closest(".firstclone1").find(".location-section").toggle();
             $(this).closest(".firstclone1").find(".warehouse-fields").toggle();

@@ -500,9 +500,9 @@ session('preferences.map_key_1'):'kdsjhfkjsdhfsf'; $theme =
                     keyboard: false
                 });
 
-                phoneInput();
+               
                 runPicker();
-
+                phoneInput();
                 $('#task-modal-header .edit-icon-float-right').on('click', function() {
                     $('#task-modal-header .meta_data_task_div').toggle();
                     if($(this).find('i').hasClass('mdi mdi-chevron-down')){
@@ -615,18 +615,32 @@ session('preferences.map_key_1'):'kdsjhfkjsdhfsf'; $theme =
                     $("#taskFormHeader #dialCode").val(customerdata.dial_code);
                   
                     $("#taskFormHeader").find("input[name='email']").val(customerdata.email);
+                    
+                   
+                    $(".alTaskType").each(function(){
+                        if (!($(this).hasClass('is_warehouse_selected'))) {
+                            $(this).find('.withradio .append').remove();
+                        }
+                      });
 
-                    $('.withradio .append').remove();
+
+                    
                     jQuery.each(array, function(i, val) {
                     var countz = '';
                     var rand =  Math.random().toString(36).substring(7);
+                   
                     $(".withradio").each(function(){
                         var count = parseInt(countz);if(isNaN(count)){count = 0;}
+
+                   
+                        var id = $(this).parent().closest('.alTaskType').hasClass('is_warehouse_selected');   
+                       if(!id){
                         $(this).append(
                           '<div class="append"><div class="custom-control custom-radio count"><input type="radio" id="' + (rand + count) + '" name="old_address_id' + countz + '" value="' + val.id + '" class="custom-control-input redio old-select-address callradio" data-srtadd="'+ val.short_name +'" data-flat_no="'+ val.flat_no +'"  data-adr="'+ val.address +'" data-lat="'+ val.latitude +'" data-long="'+ val.longitude +'" data-pstcd="'+ val.post_code +'" data-emil="'+ val.email +'" data-ph="'+ val.phone_number +'"><label class="custom-control-label" for="' + (rand + count) + '"><span class="spanbold">' + val.short_name +
                           '</span>-' + val.address +
                           '</label></div></div>');
                         countz = count + 1;
+                        }
                     });
                   });
                   
@@ -652,6 +666,7 @@ session('preferences.map_key_1'):'kdsjhfkjsdhfsf'; $theme =
         $clone.removeClass('cloningDiv');
         $clone.removeClass('copyin1');
         $clone.addClass('copyin');
+        $clone.addClass('warehouse_id_'+countZ);
         $clone.addClass('repeated-block check-validation');
 
         $clone.find('.cust_add_div').prop('id', 'addHeader' + countZ);
@@ -734,7 +749,7 @@ session('preferences.map_key_1'):'kdsjhfkjsdhfsf'; $theme =
             name = 'addHeader'+post_count+'-postcode';
             jElem.prop('id', name);
               post_count++;
-              console.log(post_count);
+             
           });
           var warehouse_clone = $clone.find('.warehouse');
           $.each(warehouse_clone, function(index, elem){
@@ -745,7 +760,7 @@ session('preferences.map_key_1'):'kdsjhfkjsdhfsf'; $theme =
             jElem.prop('id', name);
             jElem.attr('data-id', warehouse_count);
             warehouse_count++;
-              console.log(warehouse_count);
+              
           });
           var address_email = $clone.find('.address_email');
           $.each(address_email, function(index, elem){
