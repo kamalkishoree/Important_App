@@ -788,7 +788,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                 <input class="form-control" type="number" id="radius_for_pooling_km" name="radius_for_pooling_km" value="{{ old('radius_for_pooling_km', $preference->radius_for_pooling_km ?? '0') }}" min="0">
                             </div>
                         </div>
-                        </div>
+                        {{-- </div> --}}
                         <div class="row">
                             <div class="col-12">
                                 <div class="d-flex align-items-center justify-content-between mt-3 mb-2">
