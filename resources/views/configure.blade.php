@@ -73,7 +73,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                     @endif
                                 </div>
                             </div>
-                            <div class="col-md-12">
+                            <div class="col-md-12"> 
                                 <div class="form-group d-flex justify-content-between mb-3">
                                 <label for="" class="mr-2 mb-0">{{__("Toll Api")}} </label>
                                 <div class="d-flex align-items-center justify-content-between mb-2">
@@ -99,18 +99,18 @@ $sms_crendential = json_decode($preference->sms_credentials);
                         <p class="sub-header">{{ __("View and update your SMS Gateway and it's API keys.") }}</p>
                         <div class="d-flex align-items-center justify-content-between mt-3 mb-2">
                             <h5 class="font-weight-normal m-0">{{ __('Send Static Otp ') }} {{ __(getAgentNomenclature()) }}</h5>
-
+                            
                             <div class="custom-control custom-switch">
-
+     
                                 <input type="checkbox" class="custom-control-input"
                                     id="cancelOrderCustomSwitch_static_otp"
                                     name="static_otp"
                                     {{ (isset( $sms_crendential->static_otp ) && $sms_crendential->static_otp == 1) ? 'checked' : '' }}>
                                 <label class="custom-control-label"
                                     for="cancelOrderCustomSwitch_static_otp"></label>
-
+                                
                             </div>
-
+                            
                         </div>
                         <div class="row mb-2">
                             <div class="col-md-12">
@@ -355,37 +355,6 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                 </div>
                             </div>
                         </div>
-
-                         <!-- For Ethiopia -->
-                         <div class="sms_fields row mx-0" id="ethiopia_fields"
-                         style="display : {{ $preference->sms_provider == 8  ? 'flex' : 'none' }};">
-                         <div class="col-12">
-                             <span  class="text-danger">{{ __('Only Available For +251, +09 And +9 Country Code') }}</span>
-                             <div class="form-group mb-2">
-                                 <label for="sms_username">{{ __('Username') }}</label>
-                                 <input type="text" name="sms_username" id="sms_username" placeholder=""
-                                     class="form-control" value="{{ old('sms_username', $sms_crendential->sms_username ?? '') }}">
-                                 @if ($errors->has('sms_username'))
-                                     <span class="text-danger" role="alert">
-                                         <strong>{{ $errors->first('sms_username') }}</strong>
-                                     </span>
-                                 @endif
-                             </div>
-                         </div>
-                         <div class="col-12">
-                             <div class="form-group mb-2">
-                                 <label for="sms_secret">{{ __('Password') }}</label>
-                                 <input type="password" name="sms_password" id="sms_password" placeholder=""
-                                     class="form-control"
-                                     value="{{ old('sms_password', $sms_crendential->sms_password ?? '') }}">
-                                 @if ($errors->has('sms_password'))
-                                     <span class="text-danger" role="alert">
-                                         <strong>{{ $errors->first('sms_password') }}</strong>
-                                     </span>
-                                 @endif
-                             </div>
-                         </div>
-                     </div>
 
                         <!-- For Vonage (nexmo) -->
                         <div class="row sms_fields mx-0" id="vonage_fields" style="display : {{$preference->sms_provider == 6 ? 'flex' : 'none'}};">
@@ -787,8 +756,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                             <div class="col-3 pt-2">
                                 <input class="form-control" type="number" id="radius_for_pooling_km" name="radius_for_pooling_km" value="{{ old('radius_for_pooling_km', $preference->radius_for_pooling_km ?? '0') }}" min="0">
                             </div>
-                        </div>
-                        </div>
+                        </div>  
                         <div class="row">
                             <div class="col-12">
                                 <div class="d-flex align-items-center justify-content-between mt-3 mb-2">
@@ -804,7 +772,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                 </div>
                             </div>
                         </div>
-
+                        
                         <div class="row">
                             <div class="col-12">
                                 <div class="d-flex align-items-center justify-content-between mt-3 mb-2">
@@ -820,23 +788,6 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                 </div>
                             </div>
                         </div> 
-
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="d-flex align-items-center justify-content-between mt-3 mb-2">
-                                    <h5 class="font-weight-normal m-0">{{ __('Enable Road Side Pickup Feature') }}</h5>
-                                    <div class="custom-control custom-switch">
-                                        <input type="checkbox" class="custom-control-input"
-                                            id="editRoadSideSwitch"
-                                            name="is_road_side_pickup"
-                                            {{ $preference->is_road_side_pickup == 1 ? 'checked' : '' }}>
-                                        <label class="custom-control-label"
-                                            for="editRoadSideSwitch"></label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
                         <div class="row">
                             <div class="col-12">
                                 <div class="d-flex align-items-center justify-content-between mt-3 mb-2">
@@ -847,15 +798,15 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                             name="is_go_to_home"
                                             {{ $preference->is_go_to_home == 1 ? 'checked' : '' }}>
                                             <label class="custom-control-label" for="is_go_to_home"></label>
-
-
+                                           
+                                          
                                     </div>
                                 </div>
                             </div>
                             <div id='go_to_home_radians' class="col-12 {{ $preference->is_go_to_home == 1 ? '' : 'd-none' }}">
                                 <input type="number"  class="form-control" placeholder="{{ __('Go to home Radians in KM') }}"  id="" value="{{ $preference->go_to_home_radians }}" name="go_to_home_radians" >
                             </div>
-                        </div>
+                        </div>       
                     </form>
                 </div>
             </div>
@@ -1180,17 +1131,6 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-12">
-                                <div class="form-group d-flex justify-content-between mb-3">
-                                <label for="category_check" class="mr-2 mb-0">{{__("Show inventory  module")}} <small class="d-block pr-5">{{__('It will show  inventory module from panel.')}}</small></label>
-                                <div class="d-flex align-items-center justify-content-between mt-1 mb-2">
-                                    <div class="custom-control custom-switch">
-                                            <input type="checkbox" class="custom-control-input" id="show_inventory_module{{ !empty($warehoseMode->show_inventory_module)? $warehoseMode->show_inventory_module : 0 }}" name="warehouse_mode[show_inventory_module]" {{ (!empty($warehoseMode->show_inventory_module) && $warehoseMode->show_inventory_module == 1) ? 'checked' : '' }}>
-                                            <label class="custom-control-label" for="show_inventory_module{{ !empty($warehoseMode->show_inventory_module)? $warehoseMode->show_inventory_module : 0 }}"></label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
 
                         </div>
                     </div>
@@ -1227,7 +1167,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                 </form>
                 <!-- Custom Mods start -->
             </div> --}}
-
+            
 
             <div class="col-md-4 mb-3">
                 <!-- Custom Mods start -->
@@ -1343,7 +1283,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                 <div class="form-group d-block justify-content-between mb-3">
                                     <label for="agent_ids" class="mr-2 mb-0">{{__("Recursive")}} </label>
                                     @if(!empty($preference->threshold_data))
-                                        @php
+                                        @php 
                                             $threshold_data      =   json_decode($preference->threshold_data,true);
                                             $recursive_type      =   isset($threshold_data['recursive_type']) ? $threshold_data['recursive_type'] : '';
                                             $threshold_amount    =   isset($threshold_data['threshold_amount']) ? $threshold_data['threshold_amount'] : '';
@@ -1452,7 +1392,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
         </div>
 
 
-
+        
 
         <!-- end page title -->
         {{-- <div class="row">
@@ -1595,7 +1535,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
             </div>
         </div>
 
-
+        
         @include('rating.ratingModel')
 
         @include('rating.ratingAttributeModel')
@@ -1772,7 +1712,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
             $(document).find('.threshold_amount').removeClass('d-none').addClass('d-block');
         });
 
-
+        
 
 
         $('#toll_fee').on('change',function(){
