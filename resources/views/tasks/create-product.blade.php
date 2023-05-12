@@ -22,6 +22,8 @@
 }
 .content-page.main_outter_box{
 	max-height: 100vh;
+	overflow-y: scroll;
+	padding-bottom: 100px;
 }
 
 .warehouses #create-subtask {
