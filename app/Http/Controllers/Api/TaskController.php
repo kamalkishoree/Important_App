@@ -1425,7 +1425,7 @@ class TaskController extends BaseController
                     'distance_fee'                    => 0,
                     'cancel_fee'                      => 0,
                     'agent_commission_percentage'     => 0,
-                    'agent_commissTion_fixed'          => 0,
+                    'agent_commission_fixed'          => 0,
                     'freelancer_commission_percentage'=> 0,
                     'freelancer_commission_fixed'     => 0,
                     'actual_time'                     => $getdata['duration'],
