@@ -114,8 +114,8 @@
                         </div>
                         <div class="col-sm-4 text-right">
                             <button type="button" class="btn btn-blue waves-effect waves-light openModal" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> {{__("Add Pricing Rules")}}</button>
+                            <input type="hidden" value="0" id="option-check">
                         </div>
-
                     </div>
 
                     <div class="table-responsive">
@@ -335,6 +335,7 @@
             keyboard: false
         });
         runPicker1();
+        $('#option-check').val('1');
     });
 
     // click event of add new time frame button
@@ -388,7 +389,7 @@
     });
 
     $(".editIcon").click(function (e) {
-
+        $('#option-check').val(0);
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')

@@ -27,4 +27,8 @@ class PricingRule extends Model
         return $this->hasMany('App\Model\priceRuleTag','pricing_rule_id','id');
     }
 
+    public function distanceRules(){
+        return $this->hasMany('App\Model\DistanceWisePricingRule','price_rule_id','id');
+    }
+
 }
