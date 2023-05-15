@@ -18,6 +18,7 @@ trait inventoryManagement
         ])->first();
         
        
+    
        
         // URL
         $url = $order_panel_details->url;
