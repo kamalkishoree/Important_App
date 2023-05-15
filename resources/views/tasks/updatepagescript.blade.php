@@ -133,12 +133,44 @@ $(document).ready(function(){
                 }
             });
         }
+        $(document).on('change','.warehouse',function()
+{
 
+    var id = $(this).val();
+    var data_id = $(this).attr('data-id');
+    $.ajax({
+        method: "POST",
+        url: "/get-warehouse/"+id,
+        headers: {
+            'X-CSRF-Token': '{{ csrf_token() }}',
+        },
+        success: function (response) {
+    
+            $('#add'+data_id+'-address_email').val(response.email);
+            $('#add'+data_id+'-address_phone_number').val(response.phone_no);
+            $("#alsavedaddress"+data_id).find('.withradio .append').remove();
+            $("#alsavedaddress"+data_id).find('.withradio .showsimage').remove();
+            $("#alsavedaddress" + data_id).find('.withradio').append(
+    '<div class="append"><div class="custom-control custom-radio count"><input type="radio" id="' + data_id+ '" name="old_address_id' + data_id + '" value="' + response.address + '" class="custom-control-input redio old-select-address callradio" checked data-srtadd="'+ response.address +'""><label class="custom-control-label" for="' + data_id + '"><span class="spanbold">' + response.address +
+    '</span>-' + response.address +
+    '</label></div></div>');
+
+        },
+        error: function (response) {
+          
+        },
+    });
+});
 
         //////////////////// ************************** end delete single task ************************* ///////////////////////////
         
         var a = totalcountEdit-1;
         var post_count = 1;
+        var warehouse_count = 15;
+        var email_count = 15;
+        var phone_no_count = 15;
+        var address_count = 15;
+        var choose_warehouse_count = 15;
         $('#adds a').click(function() {
            
             countEdit = countEdit + 1;
@@ -146,12 +178,13 @@ $(document).ready(function(){
             var newcount = $('#newcount').val();
             
             post_count = parseInt(newcount) + 1;
+            
           
             a++;
            
                     var newids = null;
                     
-                    var $div = $('div[class^="alTaskType copyin check-validation"]:last');
+                    var $div = $('div[class^="alTaskType copyin check-validation"]:first');
                     var newcheck = $div.find('.redio');
                     $.each(newcheck, function(index, elem){
                         var jElem = $(elem); // jQuery element
@@ -284,7 +317,53 @@ $(document).ready(function(){
                         post_count++;
                     });
 
-
+                    var warehouse_clone = $clone.find('.warehouse');
+                    $.each(warehouse_clone, function(index, elem){
+                        var jElem = $(elem);
+                        var name = jElem.prop('id');
+                        name = name.replace(/\d+/g, '');
+                        name = 'add'+warehouse_count+'-warehouse';
+                        jElem.prop('id', name);
+                        jElem.attr('data-id', warehouse_count);
+                        warehouse_count++;
+                        
+                    });
+                    var address_email = $clone.find('.address_email');
+                    $.each(address_email, function(index, elem){
+                        var jElem = $(elem);
+                        var name = jElem.prop('id');
+                        name = name.replace(/\d+/g, '');
+                        name = 'add'+email_count+'-address_email';
+                        jElem.prop('id', name);
+                        jElem.attr('data-id', email_count);
+                        email_count++;
+                    });
+                    var choose_warehouse = $clone.find('.choose_warehouse');
+                    $.each(choose_warehouse, function(index, elem){
+                        var jElem = $(elem);
+                        jElem.attr('data-id', choose_warehouse_count);
+                        choose_warehouse_count++;
+                    });
+                    var address_phone_number = $clone.find('.address_phone_number');
+                    $.each(address_phone_number, function(index, elem){
+                        var jElem = $(elem);
+                        var name = jElem.prop('id');
+                        name = name.replace(/\d+/g, '');
+                        name = 'add'+phone_no_count+'-address_phone_number';
+                        jElem.prop('id', name);
+                        jElem.attr('data-id', phone_no_count);
+                        phone_no_count++;
+                    });
+                    var saved_address = $clone.find('.alsavedaddress');
+                    $.each(saved_address, function(index, elem){
+                        var jElem = $(elem);
+                        jElem.find('.append').remove();
+                        var name = jElem.prop('id');
+                        name = name.replace(/\d+/g, '');
+                        name = 'alsavedaddress'+address_count;
+                        jElem.prop('id', name);
+                        address_count++;
+                    });
                     $('input[id='+newids+']').prop("checked",true);
                    
 
