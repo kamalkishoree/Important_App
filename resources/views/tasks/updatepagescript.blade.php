@@ -531,26 +531,34 @@ $(document).ready(function(){
                     $("#taskFormHeader #dialCode").val(customerdata.dial_code);
                     
                     //getting instance of intlTelInput
-                    var input = document.querySelector("#taskFormHeader .phone_number");
-                    var iti = window.intlTelInputGlobals.getInstance(input);
-                    iti.setCountry(countrycode);
+                 
 
                     $("#taskFormHeader").find("input[name='email']").val(customerdata.email);
+                    $(".alTaskType").each(function(){
+                        if (!($(this).hasClass('is_warehouse_selected'))) {
+                            $(this).find('.editwithradio .append').remove();
+                        }
+                      });
 
-                    $('.editwithradio .append').remove();
+
                     jQuery.each(array, function(i, val) {
                         var countz = '';
                         var rand =  Math.random().toString(36).substring(7);
                         $(".editwithradio").each(function(){
                             var count = parseInt(countz);if(isNaN(count)){count = 0;}
+                            var id = $(this).parent().closest('.alTaskType').hasClass('is_warehouse_selected');   
+                       if(!id){
                             $(this).append(
                             '<div class="append"><div class="custom-control custom-radio count"><input type="radio" id="' + (rand + count) + '" name="old_address_id' + countz + '" value="' + val.id + '" class="custom-control-input redio old-select-address callradio" data-srtadd="'+ val.short_name +'" data-flat_no="'+ val.flat_no +'"  data-adr="'+ val.address +'" data-lat="'+ val.latitude +'" data-long="'+ val.longitude +'" data-pstcd="'+ val.post_code +'" data-emil="'+ val.email +'" data-ph="'+ val.phone_number +'"><label class="custom-control-label" for="' + (rand + count) + '"><span class="spanbold">' + val.short_name +
                             '</span>-' + val.address +
                             '</label></div></div>');
                             countz = count + 1;
+                       }
                         });
                     });
-
+                    var input = document.querySelector("#taskFormHeader .phone_number");
+                    var iti = window.intlTelInputGlobals.getInstance(input);
+                    iti.setCountry(countrycode);
                 }
             });
         }

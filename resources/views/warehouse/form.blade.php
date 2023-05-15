@@ -69,6 +69,28 @@
                                     @endif
                                 </div>
                             </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="email" class="control-label">{{__("Email")}}</label>
+                                    <input type="text" class="form-control" id="email" name="email" value="{{ old('email', $warehouse->email ?? '')}}" placeholder="Enter email" required>
+                                    @if($errors->has('email'))
+                                        <span class="text-danger" role="alert">
+                                            <strong>{{ $errors->first('email') }}</strong>
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="phone_no" class="control-label">{{__("Phone Number")}}</label>
+                                    <input type="text" class="form-control" id="phone_no" name="phone_no" value="{{ old('phone_no', $warehouse->phone_no ?? '')}}" placeholder="Enter Phone number" required>
+                                    @if($errors->has('phone_no'))
+                                        <span class="text-danger" role="alert">
+                                            <strong>{{ $errors->first('phone_no') }}</strong>
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
                             <div class="col-lg-6">
                                 <label for="address" class="control-label">{{__("Address")}}</label>
                                 <div class="form-group input-group" id="addressInput">
