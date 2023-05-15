@@ -958,7 +958,8 @@ hr.new3 {
     transition: all 0.5s;
     font-weight: 700;
     margin: 0 0 10px;
-    height: 22px;
+    min-height: 22px;
+    height: auto;
 }
 .address_box span.short_name {
     color: #6658dd;
@@ -971,6 +972,24 @@ hr.new3 {
     width: 100%;
     margin-bottom: 0;
     font-size: 12px;
+}
+.dark .prod-search .search-bar input {
+    color: #dbe9f9;
+}
+.dark .prod-search .search-bar input::placeholder {
+    color: #dbe9f9 !important;
+}
+.dark .prod-search button svg path {
+    fill: #fff;
+}
+.dark .prod-search .prod-list li {
+    color: #303841;
+}
+.dark .prod-search .prod-list li label {
+    color: #303841;
+}
+.dark .prod-search .select-bar select {
+    color: #fff;
 }
 .al_new_address_box_content .status {
     background-color: #4ac9ef;
@@ -1259,7 +1278,12 @@ body .tagsinput .tag {
 }
 .content-page {
     min-height: calc(100vh - 129px);
+    overflow-y: scroll;
 }
+.warehouses {
+    height: 100%;
+}
+
 .geo_middle {
     max-height: 500px;
     overflow-y: auto;
@@ -1275,13 +1299,13 @@ div#scrollbar .side_head > .d-flex {
     width: 100%;
     justify-content: space-between!important;
 }
-.left-sidebar #teams_container .card .card-header {
+/*.left-sidebar #teams_container .card .card-header {
     display: grid;
     align-items: baseline;
     justify-content: space-between;
     grid-template-columns: 1fr 50px;
     grid-gap: 0 20px;
-}
+}*/
 .left-sidebar #teams_container .offline {
     color: red;
 }
@@ -1328,7 +1352,7 @@ form#UpdateClient div#favicon_container {
     padding: 10px 15px 10px 25px;
 }
 .pick_drop_item_list .col-12 h5.w-100.d-flex.align-items-center.justify-content-between {
-    padding: 10px 25px 3px!important;
+    padding: 10px 0px 3px 25px!important;
 }
 #accordion .card-body .assigned-block h6{
     margin-left:0!important;
@@ -1346,8 +1370,8 @@ form#UpdateClient div#favicon_container {
     left: -10px;
 }
 .pick_drop_item_list .col-12 .second_list_pick {
-    padding: 0 25px!important;
-    margin-top: 10px!important;
+    padding: 0px 0px 3px 25px!important;
+    margin-top: 5px!important;
 }
 .pick_drop_item_list > .col-12 {
     padding: 0!important;
@@ -1414,6 +1438,15 @@ div#scrollbar .side_head > .d-flex .mdi.mdi-sync {
 div#scrollbar .side_head > .row.search_bar .col-md-6 {
     padding: 0 5px;
 }
+
+.warehouses .prod-list ul {
+    max-height: 100px !important;
+    height: 100px !important;
+}
+.warehouses .prod-details ul, .Categories-list ul {
+    max-height: 100px !important;
+}
+
 }
 @media(min-width:1200px){
     .geo_middle {
@@ -1482,10 +1515,6 @@ body.dark form#StoreSubadmin label{
 .dark .login-form label{
     background-color: #00000036;
     color: rgb(247 184 75 / 82%);
-}
-.dt-buttons.btn-group.flex-wrap {
-    position: relative;
-    z-index: 9999;
 }
 .dataTables_filter label .form-control {
     position: relative;
@@ -1567,6 +1596,7 @@ body.dark .input-group-text {
 }
 .dark .selectize-control.single .selectize-input:after{
     border-color: #94a0ad transparent transparent transparent;
+    transform: rotate(360deg);
 }
 .dark .assigned-block h5 {
     color: #94a0ad;
@@ -1694,8 +1724,22 @@ span.copied_txt {
 }
 .sort-icon .fa-sort {
     position: absolute;
+    top: 50%;
     right: 0;
     bottom: 13px;
+    transform: translate(-50%, -50%);
+}
+.dark .table h5, .dark .card-box h5 {
+    color: #dadfe3 !important;
+}
+.dark #AddAttributeBox h5 {
+    color: #dbe9f9 !important;
+}
+.dark #AddAttributeBox td {
+    padding: 0;
+}
+.dark .selectize-input.items input:after{
+        transform: rotate(-180deg) !important
 }
 /* zz */
 @media(min-width:1921px) {
@@ -1727,8 +1771,12 @@ span.copied_txt {
         flex: 0 0 48px;
         max-width: 48px;
    }
+
 }
 @media (max-width:767px) {
+
+   
+
     #UpdateClient .dropify-wrapper.touch-fallback{
         min-height: 120px!important;
     }
@@ -1827,9 +1875,7 @@ span.copied_txt {
     #UpdateClient .btn.btn-blue.waves-effect.waves-light {
         width: 100%;
    }
-    #UpdateClient h1 {
-        font-size: 38px !important;
-   }
+  
     li.paginate_button.previous, li.paginate_button.next {
         display: inline-block;
         font-size: 1rem !important;
@@ -2273,8 +2319,8 @@ body.dark .col-sm-4.text-right.btn-auto a.btn.btn-blue.waves-effect.waves-light.
 body.dark div#pending_payouts .card {
     border-radius: 0 0 16px 16px !important;
 }
-body.dark .content h1, .content h2, .content h3, .content h4, .content h5{
-   color: #000 !important;
+.dark h4 {
+    color: #f3f7f9 !important;
 }
 body.dark div#edit_page_content button{
    color:#fff;
@@ -2300,6 +2346,7 @@ body.dark button.btn.btn-info.waves-effect.waves-light.submitProduct {
 }
 body.dark button.btn.btn-outline-info.d-block {
     color: #fff;
+    
 }
 body.dark .bootstrap-select .dropdown-toggle .filter-option-inner-inner {
     overflow: hidden;
@@ -2640,9 +2687,6 @@ body.dark .copyin1 {
     body.light .dropify-wrapper .dropify-message {
         top: 50px;
    }
-    body.dark .dropify-wrapper .dropify-message {
-        top: 50px;
-   }
     .del-add-card {
         position: absolute;
         right: 0;
@@ -2835,10 +2879,6 @@ body.dark .copyin1 {
         flex: 50%;
         height:175px;
    }
-    .content-page.main_outter_box form .dropify-wrapper .dropify-message {
-        top: 0;
-        padding: 0;
-   }
     .content-page.main_outter_box form#UpdateClient .flex .col-md-4 {
         width: 100%;
         max-width: 100%;
@@ -2888,7 +2928,6 @@ body.dark .copyin1 {
         flex-wrap: wrap;
    }
     .content-page.main_outter_box .dataTables_filter label {
-        float: none !important;
         width: auto;
    }
     form#submitAgent .dropify-wrapper.touch-fallback .dropify-message {
@@ -2931,7 +2970,10 @@ body.dark .col-sm-4.text-right.btn-auto a.btn.btn-blue.waves-effect.waves-light.
 body.dark div#pending_payouts .card {
     border-radius: 0 0 16px 16px !important;
 }
-body.dark .content h1, .content h2, .content h3, .content h4, .content h5{color: #acbfd2;}
+body.dark h1, body.dark h2, body.dark h3, body.dark h4, body.dark h5{color: #dbe9f9;}
+#UpdateClient h1 {
+    margin-top: 5px;
+    }
 body.dark div#edit_page_content button{color:#fff;}
 div#agents-datatable_filter label {
     float: left !important;
@@ -3280,9 +3322,6 @@ body.light .card.main-table-card div#pricing-datatable_length label:after {
     body.light .dropify-wrapper .dropify-message {
         top: 50px;
     }
-    body.dark .dropify-wrapper .dropify-message {
-        top: 50px;
-    }
     .del-add-card {
         position: absolute;
         right: 0;
@@ -3597,7 +3636,6 @@ body.light .card.main-table-card div#pricing-datatable_length label:after {
     font-size:12px;
     font-weight: 700;
 }
-div#agent_route_container .assigned-btn{width:90px;max-width:120px;}
 .dark .assigned-block{background-color: transparent;}
 .dark #accordion .card-body .assigned-block h5{color:#dbe9f9;}
 .dark #accordion .card-body .assigned-block h5 i{color:#dbe9f9;}
@@ -3742,8 +3780,9 @@ div#scrollbar {
         height:175px;
     }
     .content-page.main_outter_box form  .dropify-wrapper .dropify-message {
-        top: 0;
         padding: 0;
+        transform: translate(-50%, -5%);
+        left: 50%;
     }
     .content-page.main_outter_box form#UpdateClient .flex .col-md-4 {
         width: 100%;
@@ -3794,7 +3833,6 @@ div#scrollbar {
         flex-wrap: wrap;
     }
     .content-page.main_outter_box .dataTables_filter label {
-        float: none !important;
         width: auto;
     }
     form#submitAgent .dropify-wrapper.touch-fallback .dropify-message {
@@ -3827,3 +3865,4 @@ div#scrollbar {
     }
    
 }
+

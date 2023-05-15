@@ -1,250 +1,400 @@
 <style>
-    #adds {
-        margin-bottom: 14px;
-    }
-    .shows {
-        display: none;
-    }
-    .rec {
-        margin-bottom: 7px;
-    }
-    .needsclick {
-        margin-left: 27%;
-    }
-    .padd {
-        padding-left: 9% !important;
-    }
-    .newchnage {
-        margin-left: 27% !important;
-    }
-    .address {
-        margin-bottom: 6px;
-    }
-    .tags {}
-    #typeInputss {
-        overflow-y: auto;
-        overflow-x: hidden;
-        height: 200px;
-        /* display: flex;
+#adds {
+	margin-bottom: 14px;
+}
+
+.shows {
+	display: none;
+}
+
+.rec {
+	margin-bottom: 7px;
+}
+
+.needsclick {
+	margin-left: 27%;
+}
+
+.padd {
+	padding-left: 9% !important;
+}
+
+.newchnage {
+	margin-left: 27% !important;
+}
+
+.address {
+	margin-bottom: 6px;
+}
+
+.tags {
+	
+}
+
+#typeInputss {
+	overflow-y: auto;
+	overflow-x: hidden;
+	height: 200px;
+	/* display: flex;
         align-items: center;
         justify-content: center;
         flex-direction: column; */
-    }
-    .upload {
-        margin-bottom: 20px;
-        margin-top: 10px;
-    }
-    .span1 {
-        color: #ff0000;
-    }
-    .check {}
-    .newcheck {
-        margin-left: -54px;
-    }
-    .upside {
-        margin-top: -10px;
-    }
-    .newgap {
-        margin-top: 11px !important;
-    }
-    .append {
-        margin-bottom: 15px;
-    }
-    .spanbold {
-        font-weight: bolder;
-    }
-    .copyin {
-        background-color: rgb(148 148 148 / 11%);
-        margin-top: 10px;
-    }
-    hr.new3 {
-        border-top: 1px dashed white;
-        margin: 0 0 .5rem 0;
-    }
-    #spancheck{
-        display: none;
-    }
-    .imagepri{
-        min-width: 50px;
-        height: 50px;
-        width: 50px;
-        border-style: groove;
-        margin-left: 5px;
-        margin-top: 5px;
-    }
-    .withradio{}
-    .showsimage{
-        margin-top: 31px;
-    }
-    .showshadding{
-        margin-left: 98px;
-    }
-    .newchnageimage{}
-    .showsimagegall{
-        margin-top: 20px;
-    }
-    .imagepri_wrap {
-        position: relative;
-    }
-    button.close.imagepri_close {
-        position: absolute;
-        top: -7px;
-        right: 1px;
-        background-color: red;
-        border-radius: 50%;
-        padding: 0px 3px;
-        font-size: 14px;
-        color: white;
-    }
-    .allset{
-        margin-left: 9px !important;
-        margin-right: 9px !important;
-        padding-top: 10px;
-    }
-    .inactiveLink {
-        pointer-events: none;
-        cursor: default;
-    }
-    .hidealloction{
-        display: none;
-    }
-    .ui-menu.ui-autocomplete { z-index: 9000 !important; }
+}
 
-    .pac-container, .pac-container .pac-item { z-index: 9999 !important; }
+.upload {
+	margin-bottom: 20px;
+	margin-top: 10px;
+}
 
-    .alTaskType{background-color: #F4F3FD; border: 1px solid transparent;border-radius: 7px;}
-    .alTaskType.active{background-color: #FEE9DB;border: 1px solid #FA6400;}
-    .alTaskType input,
-    .alTaskType textarea,
-    .alTaskType select{background-color: transparent;padding: 6px 10px;border:1px solid #d1d1d1;border-radius: 5px;}
+.span1 {
+	color: #ff0000;
+}
 
-    .border-right{border-right: 1px dashed #d1d1d1 !important;}
-    .alCol-12{-ms-flex: 0 0 100%;flex: 0 0 100%;max-width: 100%;}
-    .alCol-6{-ms-flex: 0 0 50%;flex: 0 0 50%;max-width: 50%;}
-    .alCol-12.mainaddress.col-8 .addressDetails .form-group.col-6{-ms-flex: 0 0 50%;flex: 0 0 50%;max-width: 50%;}
-    .mainaddress.col-8 .addressDetails .form-group.col-6{-ms-flex: 0 0 100%;flex: 0 0 100%;max-width: 100%;}
-    .addressDetails{-ms-flex: 0 0 50%;flex: 0 0 50%;max-width: 50%;}
-    .alCol-12.mainaddress.col-8 .alContactOther .col-6{-ms-flex: 0 0 50%;flex: 0 0 50%;max-width: 50%;}
-    .mainaddress.col-8 .alContactOther .col-6{-ms-flex: 0 0 100%;flex: 0 0 100%;max-width: 100%;}
-    .mainaddress.col-8 .alContactOther .alRightBorder,
-    .alCol-12.mainaddress.col-8 .alContactOther{border-right: 1px dashed transparent;}
-    .alCol-12.mainaddress.col-8 .alContactOther .alRightBorder,
-    .mainaddress.col-8 .alContactOther{border-right: 1px dashed #d1d1d1;}
+.check {
+	
+}
 
-    ::-webkit-scrollbar {
-    width: 5px;
-    }
+.newcheck {
+	margin-left: -54px;
+}
 
-    /* Track */
-    ::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    }
+.upside {
+	margin-top: -10px;
+}
 
-    /* Handle */
-    ::-webkit-scrollbar-thumb {
-    background: #888;
-    }
+.newgap {
+	margin-top: 11px !important;
+}
 
-    /* Handle on hover */
-    ::-webkit-scrollbar-thumb:hover {
-    background: #555;
-    }
+.append {
+	margin-bottom: 15px;
+}
+
+.spanbold {
+	font-weight: bolder;
+}
+
+.copyin {
+	background-color: rgb(148 148 148/ 11%);
+	margin-top: 10px;
+}
+
+hr.new3 {
+	border-top: 1px dashed white;
+	margin: 0 0 .5rem 0;
+}
+
+#spancheck {
+	display: none;
+}
+
+.imagepri {
+	min-width: 50px;
+	height: 50px;
+	width: 50px;
+	border-style: groove;
+	margin-left: 5px;
+	margin-top: 5px;
+}
+
+.withradio {
+	
+}
+
+.showsimage {
+	margin-top: 31px;
+}
+
+.showshadding {
+	margin-left: 98px;
+}
+
+.newchnageimage {
+	
+}
+
+.showsimagegall {
+	margin-top: 20px;
+}
+
+.imagepri_wrap {
+	position: relative;
+}
+
+button.close.imagepri_close {
+	position: absolute;
+	top: -7px;
+	right: 1px;
+	background-color: red;
+	border-radius: 50%;
+	padding: 0px 3px;
+	font-size: 14px;
+	color: white;
+}
+
+.allset {
+	margin-left: 9px !important;
+	margin-right: 9px !important;
+	padding-top: 10px;
+}
+
+.inactiveLink {
+	pointer-events: none;
+	cursor: default;
+}
+
+.hidealloction {
+	display: none;
+}
+
+.ui-menu.ui-autocomplete {
+	z-index: 9000 !important;
+}
+
+.pac-container, .pac-container .pac-item {
+	z-index: 9999 !important;
+}
+
+.alTaskType {
+	background-color: #F4F3FD;
+	border: 1px solid transparent;
+	border-radius: 7px;
+}
+
+.alTaskType.active {
+	background-color: #FEE9DB;
+	border: 1px solid #FA6400;
+}
+
+.alTaskType input, .alTaskType textarea, .alTaskType select {
+	background-color: transparent;
+	padding: 6px 10px;
+	border: 1px solid #d1d1d1;
+	border-radius: 5px;
+}
+
+.border-right {
+	border-right: 1px dashed #d1d1d1 !important;
+}
+
+.alCol-12 {
+	-ms-flex: 0 0 100%;
+	flex: 0 0 100%;
+	max-width: 100%;
+}
+
+.alCol-6 {
+	-ms-flex: 0 0 50%;
+	flex: 0 0 50%;
+	max-width: 50%;
+}
+
+.alCol-12.mainaddress.col-8 .addressDetails .form-group.col-6 {
+	-ms-flex: 0 0 50%;
+	flex: 0 0 50%;
+	max-width: 50%;
+}
+
+.mainaddress.col-8 .addressDetails .form-group.col-6 {
+	-ms-flex: 0 0 100%;
+	flex: 0 0 100%;
+	max-width: 100%;
+}
+
+.addressDetails {
+	-ms-flex: 0 0 50%;
+	flex: 0 0 50%;
+	max-width: 50%;
+}
+
+.alCol-12.mainaddress.col-8 .alContactOther .col-6 {
+	-ms-flex: 0 0 50%;
+	flex: 0 0 50%;
+	max-width: 50%;
+}
+
+.mainaddress.col-8 .alContactOther .col-6 {
+	-ms-flex: 0 0 100%;
+	flex: 0 0 100%;
+	max-width: 100%;
+}
+
+.mainaddress.col-8 .alContactOther .alRightBorder, .alCol-12.mainaddress.col-8 .alContactOther
+	{
+	border-right: 1px dashed transparent;
+}
+
+.alCol-12.mainaddress.col-8 .alContactOther .alRightBorder, .mainaddress.col-8 .alContactOther
+	{
+	border-right: 1px dashed #d1d1d1;
+}
+
+::-webkit-scrollbar {
+	width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+	background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+	background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+	background: #555;
+}
 </style>
-<div id="task-modal-header" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;font-size: 14px;">
-    <div class="modal-dialog modal-dialog-top modal-xl">
-        <div class="modal-content" style="">
-            <div class="modal-header align-items-center border-0 mb-md-0">
-                <h4 class="page-title m-1">{{__("Add Route")}}</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            </div>
-            <form id="taskFormHeader" method="post" enctype="multipart/form-data" action="{{ route('tasks.store') }}">
-                @csrf
-                <div class="modal-body p-0" id="addCardBox">
-
-                </div>
-                <span class="show_all_error invalid-feedback"></span>
-                <div class="modal-footer justify-content-center p-0">
-                     <a href="javascript: void(0);" class="btn btn-blue waves-effect waves-light submitTaskHeader"><span class="spinner-border spinner-border-sm submitTaskHeaderLoader" style="display:none;" role="status" aria-hidden="true"></span> <span id="submitTaskHeaderText">{{__("Submit")}}</span></a>
-                </div>
-            </form>
-        </div>
-    </div>
+<div id="task-modal-header" class="modal fade" tabindex="-1"
+	role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+	style="display: none; font-size: 14px;">
+	<div class="modal-dialog modal-dialog-top modal-xl">
+		<div class="modal-content" style="">
+			<div class="modal-header align-items-center border-0 mb-md-0">
+				<h4 class="page-title m-1">{{__("Add Route")}}</h4>
+				<button type="button" class="close" data-dismiss="modal"
+					aria-hidden="true">×</button>
+			</div>
+			<form id="taskFormHeader" method="post" enctype="multipart/form-data"
+				action="{{ route('tasks.store') }}">
+				@csrf
+				<div class="modal-body p-0" id="addCardBox"></div>
+				<span class="show_all_error invalid-feedback"></span>
+				<div class="modal-footer justify-content-center p-0">
+					<a href="javascript: void(0);"
+						class="btn btn-blue waves-effect waves-light submitTaskHeader"><span
+						class="spinner-border spinner-border-sm submitTaskHeaderLoader"
+						style="display: none;" role="status" aria-hidden="true"></span> <span
+						id="submitTaskHeaderText">{{__("Submit")}}</span></a>
+				</div>
+			</form>
+		</div>
+	</div>
 </div>
 
-<div id="show-map-Header" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
+<div class="modal fade" id="addRouteModal" tabindex="-1" role="dialog"
+	aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel">Add Route</h5>
+				<button type="button" class="close" data-dismiss="modal"
+					aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body row justify-content-center">
+				<button type="button" class="btn btn-success addTaskModalHeader mr-3"
+					data-toggle="modal" data-dismiss="modal">Pick-Drop</button>
+				<a id="create-route" href="{{ route('create-product-route')}}"><button type="button"
+						class="btn btn-primary">Select Product</button></a>
 
-            <div class="modal-header border-0">
-                <h4 class="modal-title">{{__("Select Location")}}</h4>
-                <button type="button" class="close remove-modal-open" data-dismiss="modal" aria-hidden="true">×</button>
-            </div>
-            <div class="modal-body px-3 py-0">
 
-                <div class="row">
-                    <form id="task_form_header" action="#" method="POST" style="width: 100%">
-                        <div class="col-md-12">
-                            <div id="googleMapHeader" style="height: 500px; min-width: 500px; width:100%"></div>
-                            <input type="hidden" name="lat_input" id="lat_map_header" value="0" />
-                            <input type="hidden" name="lng_input" id="lng_map_header" value="0" />
-                            <input type="hidden" name="address_input" id="addredd_map_header" value="" />
-                            <input type="hidden" name="for" id="map_for_header" value="" />
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <div class="modal-footer border-0">
-                <button type="submit" class="btn btn-blue waves-effect waves-light selectMapOnHeader remove-modal-open">{{__("Ok")}}</button>
-                <!--<button type="Cancel" class="btn btn-blue waves-effect waves-light cancelMapLocation">cancel</button>-->
-            </div>
-        </div>
-    </div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
 </div>
-@php
-    $style = "";
-    if(session('preferences.twilio_status') != 'invalid_key'){
-        $style = "display:none;";
-    }
-@endphp
-{{-- <div class="row displaySettingsError" style="{{$style}}">
-    <div class="col-12">
-        <div class="alert alert-danger excetion_keys" role="alert">
-            @if(session('preferences.twilio_status') == 'invalid_key')
-            <span><i class="mdi mdi-block-helper mr-2"></i> <strong>Twilio</strong> key is not valid</span> <br/>
-            @endif
-        </div>
-    </div>
-</div> --}}
+
+<div id="show-map-Header" class="modal fade" tabindex="-1" role="dialog"
+	aria-labelledby="myModalLabel" aria-hidden="true"
+	style="display: none;">
+	<div class="modal-dialog modal-xl">
+		<div class="modal-content">
+
+			<div class="modal-header border-0">
+				<h4 class="modal-title">{{__("Select Location")}}</h4>
+				<button type="button" class="close remove-modal-open"
+					data-dismiss="modal" aria-hidden="true">×</button>
+			</div>
+			<div class="modal-body px-3 py-0">
+
+				<div class="row">
+					<form id="task_form_header" action="#" method="POST"
+						style="width: 100%">
+						<div class="col-md-12">
+							<div id="googleMapHeader"
+								style="height: 500px; min-width: 500px; width: 100%"></div>
+							<input type="hidden" name="lat_input" id="lat_map_header"
+								value="0" /> <input type="hidden" name="lng_input"
+								id="lng_map_header" value="0" /> <input type="hidden"
+								name="address_input" id="addredd_map_header" value="" /> <input
+								type="hidden" name="for" id="map_for_header" value="" />
+						</div>
+					</form>
+				</div>
+			</div>
+			<div class="modal-footer border-0">
+				<button type="submit"
+					class="btn btn-blue waves-effect waves-light selectMapOnHeader remove-modal-open">{{__("Ok")}}</button>
+				<!--<button type="Cancel" class="btn btn-blue waves-effect waves-light cancelMapLocation">cancel</button>-->
+			</div>
+		</div>
+	</div>
+</div>
+@php $style = ""; if(session('preferences.twilio_status') !=
+'invalid_key'){ $style = "display:none;"; } @endphp {{--
+<div class="row displaySettingsError" style="">
+	<div class="col-12">
+		<div class="alert alert-danger excetion_keys" role="alert">
+			@if(session('preferences.twilio_status') == 'invalid_key') <span><i
+				class="mdi mdi-block-helper mr-2"></i> <strong>Twilio</strong> key
+				is not valid</span> <br /> @endif
+		</div>
+	</div>
+</div>
+--}}
 <div class="row address" id="addHeader0" style="display: none;">
-    <input type="text" id="addHeader0-input" name="address" class="autocomplete form-control addHeader0-input" placeholder={{__("Address")}}>
-    <input type="hidden" name="latitude[]" id="addHeader0-latitude" value="0" class="cust_latitude" />
-    <input type="hidden" name="longitude[]" id="addHeader0-longitude" value="0" class="cust_longitude" />
+	<input type="text" id="addHeader0-input" name="address"
+		class="autocomplete form-control addHeader0-input" placeholder={{__("Address")}}>
+	<input type="hidden" name="latitude[]" id="addHeader0-latitude"
+		value="0" class="cust_latitude" /> <input type="hidden"
+		name="longitude[]" id="addHeader0-longitude" value="0"
+		class="cust_longitude" />
 </div>
-@php
-    $key    = session('preferences.map_key_1') != null ? session('preferences.map_key_1'):'kdsjhfkjsdhfsf';
-    $theme  = \App\Model\ClientPreference::where(['id' => 1])->first('theme');
-@endphp
-<link href="{{ asset('assets/libs/selectize/selectize.min.css') }}" rel="stylesheet" type="text/css" />
+@php $key = session('preferences.map_key_1') != null ?
+session('preferences.map_key_1'):'kdsjhfkjsdhfsf'; $theme =
+\App\Model\ClientPreference::where(['id' => 1])->first('theme'); @endphp
+<link href="{{ asset('assets/libs/selectize/selectize.min.css') }}"
+	rel="stylesheet" type="text/css" />
 
-<script src="{{ asset('assets/js/jquery-ui.min.js') }}" crossorigin="anonymous"></script>
+<script src="{{ asset('assets/js/jquery-ui.min.js') }}"
+	crossorigin="anonymous"></script>
 <link rel="stylesheet" href="{{ asset('assets/css/jquery-ui.css') }}">
-{{-- <script src='https://cdn.rawgit.com/pguso/jquery-plugin-circliful/master/js/jquery.circliful.min.js'></script> --}}
-{{-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB85kLYYOmuAhBUPd7odVmL6gnQsSGWU-4&libraries=places"></script>  --}}
+{{--
+<script
+	src='https://cdn.rawgit.com/pguso/jquery-plugin-circliful/master/js/jquery.circliful.min.js'></script>
+--}} {{--
+<script
+	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB85kLYYOmuAhBUPd7odVmL6gnQsSGWU-4&libraries=places"></script>
+--}}
 <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
 @if(\Route::current()->getName() == "tasks.show")
-<script src="https://maps.googleapis.com/maps/api/js?key={{Auth::user()->getPreference->map_key_1??''}}&libraries=places,drawing,geometry,visualization&v=weekly"></script>
+<script
+	src="https://maps.googleapis.com/maps/api/js?key={{Auth::user()->getPreference->map_key_1??''}}&libraries=places,drawing,geometry,visualization&v=weekly"></script>
 @else
-<script defer src="https://maps.googleapis.com/maps/api/js?key={{Auth::user()->getPreference->map_key_1??''}}&libraries=places,geometry,drawing,visualization&v=weekly"></script>
+<script defer
+	src="https://maps.googleapis.com/maps/api/js?key={{Auth::user()->getPreference->map_key_1??''}}&libraries=places,geometry,drawing,visualization&v=weekly"></script>
 @endif
 <script src="{{ asset('assets/libs/selectize/selectize.min.js') }}"></script>
 <script src="{{ asset('assets/libs/multiselect/multiselect.min.js') }}"></script>
-<script src="{{ asset('assets/libs/bootstrap-select/bootstrap-select.min.js') }}"></script>
-<script src="{{ asset('assets/libs/bootstrap-touchspin/bootstrap-touchspin.min.js') }}"></script>
-<script src="{{ asset('assets/libs/bootstrap-maxlength/bootstrap-maxlength.min.js') }}"></script>
+<script
+	src="{{ asset('assets/libs/bootstrap-select/bootstrap-select.min.js') }}"></script>
+<script
+	src="{{ asset('assets/libs/bootstrap-touchspin/bootstrap-touchspin.min.js') }}"></script>
+<script
+	src="{{ asset('assets/libs/bootstrap-maxlength/bootstrap-maxlength.min.js') }}"></script>
 <script src="{{asset('assets/libs/flatpickr/flatpickr.min.js')}}"></script>
-<script src="{{asset('assets/libs/bootstrap-colorpicker/bootstrap-colorpicker.min.js')}}"></script>
+<script
+	src="{{asset('assets/libs/bootstrap-colorpicker/bootstrap-colorpicker.min.js')}}"></script>
 <script src="{{asset('assets/libs/clockpicker/clockpicker.min.js')}}"></script>
-<script src="{{asset('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.js')}}"></script>
+<script
+	src="{{asset('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.js')}}"></script>
 <script src="{{asset('assets/libs/dropzone/dropzone.min.js')}}"></script>
 <script src="{{asset('assets/libs/dropify/dropify.min.js')}}"></script>
 <!-- Page js-->
@@ -299,6 +449,8 @@
     var latitudes = [];
     var longitude = [];
     $(".addTaskModalHeader").click(function (e) {
+
+        
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
@@ -348,9 +500,9 @@
                     keyboard: false
                 });
 
-                phoneInput();
+               
                 runPicker();
-
+                phoneInput();
                 $('#task-modal-header .edit-icon-float-right').on('click', function() {
                     $('#task-modal-header .meta_data_task_div').toggle();
                     if($(this).find('i').hasClass('mdi mdi-chevron-down')){
@@ -376,7 +528,7 @@
             preferredCountries:["{{getCountryCode()}}"],
             initialCountry:"{{getCountryCode()}}",
             hiddenInput: "full_number",
-            utilsScript: "//cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.3/js/utils.js"
+            utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.3/js/utils.js"
         });
 
         document.querySelector("#taskFormHeader .phone_number").addEventListener("countrychange", function() {
@@ -461,32 +613,52 @@
                     var countrycode = customerdata.countrycode;
                     $("#taskFormHeader").find("input[name='phone_number']").val(customerdata.phone_number);
                     $("#taskFormHeader #dialCode").val(customerdata.dial_code);
-                    
-                    //getting instance of intlTelInput
-                    var input = document.querySelector("#taskFormHeader .phone_number");
-                    var iti = window.intlTelInputGlobals.getInstance(input);
-                    iti.setCountry(countrycode);
-
+                  
                     $("#taskFormHeader").find("input[name='email']").val(customerdata.email);
+                    
+                   
+                    $(".alTaskType").each(function(){
+                        if (!($(this).hasClass('is_warehouse_selected'))) {
+                            $(this).find('.withradio .append').remove();
+                        }
+                      });
 
-                    $('.withradio .append').remove();
+
+                    
                     jQuery.each(array, function(i, val) {
                     var countz = '';
                     var rand =  Math.random().toString(36).substring(7);
+                   
                     $(".withradio").each(function(){
                         var count = parseInt(countz);if(isNaN(count)){count = 0;}
+
+                   
+                        var id = $(this).parent().closest('.alTaskType').hasClass('is_warehouse_selected');   
+                       if(!id){
                         $(this).append(
                           '<div class="append"><div class="custom-control custom-radio count"><input type="radio" id="' + (rand + count) + '" name="old_address_id' + countz + '" value="' + val.id + '" class="custom-control-input redio old-select-address callradio" data-srtadd="'+ val.short_name +'" data-flat_no="'+ val.flat_no +'"  data-adr="'+ val.address +'" data-lat="'+ val.latitude +'" data-long="'+ val.longitude +'" data-pstcd="'+ val.post_code +'" data-emil="'+ val.email +'" data-ph="'+ val.phone_number +'"><label class="custom-control-label" for="' + (rand + count) + '"><span class="spanbold">' + val.short_name +
                           '</span>-' + val.address +
                           '</label></div></div>');
                         countz = count + 1;
+                        }
                     });
                   });
+                  
+                    //getting instance of intlTelInput
+                    var input = document.querySelector("#taskFormHeader .phone_number");
+                    
+                    var iti = window.intlTelInputGlobals.getInstance(input);
+                    iti.setCountry(countrycode);
 
               }
           });
       }
       var post_count = 2;
+      var warehouse_count = 2;
+      var email_count = 2;
+      var phone_no_count = 2;
+      var address_count = 2;
+      var choose_warehouse_count = 2;
     $(document).on('click', '.subTaskHeader', function(){
         var cur = countZ;
         countZ = countZ + 1;
@@ -494,6 +666,7 @@
         $clone.removeClass('cloningDiv');
         $clone.removeClass('copyin1');
         $clone.addClass('copyin');
+        $clone.addClass('warehouse_id_'+countZ);
         $clone.addClass('repeated-block check-validation');
 
         $clone.find('.cust_add_div').prop('id', 'addHeader' + countZ);
@@ -576,7 +749,54 @@
             name = 'addHeader'+post_count+'-postcode';
             jElem.prop('id', name);
               post_count++;
-              console.log(post_count);
+             
+          });
+          var warehouse_clone = $clone.find('.warehouse');
+          $.each(warehouse_clone, function(index, elem){
+            var jElem = $(elem);
+            var name = jElem.prop('id');
+            name = name.replace(/\d+/g, '');
+            name = 'addHeader'+warehouse_count+'-warehouse';
+            jElem.prop('id', name);
+            jElem.attr('data-id', warehouse_count);
+            warehouse_count++;
+              
+          });
+          var address_email = $clone.find('.address_email');
+          $.each(address_email, function(index, elem){
+            var jElem = $(elem);
+            var name = jElem.prop('id');
+            name = name.replace(/\d+/g, '');
+            name = 'addHeader'+email_count+'-address_email';
+            jElem.prop('id', name);
+            jElem.attr('data-id', email_count);
+            email_count++;
+          });
+          var choose_warehouse = $clone.find('.choose_warehouse');
+          $.each(choose_warehouse, function(index, elem){
+            var jElem = $(elem);
+            jElem.attr('data-id', choose_warehouse_count);
+            choose_warehouse_count++;
+          });
+          var address_phone_number = $clone.find('.address_phone_number');
+          $.each(address_phone_number, function(index, elem){
+            var jElem = $(elem);
+            var name = jElem.prop('id');
+            name = name.replace(/\d+/g, '');
+            name = 'addHeader'+phone_no_count+'-address_phone_number';
+            jElem.prop('id', name);
+            jElem.attr('data-id', phone_no_count);
+            phone_no_count++;
+          });
+          var saved_address = $clone.find('.alsavedaddress');
+          $.each(saved_address, function(index, elem){
+            var jElem = $(elem);
+            jElem.find('.append').remove();
+            var name = jElem.prop('id');
+            name = name.replace(/\d+/g, '');
+            name = 'alsavedaddress'+address_count;
+            jElem.prop('id', name);
+            address_count++;
           });
 
         $clone.find('.appoint').hide();
@@ -817,7 +1037,7 @@
             });
             if (response.status == 'Success') {
                     $("#task-modal-header .close").click();
-                    location.reload();
+                    location.href="/tasks";
             } else {
                 $("#task-modal-header .show_all_error.invalid-feedback").show();
                 $("#task-modal-header .show_all_error.invalid-feedback").text(response.message);
@@ -1193,5 +1413,6 @@
         {
         this.value = this.value.replace(/[^0-9\.]/g,'');
     });
+
 
 </script>

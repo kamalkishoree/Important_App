@@ -13,8 +13,28 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
 @section('content')
 
 <style> .addTaskModalHeader{display: none;}
+#route-btn {
+display:none;
+}
 .map_box #map_canvas{
     height:300px;
+}
+#show-product-modal .modal-dialog {
+	box-shadow: 0 0 10px 0 #ddd;
+	border-radius: 10px;
+}
+#show-product-modal .modal-dialog {
+	box-shadow: 0 0 10px 0 #8e8e8e;
+	border-radius: 10px;
+}
+
+.modal-backdrop.show {
+	background: #000;
+}
+
+.product-modal.show-product.text-center.text-primary {
+	color: #3283f6 !important;
+	text-align: center !important;
 }
 </style>
     <!-- Start Content-->
@@ -266,11 +286,13 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
                             <span class="span1 addspan">{{__("Please select a address or create new")}}</span>
                             <div class="taskrepet" id="newadd">
                                 @foreach ($task->task as $keys => $item)
+
                                 @php
                                     $maincount = 0;
                                     $newcount++;
                                 @endphp
-                                <div class="alTaskType copyin check-validation" id="copyin1">
+                                <div class="alTaskType copyin check-validation<?php if(($item->task_type_id == 1) && (count($item->orderVendorProducts) > 0)) { echo " is_warehouse_selected"; } ?> warehouse_id_{{ ($keys +1)}}" id="copyin1">
+
                                     <div class="alFormTaskType row m-0 pt-1 pb-1">
                                         <div class="col-sm-10 col-md-12">
                                             <div class="row firstclone1">
@@ -303,7 +325,11 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
                                                     if($item->warehouse_id != ""){ $style = "block"; }else{ $style = "none"; }
                                                 @endphp
                                                 <div class="col-md-3">
-                                                    <div class="form-group select_category-field mt-1 mb-1" style="display: {{$style}};">
+                                                  @if(($item->task_type_id == 1) && (count($item->orderVendorProducts) > 0))
+                                                 <h6 id="#show-product_{{$item->id}}" class="product-modal show-product text-center text-primary" style="cursor: pointer;" onclick="showProductDetail({{$item->id}})"  data-id="{{ $item->id}}">Show Product Details</h6>
+                                                    
+                                                      @endif
+                                                    <div class="form-group select_category-field mt-1 mb-1" style="display:{{$style}};">
                                                         <select class="form-control category_id" name="category_id" id="category_id">
                                                             <option value="">Select Category</option>
                                                             @foreach ($category as $cat)
@@ -328,6 +354,25 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
                                                                         $style = "block";
                                                                     }
                                                                 @endphp
+                                                                @if(($item->task_type_id == 1) && (count($item->orderVendorProducts) > 0))
+                                                                
+                                                             
+
+                                                            <div class="warehouse-fields" >
+                                                                <div class="form-group mb-1 select_warehouse-field">
+                                                                  <select class="form-control show-selected-warehouse" name="warehouse_id[]"  disabled>
+                                                                        <option value="{{$item->vendor_id}}" selected>{{ !empty($item->vendor) ? $item->vendor->name:''}}</option>
+                                                                    </select>
+                                                                    <select class="form-control warehouse d-none" name="warehouse_id[]" id="warehouse">
+                                                                        <option value="">Select Warehouse</option> 
+                                                                        @foreach($warehouses as $warehouse)
+                                                                        <option value="{{$warehouse->id}}">{{$warehouse->name}}</option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+
+                                                                @else
                                                                 <div class="row location-section" style="display: {{$style}}">
                                                                     <div class="row">
                                                                         <div class="form-group col-12 mb-1">
@@ -349,6 +394,7 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
                                                                         {!! Form::text('post_code[]', null, ['class' => 'form-control address postcode','placeholder' => __('Post Code'),'id'=>'add'.$newcount.'-postcode']) !!}
                                                                     </div>
                                                                 </div>
+                                                               
                                                                 @php
                                                                     if($item->warehouse_id != ""){
                                                                         $style = "block";
@@ -360,7 +406,7 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
                                                                 @endphp
                                                                 <div class="warehouse-fields" style="display: {{$style}};">
                                                                     <div class="form-group mb-1 select_warehouse-field">
-                                                                        <select class="form-control warehouse" name="warehouse_id[]" id="warehouse">
+                                                                        <select class="form-control warehouse" name="warehouse_id[]" id="warehouse" data-id="{{ ($keys+1)}}">
                                                                             <option value="">Select Warehouse</option>
                                                                             @foreach ($warehouses as $warehouse)
                                                                                 <option value="{{$warehouse->id}}" {{ $item->warehouse_id == $warehouse->id ? 'selected' : '' }}>{{$warehouse->name}}</option>
@@ -373,8 +419,10 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
                                                                 @endphp
                                                                 @if($warehouse_mode['show_warehouse_module'] == 1)
                                                                     <h6 class="or-text text-center">OR</h6>
-                                                                    <h6 class="choose_warehouse text-center text-primary" style="text-decoration: underline;cursor: pointer;">{{$choose_text}}</h6>
+                                                                    <h6 class="choose_warehouse text-center text-primary" style="text-decoration: underline;cursor: pointer;" data-id="{{ ($keys+1)}}">{{$choose_text}}</h6>
                                                                 @endif
+                                                                
+                                                                @endif 
                                                             </div>
 
                                                             <div class="alContactOther col-6">
@@ -395,6 +443,8 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
                                                                         <div class="row">
                                                                             <div class="form-group mb-1 col-12">
                                                                                 {!! Form::text('barcode[]', $item->barcode, ['class' => 'form-control barcode','placeholder' => __('Task Barcode')]) !!}
+                                                                                {!! Form::hidden('vendor_id[]', $item->vendor_id, ['class' => 'form-control vendor_id']) !!}
+                                                                            
                                                                             </div>
                                                                             <div class="form-group mb-1 col-12">
                                                                                 {!! Form::text('quantity[]', $item->quantity, ['class' => 'form-control quantity onlynumber','placeholder' => __('Quantity')]) !!}
@@ -408,7 +458,19 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="col-4 alsavedaddress" id="alsavedaddress" style="display:none;">
+                                                    @php $vendor_data = []; @endphp
+                                                    @foreach($item->orderVendorProducts as $product )
+                                                    
+                                                      {!! Form::hidden('product_variant_id[]', $product->product_id, ['class' => 'form-control product_id']) !!}
+
+                                                      {!! Form::hidden('product_vendor_id[]', $product->vendor_id, ['class' => 'form-control product_vendor_id']) !!}
+                                                 
+                                                      {!! Form::hidden('product_quantity[]', $product->quantity, ['class' => 'form-control product_quantity']) !!}
+                                                    
+
+                                                    @endforeach
+                                                
+                                                    <div class="col-4 alsavedaddress" id="alsavedaddress{{ ($keys+1)}}" style="display:none;">
                                                         <h6>Saved Addresses</h6>
                                                         <div class="form-group editwithradio" id="typeInputss">
                                                             <div class="oldhide text-center">
@@ -704,6 +766,25 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
             </div>
         </div>
     </div>
+    
+    <div id="show-product-modal" class="modal fade" role="dialog">
+       <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title text-dark product-title"></h4>
+      </div>
+      <div class="modal-body product-body">
+      
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
 @endsection
 
 @section('script')
@@ -714,6 +795,8 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
     <script src="{{ asset('tracking/js/common.js') }}"></script>
     <script>
         var savedFileListArray = {!! json_encode($images) !!};
+    
+
     </script>
     @include('tasks.updatepagescript')
     @include('tasks.tracking_url_script')

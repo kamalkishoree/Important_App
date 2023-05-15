@@ -148,15 +148,27 @@
         <hr>
         <h5 class="text-uppercase bg-light-yellopink p-2 mt-0 mb-3">Pricing Values @if(checkColumnExists('client_preferences', 'is_bid_ride_toggle')) @if($client_pre->is_bid_ride_toggle == 1) (Recommendation) @endif @endif</h5>
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-6">
                 <div class="form-group" id="">
                     
                     {!! Form::label('title', __('Base Price'),['class' => 'control-label']) !!}
                     {{isset($client_pre->currency)?'('.$client_pre->currency->iso_code.')':''}}
+                   
                     {!! Form::text('base_price', $pricing->base_price, ['class' => 'form-control','required' => 'required']) !!}
                     <span class="invalid-feedback" role="alert">
                         <strong></strong>
                     </span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group" id="">
+                    {!! Form::label('title', __('Waiting Price'),['class' => 'control-label']) !!}
+                    <a href="javascript:void(0)" class="btn btn-success btn-sm mb-1  add_more_button float-right add_button" data-id="1" style=""><i class="mdi mdi-plus-circle mr-1" aria-hidden="true"></i> Add Distance wise Price</a>
+                    {!! Form::number('waiting_price', $pricing->waiting_price, ['class' => 'form-control']) !!}
+                    <span class="invalid-feedback" role="alert">
+                        <strong></strong>
+                    </span>
+
                 </div>
             </div>
         </div>
@@ -310,7 +322,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group" id="">
-                        {!! Form::label('title', __('Duration Price(per minute)'),['class' => 'control-label']) !!}
+                        {!! Form::label('title', __('Duration Price (per minute)'),['class' => 'control-label']) !!}
                         {!! Form::text('duration_price_maximum', $pricing->duration_price_maximum, ['class' => 'form-control','required' => 'required']) !!}
                         <span class="invalid-feedback" role="alert">
                             <strong></strong>
@@ -332,6 +344,19 @@
             <hr>
             @endif
         @endif
+
+        @if(isset($pricing->distanceRules) && count($pricing->distanceRules)>0)
+            @foreach($pricing->distanceRules as $k => $rule)
+
+            <div class="row" id="remove{{$k}}"><div class="col-md-6"><div class="form-group" id="">{!! Form::label('title', __('Price (per km)'),['class' => 'control-label']) !!}
+            <input type="number" name="duration_price_arr[]" value="{{$rule->duration_price}}" class="form-control" id="duration_price{{$k}}" min="{{$rule->duration_price}}" >
+            </div></div><div class="col-md-6"><div class="form-group" id="">{!! Form::label('title', __('Distance km'),['class' => 'control-label']) !!}<a href="javascript:void(0)" class="action-icon remove_more_button float-right" id="remove_button{{$k}}" data-rid="{{$k}}"> <i class="mdi mdi-delete"></i></a><a href="javascript:void(0)" class="ml-1 add_more_button float-right" id="add_button{{$k}}" data-id="{{$k}}" style=""><i class="mdi mdi-plus-circle mr-1" aria-hidden="true"></i></a><input type="number" name="distance_fee_arr[]" value="{{$rule->distance_fee}}" class="form-control" id="distance_fee{{$k}}" min="{{$rule->distance_fee}}" ></div></div></div>
+
+            @endforeach
+        @endif
+
+        <span id="new-rows-edit"></span>
+
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group" id="">
