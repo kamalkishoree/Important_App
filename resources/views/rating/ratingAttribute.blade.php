@@ -6,7 +6,7 @@
                     <div class="row mb-2">
                         <div class="col-sm-12">
                             <div class="d-flex justify-content-between align-items-center">
-                                <h4 class="page-title">{{ ("Driver Reviwes Questions") }}</h4>
+                                <h4 class="page-title">{{ ("Driver Review Questions") }}</h4>
                                 <button class="btn btn-info waves-effect waves-light text-sm-right add_driver_rating_quiestionbtn" dataid="0">{{ __('Add') }}
                                 </button>
                             </div>

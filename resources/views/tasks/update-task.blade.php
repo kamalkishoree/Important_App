@@ -286,11 +286,13 @@ display:none;
                             <span class="span1 addspan">{{__("Please select a address or create new")}}</span>
                             <div class="taskrepet" id="newadd">
                                 @foreach ($task->task as $keys => $item)
+
                                 @php
                                     $maincount = 0;
                                     $newcount++;
                                 @endphp
-                                <div class="alTaskType copyin check-validation" id="copyin1">
+                                <div class="alTaskType copyin check-validation<?php if(($item->task_type_id == 1) && (count($item->orderVendorProducts) > 0)) { echo " is_warehouse_selected"; } ?> warehouse_id_{{ ($keys +1)}}" id="copyin1">
+
                                     <div class="alFormTaskType row m-0 pt-1 pb-1">
                                         <div class="col-sm-10 col-md-12">
                                             <div class="row firstclone1">
@@ -404,7 +406,7 @@ display:none;
                                                                 @endphp
                                                                 <div class="warehouse-fields" style="display: {{$style}};">
                                                                     <div class="form-group mb-1 select_warehouse-field">
-                                                                        <select class="form-control warehouse" name="warehouse_id[]" id="warehouse">
+                                                                        <select class="form-control warehouse" name="warehouse_id[]" id="warehouse" data-id="{{ ($keys+1)}}">
                                                                             <option value="">Select Warehouse</option>
                                                                             @foreach ($warehouses as $warehouse)
                                                                                 <option value="{{$warehouse->id}}" {{ $item->warehouse_id == $warehouse->id ? 'selected' : '' }}>{{$warehouse->name}}</option>
@@ -417,7 +419,7 @@ display:none;
                                                                 @endphp
                                                                 @if($warehouse_mode['show_warehouse_module'] == 1)
                                                                     <h6 class="or-text text-center">OR</h6>
-                                                                    <h6 class="choose_warehouse text-center text-primary" style="text-decoration: underline;cursor: pointer;">{{$choose_text}}</h6>
+                                                                    <h6 class="choose_warehouse text-center text-primary" style="text-decoration: underline;cursor: pointer;" data-id="{{ ($keys+1)}}">{{$choose_text}}</h6>
                                                                 @endif
                                                                 
                                                                 @endif 
@@ -467,8 +469,8 @@ display:none;
                                                     
 
                                                     @endforeach
-                                                    
-                                                    <div class="col-4 alsavedaddress" id="alsavedaddress" style="display:none;">
+                                                
+                                                    <div class="col-4 alsavedaddress" id="alsavedaddress{{ ($keys+1)}}" style="display:none;">
                                                         <h6>Saved Addresses</h6>
                                                         <div class="form-group editwithradio" id="typeInputss">
                                                             <div class="oldhide text-center">

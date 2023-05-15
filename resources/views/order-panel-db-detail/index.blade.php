@@ -3,9 +3,9 @@ use Illuminate\Support\Facades\Session;
 
 ?>
  @if (Route::currentRouteName() == 'inventory-panel-db')
-  @php  $title = "Inventory Panel DB Detail";  @endphp
+  @php  $title = "Inventory Panel ";  @endphp
  @else
- @php  $title = "Order Panel DB Detail";  @endphp
+ @php  $title = "Order Panel ";  @endphp
  @endif
 @extends('layouts.vertical', ['title' =>  $title  ])
 @section('content')
@@ -18,9 +18,9 @@ use Illuminate\Support\Facades\Session;
                 <div class="page-title-box">
                     
                 @if (Route::currentRouteName() == 'inventory-panel-db')
-                 <h4 class="page-title">{{__("Inventory Panel DB Detail")}}</h4>
+                 <h4 class="page-title">{{__("Inventory Panel")}}</h4>
                  @else
-                <h4 class="page-title">{{__("Order Panel DB Detail")}}</h4>
+                <h4 class="page-title">{{__("Order Panel ")}}</h4>
                 @endif
 
                 
@@ -40,9 +40,9 @@ use Illuminate\Support\Facades\Session;
                                 <button type="button" class="btn btn-blue waves-effect waves-light openModal" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> 
                              
                                 @if (Route::currentRouteName() == 'inventory-panel-db')
-                                {{__("Add Inventory DB")}}
+                                {{__("Add Inventory Detail")}}
                                 @else
-                                {{__("Add Order DB")}}
+                                {{__("Add Order Detail")}}
                                 @endif
 
                             

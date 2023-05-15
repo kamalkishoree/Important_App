@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Warehouse extends Model
 {
     use SoftDeletes;
-    protected $fillable = ['name', 'code', 'address', 'amenities', 'category_id', 'latitude', 'longitude'];
+    protected $fillable = ['name', 'code', 'address', 'amenities', 'category_id', 'latitude', 'longitude','email','phone_no'];
 
     public function amenity(){
         return $this->belongsToMany('App\Model\Amenities', 'warehouse_amenities')->withTimestamps();
