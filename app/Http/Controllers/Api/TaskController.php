@@ -85,7 +85,6 @@ class TaskController extends BaseController
 
     public function updateTaskStatus(Request $request)
     {
-        \Log::info($request->all());
         $header = $request->header();
         $tasks = null;
         $client_details = Client::where('database_name', $header['client'][0])->first();
@@ -106,7 +105,7 @@ class TaskController extends BaseController
 
         // set dynamic smtp for email send
         $this->setMailDetail($client_details);
-
+ 	    $waiting_time = $request->waiting_time??0;
         $orderId = Task::where('id', $request->task_id)->with([
             'tasktype'
         ])->first();
@@ -236,13 +235,28 @@ class TaskController extends BaseController
         $send_recipient_sms_status = isset($sms_final_status['client_notification']['recipient_request_recieved_sms']) ? $sms_final_status['client_notification']['recipient_request_recieved_sms'] : 0;
         $send_recipient_email_status = isset($sms_final_status['client_notification']['recipient_request_received_email']) ? $sms_final_status['client_notification']['recipient_request_received_email'] : 0;
 
+        if($waiting_time){
+            Task::where('id',$request->task_id)->update(['waiting_time'=>$waiting_time]); 
+        }
+       
         if ($request->task_status == 4) {
+          
             if ($check == 1) {
-                $Order = Order::where('id', $orderId->order_id)->update([
-                    'status' => $task_type
-                ]);
-                if ($order_details && $order_details->call_back_url) {
-                    $call_web_hook = $this->updateStatusDataToOrder($order_details, 5, $orderId->task_type_id); # call web hook when order completed
+                Order::where('id', $orderId->order_id)->update(['status' => $task_type]);
+               
+                //If waiting time came then all price will be updated
+                if($waiting_time){
+                    // Task::where('id',$request->task_id)->update(['waiting_time'=>$waiting_time]); 
+                    $waitingDetails =  (object)$this->setPricingRuleDynamic($orderId->order_id,$waiting_time);
+                }
+
+
+                if($order_details && $order_details->call_back_url){
+
+                    // \Log::info(json_encode($waitingDetails));
+                    // \Log::info(' total_waiting_time  - '.$waitingDetails->total_waiting_time??0);
+                    // \Log::info(' total_waiting_price - '.$waitingDetails->total_waiting_price??0);
+                    $call_web_hook = $this->updateStatusDataToOrder($order_details,5,$orderId->task_type_id,$waitingDetails->total_waiting_price??0,$waitingDetails->total_waiting_time??0);  # call web hook when order completed
                 }
                 if (isset($request->qr_code)) {
                     $codeVendor = $this->checkQrcodeStatusDataToOrderPanel($order_details, $request->qr_code, 5);
@@ -709,9 +723,8 @@ class TaskController extends BaseController
         ]);
     }
 
-    // ///////////////// ********************** update status in order panel also ********************************** ///////////////////////
-    public function updateStatusDataToOrder($order_details, $dispatcher_status_option_id, $task_type)
-    {
+    /////////////////// **********************   update status in order panel also **********************************  ///////////////////////
+    public function updateStatusDataToOrder($order_details,$dispatcher_status_option_id,$task_type,$total_waiting_price=0,$total_waiting_time=0){
         try {
             $auth = Client::with([
                 'getAllocation',
@@ -722,7 +735,16 @@ class TaskController extends BaseController
             } else {
                 $client_url = "https://" . $auth->sub_domain . \env('SUBDOMAIN');
             }
-            $dispatch_traking_url = $client_url . '/order/tracking/' . $auth->code . '/' . $order_details->unique_id;
+            $dispatch_traking_url = $client_url.'/order/tracking/'.$auth->code.'/'.$order_details->unique_id;
+
+                $client = new GClient(['content-type' => 'application/json']);
+                $url = $order_details->call_back_url;
+                $res = $client->get($url.'?dispatcher_status_option_id='.$dispatcher_status_option_id.'&dispatch_traking_url='.$dispatch_traking_url.'&task_type='.$task_type.'&waiting_price='.$total_waiting_price.'&waiting_time='.$total_waiting_time);
+                $response = json_decode($res->getBody(), true);
+                if($response){
+                //    Log::info($response);
+                }
+
 
             $client = new GClient([
                 'content-type' => 'application/json'
@@ -1237,7 +1259,6 @@ class TaskController extends BaseController
             }
             if(checkColumnExists('orders', 'order_pre_time')){
                 $order['order_pre_time']=isset($request->order_pre_time)?$request->order_pre_time:0;
-
             }
 
             $is_order_updated = 0;
@@ -1365,18 +1386,22 @@ class TaskController extends BaseController
             $client_notification_time = Carbon::parse($notification_time, 'UTC')->setTimezone($clienttimezone)->format('Y-m-d H:i:s');
             $agent_tags = (isset($request->order_agent_tag) && !empty($request->order_agent_tag)) ? $request->order_agent_tag : '';
             $pricingRule = $this->getPricingRuleData($geoid, $agent_tags, $client_notification_time);
-
-
-
+            $pricingRuleDistance = $this->getPricingRuleDynamic($pricingRule,$getdata['distance']);
 
 
             $paid_duration = $getdata['duration'] - $pricingRule->base_duration;
             $paid_distance = $getdata['distance'] - $pricingRule->base_distance;
             $paid_duration = $paid_duration < 0 ? 0 : $paid_duration;
             $paid_distance = $paid_distance < 0 ? 0 : $paid_distance;
-            $total = $pricingRule->base_price + ($paid_distance * $pricingRule->distance_fee) + ($paid_duration * $pricingRule->duration_price);
+            //$total         = $pricingRule->base_price + ($paid_distance * $pricingRule->distance_fee) + ($paid_duration * $pricingRule->duration_price);
+            if($pricingRuleDistance)
+            {
+                $total         = $pricingRule->base_price + ($pricingRuleDistance) + ($paid_duration * $pricingRule->duration_price);
 
-            if($orders->is_cab_pooling == 1 && $orders->available_seats != 0){
+            }else{
+                $total         = $pricingRule->base_price + ($paid_distance * $pricingRule->distance_fee) + ($paid_duration * $pricingRule->duration_price);
+            }
+            if($orders->is_cab_pooling == 1){
                 $total       = ($total/$orders->available_seats)*$orders->no_seats_for_pooling;
                 $toll_amount = ($toll_amount/$orders->available_seats)*$orders->no_seats_for_pooling;
             }
@@ -2792,22 +2817,32 @@ class TaskController extends BaseController
 
 
         $agent_tags = (isset($request->agent_tag) && !empty($request->agent_tag)) ? $request->agent_tag : '';
-        $pricingRule = $this->getPricingRuleData($geoid, $agent_tags, $order_datetime);
+        
 
         if ($auth->getPreference->toll_fee == 1) {
             $getdata = $this->toll_fee($latitude, $longitude, (isset($request->toll_passes) ? $request->toll_passes : ''), (isset($request->VehicleEmissionType) ? $request->VehicleEmissionType : ''), (isset($request->travelMode) ? $request->travelMode : ''));
         } else {
             $getdata = $this->GoogleDistanceMatrix($latitude, $longitude);
         }
-        //Log::info($pricingRule);
-        //Log::info($getdata);
 
+        $pricingRule = $this->getPricingRuleData($geoid, $agent_tags, $order_datetime);
+        $pricingRuleDistanceWise = $this->getPricingRuleDynamic($pricingRule, $getdata['distance']);
+        
         $paid_duration = $getdata['duration'] - $pricingRule->base_duration;
         $paid_distance = $getdata['distance'] - $pricingRule->base_distance;
         $paid_duration = $paid_duration < 0 ? 0 : $paid_duration;
         $paid_distance = $paid_distance < 0 ? 0 : $paid_distance;
+       
 
-        $total = $pricingRule->base_price + ($paid_distance * $pricingRule->distance_fee) + ($paid_duration * $pricingRule->duration_price);
+        if($pricingRuleDistanceWise)
+        {
+            $total         = $pricingRule->base_price + ($pricingRuleDistanceWise) + ($paid_duration * $pricingRule->duration_price);
+            //\Log::info($pricingRule->base_price.' +  '.$pricingRuleDistanceWise.' + '.($paid_duration * $pricingRule->duration_price));
+        }else{
+            $total         = $pricingRule->base_price + ($paid_distance * $pricingRule->distance_fee) + ($paid_duration * $pricingRule->duration_price);
+        }
+
+       
 
         //-------------------for bid and ride---------------------
         if(isset($pricingRule->base_price_minimum)){
@@ -4035,9 +4070,8 @@ class TaskController extends BaseController
 
             //get pricing rule  for save with every order based on geo fence and agent tags
             $agent_tags = (isset($request->order_agent_tag) && !empty($request->order_agent_tag)) ? $request->order_agent_tag : '';
-            $pricingRule = $this->getPricingRuleData($geoid, $agent_tags, $this->getConvertUTCToLocalTime($notification_time, $auth->timezone));
-
-
+           
+            
             if($auth->getPreference->toll_fee == 1){
                 $getdata = $this->toll_fee($latitude, $longitude, (isset($request->toll_passes)?$request->toll_passes:''), (isset($request->VehicleEmissionType)?$request->VehicleEmissionType:''), (isset($request->travelMode)?$request->travelMode:''));
                 $toll_amount = (isset($getdata['toll_amount'])?$getdata['toll_amount']:0);
@@ -4045,6 +4079,11 @@ class TaskController extends BaseController
                 $getdata = $this->GoogleDistanceMatrix($latitude, $longitude);
                 $toll_amount = 0;
             }
+
+            $pricingRule = $this->getPricingRuleData($geoid, $agent_tags, $this->getConvertUTCToLocalTime($notification_time, $auth->timezone));
+            $pricingRuleDistance = $this->getPricingRuleDynamic($pricingRule,$getdata['distance']);
+
+
 
             $paid_duration = $getdata['duration'] - $pricingRule->base_duration;
             $paid_distance = $getdata['distance'] - $pricingRule->base_distance;
@@ -4382,6 +4421,23 @@ class TaskController extends BaseController
         }
     }
 
+    public function addWaitingTime(Request $request){
+        try {
+            $task= Task::where(['id'=>$request->task_id])->update(['waiting_time'=>$request->waiting_time]);           
+             return response()->json([
+                'message' => __('Time Added SuccessFully.'),
+                'status'  => "success",
+            ], 200);
+
+        }catch (\Exception $e) {
+                
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 400);
+        }
+    }
+
+
     public function addBufferTime(Request $request){
         try {
             $order= order::where(['unique_id'=>$request->tracking_id])->update(['buffer_time'=>$request->time]);
@@ -4389,7 +4445,7 @@ class TaskController extends BaseController
             if(!empty($order_data->driver_id)){
 
                 $user = Agent::where('id', $order_data->driver_id)->first();
-                Log::info("devic token is ".$user->device_token);
+               // Log::info("devic token is ".$user->device_token);
                 $client_prefrerence = ClientPreference::first(['fcm_server_key']);
                 if(isset($user) && !empty($user->device_token) && $user->is_available == 1){
                     $data = [
