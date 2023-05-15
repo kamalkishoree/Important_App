@@ -3138,9 +3138,11 @@ class TaskController extends BaseController
             OrderVendorProduct::WhereIn('task_id', $ids)->each(function ($product, $key) {
 
                 $variant = ProductVariant::find($product->product_id);
-                $variant->update([
+                if(!empty($variant)) {
+                 $variant->update([
                     'quantity' => ($variant->quantity + $product->quantity)
                 ]);
+                }
                 $product->delete();
             });
         } catch (\Exception $e) {}

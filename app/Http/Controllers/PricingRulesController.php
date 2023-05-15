@@ -16,6 +16,7 @@ use App\Model\Client;
 use App\Model\priceRuleTimeframe;
 use App\Model\priceRuleTag;
 use App\Model\ClientPreferences;
+use App\Model\DistanceWisePricingRule;
 use Illuminate\Http\Request;
 use Auth;
 use Illuminate\Support\Facades\Validator;
@@ -110,6 +111,9 @@ class PricingRulesController extends Controller
      */
     public function store(Request $request, $domain = '')
     {
+
+        // dd($request->all());
+
         $data = [
             'name'                            => $request->name,
             'start_date_time'                 => $request->start_date_time??date("Y-m-d H:i:s"),
@@ -148,6 +152,12 @@ class PricingRulesController extends Controller
         ];
         
         $pricerule = PricingRule::create($data);
+
+        if(isset($request->duration_price_arr) && count($request->duration_price_arr)>0){
+            foreach($request->duration_price_arr as $k=> $rule){
+                DistanceWisePricingRule::create(['price_rule_id'=>$pricerule->id,'distance_fee'=>$request->distance_fee_arr[$k],'duration_price'=>$rule]);
+            }
+        }
 
         //code to insert multiple selection of different type of tags
         $geo_ids                          = (!empty($request->geo_id))?$request->geo_id:array();
@@ -225,8 +235,7 @@ class PricingRulesController extends Controller
 
     public function edit($domain = '', $id)
     {
-        $pricing         = PricingRule::where('id', $id)->with('priceRuleTags')->first();
-        
+        $pricing  = PricingRule::where('id', $id)->with('priceRuleTags')->first();
         $selectedtags = array();
         foreach($pricing->priceRuleTags as $priceRuleTag):
             $selectedtags[$priceRuleTag->identity][] = $priceRuleTag->tag_id;
@@ -267,6 +276,7 @@ class PricingRulesController extends Controller
             'base_distance'                   => $request->base_distance,
             'duration_price'                  => $request->duration_price,
             'distance_fee'                    => $request->distance_fee,
+            'waiting_price'                   => $request->waiting_price,
 
             'base_price_minimum'              => $request->base_price_minimum,
             'base_duration_minimum'           => $request->base_duration_minimum,
@@ -293,6 +303,14 @@ class PricingRulesController extends Controller
         ];
         
         $pricing = PricingRule::where('id', $id)->update($data);
+
+
+        if(isset($request->duration_price_arr) && count($request->duration_price_arr)>0){
+            DistanceWisePricingRule::where('price_rule_id',$id)->delete();
+            foreach($request->duration_price_arr as $k=> $rule){
+                DistanceWisePricingRule::create(['price_rule_id'=>$id,'distance_fee'=>$request->distance_fee_arr[$k],'duration_price'=>$rule]);
+            }
+        }
  
         priceRuleTag::where('pricing_rule_id', $id)->delete();
         priceRuleTimeframe::where('pricing_rule_id', $id)->delete();
