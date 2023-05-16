@@ -61,6 +61,8 @@ class WarehouseController extends Controller
             $warehouse->name = $request->input('name');
             $warehouse->code = $request->input('code');
             $warehouse->address = $request->input('address');
+            $warehouse->email = $request->input('email');
+            $warehouse->phone_no = $request->input('phone_no');
             $warehouse->latitude = $request->input('latitude');
             $warehouse->longitude = $request->input('longitude');
             $warehouse->save();
@@ -108,6 +110,8 @@ class WarehouseController extends Controller
                 'code' => $request->input('code'),
                 'address' => $request->input('address'),
                 'latitude' => $request->input('latitude'),
+                'email' => $request->input('email'),
+                'phone_no' => $request->input('phone_no'),
                 'longitude' => $request->input('longitude')
             ];
             $warehouse->update($data);

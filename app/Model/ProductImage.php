@@ -13,6 +13,6 @@ class ProductImage extends Model
     }
 
     public function image(){
-	    return $this->belongsTo('App\Models\VendorMedia','media_id','id')->select('id' ,'media_type', 'path'); 
-	}
+        return $this->belongsTo('App\Model\VendorMedia','media_id','id')->select('id' ,'media_type', 'path');
+    }
 }

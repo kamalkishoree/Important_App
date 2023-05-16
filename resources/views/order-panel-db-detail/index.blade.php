@@ -1,7 +1,13 @@
 <?php
 use Illuminate\Support\Facades\Session;
+
 ?>
-@extends('layouts.vertical', ['title' =>  'Order Panel DB Detail' ])
+ @if (Route::currentRouteName() == 'inventory-panel-db')
+  @php  $title = "Inventory Panel ";  @endphp
+ @else
+ @php  $title = "Order Panel ";  @endphp
+ @endif
+@extends('layouts.vertical', ['title' =>  $title  ])
 @section('content')
 
 
@@ -12,11 +18,9 @@ use Illuminate\Support\Facades\Session;
                 <div class="page-title-box">
                     
                 @if (Route::currentRouteName() == 'inventory-panel-db')
-                
-                 <h4 class="page-title">{{__("Inventory Panel DB Detail")}}</h4>
-
-                @else
-                <h4 class="page-title">{{__("Order Panel DB Detail")}}</h4>
+                 <h4 class="page-title">{{__("Inventory Panel")}}</h4>
+                 @else
+                <h4 class="page-title">{{__("Order Panel ")}}</h4>
                 @endif
 
                 
@@ -36,9 +40,9 @@ use Illuminate\Support\Facades\Session;
                                 <button type="button" class="btn btn-blue waves-effect waves-light openModal" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> 
                              
                                 @if (Route::currentRouteName() == 'inventory-panel-db')
-                                {{__("Add Inventory DB")}}
+                                {{__("Add Inventory Detail")}}
                                 @else
-                                {{__("Add Order DB")}}
+                                {{__("Add Order Detail")}}
                                 @endif
 
                             
@@ -65,6 +69,7 @@ use Illuminate\Support\Facades\Session;
                                         <th>{{__("Key")}}</th>
                                         <th>{{__("Created Date")}}</th>
                                         <th>{{__("Type")}}</th>
+                                        <th>{{__("Sync Data")}}</th>
                                         <th>{{__("Action")}}</th>
                                         <th></th>
                                     </tr>
@@ -84,14 +89,26 @@ use Illuminate\Support\Facades\Session;
                                                 <td>Order Panel</td>   
                                                 @else
                                                 <td>Inventory Panel</td>
-                                                @endif          
-                                                                                 
+                                                @endif       
+                                                <td>
+
+                                                <form action="{{route('category.importOrderSideCategory')}}" method="post">
+                                                @csrf
+                                                    <input type="hidden" name="order_panel_id" value="{{ $data->id}}">
+                                                    <button type="submit" class="ml-2 border-0" ><i class="fa fa-sync"></i></button>
+                                                </form>
+
+                                                </td>     
+                                                                             
+                                                                             
                                                 <td>
                                                     <div class="form-ul" style="width: 60px;">
                                                         
 
-                                                        <div class="inner-div"> <a href="javascript:void(0);" class="action-icon editIconBtn" data-name="{{$data->name}}" data-url="{{$data->url}}" data-code="{{$data->code}}" data-key="{{$data->key}}" data-type="{{$data->type}}" data-id="{{$data->id}}"> <i class="mdi mdi-square-edit-outline"></i></a></div>
-                                                        {{-- <div class="inner-div">
+                                                      <div class="inner-div"> <a href="javascript:void(0);" class="action-icon editIconBtn" data-name="{{$data->name}}" data-url="{{$data->url}}" data-code="{{$data->code}}" data-key="{{$data->key}}" data-type="{{$data->type}}" data-id="{{$data->id}}"> <i class="mdi mdi-square-edit-outline"></i></a></div>
+                                                        
+                                                      
+                                                        <div class="inner-div">
                                                             <form method="POST" action="{{route('order-panel-db.destroy', $data->id)}}">
                                                                 @csrf
                                                                 @method('DELETE')
@@ -99,21 +116,10 @@ use Illuminate\Support\Facades\Session;
                                                                     <button type="submit" class="btn btn-primary-outline action-icon"> <i class="mdi mdi-delete"></i></button>
                                                                 </div>
                                                             </form>
-                                                        </div> --}}
+                                                        </div> 
                                                     </div>
                                                 </td>
-                                                <td>
-                                                  @php
-                    $warehouse_mode = checkWarehouseMode();
-                @endphp
-                                                @if($warehouse_mode['show_inventory_module'] == 1)
-                <a class="nav-link" href="#">   <!-- addTaskModalHeader -->
-                    <button id="route-btn" type="button" class="btn btn-blue waves-effect waves-light klklkl" data-id="{{ $data->id}}" data-toggle="modal" data-target="#addRouteModal" data-backdrop="static" title="{{__('Add Route')}}" data-keyboard="false"><span><i class="mdi mdi-plus-circle mr-1"></i> {{__('Add Route')}}</span></button>
-                </a>
-            @endif
-
-                                                
-                                                </td>
+                                              
                                             </tr>
                                         @endforeach
                                         @else

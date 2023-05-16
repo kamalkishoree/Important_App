@@ -16,7 +16,7 @@
 						<div class="search-bar">
 							<input class="form-control search" type="search"
 								placeholder="Search" aria-label="Search" id="category-search">
-							<button class="btn" type="submit">
+							<button class="btn" type="button">
 								<svg width="10" height="10" viewBox="0 0 10 10" fill="none"
 									xmlns="http://www.w3.org/2000/svg">
                                             <path fill-rule="evenodd"
@@ -37,7 +37,7 @@
 									<div class="form-check">
 										<input type="checkbox" class="form-check-input"
 											onchange="getCategory({{$cat->id}})" name="category-check"
-											id="category-check_{{$cat->id}}"> <label class="label-check" for="category-check_{{$cat->id}}">{{ $cat->slug}}</label>
+											id="category-check_{{$cat->id}}"> <label class="label-check" for="category-check_{{$cat->id}}">{{ !empty($cat->translation) ? $cat->translation->name:$cat->slug}}</label>
 									</div>
 								</li> @endforeach
 
@@ -51,7 +51,7 @@
 						<div class="search-bar">
 							<input class="form-control search" type="search"
 								id="product-search" placeholder="Search" aria-label="Search">
-							<button class="btn" type="submit">
+							<button class="btn" type="button">
 								<svg width="10" height="10" viewBox="0 0 10 10" fill="none"
 									xmlns="http://www.w3.org/2000/svg">
                                             <path fill-rule="evenodd"
@@ -80,7 +80,7 @@
 								<div class="search-bar">
 									<input class="form-control search" type="search" id="warehouse-search"
 										placeholder="Search" aria-label="Search">
-									<button class="btn" type="submit">
+									<button class="btn" type="button">
 										<svg width="10" height="10" viewBox="0 0 10 10" fill="none"
 											xmlns="http://www.w3.org/2000/svg">
                                                     <path

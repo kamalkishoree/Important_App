@@ -29,14 +29,17 @@ $products = Product::where([
 							value="{{$variant->id}}"  onclick="getProductVariant({{$product->id}})"> <label></label>
 					</div>
 					<div class="prod-pic">
-						<img src="{{ asset('assets/images/bg-material.png')}}" alt="image">
+					 @if (isset($product->media[0]) && isset($product->media[0]->image))
+                            <img alt="{{ $product->id }}" class="rounded-circle" src="{{ $product->media[0]->image->path['proxy_url'] . '30/30' . $product->media[0]->image->path['image_path'] }}">
+                        @else
+                      <img src="{{ asset('assets/images/bg-material.png')}}" alt="image">
+                       @endif
 					</div>
 					<input type="hidden" name="vendor_id"
 						id="vendor_id_{{$variant->id}}"
 						value="{{$variant->product->vendor_id}}">
 					
-					  <?php  $title = !empty($variant->title) ? $variant->title :$product->title ?>
-					  <span class="variant-title" ><?=   $product->title."(".$title." )" ?></span>
+					  <span class="variant-title" ><?=   $product->title ?></span>
 					  
 				</div>
 			</div>

@@ -831,6 +831,7 @@ class TaskController extends BaseController
                 ])->first();
 
                 if (! empty($new_task)) {
+                  if(isset($product_data)){
                     foreach ($product_data as $data) {
 
                         if (($new_task->vendor_id == $data['vendor_id']) && $new_task->task_type_id == 1) {
@@ -848,11 +849,12 @@ class TaskController extends BaseController
                             $product_variant->save();
                         }
                     }
+                  }
                 }
                 
-    
+                if(isset($product_data)){
                 $this->inventoryUpdate(json_encode($product_data));
-
+                }
                 $dep_id = $task->id;
 
                 // for net quantity
@@ -3136,15 +3138,20 @@ class TaskController extends BaseController
             OrderVendorProduct::WhereIn('task_id', $ids)->each(function ($product, $key) {
 
                 $variant = ProductVariant::find($product->product_id);
-                $variant->update([
+                if(!empty($variant)) {
+                 $variant->update([
                     'quantity' => ($variant->quantity + $product->quantity)
                 ]);
+                }
                 $product->delete();
             });
         } catch (\Exception $e) {}
 
         Order::where('id', $id)->delete();
+        if(!empty($product_variant_ids))
+        {
         $this->inventoryUpdate($product_variant_ids, true);
+        }
         $orderdata->status = "Deleted";
         // event(new \App\Events\loadDashboardData($orderdata));
         return redirect()->back()->with('success', 'Task deleted successfully!');
@@ -3184,6 +3191,7 @@ class TaskController extends BaseController
     public function search(Request $request, $domain = '')
     {
         $search = $request->search;
+      
         if (isset($search)) {
             if ($search == '') {
                 $employees = Customer::orderby('name', 'asc')->select('id', 'name')
@@ -3204,7 +3212,7 @@ class TaskController extends BaseController
                     "label" => $employee->name
                 );
             }
-
+           
             return response()->json($response);
         } else {
             $id = $request->id;
@@ -3306,14 +3314,16 @@ class TaskController extends BaseController
 
     public function getInventoryProducts(Request $request)
     {
+        
         if ($request->ajax()) {
             $category_id = $request->cat_id;
 
             if (! empty($request->title)) {
-                $products = Product::where('category_id', $category_id)->where('title', 'like', '%' . $request->title . '%')->get();
+                $products = Product::with('variant')->where('category_id', $category_id)->where('title', 'like', '%' . $request->title . '%')->whereNotNull('vendor_id')->get();
             } else {
-                $products = Product::where('category_id', $category_id)->get();
+                $products = Product::with('variant')->where('category_id', $category_id)->whereNotNull('vendor_id')->get();
             }
+            
             $options = view("modals.inventory-products-ajax", compact('products'))->render();
             return $options;
         }
@@ -3344,6 +3354,24 @@ class TaskController extends BaseController
         }
     }
 
+    public function getWarehouse(Request $request)
+    {
+        $data = [];
+
+        $id = $request->id ?? '';
+        $warehouse  = Warehouse::find($id);
+
+        if(!empty($warehouse))
+        {
+            $data['email'] = $warehouse->email;
+            $data['phone_no'] = $warehouse->phone_no;
+            $data['address'] = $warehouse->address;
+        }
+        
+        
+        return $data;
+    }
+
     public function getSelectedWarehouses(Request $request)
     {
         if (is_array(($request->data))) {
@@ -3369,7 +3397,7 @@ class TaskController extends BaseController
                 'warehouseProducts'
             ])->whereIn('id', $vendor_ids);
             if (@$request->title) {
-                $warehouses->where('slug', 'like', '%' . $request->title . '%');
+                $warehouses->where('name', 'like', '%' . $request->title . '%');
             }
 
             if (@$request->filter) {
@@ -3432,7 +3460,7 @@ class TaskController extends BaseController
     {
 
       
-        $category = Category::where(['status' =>  1,'order_panel_id' => $request->id])->get();
+        $category = Category::where(['status' =>  1])->get();
 
         return view('create-product-route', compact('category'));
     }

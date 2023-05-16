@@ -332,11 +332,13 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-4 alsavedaddress" id="alsavedaddress" style="display: none;">
-                                                    <h6>Saved Addresses</h6>
-                                                    <div class="form-group withradio" id="typeInputss">
+                                                    <h6>Saved Addresses  Test</h6>
+                                                    <div class="form-group withradio" id="typeInputss" >
                                                         <div class="oldhide text-center">
                                                             <img class="showsimage" src="{{url('assets/images/ic_location_placeholder.png')}}" alt="">
                                                         </div>
+
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -347,7 +349,7 @@
                             @foreach ($vendors as $vendor)
 
 
-                            <div class="alTaskType pt-1 pb-1 copyin1 cloningDiv check-validation mb-2" id="copyin1">
+                            <div class="alTaskType pt-1 pb-1 copyin1  check-validation mb-2" id="copyin1">
                                 <div class="alFormTaskType row m-0">
                                     <div class="col-md-12">
                                         <div class="row firstclone1">
@@ -462,14 +464,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-4 alsavedaddress" id="alsavedaddress" style="display: none;">
-                                                    <h6>Saved Addresses</h6>
-                                                    <div class="form-group withradio" id="typeInputss">
-                                                        <div class="oldhide text-center">
-                                                            <img class="showsimage" src="{{url('assets/images/ic_location_placeholder.png')}}" alt="">
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                
                                             </div>
                                         </div>
                                     </div>
@@ -478,7 +473,7 @@
                             @endforeach
                         <?php } else { ?>
 
-                            <div class="alTaskType pt-1 pb-1 copyin1 cloningDiv check-validation" id="copyin1">
+                            <div class="alTaskType pt-1 pb-1 copyin1 cloningDiv warehouse_id_1 check-validation" id="copyin1">
                                 <div class="alFormTaskType row m-0">
                                     <div class="col-md-12">
                                         <div class="row firstclone1">
@@ -553,7 +548,7 @@
                                                             </div>
                                                             <div class="warehouse-fields" style="display: none;">
                                                                 <div class="form-group mb-1 select_warehouse-field">
-                                                                    <select class="form-control warehouse" name="warehouse_id[]" id="warehouse">
+                                                                    <select class="form-control warehouse" name="warehouse_id[]" id="warehouse" data-id="1" >
                                                                         <option value="">Select Warehouse</option>
                                                                          @foreach($warehouses as $warehouse)
                                                                         <option value="{{$warehouse->id}}">{{$warehouse->name}}</option>
@@ -562,10 +557,9 @@
                                                                 </div>
                                                             </div>
                                                             @php $warehouse_mode = checkWarehouseMode(); @endphp
-                                                            @if($warehouse_mode['show_warehouse_module'] == 1)
+                                                            @if($warehouse_mode['show_inventory_module'] == 1)
                                                             <h6 class="or-text text-center">OR</h6>
-                                                            <h6 class="choose_warehouse text-center text-primary" style="text-decoration: underline; cursor: pointer;">Choose
-                                                                Warehouse</h6>
+                                                            <h6 class="choose_warehouse text-center text-primary" style="text-decoration: underline; cursor: pointer;" data-id="1">Choose Warehouse</h6>
                                                             @endif
                                                         </div>
 
@@ -607,11 +601,12 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-4 alsavedaddress" id="alsavedaddress" style="display: none;">
+                                                <div class="col-4 alsavedaddress" id="alsavedaddress1" style="display: none;">
                                                     <h6>Saved Addresses</h6>
                                                     <div class="form-group withradio" id="typeInputss">
                                                         <div class="oldhide text-center">
                                                             <img class="showsimage" src="{{url('assets/images/ic_location_placeholder.png')}}" alt="">
+                                                        
                                                         </div>
                                                     </div>
                                                 </div>
@@ -642,4 +637,33 @@ $('.show-selected-warehouse').prop('disabled', true);
 $('.show-selected-warehouse').css('appearance', 'none');
 $('.show-selected-warehouse').css('-webkit-appearance', 'none');
 $('.show-selected-warehouse').css('-moz-appearance', 'none');
+
+$(document).on('change','.warehouse',function()
+{
+
+    var id = $(this).val();
+    var data_id = $(this).attr('data-id');
+    $.ajax({
+        method: "POST",
+        url: "/get-warehouse/"+id,
+        headers: {
+            'X-CSRF-Token': '{{ csrf_token() }}',
+        },
+        success: function (response) {
+    
+            $('#addHeader'+data_id+'-address_email').val(response.email);
+            $('#addHeader'+data_id+'-address_phone_number').val(response.phone_no);
+            $("#alsavedaddress"+data_id).find('.withradio .append').remove();
+            $("#alsavedaddress"+data_id).find('.withradio .showsimage').remove();
+            $("#alsavedaddress" + data_id).find('.withradio').append(
+    '<div class="append"><div class="custom-control custom-radio count"><input type="radio" id="' + data_id+ '" name="old_address_id' + data_id + '" value="' + response.address + '" class="custom-control-input redio old-select-address callradio" checked data-srtadd="'+ response.address +'""><label class="custom-control-label" for="' + data_id + '"><span class="spanbold">' + response.address +
+    '</span>-' + response.address +
+    '</label></div></div>');
+
+        },
+        error: function (response) {
+          
+        },
+    });
+});
 </script>
