@@ -655,6 +655,7 @@ class TaskController extends BaseController
             $tz = new Timezone();
             $auth->timezone = $tz->timezone_name(Auth::user()->timezone);
 
+           
             // save task images on s3 bucket
             if (isset($request->file) && count($request->file) > 0) {
                 $folder = str_pad(Auth::user()->id, 8, '0', STR_PAD_LEFT);
@@ -3501,89 +3502,6 @@ class TaskController extends BaseController
             ]);
         }
     }
-
-    public function dispatcherIndex()
-    {
-
-      
-        return view('tasks.autoallocation');
-
-    }
-    
-    public function dispatcherAutoAllocation(Request $request)
-    {
-
-
-        
-        $user_lat = $request->lat1; 
-        $user_long = $request->long1;
-    
-
-        $warehouse_banglore = Warehouse::find($request->to_location);
-        
-
-        $distance_to_product = round($this->getDistance($user_lat, $user_long, $warehouse_banglore->latitude, $warehouse_banglore->longitude));
-       
-
-        $ids = [];
-        $ids[] = $warehouse_banglore->id;
-        
-        $nearest_warehouse = $warehouse_banglore;
-       
-        while($distance_to_product > 50)
-        {
-            $nearest_warehouse = $this->findNearestWarehouse($nearest_warehouse,$ids);
-            if(empty($nearest_warehouse))
-            {
-                break;
-            }
-            $distance_to_product = $this->getDistance($user_lat, $user_long, $nearest_warehouse->latitude, $nearest_warehouse->longitude);
-            $ids[] = $nearest_warehouse->id;
-
-        }
-        $final_route =[];
-        $list =[];
-        foreach($ids as $id)
-        {
-           $warehouse = Warehouse::find($id);
-           $list['warehouse_name'] = $warehouse->name;
-           $list['address'] = $warehouse->address;
-           $final_route[] = $list;
-        }
-        $list = [];
-        $list['user_location']= $request->from_location;
-        $final_route[] = $list;
-        pr($final_route);
-       
-    }
-
-
-    public function findNearestWarehouse($data,$ids)
-    {
-        $warehouses = Warehouse::where('type','1')->whereNotIn('id',$ids)->get();
-
-        $distances = array();
-        foreach ($warehouses as $name => $war) {
-            $distance = $this->getDistance($data->latitude,$data->longitude,$war->latitude,$war->longitude);
-            $distances[$war->id]= $distance;
-        }
-        asort($distances);
-
-      
-        $nearestWarehouse = reset($distances);
-        $nearestWarehouse = Warehouse::find(key($distances));
-        return $nearestWarehouse;
-    }
-
-     public function getDistance($lat1, $lon1, $lat2, $lon2) {
-        $earthRadius = 6371; // in kilometers
-        $deltaLat = deg2rad($lat2 - $lat1);
-        $deltaLon = deg2rad($lon2 - $lon1);
-        $a = sin($deltaLat / 2) * sin($deltaLat / 2) + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * sin($deltaLon / 2) * sin($deltaLon / 2);
-        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
-        $distance = $earthRadius * $c;
-        return $distance; // in kilometers
-      }
 
       
       
