@@ -3354,6 +3354,24 @@ class TaskController extends BaseController
         }
     }
 
+    public function getWarehouse(Request $request)
+    {
+        $data = [];
+
+        $id = $request->id ?? '';
+        $warehouse  = Warehouse::find($id);
+
+        if(!empty($warehouse))
+        {
+            $data['email'] = $warehouse->email;
+            $data['phone_no'] = $warehouse->phone_no;
+            $data['address'] = $warehouse->address;
+        }
+        
+        
+        return $data;
+    }
+
     public function getSelectedWarehouses(Request $request)
     {
         if (is_array(($request->data))) {

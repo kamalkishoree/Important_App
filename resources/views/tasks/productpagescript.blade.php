@@ -354,7 +354,7 @@ if (product_variant.length == 0) {
                         keyboard: false
                     });
 
-                    phoneInput();
+                
                     runPicker();
 
                     $('#task-modal-header .edit-icon-float-right').on('click', function() {
@@ -368,7 +368,7 @@ if (product_variant.length == 0) {
                         }
                     });
 
-
+                    phoneInput();
                 },
                 error: function(data) {}
             });

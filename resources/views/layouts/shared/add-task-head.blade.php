@@ -500,9 +500,9 @@ session('preferences.map_key_1'):'kdsjhfkjsdhfsf'; $theme =
                     keyboard: false
                 });
 
-                phoneInput();
+               
                 runPicker();
-
+                phoneInput();
                 $('#task-modal-header .edit-icon-float-right').on('click', function() {
                     $('#task-modal-header .meta_data_task_div').toggle();
                     if($(this).find('i').hasClass('mdi mdi-chevron-down')){
@@ -613,22 +613,34 @@ session('preferences.map_key_1'):'kdsjhfkjsdhfsf'; $theme =
                     var countrycode = customerdata.countrycode;
                     $("#taskFormHeader").find("input[name='phone_number']").val(customerdata.phone_number);
                     $("#taskFormHeader #dialCode").val(customerdata.dial_code);
-                    
                   
-
                     $("#taskFormHeader").find("input[name='email']").val(customerdata.email);
+                    
+                   
+                    $(".alTaskType").each(function(){
+                        if (!($(this).hasClass('is_warehouse_selected'))) {
+                            $(this).find('.withradio .append').remove();
+                        }
+                      });
 
-                    $('.withradio .append').remove();
+
+                    
                     jQuery.each(array, function(i, val) {
                     var countz = '';
                     var rand =  Math.random().toString(36).substring(7);
+                   
                     $(".withradio").each(function(){
                         var count = parseInt(countz);if(isNaN(count)){count = 0;}
+
+                   
+                        var id = $(this).parent().closest('.alTaskType').hasClass('is_warehouse_selected');   
+                       if(!id){
                         $(this).append(
                           '<div class="append"><div class="custom-control custom-radio count"><input type="radio" id="' + (rand + count) + '" name="old_address_id' + countz + '" value="' + val.id + '" class="custom-control-input redio old-select-address callradio" data-srtadd="'+ val.short_name +'" data-flat_no="'+ val.flat_no +'"  data-adr="'+ val.address +'" data-lat="'+ val.latitude +'" data-long="'+ val.longitude +'" data-pstcd="'+ val.post_code +'" data-emil="'+ val.email +'" data-ph="'+ val.phone_number +'"><label class="custom-control-label" for="' + (rand + count) + '"><span class="spanbold">' + val.short_name +
                           '</span>-' + val.address +
                           '</label></div></div>');
                         countz = count + 1;
+                        }
                     });
                   });
                   
@@ -642,6 +654,11 @@ session('preferences.map_key_1'):'kdsjhfkjsdhfsf'; $theme =
           });
       }
       var post_count = 2;
+      var warehouse_count = 2;
+      var email_count = 2;
+      var phone_no_count = 2;
+      var address_count = 2;
+      var choose_warehouse_count = 2;
     $(document).on('click', '.subTaskHeader', function(){
         var cur = countZ;
         countZ = countZ + 1;
@@ -649,6 +666,7 @@ session('preferences.map_key_1'):'kdsjhfkjsdhfsf'; $theme =
         $clone.removeClass('cloningDiv');
         $clone.removeClass('copyin1');
         $clone.addClass('copyin');
+        $clone.addClass('warehouse_id_'+countZ);
         $clone.addClass('repeated-block check-validation');
 
         $clone.find('.cust_add_div').prop('id', 'addHeader' + countZ);
@@ -731,7 +749,54 @@ session('preferences.map_key_1'):'kdsjhfkjsdhfsf'; $theme =
             name = 'addHeader'+post_count+'-postcode';
             jElem.prop('id', name);
               post_count++;
-              console.log(post_count);
+             
+          });
+          var warehouse_clone = $clone.find('.warehouse');
+          $.each(warehouse_clone, function(index, elem){
+            var jElem = $(elem);
+            var name = jElem.prop('id');
+            name = name.replace(/\d+/g, '');
+            name = 'addHeader'+warehouse_count+'-warehouse';
+            jElem.prop('id', name);
+            jElem.attr('data-id', warehouse_count);
+            warehouse_count++;
+              
+          });
+          var address_email = $clone.find('.address_email');
+          $.each(address_email, function(index, elem){
+            var jElem = $(elem);
+            var name = jElem.prop('id');
+            name = name.replace(/\d+/g, '');
+            name = 'addHeader'+email_count+'-address_email';
+            jElem.prop('id', name);
+            jElem.attr('data-id', email_count);
+            email_count++;
+          });
+          var choose_warehouse = $clone.find('.choose_warehouse');
+          $.each(choose_warehouse, function(index, elem){
+            var jElem = $(elem);
+            jElem.attr('data-id', choose_warehouse_count);
+            choose_warehouse_count++;
+          });
+          var address_phone_number = $clone.find('.address_phone_number');
+          $.each(address_phone_number, function(index, elem){
+            var jElem = $(elem);
+            var name = jElem.prop('id');
+            name = name.replace(/\d+/g, '');
+            name = 'addHeader'+phone_no_count+'-address_phone_number';
+            jElem.prop('id', name);
+            jElem.attr('data-id', phone_no_count);
+            phone_no_count++;
+          });
+          var saved_address = $clone.find('.alsavedaddress');
+          $.each(saved_address, function(index, elem){
+            var jElem = $(elem);
+            jElem.find('.append').remove();
+            var name = jElem.prop('id');
+            name = name.replace(/\d+/g, '');
+            name = 'alsavedaddress'+address_count;
+            jElem.prop('id', name);
+            address_count++;
           });
 
         $clone.find('.appoint').hide();
