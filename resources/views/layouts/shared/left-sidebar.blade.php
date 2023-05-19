@@ -118,15 +118,7 @@
                         <span> {{__('Order Panel')}} </span>
                     </a>
                 </li>
-                <li>
-                    <a href="{{route('dispatcher-index')}}">
-                        <i class="fe-users"></i>
-                        <span> {{__('Dispatcher AutoAllocation')}} </span>
-                    </a>
-                </li>
-
                 </li> 
-               
                 @endif
                 @if($warehouse_mode['show_inventory_module'] == 1)
                 <li>
@@ -135,11 +127,7 @@
                         <span> {{__('Inventory Panel')}} </span>
                     </a>
                 </li> 
-               
                 @endif
-               
-               
-                
                 <li class="menu-title mt-2">{{__('Agent')}}</li>
                 @if(in_array('Teams',$allowed) || Auth::user()->is_superadmin == 1)
                 <li>
