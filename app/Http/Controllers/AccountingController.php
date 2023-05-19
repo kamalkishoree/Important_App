@@ -128,19 +128,11 @@ class AccountingController extends Controller
                         array_unshift($sumOrders, $lastsum);
                     }
                 }
-<<<<<<< HEAD
-        }
-
-        $startDate = date('Y-m-d',strtotime($dateform));
-        $endDate = date('Y-m-d',strtotime($dateto));
-        return view('accounting', compact('totalearning', 'totalagentearning', 'totalorders', 'totalagents', 'agents', 'customers', 'heatLatLog', 'countOrders', 'sumOrders', 'dates', 'type','order_analytic_data','startDate','endDate'));
-=======
             }
             $startDate = date('Y-m-d',strtotime($dateform));
             $endDate = date('Y-m-d',strtotime($dateto));
 
         return view('accounting', compact('totalearning', 'totalagentearning', 'totalorders', 'totalagents', 'agents', 'customers', 'heatLatLog', 'countOrders', 'sumOrders', 'dates', 'type','order_analytic_data'));
->>>>>>> ee5d9600883bd70011b1ffe6023f77571a4cf9bd
     }
 
     /**
