@@ -44,7 +44,7 @@
                 </div>
             </div>
 
-           
+
             <div class="row">
 
                 <div class="col-md-12">
@@ -200,7 +200,7 @@
                                             <li><a href="javascript:void(0)" class="total_amt">{{ $order_analytics->total_order }}</a> @if($order_analytics->total_order_pecentage_this_week) <span class="percentage"><i class="mdi @if($order_analytics->total_order_pecentage_this_week > 0) mdi-arrow-up text-success @else mdi-arrow-down text-danger @endif"></i>  {{ $order_analytics->total_order_pecentage_this_week }} %</span> @endif</li>
                                         </ul>
                                     </td>
-                                    
+
                                     <td>
                                         @php $order_analytics =  json_decode($order_analytic_data['prev_week']); @endphp
                                         <ul class="agent-list  m-0 p-0">
@@ -212,7 +212,7 @@
                                             <li><a href="javascript:void(0)" class="total_amt">{{ $order_analytics->total_order }}</a></li>
                                         </ul>
                                     </td>
-                                    
+
                                     <td>
                                         @php $order_analytics =  json_decode($order_analytic_data['this_month']); @endphp
                                         <ul class="agent-list  m-0 p-0">
@@ -224,7 +224,7 @@
                                             <li><a href="javascript:void(0)" class="total_amt">{{ $order_analytics->total_order }}</a> @if($order_analytics->total_order_pecentage_this_month) <span class="percentage"> <i class="mdi @if($order_analytics->total_order_pecentage_this_month > 0) mdi-arrow-up text-success @else mdi-arrow-down text-danger @endif"></i> {{ $order_analytics->total_order_pecentage_this_month }} %</span> @endif</li>
                                         </ul>
                                     </td>
-                                     
+
                                     <td>
                                         @php $order_analytics =  json_decode($order_analytic_data['prev_month']); @endphp
                                         <ul class="agent-list  m-0 p-0">
@@ -618,12 +618,15 @@
     var chart = new ApexCharts(document.querySelector("#sales-analytics"), options);
     chart.render();
 
+    var startDate = "{{ $startDate ?? now() }}";
+    var endDate = "{{ $endDate ?? now() }}";
+
     // Datepicker
     $('#dash-daterange').flatpickr({
         altInput: true,
         mode: "range",
         altFormat: "F j, y",
-        defaultDate: 'today'
+        defaultDate: [startDate,endDate]
     });
 
     function handleClick(myRadio) {
@@ -638,7 +641,7 @@
     /***
      *  get order analytics data by agent
     */
-  
+
     $( document ).delegate( "#agent_name", "change", function() {
         $.ajaxSetup({
             headers: {
@@ -653,7 +656,7 @@
                 agent_id: agent_id,
             },
             success: function(response) {
-               
+
                $("#agent_analytics_records").empty();
                var obj  = jQuery.parseJSON(response);
                var obj1 = jQuery.parseJSON(obj.this_day);
@@ -958,7 +961,7 @@
     });
 
 
-    /** 
+    /**
      * Show all agents which has completed order
     */
 
@@ -968,7 +971,7 @@
                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
          });
-       
+
         var data_type   = $(this).attr('data-atype');
         var data_status = $(this).attr('data-status');
         var agent_id    = $("#agent_name").val();
@@ -989,7 +992,7 @@
             },
         });
 
-       
+
     });
     </script>
 
