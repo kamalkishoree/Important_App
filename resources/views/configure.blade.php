@@ -1330,7 +1330,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                     <label for="enabled-threshold" class="mr-2 mb-0">{{__("Enable")}} </label>
                                     <div class="d-flex align-items-center justify-content-between mb-2">
                                         <div class="custom-control custom-switch">
-                                            <input type="checkbox" class="custom-control-input " id="is_dispatcher" name="is_dispatcher" {{ (!empty($preference->is_dispatcher_allocation) && $preference->is_dispatcher_autoallocation > 0) ? 'checked' :'' }}>
+                                            <input type="checkbox" class="custom-control-input " id="is_dispatcher" name="is_dispatcher" {{ (!empty($preference->is_dispatcher_allocation) && $preference->is_dispatcher_allocation > 0) ? 'checked' :'' }}>
                                             <label class="custom-control-label" for="is_dispatcher"></label>
                                         </div>
                                     </div>
