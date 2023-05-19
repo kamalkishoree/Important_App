@@ -95,15 +95,15 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
                 <span> {{ $client->currency->symbol }} {{ $order->duration_price ?? 0.00 }}</span>
             </div>
             <div class="col-md-12">
-                <span class="price"><h4>Wating Price per min </h4> </span> 
+                <span class="price"><h4>Waiting Price per min </h4> </span> 
                 <span > {{ $client->currency->symbol }} {{ $order->base_duration ?? 0.00 }}/min</span>
             </div>
             <div class="col-md-12">
-                <span class="price"><h4>Wate Time </h4> </span> 
+                <span class="price"><h4>Wait Time </h4> </span> 
                 <span >  {{ $order->wait_time ?? 0 }} min</span>
             </div>
             <div class="col-md-12">
-                <span class="price"><h4>Wating Price </h4> </span>
+                <span class="price"><h4>Waiting Price </h4> </span>
                 <span > {{ $client->currency->symbol }} {{ $order->waiting_price ?? 0.00 }}</span>
             </div>
             <div class="col-md-12">
