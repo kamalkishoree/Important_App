@@ -1439,6 +1439,9 @@ div#scrollbar .side_head > .row.search_bar .col-md-6 {
     padding: 0 5px;
 }
 
+.content-page {
+    margin-top: 0 !important;
+}
 .warehouses .prod-list ul {
     max-height: 100px !important;
     height: 100px !important;
@@ -1724,10 +1727,22 @@ span.copied_txt {
 }
 .sort-icon .fa-sort {
     position: absolute;
-    top: 50%;
+    top: 8px;
     right: 0;
     bottom: 13px;
     transform: translate(-50%, -50%);
+}
+.dark .table h5, .dark .card-box h5 {
+    color: #dadfe3 !important;
+}
+.dark #AddAttributeBox h5 {
+    color: #dbe9f9 !important;
+}
+.dark #AddAttributeBox td {
+    padding: 0;
+}
+.dark .selectize-input.items input:after{
+        transform: rotate(-180deg) !important
 }
 .dark .table h5, .dark .card-box h5 {
     color: #dadfe3 !important;
@@ -2325,6 +2340,9 @@ body.dark .col-sm-4.text-right.btn-auto a.btn.btn-blue.waves-effect.waves-light.
 }
 body.dark div#pending_payouts .card {
     border-radius: 0 0 16px 16px !important;
+}
+.dark h4 {
+    color: #f3f7f9 !important;
 }
 .dark h4 {
     color: #f3f7f9 !important;
