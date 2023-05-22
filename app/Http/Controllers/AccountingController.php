@@ -27,7 +27,6 @@ class AccountingController extends Controller
     {
         $complete_order_analytics = '';
         $order_analytic_data = [];
-
         if ($request->has('date')) {
             $date_array =  (explode(" to ", $request->date));
 

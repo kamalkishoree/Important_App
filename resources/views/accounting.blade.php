@@ -633,6 +633,8 @@
         $('#resetaccunting').submit();
     }
 
+
+
     function handleChat(myRadio) {
         $('#chatreset').submit();
     }
