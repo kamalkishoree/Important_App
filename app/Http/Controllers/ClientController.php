@@ -157,12 +157,12 @@ class ClientController extends Controller
             return redirect()->back()->with('success', 'Preference updated successfully!');
         }else{
 
-            $data = [
-                'is_dispatcher_allocation' => 0,
-                'use_large_hub' => 0
-            ];
-            ClientPreference::where('client_id', $id)->update($data);
-            return redirect()->back()->with('success', 'Preference updated successfully!');
+             $data = [
+                    'is_dispatcher_allocation' => 0,
+                    'use_large_hub' => 0
+                ];
+                ClientPreference::where('client_id', $id)->update($data);
+                return redirect()->back()->with('success', 'Preference updated successfully!');
         }
 
     }

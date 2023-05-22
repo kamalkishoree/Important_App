@@ -69,6 +69,7 @@ use Twilio\Rest\Client as TwilioClient;
 use App\Http\Requests\CreateTaskRequest;
 use App\Http\Controllers\StripeGatewayController;
 use App\Traits\TollFee;
+use App\Traits\DispatcherRouteAllocation;
 use JWT\Token;
 use App\Model\Users;
 use App\Models\OrderPanel;
@@ -77,7 +78,7 @@ use App\Model\OrderPanelDetail;
 class TaskController extends BaseController
 {
     use AgentSlotTrait;
-    use TollFee;
+    use TollFee,DispatcherRouteAllocation;
     use GlobalFunction, FormAttributeTrait;
     use sendCustomNotification;
     public function smstest(Request $request){
@@ -4544,91 +4545,4 @@ class TaskController extends BaseController
     }
 
 
-    public function dispatcherAutoAllocation($customer,$vendor)
-    {
-       
-      
-        $user_lat = $customer->latitude; 
-        $user_long = $customer->longitude;
-    
-
-        $warehouse_banglore =$customer;
-        
-        
-        $distance_to_product = round($this->getDistance($vendor[1]['latitude'], $vendor[1]['longitude'],$user_lat, $user_long));
-       
-
-        $ids = [];
-        $ids[] = $warehouse_banglore->id;
-        
-        $nearest_warehouse = $warehouse_banglore;
-       
-        while($distance_to_product > 50)
-        {
-            $nearest_warehouse = $this->findNearestWarehouse($nearest_warehouse,$ids,$distance_to_product);
-            if(empty($nearest_warehouse))
-            {
-                break;
-            }
-            $distance_to_product = $this->getDistance($vendor[1]['latitude'], $vendor[1]['longitude'], $nearest_warehouse->latitude, $nearest_warehouse->longitude);
-            
-            $ids[] = $nearest_warehouse->id;
-
-        }
-
-        $final_route =[];
-        $list =[];
-        foreach($ids as $id)
-        {
-           $warehouse = Warehouse::find($id);
-           $list['id'] = $warehouse->id;
-           $list['warehouse_name'] = $warehouse->name;
-           $list['address'] = $warehouse->address;
-           $final_route[] = $list;
-        }
-        
-        return $final_route;
-       
-    }
-
-
-    public function  findNearestWarehouse($data,$ids,$dist)
-    {
-        $warehouses = Warehouse::whereNotIn('id', $ids)
-        ->whereNotNull('latitude')
-        ->whereNotNull('longitude')
-        ->get();
-    
-       
-        $distances = array();
-        foreach ($warehouses as $name => $war) {
-
-            $distance = $this->getDistance($data->latitude,$data->longitude,$war->latitude,$war->longitude);
-
-
-            if($distance > 50) {
-            $distances[$war->id]= $distance;
-            }
-        }
-
-        asort($distances);
-
-        $nearestWarehouse = reset($distances);
-
-           
-        $nearestWarehouse = Warehouse::find(key($distances));
-
-
-        return $nearestWarehouse;
-    }
-
-     public function getDistance($lat1, $lon1, $lat2, $lon2) {
-        $earthRadius = 6371; // in kilometers
-        $deltaLat = deg2rad($lat2 - $lat1);
-        $deltaLon = deg2rad($lon2 - $lon1);
-        $a = sin($deltaLat / 2) * sin($deltaLat / 2) + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * sin($deltaLon / 2) * sin($deltaLon / 2);
-        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
-        $distance = $earthRadius * $c;
-        return $distance; // in kilometers
-      }
 }
