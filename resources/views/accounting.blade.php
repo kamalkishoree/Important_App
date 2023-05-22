@@ -619,7 +619,6 @@
     chart.render();
     var startDate = "{{ $startDate ?? now()}}";
     var endDate = "{{ $endDate ?? now()}}";
-
     // Datepicker
     $('#dash-daterange').flatpickr({
         altInput: true,
@@ -631,6 +630,8 @@
     function handleClick(myRadio) {
         $('#resetaccunting').submit();
     }
+
+
 
     function handleChat(myRadio) {
         $('#chatreset').submit();
