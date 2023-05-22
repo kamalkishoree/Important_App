@@ -196,7 +196,7 @@
             </div>
         </div>
         
-        <div class="row d-none">
+        <div class="row">
             <div class="col-md-6">
                 <div class="form-group" id="">
                     {!! Form::label('title', __('Duration Price(per minute)'),['class' => 'control-label']) !!}
@@ -258,7 +258,7 @@
                 </div>
             </div>
 
-            <div class="row">
+            {{-- <div class="row">
                 <div class="col-md-6">
                     <div class="form-group" id="">
                         {!! Form::label('title', __('Duration Price(per minute)'),['class' => 'control-label']) !!}
@@ -279,7 +279,7 @@
 
                     </div>
                 </div>
-            </div>
+            </div> --}}
 
             <hr>
             <h5 class="text-uppercase bg-light-yellopink p-2 mt-0 mb-3">Pricing Values (Maximum)</h5>
