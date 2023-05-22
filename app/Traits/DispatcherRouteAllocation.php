@@ -50,8 +50,15 @@ trait DispatcherRouteAllocation{
 
 public function findNearestWarehouse($data, $ids, $dist)
 {
+    
+    $client = ClientPreference::where('id',1)->first();
     $placeholders = rtrim(str_repeat('?,', count($ids)), ',');
     $query = "SELECT id, latitude, longitude FROM warehouses WHERE id NOT IN ($placeholders) AND latitude IS NOT NULL AND longitude IS NOT NULL";
+    if(($client->is_dispatcher_allocation == 1) && ($client->use_large_hub == 1))
+    {
+        $query .= " AND type = 1";
+    } 
+
     $warehouses = DB::select($query, $ids);
 
     $distances = [];
