@@ -196,7 +196,7 @@
             </div>
         </div>
         
-        {{-- <div class="row">
+        <div class="row">
             <div class="col-md-6">
                 <div class="form-group" id="">
                     {!! Form::label('title', __('Duration Price(per minute)'),['class' => 'control-label']) !!}
@@ -218,7 +218,7 @@
 
                 </div>
             </div>
-        </div> --}}
+        </div>
         @if(checkColumnExists('client_preferences', 'is_bid_ride_toggle'))
             @if($client_pre->is_bid_ride_toggle == 1)
             <hr>
