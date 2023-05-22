@@ -2408,54 +2408,58 @@ class TaskController extends BaseController
             if(isset($oneagent) && !empty($oneagent->device_token) && $oneagent->is_available == 1){
                 $allcation_type = 'ACK';
                 $data = [
-                    'order_id' => $orders_id,
-                    'driver_id' => $agent_id,
-                    'notification_time' => $time,
-                    'type' => $allcation_type,
-                    'client_code' => $auth->code,
-                    'created_at' => Carbon::now()->toDateTimeString(),
-                    'updated_at' => Carbon::now()->toDateTimeString(),
-                    'device_type' => $oneagent->device_type ?? '',
-                    'device_token' => $oneagent->device_token,
-                    'detail_id' => $randem
+                    'order_id'            => $orders_id,
+                    'driver_id'           => $agent_id,
+                    'notification_time'   => $time,
+                    'type'                => $allcation_type,
+                    'client_code'         => $auth->code,
+                    'created_at'          => Carbon::now()->toDateTimeString(),
+                    'updated_at'          => Carbon::now()->toDateTimeString(),
+                    'device_type'         => $oneagent->device_type ?? '',
+                    'device_token'        => $oneagent->device_token,
+                    'detail_id'           => $randem,
+
                 ];
                 $this->dispatch(new RosterCreate($data, $extraData));
             }
         } else {
             $geoagents = $this->getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag, $date, $cash_at_hand,$orders_id);
-         if(count($geoagents) > 0){
-             for ($i = 1; $i <= $try; $i ++) {
-                 foreach ($geoagents as $key => $geoitem) {
-                     if (! empty($geoitem->device_token) && $geoitem->is_available == 1) {
-                         $datas = [
-                             'order_id' => $orders_id,
-                             'driver_id' => $geoitem->id,
-                             'notification_time' => $time,
-                             'type' => $allcation_type,
-                             'client_code' => $auth->code,
-                             'created_at' => Carbon::now()->toDateTimeString(),
-                             'updated_at' => Carbon::now()->toDateTimeString(),
-                             'device_type' => $geoitem->device_type ?? '',
-                             'device_token' => $geoitem->device_token,
-                             'detail_id' => $randem
-                         ];
-                         array_push($data, $datas);
-                         if ($allcation_type == 'N' && 'ACK') {
-                             Order::where('id', $orders_id)->update([
-                                 'driver_id' => $geoitem->id
-                             ]);
-                             break;
-                         }
-                     }
-                 }
-                 $time = Carbon::parse($time)->addSeconds($expriedate + 10)->format('Y-m-d H:i:s');
-                 if ($allcation_type == 'N' && 'ACK') {
-                     break;
-                 }
-             }
-             Log::info($data);
-             $this->dispatch(new RosterCreate($data, $extraData));
-         }
+            if(count($geoagents) > 0){
+                for ($i = 1; $i <= $try; $i++) {
+                    foreach ($geoagents as $key =>  $geoitem) {
+                        if (!empty($geoitem->device_token) && !empty($geoitem->device_type)  && $geoitem->is_available == 1) {
+                            $datas = [
+                                'order_id'            => $orders_id,
+                                'driver_id'           => $geoitem->id,
+                                'notification_time'   => $time,
+                                'type'                => $allcation_type,
+                                'client_code'         => $auth->code,
+                                'created_at'          => Carbon::now()->toDateTimeString(),
+                                'updated_at'          => Carbon::now()->toDateTimeString(),
+                                'device_type'         => $geoitem->device_type,
+                                'device_token'        => $geoitem->device_token,
+                                'detail_id'           => $randem,
+
+                            ];
+                            array_push($data, $datas);
+                            if ($allcation_type == 'N' && 'ACK') {
+                                Order::where('id', $orders_id)->update(['driver_id'=>$geoitem->id]);
+                                break;
+                            }
+                        }
+                    }
+                    $time = Carbon::parse($time)
+                            ->addSeconds($expriedate + 10)
+                            ->format('Y-m-d H:i:s');
+                    if ($allcation_type == 'N' && 'ACK') {
+                        break;
+                    }
+                }
+
+            }
+
+            Log::info($data);
+            $this->dispatch(new RosterCreate($data, $extraData));
         }
     }
 
@@ -4139,8 +4143,9 @@ class TaskController extends BaseController
 
             //get pricing rule  for save with every order based on geo fence and agent tags
             $agent_tags = (isset($request->order_agent_tag) && !empty($request->order_agent_tag)) ? $request->order_agent_tag : '';
-           
-            
+            $pricingRule = $this->getPricingRuleData($geoid, $agent_tags, $this->getConvertUTCToLocalTime($notification_time, $auth->timezone));
+
+
             if($auth->getPreference->toll_fee == 1){
                 $getdata = $this->toll_fee($latitude, $longitude, (isset($request->toll_passes)?$request->toll_passes:''), (isset($request->VehicleEmissionType)?$request->VehicleEmissionType:''), (isset($request->travelMode)?$request->travelMode:''));
                 $toll_amount = (isset($getdata['toll_amount'])?$getdata['toll_amount']:0);

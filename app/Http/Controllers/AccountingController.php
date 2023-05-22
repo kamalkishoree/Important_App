@@ -27,7 +27,6 @@ class AccountingController extends Controller
     {
         $complete_order_analytics = '';
         $order_analytic_data = [];
-
         if ($request->has('date')) {
             $date_array =  (explode(" to ", $request->date));
 
@@ -128,11 +127,11 @@ class AccountingController extends Controller
                         array_unshift($sumOrders, $lastsum);
                     }
                 }
-            }
-            $startDate = date('Y-m-d',strtotime($dateform));
-            $endDate = date('Y-m-d',strtotime($dateto));
+        }
 
-        return view('accounting', compact('totalearning', 'totalagentearning', 'totalorders', 'totalagents', 'agents', 'customers', 'heatLatLog', 'countOrders', 'sumOrders', 'dates', 'type','order_analytic_data'));
+        $startDate = date('Y-m-d',strtotime($dateform));
+        $endDate = date('Y-m-d',strtotime($dateto));
+        return view('accounting', compact('totalearning', 'totalagentearning', 'totalorders', 'totalagents', 'agents', 'customers', 'heatLatLog', 'countOrders', 'sumOrders', 'dates', 'type','order_analytic_data','startDate','endDate'));
     }
 
     /**
