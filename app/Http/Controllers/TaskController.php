@@ -655,6 +655,7 @@ class TaskController extends BaseController
             $tz = new Timezone();
             $auth->timezone = $tz->timezone_name(Auth::user()->timezone);
 
+           
             // save task images on s3 bucket
             if (isset($request->file) && count($request->file) > 0) {
                 $folder = str_pad(Auth::user()->id, 8, '0', STR_PAD_LEFT);
@@ -3500,4 +3501,7 @@ class TaskController extends BaseController
             ]);
         }
     }
+
+      
+      
 }

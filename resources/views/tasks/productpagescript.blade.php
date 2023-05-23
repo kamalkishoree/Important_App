@@ -160,8 +160,6 @@
                 },
                 success: (data) => {
                 
-                        console.log(category_id);
-                
                     $(".cat-list").empty().html(data);
                      if (!(category_id.length === 0))
                     {

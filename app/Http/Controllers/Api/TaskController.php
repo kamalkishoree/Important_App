@@ -40,7 +40,8 @@ use App\Model\ {
     AgentFleet,
     OrderAdditionData,
     UserBidRideRequest,
-    OrderFormAttribute
+    OrderFormAttribute,
+    Warehouse
 };
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -68,6 +69,7 @@ use Twilio\Rest\Client as TwilioClient;
 use App\Http\Requests\CreateTaskRequest;
 use App\Http\Controllers\StripeGatewayController;
 use App\Traits\TollFee;
+use App\Traits\DispatcherRouteAllocation;
 use JWT\Token;
 use App\Model\Users;
 use App\Models\OrderPanel;
@@ -76,7 +78,7 @@ use App\Model\OrderPanelDetail;
 class TaskController extends BaseController
 {
     use AgentSlotTrait;
-    use TollFee;
+    use TollFee,DispatcherRouteAllocation;
     use GlobalFunction, FormAttributeTrait;
     use sendCustomNotification;
     public function smstest(Request $request){
@@ -1110,7 +1112,7 @@ class TaskController extends BaseController
             if (isset($header['client'][0])) {} else {
                 $header['client'][0] = $client->database_name;
             }
-
+            $client = ClientPreference::where('id', 1)->first();
 
             if ($request->task_type == 'later')
                 $request->task_type = 'schedule';
@@ -1137,7 +1139,6 @@ class TaskController extends BaseController
             $longitude = [];
             $percentage = 0;
             $pricingRule = '';
-
             $pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
             $unique_order_id = substr(str_shuffle(str_repeat($pool, 5)), 0, 6);
@@ -1312,7 +1313,6 @@ class TaskController extends BaseController
             $dep_id = null;
             $pickup_location = null;
 
-
             foreach ($request->task as $key => $value) {
                 $taskcount ++;
                 $loc_id = null;
@@ -1348,7 +1348,8 @@ class TaskController extends BaseController
                 }
 
                 $task_appointment_duration = isset($value->appointment_duration) ? $value->appointment_duration : null;
-
+              
+                
                 $data = [
                     'order_id' => $orders->id,
                     'task_type_id' => $value['task_type_id'],
@@ -1358,12 +1359,75 @@ class TaskController extends BaseController
                     'task_status' => $agent_id != null ? 1 : 0,
                     'allocation_type' => $request->allocation_type,
                     'assigned_time' => $notification_time,
-                    'barcode' => $value['barcode'] ?? null
+                    'barcode' => $value['barcode'] ?? null,
+                    'vendor_id' => isset($vendor_id) ? $vendor_id->id:'',
+                    'warehouse_id' => isset($vendor_id) ? $vendor_id->id:null
                 ];
-
+             
                 $task = Task::create($data);
+                
                 $dep_id = $task->id;
+                
+          if($client->is_dispatcher_allocation == 1){
+                if($value['task_type_id'] == 1){
+                $warehouses = Warehouse::
+                 whereNotNull('latitude')
+                ->whereNotNull('longitude')
+                ->get();
+            
+               
+                $distances = array();
+                foreach ($warehouses as $name => $war) {
+        
+                    $distance = $this->getDistance($value['latitude'],$value['longitude'],$war->latitude,$war->longitude);
+                    $distances[$war->id]= $distance;
+                }
+                
+                asort($distances);
+        
+                $nearestWarehouse = reset($distances);
+
+                $nearestWarehouse = Warehouse::find(key($distances));
+            
+                $best_routes  = $this->dispatcherAutoAllocation($nearestWarehouse,$request->task);
+                
+                
+                if(!empty($best_routes))
+                {
+                foreach($best_routes as $route)
+                {
+                   $warehouse =  Warehouse::find($route['id']);
+
+                   $data = [
+                    'order_id' => $orders->id,
+                    'task_type_id' => 2,
+                    'location_id' => '',
+                    'dependent_task_id' => $dep_id,
+                    'vendor_id' => isset($warehouse) ? $warehouse->id:'',
+                    'warehouse_id' =>  isset($warehouse) ? $warehouse->id:null,
+                   ];
+                   $data1 = [
+                    'order_id' => $orders->id,
+                    'task_type_id' => 1,
+                    'location_id' => '',
+                    'dependent_task_id' => $dep_id,
+                    'vendor_id' => isset($warehouse) ? $warehouse->id:'',
+                    'warehouse_id' =>  isset($warehouse) ? $warehouse->id:null,
+                   ];
+             
+                  $task1 = Task::create($data);
+                  $task2= Task::create($data1);
+                 }
+                 
+                    
+                        }
+                        
+                    }
+              
+
+                } 
             }
+       
 
             //accounting for task duration distanse
 
@@ -1421,9 +1485,9 @@ class TaskController extends BaseController
                 'base_price' => $pricingRule->base_price,
                 'base_duration' => $pricingRule->base_duration,
                 'base_distance' => $pricingRule->base_distance,
-                'base_waiting' => $pricingRule->base_waiting,
+                // 'base_waiting' => $pricingRule->base_waiting,
                 'duration_price' => $pricingRule->duration_price,
-                'waiting_price' => $pricingRule->waiting_price,
+                // 'waiting_price' => $pricingRule->waiting_price,
                 'distance_fee' => $pricingRule->distance_fee,
                 'cancel_fee' => $pricingRule->cancel_fee,
                 'agent_commission_percentage' => $pricingRule->agent_commission_percentage,
@@ -1500,6 +1564,10 @@ class TaskController extends BaseController
             }
 
             // If batch allocation is on them return from there no job is created
+
+            if(isset($client->getPreference)){
+
+                if(isset($client->getPreference->create_batch_hours)){
             if ($client->getPreference->create_batch_hours > 0) {
                 $dispatch_traking_url = $client_url . '/order/tracking/' . $auth->code . '/' . $orders->unique_id;
 
@@ -1514,7 +1582,8 @@ class TaskController extends BaseController
                     'status' => $orders->status,
                     'dispatch_traking_url' => $dispatch_traking_url ?? null
                 ], 200);
-            }
+            }} 
+         }
 
             // task schdule code is hare
 
@@ -3926,9 +3995,9 @@ class TaskController extends BaseController
                 'base_price' => $pricingRule->base_price,
                 'base_duration' => $pricingRule->base_duration,
                 'base_distance' => $pricingRule->base_distance,
-                'base_waiting' => $pricingRule->base_waiting,
+                // 'base_waiting' => $pricingRule->base_waiting,
                 'duration_price' => $pricingRule->duration_price,
-                'waiting_price' => $pricingRule->waiting_price,
+                // 'waiting_price' => $pricingRule->waiting_price,
                 'distance_fee' => $pricingRule->distance_fee,
                 'cancel_fee' => $pricingRule->cancel_fee,
                 'agent_commission_percentage' => $pricingRule->agent_commission_percentage,
@@ -4479,4 +4548,6 @@ class TaskController extends BaseController
             ], 400);
         }
     }
+
+
 }
