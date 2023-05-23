@@ -26,10 +26,9 @@ class AccountingController extends Controller
     public function index(Request $request)
     {
         $complete_order_analytics = '';
-         $order_analytic_data = [];
+        $order_analytic_data = [];
         if ($request->has('date')) {
             $date_array =  (explode(" to ", $request->date));
-
             $dateform = Carbon::parse($date_array[0])->startOfDay();
             $dateto   = Carbon::parse(isset($date_array[1]) ? $date_array[1]:$date_array[0])->endOfDay();
         } else {
@@ -133,7 +132,7 @@ class AccountingController extends Controller
         $endDate = date('Y-m-d',strtotime($dateto));
 
 
-        return view('accounting', compact('totalearning', 'totalagentearning', 'totalorders', 'totalagents', 'agents', 'customers', 'heatLatLog', 'countOrders', 'sumOrders', 'dates', 'type','order_analytic_data'));
+        return view('accounting', compact('totalearning', 'totalagentearning', 'totalorders', 'totalagents', 'agents', 'customers', 'heatLatLog', 'countOrders', 'sumOrders', 'dates', 'type','order_analytic_data','startDate','endDate'));
     }
 
     /**
