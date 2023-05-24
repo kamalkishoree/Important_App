@@ -618,13 +618,6 @@ class TaskController extends BaseController
         return Excel::download(new RoutesExport($data, $header), "task.xlsx");
     }
 
-    public function dispatcherIndex()
-    {
-        
-                   
-           pr('here');
-
-    }
 
     // function for saving new order
     public function newtasks(Request $request)
