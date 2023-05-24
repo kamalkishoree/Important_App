@@ -49,7 +49,7 @@ use App\Exports\RoutesExport;
 use Excel;
 use GuzzleHttp\Client as Gclient;
 use App\Http\Controllers\Api\BaseController;
-use App\Traits\{ApiResponser,GlobalFunction};
+use App\Traits\{ApiResponser, DispatcherRouteAllocation, GlobalFunction};
 use App\Traits\TollFee;
 use App\Imports\OrderImport;
 use App\Model\Product;
@@ -60,7 +60,7 @@ use App\Model\ProductVariant;
 class TaskController extends BaseController
 {
     
-    use ApiResponser,GlobalFunction;
+    use ApiResponser,GlobalFunction,DispatcherRouteAllocation;
     use TollFee,inventoryManagement;
     /**
      * Display a listing of the resource.
@@ -618,6 +618,14 @@ class TaskController extends BaseController
         return Excel::download(new RoutesExport($data, $header), "task.xlsx");
     }
 
+    public function dispatcherIndex()
+    {
+        
+                   
+           pr('here');
+
+    }
+
     // function for saving new order
     public function newtasks(Request $request)
     {
@@ -626,7 +634,7 @@ class TaskController extends BaseController
 
             $loc_id = $cus_id = $send_loc_id = $newlat = $newlong = 0;
             $iinputs = $request->toArray();
-
+            $client = ClientPreference::where('id',1)->first();
             $old_address_ids = array();
             foreach ($iinputs as $key => $value) {
                 if (substr_count($key, "old_address_id") == 1) {
@@ -728,6 +736,8 @@ class TaskController extends BaseController
             $dep_id = null; // this is used as dependent task id
             $pickup_quantity = 0;
             $drop_quantity = 0;
+            
+            
             foreach ($request->task_type_id as $key => $value) {
                 $taskcount ++;
                 if (isset($request->address[$key])) {
@@ -748,7 +758,7 @@ class TaskController extends BaseController
 
                     $loc_id = $Loction->id;
                     $send_loc_id = $loc_id;
-                } else {
+                } else { 
                     if ($key == 0) {
                         $loc_id = $request->old_address_id;
                         $send_loc_id = $loc_id;
@@ -857,6 +867,76 @@ class TaskController extends BaseController
                 $this->inventoryUpdate(json_encode($product_data));
                 }
                 $dep_id = $task->id;
+               
+               
+                if ($client->is_dispatcher_allocation == 1) {
+                    if ($value == 1) {
+
+                        $user_key = array_keys($request['task_type_id'], 2)[0];
+
+              
+
+                        $user_location = [
+                            'latitude' => $request->latitude[$user_key],
+                            'longitude' => $request->longitude[$user_key]
+                        ];
+        
+                       
+                        $user_location = collect($user_location)->toArray();
+                        $last_nearest_warehouse = $this->findNearestWarehouse($user_location, null, true);
+                      
+                        $best_routes = $this->findNearestWarehouse($Loction, $last_nearest_warehouse->id);
+                       
+                        if (!empty($best_routes)) {
+                            foreach ($best_routes as $route) {
+
+                                $loc_id = null;
+                                if (isset($route)) {
+
+                                    $loc = [
+                                        'latitude' => $route->latitude ?? 0.00,
+                                        'longitude' => $route->longitude ?? 0.00,
+                                        'address' =>  $route->address ?? null,
+                                        'customer_id' => $cus_id
+                                    ];
+
+
+                                    $loc_update = [
+                                        'latitude' => $route->latitude ?? 0.00,
+                                        'longitude' => $route->longitude ?? 0.00,
+                                        'address' =>  $route->address ?? null,
+                                    ];
+
+                                    $Location = Location::updateOrCreate($loc, $loc_update);
+                                    $loc_id = $Location->id;
+                                }
+
+                                $finalLocation = Location::where('id', $loc_id)->first();
+                                $warehouse =  Warehouse::find($route->id);
+
+                                $data = [
+                                    'order_id' => $orders->id,
+                                    'task_type_id' => 2,
+                                    'location_id' => $loc_id,
+                                    'dependent_task_id' => $dep_id,
+                                    'vendor_id' => isset($warehouse) ? $warehouse->id : '',
+                                    'warehouse_id' =>  isset($warehouse) ? $warehouse->id : null,
+                                ];
+                                $data1 = [
+                                    'order_id' => $orders->id,
+                                    'task_type_id' => 1,
+                                    'location_id' => $loc_id,
+                                    'dependent_task_id' => $dep_id,
+                                    'vendor_id' => isset($warehouse) ? $warehouse->id : '',
+                                    'warehouse_id' =>  isset($warehouse) ? $warehouse->id : null,
+                                ];
+
+                                $task1 = Task::create($data);
+                                $task2 = Task::create($data1);
+                            }
+                        }
+                    }
+                }
 
                 // for net quantity
                 if ($value == 1) {

@@ -1337,7 +1337,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                 </div>
                             </div>
                         </div>
-                        <div class="row dispatcher-section  {{ (!empty($preference->is_dispatcher_allocation) && $preference->is_dispatcher_allocation > 0) ? 'd-block' :'d-none' }}">
+                   {{--     <div class="row dispatcher-section  {{ (!empty($preference->is_dispatcher_allocation) && $preference->is_dispatcher_allocation > 0) ? 'd-block' :'d-none' }}">
 
                         <div class="col-md-12">
                                 <div class="form-group d-flex justify-content-between mb-3">
@@ -1350,7 +1350,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                     </div>
                                 </div>
                             </div>
-                        </div> 
+                        </div> --}}
                     </div>
                 </form>
             </div>
