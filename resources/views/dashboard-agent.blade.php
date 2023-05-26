@@ -140,14 +140,7 @@
 @include('modals.route-assign-agent')
 <?php   // for setting default location on map
     $agentslocations = array();
-    if(!empty($agents)){
-        foreach ($agents as $singleagent) {
-            if((!empty($singleagent['agentlog'])) && ($singleagent['agentlog']['lat']!=0) && ($singleagent['agentlog']['long']!=0))
-            {
-                $agentslocations[] = $singleagent['agentlog'];
-            }
-        }
-    }
+    
     $defaultmaplocation['lat'] = $defaultCountryLatitude;
     $defaultmaplocation['long'] = $defaultCountryLongitude;
     $agentslocations[] = $defaultmaplocation;
@@ -228,6 +221,7 @@
         };
 
         function initMap(is_refresh) {
+            
             //new code for route
             var color = ["blue", "green", "red", "purple", "skyblue", "yellow", "orange"];
             const haightAshbury = {

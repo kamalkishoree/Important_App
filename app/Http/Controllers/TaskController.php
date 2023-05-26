@@ -619,6 +619,7 @@ class TaskController extends BaseController
     }
 
 
+   
     // function for saving new order
     public function newtasks(Request $request)
     {
@@ -862,13 +863,12 @@ class TaskController extends BaseController
                 $dep_id = $task->id;
                
                
-                if ($client->is_dispatcher_allocation == 1) {
+                if ($client->is_dispatcher_allocation == 13) {
                     if ($value == 1) {
 
+                      
                         $user_key = array_keys($request['task_type_id'], 2)[0];
-
-              
-
+    
                         $user_location = [
                             'latitude' => $request->latitude[$user_key],
                             'longitude' => $request->longitude[$user_key]
@@ -879,6 +879,7 @@ class TaskController extends BaseController
                         $last_nearest_warehouse = $this->findNearestWarehouse($user_location, null, true);
                       
                         $best_routes = $this->findNearestWarehouse($Loction, $last_nearest_warehouse->id);
+                       
                        
                         if (!empty($best_routes)) {
                             foreach ($best_routes as $route) {
