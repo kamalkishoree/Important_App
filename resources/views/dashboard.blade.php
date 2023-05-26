@@ -49,7 +49,7 @@
             <div class="col-md-8 col-xl-8">
                 <div class="map-wrapper">
                     <div style="width: 100%">
-                        <div id="map_canvas"  class="here2" style="width: 100%; height:calc(100vh - 70px);"></div>
+                        <div id="map_canvas" style="width: 100%; height:calc(100vh - 70px);"></div>
                     </div>
                     <div class="contant">
                         <div class="bottom-content">

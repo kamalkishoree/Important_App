@@ -37,7 +37,7 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
                 <div class="col-12">
                     <div class="map_box">
                         <div style="width: 100%">
-                            <div id="map_canvas" class="here3"></div>
+                            <div id="map_canvas"></div>
                         </div>
                         {{-- <iframe
                      src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d109782.78861272808!2d76.95784163044429!3d30.698374220997263!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sin!4v1615288788406!5m2!1sen!2sin"
