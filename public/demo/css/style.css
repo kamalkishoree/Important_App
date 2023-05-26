@@ -329,9 +329,6 @@ header .navbar-light .navbar-nav .nav-link {
 }
 
 .left-sidebar .optimize_btn {
-  position: absolute;
-  right: 30px;
-  top: 9px;
   background: #6658dd;
   display: inline-block;
   padding: 4px 5px;

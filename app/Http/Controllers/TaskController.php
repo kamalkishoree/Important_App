@@ -119,8 +119,8 @@ class TaskController extends BaseController
             $agentids = $agents->pluck('id');
         }
         $agents = $agents->where('is_approved', 1)->get();
-        $team_tags = TeamTag::whereHas('team', function ($q) use ($user) {
-            $q->where('manager_id', $user->id);
+        $team_tags = TeamTag::whereHas('team.permissionToManager', function($q) use($user){
+            $q->where('sub_admin_id', $user->id);
         })->pluck('tag_id');
 
         $all = Order::where('status', '!=', null);
@@ -327,8 +327,8 @@ class TaskController extends BaseController
         $user = Auth::user();
         $timezone = $user->timezone ?? 251;
 
-        $team_tags = TeamTag::whereHas('team', function($q) use($user){
-            $q->where('manager_id', $user->id);
+        $team_tags = TeamTag::whereHas('team.permissionToManager', function($q) use($user){
+            $q->where('sub_admin_id', $user->id);
         })->pluck('tag_id');
 
         $orders = Order::with(['customer', 'task', 'location', 'taskFirst', 'agent', 'task.location', 'task.warehouse'])->orderBy('id', 'DESC'); //, 'task.manager'
@@ -655,6 +655,7 @@ class TaskController extends BaseController
             $tz = new Timezone();
             $auth->timezone = $tz->timezone_name(Auth::user()->timezone);
 
+           
             // save task images on s3 bucket
             if (isset($request->file) && count($request->file) > 0) {
                 $folder = str_pad(Auth::user()->id, 8, '0', STR_PAD_LEFT);
@@ -2699,7 +2700,6 @@ class TaskController extends BaseController
         if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0 && Auth::user()->manager_type == 0) {
             $agents = $agents->whereHas('team.permissionToManager', function ($query) {
                 $query->where('sub_admin_id', Auth::user()->id);
-                $query->whereNull('warehouse_id');
             });
         } else if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0 && Auth::user()->manager_type == 1) {
             $agents = $agents->whereHas('warehouseAgent', function ($query) use ($managerWarehousesIds) {
@@ -3354,6 +3354,24 @@ class TaskController extends BaseController
         }
     }
 
+    public function getWarehouse(Request $request)
+    {
+        $data = [];
+
+        $id = $request->id ?? '';
+        $warehouse  = Warehouse::find($id);
+
+        if(!empty($warehouse))
+        {
+            $data['email'] = $warehouse->email;
+            $data['phone_no'] = $warehouse->phone_no;
+            $data['address'] = $warehouse->address;
+        }
+        
+        
+        return $data;
+    }
+
     public function getSelectedWarehouses(Request $request)
     {
         if (is_array(($request->data))) {
@@ -3483,4 +3501,7 @@ class TaskController extends BaseController
             ]);
         }
     }
+
+      
+      
 }

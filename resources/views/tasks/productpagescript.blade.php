@@ -160,8 +160,6 @@
                 },
                 success: (data) => {
                 
-                        console.log(category_id);
-                
                     $(".cat-list").empty().html(data);
                      if (!(category_id.length === 0))
                     {
@@ -354,7 +352,7 @@ if (product_variant.length == 0) {
                         keyboard: false
                     });
 
-                    phoneInput();
+                
                     runPicker();
 
                     $('#task-modal-header .edit-icon-float-right').on('click', function() {
@@ -368,7 +366,7 @@ if (product_variant.length == 0) {
                         }
                     });
 
-
+                    phoneInput();
                 },
                 error: function(data) {}
             });

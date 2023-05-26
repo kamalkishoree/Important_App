@@ -17,7 +17,6 @@ trait inventoryManagement
             'type' => 1
         ])->first();
         
-       
         if(!empty($order_panel_details)){
             // URL
             $url = $order_panel_details->url;
@@ -54,7 +53,6 @@ trait inventoryManagement
             'type' => 1
         ])->first();
         if(!empty($inventory_detail)){
-            
             $url = $inventory_detail->url;
             $code = $inventory_detail->code;
             $apiRequestURL = $url . '/api/v1/get-inventory-panel-detail';

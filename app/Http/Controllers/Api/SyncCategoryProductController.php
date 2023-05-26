@@ -76,6 +76,8 @@ class SyncCategoryProductController extends Controller
             "code" => $data['slug'],
             "address" => $data['address'],
             "latitude" => $data['latitude'],
+            "email" => $data['email'],
+            "phone_no" => $data['phone_no'],
             "longitude" => $data['longitude'],
             "created_at" => $data['created_at'],
             "updated_at" => $data['updated_at']
