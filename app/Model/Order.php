@@ -23,7 +23,7 @@ class Order extends Model
     }
 
     public function task(){
-        return $this->hasMany('App\Model\Task', 'order_id', 'id')->orderBy('task_order');
+        return $this->hasMany('App\Model\Task', 'order_id', 'id') ;
     }
 
     public function pickup_task(){

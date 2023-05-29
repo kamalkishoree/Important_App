@@ -1355,68 +1355,18 @@ class TaskController extends BaseController
                 ];
 
                 $task = Task::create($data);
-                 
+                
                 $dep_id = $task->id;
-                $user_location = [
-                    'latitude' => $request->task[1]['latitude'],
-                    'longitude' => $request->task[1]['longitude']
-                ];
-                $user_location = collect($user_location)->toArray();
+                
                 if ($client->is_dispatcher_allocation == 1) {
-                    if ($value['task_type_id'] == 1) {
-                        $last_nearest_warehouse = $this->findNearestWarehouse($user_location, null, true);
-                        $best_routes = $this->findNearestWarehouse($Loction, $last_nearest_warehouse->id);
-
-                        if (!empty($best_routes)) {
-                            foreach ($best_routes as $route) {
-
-                                $loc_id = null;
-                                if (isset($route)) {
-
-                                    $loc = [
-                                        'latitude' => $route->latitude ?? 0.00,
-                                        'longitude' => $route->longitude ?? 0.00,
-                                        'address' =>  $route->address ?? null,
-                                        'customer_id' => $cus_id
-                                    ];
 
 
-                                    $loc_update = [
-                                        'latitude' => $route->latitude ?? 0.00,
-                                        'longitude' => $route->longitude ?? 0.00,
-                                        'address' =>  $route->address ?? null,
-                                    ];
+                    if($value['task_type_id'] == 1){
 
-                                    $Location = Location::updateOrCreate($loc, $loc_update);
-                                    $loc_id = $Location->id;
-                                }
+                        $this->createWarehouseTasks($client,$value,$request,$orders,$dep_id,$Loction,$cus_id);
 
-                                $finalLocation = Location::where('id', $loc_id)->first();
-                                $warehouse =  Warehouse::find($route->id);
-
-                                $data = [
-                                    'order_id' => $orders->id,
-                                    'task_type_id' => 2,
-                                    'location_id' => $loc_id,
-                                    'dependent_task_id' => $dep_id,
-                                    'vendor_id' => isset($warehouse) ? $warehouse->id : '',
-                                    'warehouse_id' =>  isset($warehouse) ? $warehouse->id : null,
-                                ];
-                                $data1 = [
-                                    'order_id' => $orders->id,
-                                    'task_type_id' => 1,
-                                    'location_id' => $loc_id,
-                                    'dependent_task_id' => $dep_id,
-                                    'vendor_id' => isset($warehouse) ? $warehouse->id : '',
-                                    'warehouse_id' =>  isset($warehouse) ? $warehouse->id : null,
-                                ];
-
-                                $task1 = Task::create($data);
-                                $task2 = Task::create($data1);
-                            }
-                        }
                     }
-                }
+                 }
             }
 
 
@@ -2445,12 +2395,12 @@ class TaskController extends BaseController
                     }
                 }
             }
-
-            Log::info($data);
             $this->dispatch(new RosterCreate($data, $extraData));
         }
     }
 
+   
+    
     public function batchWise($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling, $agent_tag = '', $is_order_updated = 0, $is_one_push_booking = 0)
     {
         $allcation_type = 'AR';

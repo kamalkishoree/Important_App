@@ -862,76 +862,14 @@ class TaskController extends BaseController
                 }
                 $dep_id = $task->id;
                
-               
-                if ($client->is_dispatcher_allocation == 13) {
+
+                if ($client->is_dispatcher_allocation == 1) {
                     if ($value == 1) {
-
-                      
-                        $user_key = array_keys($request['task_type_id'], 2)[0];
-    
-                        $user_location = [
-                            'latitude' => $request->latitude[$user_key],
-                            'longitude' => $request->longitude[$user_key]
-                        ];
-        
-                       
-                        $user_location = collect($user_location)->toArray();
-                        $last_nearest_warehouse = $this->findNearestWarehouse($user_location, null, true);
-                      
-                        $best_routes = $this->findNearestWarehouse($Loction, $last_nearest_warehouse->id);
-                       
-                       
-                        if (!empty($best_routes)) {
-                            foreach ($best_routes as $route) {
-
-                                $loc_id = null;
-                                if (isset($route)) {
-
-                                    $loc = [
-                                        'latitude' => $route->latitude ?? 0.00,
-                                        'longitude' => $route->longitude ?? 0.00,
-                                        'address' =>  $route->address ?? null,
-                                        'customer_id' => $cus_id
-                                    ];
-
-
-                                    $loc_update = [
-                                        'latitude' => $route->latitude ?? 0.00,
-                                        'longitude' => $route->longitude ?? 0.00,
-                                        'address' =>  $route->address ?? null,
-                                    ];
-
-                                    $Location = Location::updateOrCreate($loc, $loc_update);
-                                    $loc_id = $Location->id;
-                                }
-
-                                $finalLocation = Location::where('id', $loc_id)->first();
-                                $warehouse =  Warehouse::find($route->id);
-
-                                $data = [
-                                    'order_id' => $orders->id,
-                                    'task_type_id' => 2,
-                                    'location_id' => $loc_id,
-                                    'dependent_task_id' => $dep_id,
-                                    'vendor_id' => isset($warehouse) ? $warehouse->id : '',
-                                    'warehouse_id' =>  isset($warehouse) ? $warehouse->id : null,
-                                ];
-                                $data1 = [
-                                    'order_id' => $orders->id,
-                                    'task_type_id' => 1,
-                                    'location_id' => $loc_id,
-                                    'dependent_task_id' => $dep_id,
-                                    'vendor_id' => isset($warehouse) ? $warehouse->id : '',
-                                    'warehouse_id' =>  isset($warehouse) ? $warehouse->id : null,
-                                ];
-
-                                $task1 = Task::create($data);
-                                $task2 = Task::create($data1);
-                            }
-                        }
-                    }
+                    $this->createWarehouseTasks($client,$value,$request,$orders,$dep_id,$Loction,$cus_id);
+                 }
                 }
 
+               
                 // for net quantity
                 if ($value == 1) {
                     $pickup_quantity = $pickup_quantity + !empty($request->quantity[$key]) ? $request->quantity[$key]:0;
@@ -3576,6 +3514,7 @@ class TaskController extends BaseController
         }
     }
 
-      
-      
+   
+    
+    
 }
