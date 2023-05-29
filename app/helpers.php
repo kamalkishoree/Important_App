@@ -301,6 +301,18 @@ if (!function_exists('checkTableExists')) {
 
 }
 
+
+function checkImageExtension($image)
+{
+    $ch =  substr($image, strpos($image, ".") + 1);
+    $ex = "@webp";
+    if($ch == 'svg')
+    {
+        $ex = "";
+    }
+    return $ex;
+}
+
 if (!function_exists('checkWarehouseMode')) {
     /** check if column exits in table
     * @param string $tableName
@@ -309,7 +321,8 @@ if (!function_exists('checkWarehouseMode')) {
         $preference = checkColumnExists('client_preferences','warehouse_mode') ? ClientPreference::select('id', 'warehouse_mode')->first() :'';
         $data = [
             'show_warehouse_module' => 0,
-            'show_category_module' => 0
+            'show_category_module' => 0,
+            'show_inventory_module' => 0
         ];
         if($preference){
             $warehouseMode = isset($preference->warehouse_mode) ? json_decode($preference->warehouse_mode) : '';
@@ -318,8 +331,12 @@ if (!function_exists('checkWarehouseMode')) {
                 $data['show_warehouse_module'] = 1;
             }
             if(!empty($warehouseMode->show_category_module) && $warehouseMode->show_category_module == 1){
-                $data['show_category_module'] = 1;
-            }
+                $data['show_category_module'] = 1; 
+            }    
+            if(!empty($warehouseMode->show_inventory_module) && $warehouseMode->show_inventory_module == 1){
+                $data['show_inventory_module'] = 1; 
+            }    
+                  
         }
         return $data;
     }

@@ -617,8 +617,10 @@
 
     var chart = new ApexCharts(document.querySelector("#sales-analytics"), options);
     chart.render();
-    var startDate = "{{ $startDate ?? now()}}";
-    var endDate = "{{ $endDate ?? now()}}";
+
+    var startDate = "{{ $startDate ?? now() }}";
+    var endDate = "{{ $endDate ?? now() }}";
+
     // Datepicker
     $('#dash-daterange').flatpickr({
         altInput: true,

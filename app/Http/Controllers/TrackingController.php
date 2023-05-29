@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Config;
 use Storage,PDF;
 use Carbon\Carbon;
-use App\Model\{Client, Order,DriverRegistrationDocument, OrderFormAttribute};
+use App\Model\{Client, ClientPreference, Order,DriverRegistrationDocument, OrderFormAttribute};
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -20,7 +20,7 @@ class TrackingController extends Controller
         $respnse = $this->connection($user);
         if ($respnse['status'] == 'connected') {
             $order   = DB::connection($respnse['database'])->table('orders')->where('unique_id', $id)->leftJoin('agents', 'orders.driver_id', '=', 'agents.id')
-                ->select('orders.*', 'agents.name', 'agents.profile_picture', 'agents.phone_number')->first();
+                ->select('orders.*', 'agents.name','agents.vehicle_type_id', 'agents.profile_picture', 'agents.phone_number')->first();
             if (isset($order->id)) {
                 $tasks = DB::connection($respnse['database'])->table('tasks')->where('order_id', $order->id)->leftJoin('locations', 'tasks.location_id', '=', 'locations.id')
                     ->select('tasks.*', 'locations.latitude', 'locations.longitude', 'locations.short_name', 'locations.address')->orderBy('task_order')->get();
@@ -40,7 +40,9 @@ class TrackingController extends Controller
                 
                 $mapkey = $map_key->map_key_1 ?? '';
 
-                return view('tracking/tracking', compact('tasks', 'order', 'agent_location','mapkey'));
+                $client = ClientPreference::where('client_id', $user)->first();
+
+                return view('tracking/tracking', compact('tasks', 'order', 'agent_location','mapkey','client'));
             } else {
                 return view('tracking/order_not_found');
             }
@@ -140,7 +142,7 @@ class TrackingController extends Controller
         $agent = [];
         if ($respnse['status'] == 'connected') {
             $order = DB::connection($respnse['database'])->table('orders')->where('unique_id', $id)->leftJoin('agents', 'orders.driver_id', '=', 'agents.id')
-                ->select('orders.*', 'agents.name','agents.name','agents.color','agents.plate_number', 'agents.profile_picture', 'agents.phone_number')->first();
+                ->select('orders.*', 'agents.name','agents.vehicle_type_id','agents.color','agents.plate_number', 'agents.profile_picture', 'agents.phone_number')->first();
             if (isset($order->id)) {
                 $tasks = DB::connection($respnse['database'])->table('tasks')->where('order_id', $order->id)->leftJoin('locations', 'tasks.location_id', '=', 'locations.id')
                     ->select('tasks.*', 'locations.latitude', 'locations.longitude', 'locations.short_name', 'locations.address')->orderBy('task_order')->get();
