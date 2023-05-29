@@ -186,6 +186,15 @@
                 @endif
                 </li> -->
 
+                @if(in_array('ACL',$allowed) || Auth::user()->is_superadmin == 1)
+                <li>
+                    <a href="{{route('subadmins.index')}}">
+                        <i class="fe-users"></i>
+                        <span> {{__('Managers')}} </span>
+                    </a>
+                </li>
+                @endif
+               
              
                
 
