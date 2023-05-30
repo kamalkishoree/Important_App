@@ -862,10 +862,14 @@ class TaskController extends BaseController
                 $this->inventoryUpdate(json_encode($product_data));
                 }
                 $dep_id = $task->id;
-                if ($client->is_dispatcher_allocation == 1) {
-                    if ($value == 1) {
-                    $this->createWarehouseTasks($client,$value,$request,$orders,$dep_id,$Loction,$cus_id);
-                 }
+                if(in_array(2,$request->task_type_id)){
+
+                    if ($client->is_dispatcher_allocation == 1) {
+                        if ($value == 1) {
+                        $this->createWarehouseTasks($client,$value,$request,$orders,$dep_id,$Loction,$cus_id);
+                     }
+                    }
+
                 }
                 
                 // for net quantity
@@ -2805,7 +2809,10 @@ class TaskController extends BaseController
                 }
             }
 
+            $client = ClientPreference::first();
+
             $task_id = Order::find($id);
+          
             $validator = $this->validator($request->all())
                 ->validate();
             $loc_id = 0;
@@ -2924,6 +2931,8 @@ class TaskController extends BaseController
             Task::where('order_id', $id)->delete();
             OrderVendorProduct::where('order_id', $id)->delete();
             $dep_id = null;
+
+
             foreach ($request->task_type_id as $key => $value) {
                 if (isset($request->address[$key])) {
                     $loc = [
@@ -2992,6 +3001,16 @@ class TaskController extends BaseController
                 }
                 $task = Task::create($data);
                 $dep_id = $task->id;
+
+                if(in_array(2,$request->task_type_id)){
+
+                    if ($client->is_dispatcher_allocation == 1) {
+                        if ($value == 1) {
+                        $this->createWarehouseTasks($client,$value,$request,$task_id,$dep_id,$Loction,$cus_id);
+                     }
+                    }
+
+                }
             }
 
             if (isset($request->allocation_type) && $request->allocation_type === 'a') {
