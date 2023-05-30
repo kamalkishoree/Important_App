@@ -730,7 +730,8 @@ class TaskController extends BaseController
             $dep_id = null; // this is used as dependent task id
             $pickup_quantity = 0;
             $drop_quantity = 0;
-            
+             
+
             
             foreach ($request->task_type_id as $key => $value) {
                 $taskcount ++;
@@ -861,15 +862,12 @@ class TaskController extends BaseController
                 $this->inventoryUpdate(json_encode($product_data));
                 }
                 $dep_id = $task->id;
-               
-
                 if ($client->is_dispatcher_allocation == 1) {
                     if ($value == 1) {
                     $this->createWarehouseTasks($client,$value,$request,$orders,$dep_id,$Loction,$cus_id);
                  }
                 }
-
-               
+                
                 // for net quantity
                 if ($value == 1) {
                     $pickup_quantity = $pickup_quantity + !empty($request->quantity[$key]) ? $request->quantity[$key]:0;
@@ -1346,7 +1344,7 @@ class TaskController extends BaseController
     public function create(Request $request)
     {
         $product_ids = ! empty($request->product_id) ? $request->product_id : '';
-
+   
         if (! empty($product_ids)) {
             $vendor_ids = Product::whereIn('id', $product_ids)->select('vendor_id')
                 ->groupBy('vendor_id')
@@ -1392,7 +1390,8 @@ class TaskController extends BaseController
 
         $preference = ClientPreference::where('id', 1)->first([
             'route_flat_input',
-            'route_alcoholic_input'
+            'route_alcoholic_input',
+            'is_dispatcher_allocation'
         ]);
         $warehouses = [];
         if (checkTableExists('warehouses')) {
