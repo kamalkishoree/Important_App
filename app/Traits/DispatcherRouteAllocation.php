@@ -43,16 +43,19 @@ trait DispatcherRouteAllocation
 
         $params = [];
 
-
-
+      
+           
+        if(empty($data))
+        {
+            return null;
+        }
         if (is_array($data)) {
             $params = [$data['latitude'], $data['longitude'], $data['latitude']];
         } else {
             $params = [$data->latitude, $data->longitude, $data->latitude];
         }
 
-
-
+        
         $query .= "
             ORDER BY
             distance ASC;
@@ -171,11 +174,21 @@ trait DispatcherRouteAllocation
             ];
         }else{
         $user_key = array_keys($request['task_type_id'], 2)[0];
-
-        $user_location = [
-            'latitude' => $request->latitude[$user_key],
-            'longitude' => $request->longitude[$user_key]
-        ];
+        
+        if($request->filled('warehouse_id') && @$request->warehouse_id[1]){
+            $warehouse_detail = Warehouse::find($request->warehouse_id[1]);
+            
+            $user_location = [
+                'latitude' => $warehouse_detail->latitude ?? '',
+                'longitude' => $warehouse_detail->longitude ?? ''
+            ];
+        }else{
+            $user_location = [
+                'latitude' => $request->latitude[$user_key],
+                'longitude' => $request->longitude[$user_key]
+            ];
+         }
+        
          }
         $user_location = collect($user_location)->toArray();
 
@@ -234,12 +247,17 @@ trait DispatcherRouteAllocation
     {
                 $routes = $this->DispatcherRouteAllocation($client, $value, $request, $order, $dep_id, $location, $cus_id);
 
+                if(empty($routes))
+                {
+                    return;
+                }
+                
                 if(isset($value['task_type_id']))
                 {
                     $last_nearest_warehouse = $this->findNearestWarehouse($request->task[0]);
 
                 }else{
-                $last_nearest_warehouse = $this->findNearestWarehouse($location);
+                    $last_nearest_warehouse = $this->findNearestWarehouse($location);
                 }
                 if (!empty($last_nearest_warehouse)) {
                     $shortestPath = $this->findShortestPath($routes, $last_nearest_warehouse[0]);

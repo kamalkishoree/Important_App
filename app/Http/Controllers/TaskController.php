@@ -800,7 +800,7 @@ class TaskController extends BaseController
                     );
                     $loc_id = $Loction->id;
                 }
-
+               
                 $task_appointment_duration = empty($request->appointment_date[$key]) ? '0' : $request->appointment_date[$key];
 
                 $array = [
@@ -861,6 +861,8 @@ class TaskController extends BaseController
                 if(isset($product_data)){
                 $this->inventoryUpdate(json_encode($product_data));
                 }
+
+                
                 $dep_id = $task->id;
                 if(in_array(2,$request->task_type_id)){
 
@@ -3006,7 +3008,7 @@ class TaskController extends BaseController
 
                     if ($client->is_dispatcher_allocation == 1) {
                         if ($value == 1) {
-                        $this->createWarehouseTasks($client,$value,$request,$task_id,$dep_id,$Loction,$cus_id);
+                        $this->createWarehouseTasks($client,$value,$request,$task_id,$dep_id,$Loction ?? '',$cus_id);
                      }
                     }
 
