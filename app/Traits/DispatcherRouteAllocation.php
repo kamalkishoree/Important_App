@@ -39,7 +39,8 @@ trait DispatcherRouteAllocation
                 warehouses
             WHERE
                 latitude IS NOT NULL
-                AND longitude IS NOT NULL";
+                AND longitude IS NOT NULL
+                AND deleted_at IS NULL";
 
         $params = [];
 
