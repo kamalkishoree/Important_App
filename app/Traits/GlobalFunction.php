@@ -255,8 +255,13 @@ trait GlobalFunction{
                     if(!empty($pricingRule) && $distance>1){
                         $distancePricing = DistanceWisePricingRule::where('price_rule_id',$pricingRule->id)->where('distance_fee','<=',$lastDistance)->orderBy('distance_fee','asc')->get();
                     }
-                    $last = $pricingRule->base_distance??1;
                     $sum = 0;
+                    $last = $pricingRule->base_distance??1;
+
+                    if(empty($distancePricing  && count($distancePricing)==0))
+                    {
+                        return $sum??0;  
+                    }
                     foreach($distancePricing as $key => $number)
                     {
                         $no = ($number->distance_fee - $last);
