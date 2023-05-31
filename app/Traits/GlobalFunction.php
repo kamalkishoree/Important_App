@@ -140,7 +140,7 @@ trait GlobalFunction{
     //---------function to get pricing rule based on agent_tag/geo fence/timetable/day/time
     public function getPricingRuleData($geoid, $agent_tag = '', $order_datetime = '')
     {
-        \Log::info('First in');
+
         try {
 
             if($geoid!='' && $agent_tag!='' && $order_datetime != '')
@@ -173,16 +173,13 @@ trait GlobalFunction{
 
             if(empty($pricingRule)){
                 $pricingRule = PricingRule::where('is_default', 1)->first();
-            \Log::info('json_encode($pricingRule)');
-            \Log::info(json_encode($pricingRule));
-
             }
 
             return $pricingRule;
 
         } catch (\Throwable $th) {
             
-            \Log::info('Eror First in'.$th->getMessage());
+            // \Log::info('Eror '.$th->getMessage());
 
             return [];
         }
@@ -242,7 +239,7 @@ trait GlobalFunction{
     //---------function to get pricing rule based on agent_tag/geo fence/timetable/day/time
     public function getPricingRuleDynamic($pricingRule,$distance,$perKm=0)
     {
-        \Log::info('dynamic in');
+        // \Log::info('dynamic in');
 
         try {
             // \Log::info('pricingRuleDistance nninn : '.$distance);
@@ -258,7 +255,7 @@ trait GlobalFunction{
                     $sum = 0;
                     $last = $pricingRule->base_distance??1;
 
-                    if(empty($distancePricing  && count($distancePricing)==0))
+                    if(empty($distancePricing)  && count($distancePricing)==0)
                     {
                         return $sum??0;  
                     }
