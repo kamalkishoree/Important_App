@@ -52,11 +52,14 @@ class DashBoardController extends Controller
             $defaultCountryLongitude  = '';
         }
     
+    
         if($show_dashboard_by_agent_wise == 1){
             $teams  = Team::get();
             $agents  = Agent::with('agentlog')->where('is_approved',1)->get();
             return view('dashboard-agent')->with(['client_code' => Auth::user()->code, 'date' => $date, 'defaultCountryLongitude' => $defaultCountryLongitude, 'defaultCountryLatitude' => $defaultCountryLatitude,'map_key'=>$googleapikey,'client_timezone'=>$auth->timezone, 'teams' => $teams, 'agents' => $agents]);    
         }
+
+        
         return view('dashboard')->with(['client_code' => Auth::user()->code, 'date' => $date, 'defaultCountryLongitude' => $defaultCountryLongitude, 'defaultCountryLatitude' => $defaultCountryLatitude,'map_key'=>$googleapikey,'client_timezone'=>$auth->timezone]);
     }
 

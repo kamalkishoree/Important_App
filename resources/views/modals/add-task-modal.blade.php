@@ -473,17 +473,33 @@
                             @endforeach
                         <?php } else { ?>
 
+ 
+ 
                             <div class="alTaskType pt-1 pb-1 copyin1 cloningDiv warehouse_id_1 check-validation" id="copyin1">
                                 <div class="alFormTaskType row m-0">
                                     <div class="col-md-12">
                                         <div class="row firstclone1">
                                             <div class="col-md-4">
                                                 <div class="form-group mb-1">
+                                                    
+                                                
+                                                 @if($preference->is_dispatcher_allocation == 1)
                                                     <select class="selecttype mt-1" id="task_type" name="task_type_id[]" style="width: 100%;" required>
+                                                        <option value="1" selected >{{__("Pickup Task")}}</option>
+                                                        <option value="2" disabled>{{__("Drop Off Task")}}</option>
+                                                        <option value="3" disabled>{{__("Appointment")}}</option>
+                                                    </select>
+
+                                                @else
+
+                                                <select class="selecttype mt-1" id="task_type" name="task_type_id[]" style="width: 100%;" required>
                                                         <option value="1">{{__("Pickup Task")}}</option>
                                                         <option value="2">{{__("Drop Off Task")}}</option>
                                                         <option value="3">{{__("Appointment")}}</option>
                                                     </select>
+                                                @endif
+                                                
+
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
