@@ -4,6 +4,8 @@ namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 class Order extends Model
 {
     protected $fillable = ['customer_id','scheduled_date_time','recipient_phone','Recipient_email','task_description','images_array','auto_alloction','driver_id','key_value_set','order_time','order_type','note','status'
@@ -95,7 +97,7 @@ class Order extends Model
         
         return $imgarray;
     }
-
+    
     public function fleet(){
         return $this->belongsTo('App\Model\Fleet')->select('id','name','registration_name','color','make','model','year');
     }
