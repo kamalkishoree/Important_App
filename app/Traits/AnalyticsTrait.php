@@ -290,8 +290,8 @@ trait AnalyticsTrait{
         if(!empty($agent_id)){
             $agent_id         =  $agent_id;
             $yesterday        =  date("Y-m-d", strtotime( '-1 days' ) );
-            $this_day         =  Order::where('driver_id',$agent_id)->whereRaw("CONVERT_TZ(`order_time`,'+00:00','".$timezone_offset."') ='".Carbon::now()->toDateString()."'")->get();
-            $prev_day         =  Order::where('driver_id',$agent_id)->whereRaw("CONVERT_TZ(`order_time`,'+00:00','".$timezone_offset."') = '".$yesterday."'")->get();
+            $this_day         =  Order::where('driver_id',$agent_id)->whereRaw("DATE(CONVERT_TZ(`order_time`,'+00:00','".$timezone_offset."')) ='".Carbon::now()->toDateString()."'")->get();
+            $prev_day         =  Order::where('driver_id',$agent_id)->whereRaw("DATE(CONVERT_TZ(`order_time`,'+00:00','".$timezone_offset."')) = '".$yesterday."'")->get();
             $this_week        =  Order::where('driver_id',$agent_id)->whereRaw("CONVERT_TZ(`order_time`,'+00:00','".$timezone_offset."') between '".Carbon::now()->startOfWeek()."' and '".Carbon::now()->endOfWeek()."'")->get();
             $prev_week        =  Order::where('driver_id',$agent_id)->whereRaw("CONVERT_TZ(`order_time`,'+00:00','".$timezone_offset."') between '".Carbon::now()->subWeek()->startOfWeek()."' and '".Carbon::now()->subWeek()->endOfWeek()."'")->get();
             $this_month       =  Order::where('driver_id',$agent_id)->whereRaw("MONTH(CONVERT_TZ(`order_time`,'+00:00','".$timezone_offset."')) ='".Carbon::now()->month."'")->get();
@@ -299,8 +299,8 @@ trait AnalyticsTrait{
         }else{
              // Get all orders
             $yesterday        =  date("Y-m-d", strtotime( '-1 days' ) );
-            $this_day         =  Order::whereRaw("CONVERT_TZ(`order_time`,'+00:00','".$timezone_offset."') ='".Carbon::now()->toDateString()."'")->get();
-            $prev_day         =  Order::whereRaw("CONVERT_TZ(`order_time`,'+00:00','".$timezone_offset."') = '".$yesterday."'")->get();
+            $this_day         =  Order::whereRaw("DATE(CONVERT_TZ(`order_time`,'+00:00','".$timezone_offset."')) ='".Carbon::now()->toDateString()."'")->get();
+            $prev_day         =  Order::whereRaw("DATE(CONVERT_TZ(`order_time`,'+00:00','".$timezone_offset."')) = '".$yesterday."'")->get();
             $this_week        =  Order::whereRaw("CONVERT_TZ(`order_time`,'+00:00','".$timezone_offset."') between '".Carbon::now()->startOfWeek()."' and '".Carbon::now()->endOfWeek()."'")->get();
             $prev_week        =  Order::whereRaw("CONVERT_TZ(`order_time`,'+00:00','".$timezone_offset."') between '".Carbon::now()->subWeek()->startOfWeek()."' and '".Carbon::now()->subWeek()->endOfWeek()."'")->get();
             $this_month       =  Order::whereRaw("MONTH(CONVERT_TZ(`order_time`,'+00:00','".$timezone_offset."')) ='".Carbon::now()->month."'")->get();
