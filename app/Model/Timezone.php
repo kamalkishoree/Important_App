@@ -24,7 +24,7 @@ class Timezone extends Model
         {
             return $timezonedetail->offset;
         }else{
-            return "Asia/Kolkata";
+            return "+00:00";
         }
     }
 }
