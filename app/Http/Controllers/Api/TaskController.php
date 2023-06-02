@@ -979,8 +979,8 @@ class TaskController extends BaseController
                         'message' => __('This order has already been accepted.'),
                     ], 404);
                 }
-
-                if($assignedorder_data->is_cab_pooling == 2){
+                $order = Order::find($request->order_id);
+                if($order->is_cab_pooling == 2){
                     $type = 'PD';
                 }else{
                     $type = 'O';
@@ -1096,6 +1096,7 @@ class TaskController extends BaseController
                 TaskReject::create($data);
             }
 
+            Order::where('id', $orderdata->id)->update(['driver_id'=>null ,'status'=>'unassigned']);
 
             return response()->json([
                 'data' => __('Task Rejected Successfully'),
@@ -1599,7 +1600,7 @@ class TaskController extends BaseController
                 $title = 'Scheduled New Order';
                 $body  = 'The schedule timing of order number #'.$request->order_number.' by the customer.';
                 // $this->sendPushNotificationtoDriver($title,$body,$auth,[$agent->device_token],$dispatch_traking_url);
-                $this->OneByOne($geo, $notification_time, $agentId, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, $agent_tags, $is_order_updated, '');
+                $this->OneByOne($geo, $notification_time, $agentId, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, $agent_tags, $is_order_updated, '',$request->notify_hour,$request->reminder_hour);
             }
             // If batch allocation is on them return from there no job is created
 
@@ -4719,7 +4720,7 @@ public function RejectOrder(Request $request)
     }
 }
 
-public function OneByOne($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation)
+public function OneByOne($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation,$is_cab_pooling, $agent_tags, $is_order_updated,$var,$notify_hour,$reminder_hour)
 {
     $allcation_type    = 'AR';
     $date              = \Carbon\Carbon::today();
@@ -4757,7 +4758,7 @@ public function OneByOne($geo, $notification_time, $agent_id, $orders_id, $custo
         'created_at'               => Carbon::now()->toDateTimeString(),
         'updated_at'               => Carbon::now()->toDateTimeString(),
     ];
-    FacadesLog::warning(['geo' => $geo]);
+
     $oneagent = Agent::where('id', $agent_id)->first();
     $rosterData = [];
     $data1 = [
@@ -4773,12 +4774,11 @@ public function OneByOne($geo, $notification_time, $agent_id, $orders_id, $custo
         'detail_id'           => $randem,
         'is_particular_driver' => 0
     ];
-    FacadesLog::warning(['notification_time' => $notification_time]);
     
     $data2 = [
         'order_id'            => $orders_id,
         'driver_id'           => $agent_id,
-        'notification_time'   => Carbon::parse($notification_time)->subMinutes(3)->format('Y-m-d H:i:s'),
+        'notification_time'   => Carbon::parse($notification_time)->subMinutes($notify_hour)->format('Y-m-d H:i:s'),
         'type'                => $allcation_type,
         'client_code'         => $auth->code,
         'created_at'          => Carbon::now()->toDateTimeString(),
@@ -4789,9 +4789,23 @@ public function OneByOne($geo, $notification_time, $agent_id, $orders_id, $custo
         'is_particular_driver' => 1
     ];
 
+    $data3 = [
+        'order_id'            => $orders_id,
+        'driver_id'           => $agent_id,
+        'notification_time'   => Carbon::parse($notification_time)->subMinutes($reminder_hour)->format('Y-m-d H:i:s'),
+        'type'                => $allcation_type,
+        'client_code'         => $auth->code,
+        'created_at'          => Carbon::now()->toDateTimeString(),
+        'updated_at'          => Carbon::now()->toDateTimeString(),
+        'device_type'         => $oneagent->device_type,
+        'device_token'        => $oneagent->device_token,
+        'detail_id'           => $randem,
+        'is_particular_driver' => 2
+    ];
+
     array_push($rosterData, $data1);
     array_push($rosterData, $data2);
-    FacadesLog::warning(['rosterData' => $rosterData]);
+    array_push($rosterData, $data3);
 
     $this->dispatch(new RosterCreate($rosterData, $extraData));
 

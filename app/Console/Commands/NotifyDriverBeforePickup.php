@@ -85,8 +85,7 @@ class NotifyDriverBeforePickup extends Command
     public function cron($database_name)
     {
         $client_preferences = ClientPreference::first();
-     
-        $orders = Order::where('is_cab_pooling',2)->where('driver_id','!=',null)->where('scheduled_date_time',Carbon::now()->addMinute(2)->format("Y-m-d H:i"))->get();
+        $orders = Order::where('is_cab_pooling',2)->where('driver_id','!=',null)->where('scheduled_date_time',Carbon::now()->addMinute(3)->format("Y-m-d H:i"))->get();
 
         foreach ($orders as $order) {
               
@@ -95,7 +94,7 @@ class NotifyDriverBeforePickup extends Command
                 'title'     => 'Reminder Order',
                 'body'      => 'Pickup your order #'.$order->order_number
             ];
-            $this->sendnotification($data,$client_preferences->fcm_server_key);
+           $notify =  $this->sendnotification($data,$client_preferences->fcm_server_key);
 
         }
 

@@ -59,7 +59,7 @@ class RosterDelete implements ShouldQueue
                 DB::connection($schemaName)->table('rosters')->where('batch_no',$this->order_id)->delete();
             }else if($this->type=='PD'){
                 DB::connection($schemaName)->table('rosters')->where('order_id',$this->order_id)
-                ->where('is_particular_driver',1)
+                ->where('is_particular_driver',0)
                 ->delete();
             }else{
                 DB::connection($schemaName)->table('rosters')->where('order_id',$this->order_id)->delete();
