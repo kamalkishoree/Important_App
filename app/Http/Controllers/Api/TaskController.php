@@ -72,6 +72,7 @@ use JWT\Token;
 use App\Model\Users;
 use App\Models\OrderPanel;
 use App\Model\OrderPanelDetail;
+use App\OrderWaitTimeLog;
 
 class TaskController extends BaseController
 {
@@ -316,10 +317,17 @@ class TaskController extends BaseController
 
         if(isset($request->wait_time)){
 
-            $waiting_time = explode(":",$request->wait_time)[0];
+            $waiting_time = explode(":",$request->wait_time);
+
+            OrderWaitTimeLog::create([
+                'order_id' => $orderId->order_id,
+                'wait_time' => $request->wait_time,
+                'amount' => $orderId->order->duration_price * $waiting_time[0],
+            ]);
+
             $updateData = [
-                'base_waiting'    => $request->wait_time,
-                'waiting_price'   => $orderId->order->duration_price * $waiting_time,
+                'actual_time'   => ($orderId->order->actual_time ?? 0) + (int)$waiting_time[0] + (int)'0'.'.'.$waiting_time[0],
+                'cash_to_be_collected' => ($orderId->order->cash_to_be_collected ?? 0) + (($orderId->order->duration_price ?? 0) * $waiting_time[0]) 
             ];
 
             Order::find($orderId->order_id)->update($updateData);
