@@ -1331,7 +1331,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                     </div>
                 </form>
             </div>
-            <div class="col-md-4 mb-3">
+            {{-- <div class="col-md-4 mb-3">
                 <form method="POST" class="h-100" action="{{ route('preference', Auth::user()->code) }}">
                 @csrf
                     <input type="hidden" name="dispatcher_autoallocation" value="1">
@@ -1369,7 +1369,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                         </div> 
                     </div>
                 </form>
-            </div>
+            </div> --}}
         </div>
 
 

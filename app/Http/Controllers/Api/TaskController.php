@@ -1396,64 +1396,64 @@ class TaskController extends BaseController
                 
                 $dep_id = $task->id;
                 
-          if($client->is_dispatcher_allocation == 1){
-                if($value['task_type_id'] == 1){
-                $warehouses = Warehouse::
-                 whereNotNull('latitude')
-                ->whereNotNull('longitude')
-                ->get();
+        //   if($client->is_dispatcher_allocation == 1){
+        //         if($value['task_type_id'] == 1){
+        //         $warehouses = Warehouse::
+        //          whereNotNull('latitude')
+        //         ->whereNotNull('longitude')
+        //         ->get();
             
                
-                $distances = array();
-                foreach ($warehouses as $name => $war) {
+        //         $distances = array();
+        //         foreach ($warehouses as $name => $war) {
         
-                    $distance = $this->getDistance($value['latitude'],$value['longitude'],$war->latitude,$war->longitude);
-                    $distances[$war->id]= $distance;
-                }
+        //             $distance = $this->getDistance($value['latitude'],$value['longitude'],$war->latitude,$war->longitude);
+        //             $distances[$war->id]= $distance;
+        //         }
                 
-                asort($distances);
+        //         asort($distances);
         
-                $nearestWarehouse = reset($distances);
+        //         $nearestWarehouse = reset($distances);
 
-                $nearestWarehouse = Warehouse::find(key($distances));
+        //         $nearestWarehouse = Warehouse::find(key($distances));
             
-                $best_routes  = $this->dispatcherAutoAllocation($nearestWarehouse,$request->task);
+        //         $best_routes  = $this->dispatcherAutoAllocation($nearestWarehouse,$request->task);
                 
                 
-                if(!empty($best_routes))
-                {
-                foreach($best_routes as $route)
-                {
-                   $warehouse =  Warehouse::find($route['id']);
+        //         if(!empty($best_routes))
+        //         {
+        //         foreach($best_routes as $route)
+        //         {
+        //            $warehouse =  Warehouse::find($route['id']);
 
-                   $data = [
-                    'order_id' => $orders->id,
-                    'task_type_id' => 2,
-                    'location_id' => '',
-                    'dependent_task_id' => $dep_id,
-                    'vendor_id' => isset($warehouse) ? $warehouse->id:'',
-                    'warehouse_id' =>  isset($warehouse) ? $warehouse->id:null,
-                   ];
-                   $data1 = [
-                    'order_id' => $orders->id,
-                    'task_type_id' => 1,
-                    'location_id' => '',
-                    'dependent_task_id' => $dep_id,
-                    'vendor_id' => isset($warehouse) ? $warehouse->id:'',
-                    'warehouse_id' =>  isset($warehouse) ? $warehouse->id:null,
-                   ];
+        //            $data = [
+        //             'order_id' => $orders->id,
+        //             'task_type_id' => 2,
+        //             'location_id' => '',
+        //             'dependent_task_id' => $dep_id,
+        //             'vendor_id' => isset($warehouse) ? $warehouse->id:'',
+        //             'warehouse_id' =>  isset($warehouse) ? $warehouse->id:null,
+        //            ];
+        //            $data1 = [
+        //             'order_id' => $orders->id,
+        //             'task_type_id' => 1,
+        //             'location_id' => '',
+        //             'dependent_task_id' => $dep_id,
+        //             'vendor_id' => isset($warehouse) ? $warehouse->id:'',
+        //             'warehouse_id' =>  isset($warehouse) ? $warehouse->id:null,
+        //            ];
              
-                  $task1 = Task::create($data);
-                  $task2= Task::create($data1);
-                 }
+        //           $task1 = Task::create($data);
+        //           $task2= Task::create($data1);
+        //          }
                  
                     
-                        }
+        //                 }
                         
-                    }
+        //             }
               
 
-                } 
+        //         } 
             }
        
 
