@@ -807,7 +807,24 @@ $sms_crendential = json_decode($preference->sms_credentials);
                             <div id='go_to_home_radians' class="col-12 {{ $preference->is_go_to_home == 1 ? '' : 'd-none' }}">
                                 <input type="number"  class="form-control" placeholder="{{ __('Go to home Radians in KM') }}"  id="" value="{{ $preference->go_to_home_radians }}" name="go_to_home_radians" >
                             </div>
-                        </div>       
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="d-flex align-items-center justify-content-between mt-3 mb-2">
+                                    <h5 class="font-weight-normal m-0">{{ __('Enable Road Side Pick Features') }}</h5>
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox" class="custom-control-input"
+                                            id="editRoadSideSwitch"
+                                            name="is_road_side_toggle"
+                                            {{ $preference->is_road_side_toggle == 1 ? 'checked' : '' }}>
+                                        <label class="custom-control-label"
+                                            for="editRoadSideSwitch"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> 
+
                     </form>
                 </div>
             </div>
