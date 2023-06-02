@@ -255,6 +255,9 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::post('single_taskdelete', 'TaskController@deleteSingleTask')->name('tasks.single.destroy');
 
 			Route::get('get-category-warehouse', 'TaskController@getCategoryWarehouse')->name('getCategoryWarehouse');
+
+			Route::get('dispatcher-index', 'TaskController@dispatcherIndex')->name('dispatcher-index');
+			Route::get('dispatcher-autoallocation', 'TaskController@dispatcherAutoAllocation')->name('dispatcher-autoallocation');
 			Route::get('get-inventory-products', 'TaskController@getInventoryProducts')->name('getInventoryProducts');
 			
 			Route::get('get-product-detail', 'TaskController@getProductDetail')->name('get-product-detail');

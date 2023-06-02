@@ -26,9 +26,9 @@ class AccountingController extends Controller
     public function index(Request $request)
     {
         $complete_order_analytics = '';
+        $order_analytic_data = [];
         if ($request->has('date')) {
             $date_array =  (explode(" to ", $request->date));
-
             $dateform = Carbon::parse($date_array[0])->startOfDay();
             $dateto   = Carbon::parse(isset($date_array[1]) ? $date_array[1]:$date_array[0])->endOfDay();
         } else {
@@ -36,8 +36,8 @@ class AccountingController extends Controller
             $dateto   = \Carbon\Carbon::today()->endOfDay();
             $order_analytic_data = $this->AnalyticsOrders();
         }
-        
-       
+
+
         $counter            = 0;
         $totalearning       = Order::whereBetween('order_time', [$dateform,$dateto])->sum('order_cost');
         $totalagentearning  = Order::whereBetween('order_time', [$dateform,$dateto])->sum('driver_cost');
@@ -51,20 +51,20 @@ class AccountingController extends Controller
                               ->from(with(new Task)->getTable())
                               ->whereBetween('created_at', [$dateform,$dateto]);
         })->get();
-    
+
         //print_r($heatLatLog); die;
         if ($request->has('type')) {
             $type = $request->type;
         } else {
             $type = 3;
         }
-        
+
         switch ($type) {
             case 1:     // for today
-                    
+
                     $dates[]    = date("d M Y");
                     $serchdate  = date("Y-m-d");
-                   
+
                     $countOrders[]  = Order::whereDate('order_time', $serchdate)->count();
                     $sumOrders[]    = Order::whereDate('order_time', $serchdate)->sum('order_cost');
 
@@ -72,19 +72,19 @@ class AccountingController extends Controller
                         $check          = date('Y-m-d', strtotime('-1 day', strtotime($serchdate)));
                         $lastcount      = 0;
                         $lastsum        = 0;
-                
-                
+
+
                 break;
             case 2:     // for weekly
-                
-                
+
+
                 $date = \Carbon\Carbon::today();
-                
+
                 $ts = strtotime($date);
-                
+
                 $year = date('o', $ts);
                 $week = date('W', $ts);
-                
+
                 for ($i = 1; $i <= 7; $i++) {
                     $ts = strtotime($year.'W'.$week.$i);
                     $dates[]    = date("d M Y", $ts);
@@ -102,9 +102,9 @@ class AccountingController extends Controller
                     }
                 }
 
-                
+
             break;
-            
+
             default:     // for monthly
 
                 for ($i = 1; $i <=  date('t'); $i++) {
@@ -114,21 +114,23 @@ class AccountingController extends Controller
                     $serchdate      = date('Y')."-" . date('m') . "-" .str_pad($i, 2, '0', STR_PAD_LEFT);
                     $countOrders[]  = Order::whereDate('order_time', $serchdate)->count();
                     $sumOrders[]    = Order::whereDate('order_time', $serchdate)->sum('order_cost');
-            
+
                     if ($i == 1) {
                         $display        = date('d M Y', strtotime('-1 day', strtotime($serchdate)));
                         $check          = date('Y-m-d', strtotime('-1 day', strtotime($serchdate)));
                         $lastcount      = Order::whereDate('order_time', $check)->count();
                         $lastsum        = Order::whereDate('order_time', $check)->sum('order_cost');
 
-                       
+
                         array_unshift($countOrders, $lastcount);
                         array_unshift($sumOrders, $lastsum);
                     }
                 }
         }
-       
-        return view('accounting', compact('totalearning', 'totalagentearning', 'totalorders', 'totalagents', 'agents', 'customers', 'heatLatLog', 'countOrders', 'sumOrders', 'dates', 'type','order_analytic_data'));
+
+        $startDate = date('Y-m-d',strtotime($dateform));
+        $endDate = date('Y-m-d',strtotime($dateto));
+        return view('accounting', compact('totalearning', 'totalagentearning', 'totalorders', 'totalagents', 'agents', 'customers', 'heatLatLog', 'countOrders', 'sumOrders', 'dates', 'type','order_analytic_data','startDate','endDate'));
     }
 
     /**
@@ -226,7 +228,7 @@ class AccountingController extends Controller
                     $orders         =  Order::with('customer','agent')->where(['driver_id'=>$agent_id,'status'=>$data_status])->whereDate('order_time',Carbon::now()->toDateString())->get();
                 }
             }
-            
+
         }elseif($data_type == 'prev_day'){
             if($data_status == 'live'){
                 $orders             =  Order::whereHas('task', function($q){
@@ -243,7 +245,7 @@ class AccountingController extends Controller
                     $orders         =  Order::with('customer','agent')->where(['driver_id'=>$agent_id,'status'=>$data_status])->whereDate('order_time', $yesterday)->get();
                 }
             }
-            
+
         }
         elseif($data_type == 'this_week'){
             if($data_status == 'live'){
@@ -261,7 +263,7 @@ class AccountingController extends Controller
                     $orders         =  Order::with('customer','agent')->where(['driver_id'=>$agent_id,'status'=>$data_status])->whereBetween('order_time', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->get();
                 }
             }
-            
+
         }
         elseif($data_type == 'prev_week'){
             if($data_status == 'live'){
@@ -296,7 +298,7 @@ class AccountingController extends Controller
                     $orders         =  Order::with('customer','agent')->where(['driver_id'=>$agent_id,'status'=>$data_status])->whereMonth('order_time',Carbon::now()->month)->get();
                 }
             }
-            
+
         }
         elseif($data_type == 'prev_month'){
 
@@ -304,7 +306,7 @@ class AccountingController extends Controller
                 $orders             =  Order::whereHas('task', function($q){
                                         $q->whereIn('task_status',[2,3,4]);
                                     })->with('customer','agent')->where(['status'=>'assigned'])->whereMonth( 'order_time', '=', Carbon::now()->subMonth()->month)->get();
-              
+
                 if($agent_id){
                     $orders         =  Order::whereHas('task', function($q){
                         $q->whereIn('task_status',[2,3,4]);
@@ -316,9 +318,9 @@ class AccountingController extends Controller
                     $orders         =  Order::with('customer','agent')->where(['driver_id'=>$agent_id,'status'=>$data_status])->whereMonth( 'order_time', '=', Carbon::now()->subMonth()->month)->get();
                 }
             }
-            
+
         }
-       
+
         if($orders){
             return view('modal.modalViewAnalytics', compact('orders','data_status'));
         }

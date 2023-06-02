@@ -228,6 +228,7 @@
         };
 
         function initMap(is_refresh) {
+            
             //new code for route
             var color = ["blue", "green", "red", "purple", "skyblue", "yellow", "orange"];
             const haightAshbury = {

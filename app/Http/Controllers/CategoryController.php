@@ -426,7 +426,7 @@ class CategoryController extends Controller
         // }
 
         return Datatables::of($products)->addColumn('name', function ($products) use ($request) {
-            return $products->primary->title ?? 'N/A';
+            return !empty($products->primary->title) ? $products->primary->title: $products->title;
         })
             ->addColumn('category', function ($products) use ($request) {
             return $products->category && $products->category->cat && $products->category->cat->name ? $products->category->cat->name : 'N/A';

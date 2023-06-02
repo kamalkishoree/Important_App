@@ -117,8 +117,8 @@
                         <i class="fe-users"></i>
                         <span> {{__('Order Panel')}} </span>
                     </a>
+                </li>
                 </li> 
-               
                 @endif
                 @if($warehouse_mode['show_inventory_module'] == 1)
                 <li>
@@ -127,11 +127,7 @@
                         <span> {{__('Inventory Panel')}} </span>
                     </a>
                 </li> 
-               
                 @endif
-               
-               
-                
                 <li class="menu-title mt-2">{{__('Agent')}}</li>
                 @if(in_array('Teams',$allowed) || Auth::user()->is_superadmin == 1)
                 <li>
@@ -190,6 +186,15 @@
                 @endif
                 </li> -->
 
+                @if(in_array('ACL',$allowed) || Auth::user()->is_superadmin == 1)
+                <li>
+                    <a href="{{route('subadmins.index')}}">
+                        <i class="fe-users"></i>
+                        <span> {{__('Managers')}} </span>
+                    </a>
+                </li>
+                @endif
+               
              
                
 

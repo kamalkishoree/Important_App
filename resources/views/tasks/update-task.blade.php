@@ -424,17 +424,17 @@ display:none;
                                                                 
                                                                 @endif 
                                                             </div>
-
+                                                           
                                                             <div class="alContactOther col-6">
                                                                 <div class="row">
                                                                     <div class="col-6 alRightBorder">
                                                                         <h6>Contact Details</h6>
                                                                         <div class="row">
                                                                             <div class="form-group mb-1 col-12">
-                                                                                {!! Form::text('address_email[]', null, ['class' => 'form-control address address_email','placeholder' => __('Email'),'id'=>'add'.$newcount.'-address_email']) !!}
+                                                                            {!! Form::text('address_email[]', isset($item->vendor) ? $item->vendor->email :'', ['class' => 'form-control address address_email', 'placeholder' => __('Email'), 'id' => 'add'.$newcount.'-address_email', 'disabled' => (($item->task_type_id == 1 && count($item->orderVendorProducts) > 0) ? true : false)]) !!}
                                                                             </div>
                                                                             <div class="form-group mb-1 col-12">
-                                                                                {!! Form::text('address_phone_number[]', null, ['class' => 'form-control address address_phone_number','placeholder' => __('Phone Number'),'id'=>'add'.$newcount.'-address_phone_number']) !!}
+                                                                            {!! Form::text('address_phone_number[]', isset($item->vendor) ? $item->vendor->phone_no :'', ['class' => 'form-control address address_phone_number', 'placeholder' => __('Phone Number'), 'id' => 'add'.$newcount.'-address_phone_number', 'disabled' => (($item->task_type_id == 1 && count($item->orderVendorProducts) > 0) ? true : false)]) !!}
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -469,7 +469,7 @@ display:none;
                                                     
 
                                                     @endforeach
-                                                
+                                                @if((count($item->orderVendorProducts) == 0))
                                                     <div class="col-4 alsavedaddress" id="alsavedaddress{{ ($keys+1)}}" style="display:none;">
                                                         <h6>Saved Addresses</h6>
                                                         <div class="form-group editwithradio" id="typeInputss">
@@ -541,6 +541,7 @@ display:none;
                                                             @php $maincount++; @endphp
                                                         </div>
                                                     </div>
+                                                    @endif
                                                 </div>
                                             </div>
                                         </div>

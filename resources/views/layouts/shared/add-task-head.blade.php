@@ -667,7 +667,10 @@ session('preferences.map_key_1'):'kdsjhfkjsdhfsf'; $theme =
         $clone.removeClass('copyin1');
         $clone.addClass('copyin');
         $clone.addClass('warehouse_id_'+countZ);
+       
         $clone.addClass('repeated-block check-validation');
+
+        $clone.find('.selecttype').find("option").prop("disabled", false);
 
         $clone.find('.cust_add_div').prop('id', 'addHeader' + countZ);
         $clone.find('.cust_add').prop('id', 'addHeader' + countZ +'-input');
