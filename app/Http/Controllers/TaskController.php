@@ -375,7 +375,7 @@ class TaskController extends BaseController
 
         $orders = $orders->where('status', $request->routesListingType)->where('status', '!=', null)->orderBy('updated_at', 'desc');
         // dd($orders->get());
-        $preference = ClientPreference::where('id', 1)->first(['theme','date_format','time_format']);
+        $preference = ClientPreference::where('id', 1)->first(['theme','date_format','time_format','is_dispatcher_allocation']);
         $getAdditionalPreference = getAdditionalPreference(['pickup_type', 'drop_type']); 
         return Datatables::of($orders)
                 ->addColumn('customer_id', function ($orders) use ($request) {
@@ -400,6 +400,14 @@ class TaskController extends BaseController
                         $type = 'Return';
                     }
                     return $type;
+                })
+                ->addColumn('is_dispatcher_allocation', function ($orders) use ($preference) {
+                    
+                    if($preference->is_dispatcher_allocation == 1)
+                    {
+                        return 1;
+                    }
+                    return 0;
                 })
                 ->addColumn('agent_name', function ($orders) use ($request) {
                     $checkActive = (!empty($orders->agent->name) && $orders->agent->is_available == 1) ? ' '.__('Active') : ' '. __('InActive');
@@ -508,6 +516,17 @@ class TaskController extends BaseController
     }
 
 
+    public function getTaskRoute(Request $request )
+    {
+           
+
+        $order = Order::with('task')->where('id',$request->order_id)->first();
+        $agents = Agent::all();
+        $returnHTML = view('tasks.route-modal')->with(['order' => $order,'agents' =>$agents])->render();
+        return response()->json(array('success' => true, 'html'=>$returnHTML));
+     
+        
+    }
     public function tasksExport(Request $request)
     {
         $header = [
@@ -1098,6 +1117,8 @@ class TaskController extends BaseController
     // function for assigning driver to unassigned orders
     public function assignAgent(Request $request)
     {
+
+
         try {
             if ($request->type != 'B') {
                 $agent_id = $request->has('agent_id') ? $request->agent_id : null;
@@ -1148,10 +1169,22 @@ class TaskController extends BaseController
                             'freelancer_commission_fixed' => $freelancer_commission_fixed,
                             'freelancer_commission_percentage' => $freelancer_commission_percentage
                         ]);
+                        
 
-                        $task = Task::where('order_id', $order->id)->update([
-                            'task_status' => 1
-                        ]);
+                        if($request->has('task_id'))
+                        {
+                            $task = Task::where(['order_id' => $order->id,'id' => $request->task_id])->update([
+                                'task_status' => 1
+                            ]);
+                        }else
+                        {
+                            $task = Task::where('order_id', $order->id)->update([
+                                'task_status' => 1
+                            ]);
+
+                        }
+                        
+                      
 
                         $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')
                             ->where('id', $order->id)
