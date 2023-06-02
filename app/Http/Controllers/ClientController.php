@@ -443,6 +443,7 @@ class ClientController extends Controller
 
         $request->request->add(['toll_fee' => ($request->has('toll_fee') && $request->toll_fee == 'on') ? 1 : 0]);
         $request->request->add(['is_road_side_pickup' => ($request->has('is_road_side_pickup') && $request->is_road_side_pickup == 'on') ? 1 : 0]);
+        $request->request->add(['unique_id_show' => ($request->has('unique_id_show') && $request->unique_id_show == 'on') ? 1 : 0]);
         $updatePreference = ClientPreference::updateOrCreate([
             'client_id' => $id
         ], $request->all());

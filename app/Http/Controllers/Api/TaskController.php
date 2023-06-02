@@ -74,6 +74,7 @@ use JWT\Token;
 use App\Model\Users;
 use App\Models\OrderPanel;
 use App\Model\OrderPanelDetail;
+use Illuminate\Support\Facades\Log as FacadesLog;
 
 class TaskController extends BaseController
 {
@@ -100,9 +101,9 @@ class TaskController extends BaseController
             $note = '';
         }
         if ($client_details->custom_domain && ! empty($client_details->custom_domain)) {
-            $client_url = "https://" . $client_details->custom_domain;
+            $client_url = "http://" . $client_details->custom_domain;
         } else {
-            $client_url = "https://" . $client_details->sub_domain . \env('SUBDOMAIN');
+            $client_url = "http://" . $client_details->sub_domain . \env('SUBDOMAIN');
         }
 
         // set dynamic smtp for email send
@@ -733,9 +734,9 @@ class TaskController extends BaseController
                 'getPreference'
             ])->first();
             if ($auth->custom_domain && ! empty($auth->custom_domain)) {
-                $client_url = "https://" . $auth->custom_domain;
+                $client_url = "http://" . $auth->custom_domain;
             } else {
-                $client_url = "https://" . $auth->sub_domain . \env('SUBDOMAIN');
+                $client_url = "http://" . $auth->sub_domain . \env('SUBDOMAIN');
             }
             $dispatch_traking_url = $client_url.'/order/tracking/'.$auth->code.'/'.$order_details->unique_id;
 
@@ -781,9 +782,9 @@ class TaskController extends BaseController
                 'getPreference'
             ])->first();
             if ($auth->custom_domain && ! empty($auth->custom_domain)) {
-                $client_url = "https://" . $auth->custom_domain;
+                $client_url = "http://" . $auth->custom_domain;
             } else {
-                $client_url = "https://" . $auth->sub_domain . \env('SUBDOMAIN');
+                $client_url = "http://" . $auth->sub_domain . \env('SUBDOMAIN');
             }
             $dispatch_traking_url = $client_url . '/order/tracking/' . $auth->code . '/' . $order_details->unique_id;
 
@@ -979,8 +980,13 @@ class TaskController extends BaseController
                     ], 404);
                 }
 
+                if($assignedorder_data->is_cab_pooling == 2){
+                    $type = 'PD';
+                }else{
+                    $type = 'O';
+                }
                 //For order api
-                $this->dispatchNow(new RosterDelete($request->order_id,'O'));
+                $this->dispatchNow(new RosterDelete($request->order_id,$type));
                 $task_id = Order::where('id', $request->order_id)->first();
                 $pricingRule = PricingRule::where('id', 1)->first();
                 $agent_commission_fixed = $pricingRule->agent_commission_fixed;
@@ -1112,6 +1118,27 @@ class TaskController extends BaseController
             if (isset($header['client'][0])) {} else {
                 $header['client'][0] = $client->database_name;
             }
+
+            $inValidAgent = 0;
+            if($request->driver_unique_id)
+            {            
+                $agent = explode('_',base64_decode($request->driver_unique_id));
+                $agent = Agent::find($agent[1]);
+                if(!$agent){
+                    $inValidAgent = response()->json([
+                        'status' => 201,
+                        'message' => 'Agent not exist'
+                    ], 201);
+                }
+    
+                if($agent && $agent->is_available == 0){
+                    $inValidAgent = response()->json([
+                        'status' => 201,
+                        'message' => 'Agent is not availeble'
+                    ], 201);
+                }   
+            }
+            
             $client = ClientPreference::where('id', 1)->first();
 
             if ($request->task_type == 'later')
@@ -1304,9 +1331,9 @@ class TaskController extends BaseController
             }
 
             if ($auth->custom_domain && ! empty($auth->custom_domain)) {
-                $client_url = "https://" . $auth->custom_domain;
+                $client_url = "http://" . $auth->custom_domain;
             } else {
-                $client_url = "https://" . $auth->sub_domain . \env('SUBDOMAIN');
+                $client_url = "http://" . $auth->sub_domain . \env('SUBDOMAIN');
             }
             $dispatch_traking_url = $client_url . '/order/tracking/' . $auth->code . '/' . $orders->unique_id;
 
@@ -1563,6 +1590,17 @@ class TaskController extends BaseController
                 $agent_id = null;
             }
 
+            $allocation = AllocationRule::where('id', 1)->first();
+
+            if($request->driver_unique_id){
+                $decode_id = base64_decode($request->driver_unique_id);
+                $agentId = explode('_',$decode_id)[1];
+                $agent = Agent::find($agentId);
+                $title = 'Scheduled New Order';
+                $body  = 'The schedule timing of order number #'.$request->order_number.' by the customer.';
+                // $this->sendPushNotificationtoDriver($title,$body,$auth,[$agent->device_token],$dispatch_traking_url);
+                $this->OneByOne($geo, $notification_time, $agentId, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, $agent_tags, $is_order_updated, '');
+            }
             // If batch allocation is on them return from there no job is created
 
             if(isset($client->getPreference)){
@@ -1580,7 +1618,8 @@ class TaskController extends BaseController
                     'message' => __('Task Added Successfully'),
                     'task_id' => $orders->id,
                     'status' => $orders->status,
-                    'dispatch_traking_url' => $dispatch_traking_url ?? null
+                    'dispatch_traking_url' => $dispatch_traking_url ?? null,
+                    'invalid_agent' => $inValidAgent
                 ], 200);
             }} 
          }
@@ -1617,7 +1656,8 @@ class TaskController extends BaseController
                         'message' => __('Task Added Successfully'),
                         'task_id' => $orders->id,
                         'status' => $orders->status,
-                        'dispatch_traking_url' => $dispatch_traking_url ?? null
+                        'dispatch_traking_url' => $dispatch_traking_url ?? null,
+                        'invalid_agent' => $inValidAgent
                     ], 200);
                 }
 
@@ -1664,7 +1704,8 @@ class TaskController extends BaseController
                         'message' => __('Task Added Successfully'),
                         'task_id' => $orders->id,
                         'status' => $orders->status,
-                        'dispatch_traking_url' => $dispatch_traking_url ?? null
+                        'dispatch_traking_url' => $dispatch_traking_url ?? null,
+                        'invalid_agent' => $inValidAgent
                     ], 200);
                 }
             }
@@ -1701,7 +1742,8 @@ class TaskController extends BaseController
                 'message' => __('Task Added Successfully'),
                 'task_id' => $orders->id,
                 'status' => $orders->status,
-                'dispatch_traking_url' => $dispatch_traking_url ?? null
+                'dispatch_traking_url' => $dispatch_traking_url ?? null,
+                'invalid_agent' => $inValidAgent
             ], 200);
         } catch (Exception $e) {
             DB::rollback();
@@ -1861,9 +1903,9 @@ class TaskController extends BaseController
                 $orders = Order::create($order);
 
                 if ($auth->custom_domain && ! empty($auth->custom_domain)) {
-                    $client_url = "https://" . $auth->custom_domain;
+                    $client_url = "http://" . $auth->custom_domain;
                 } else {
-                    $client_url = "https://" . $auth->sub_domain . \env('SUBDOMAIN');
+                    $client_url = "http://" . $auth->sub_domain . \env('SUBDOMAIN');
                 }
                 $dispatch_traking_url = $client_url . '/order/tracking/' . $auth->code . '/' . $orders->unique_id;
 
@@ -3526,9 +3568,9 @@ class TaskController extends BaseController
             $orders = Order::create($order);
 
             if ($auth->custom_domain && ! empty($auth->custom_domain)) {
-                $client_url = "https://" . $auth->custom_domain;
+                $client_url = "http://" . $auth->custom_domain;
             } else {
-                $client_url = "https://" . $auth->sub_domain . \env('SUBDOMAIN');
+                $client_url = "http://" . $auth->sub_domain . \env('SUBDOMAIN');
             }
             $dispatch_traking_url = $client_url . '/order/tracking/' . $auth->code . '/' . $orders->unique_id;
 
@@ -3901,9 +3943,9 @@ class TaskController extends BaseController
             }
 
             if ($auth->custom_domain && ! empty($auth->custom_domain)) {
-                $client_url = "https://" . $auth->custom_domain;
+                $client_url = "http://" . $auth->custom_domain;
             } else {
-                $client_url = "https://" . $auth->sub_domain . \env('SUBDOMAIN');
+                $client_url = "http://" . $auth->sub_domain . \env('SUBDOMAIN');
             }
             $dispatch_traking_url = $client_url . '/order/tracking/' . $auth->code . '/' . $orders->unique_id;
 
@@ -4549,5 +4591,263 @@ class TaskController extends BaseController
         }
     }
 
+public function sendPushNotificationtoDriver($title, $body, $auth, $device_token, $call_back_url)
+{
+    FacadesLog::info(['dsss' => $auth]);
+    $this->seperate_connection('db_'.$auth->database_name);   
+    $client_preferences = DB::connection('db_'.$auth->database_name)->table('client_preferences')->where('client_id', $auth->code)->first();
+    $fcm_server_key = !empty($client_preferences->fcm_server_key)? $client_preferences->fcm_server_key : config('laravel-fcm.server_key');
+    $headers = [
+            'Authorization: key=' . $fcm_server_key,
+            'Content-Type: application/json',
+    ];
+    $data = [
+        "registration_ids" => $device_token,
+        "notification" => [
+            'title' => $title,
+            'body'  => $body,
+            'sound' => "notification.wav",
+            "icon" => '',
+            'click_action' => $call_back_url,
+            "android_channel_id" => "sound-channel-id"
+        ],
+        "data" => [
+            'title' => $title,
+            'body'  => $body,
+            'data'  => $body,
+            'type' => "order_modified"
+        ],
+        "priority" => "high"
+    ];
+    $dataString = $data;
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($dataString));
+    $result = curl_exec($ch);
+    Log::info($result);
+    curl_close($ch);
+    return true;
+}
 
+public function RejectOrder(Request $request)
+{
+    try {
+        DB::beginTransaction();
+        $client = Client::with([
+            'getAllocation',
+            'getPreference'
+        ])->first();
+        $header = $request->header();
+        if (isset($header['client'][0])) {} else {
+            $header['client'][0] = $client->database_name;
+        }
+
+        $order = Order::find($request->order_id);
+        $agent = Agent::find(auth()->id());
+        $customer = Customer::find($order->customer_id);
+        $agent_tags = (isset($order->order_agent_tag) && !empty($order->order_agent_tag)) ? $order->order_agent_tag : '';
+        $allocation = AllocationRule::where('id', 1)->first();
+        $taskcount = 0;
+
+        $tasks = Task::where('order_id', $order->id)->get();
+        foreach ($tasks as $key => $value) {
+            $taskcount ++;
+            $loc_id = null;
+            if (isset($value)) {
+                $post_code = isset($value['post_code']) ? $value['post_code'] : '';
+                $loc = [
+                    'latitude' => $value['latitude'] ?? 0.00,
+                    'longitude' => $value['longitude'] ?? 0.00,
+                    'address' => $value['address'] ?? null,
+                    'customer_id' => $order->customer_id
+                ];
+                $loc_update = [
+                    'short_name' => $value['short_name'] ?? null,
+                    'post_code' => $post_code,
+                    'flat_no' => $value['flat_no'] ?? null,
+                    'email' => $value['email'] ?? null,
+                    'phone_number' => $value['phone_number'] ?? null
+                ];
+
+                $Loction = Location::updateOrCreate($loc, $loc_update);
+                $loc_id = $Loction->id;
+            }
+
+            $finalLocation = Location::where('id', $loc_id)->first();
+            if ($key == 0) {
+                $send_loc_id = $loc_id;
+                $pickup_location = $finalLocation;
+            }
+
+            if (isset($finalLocation)) {
+                array_push($latitude, $finalLocation->latitude);
+                array_push($longitude, $finalLocation->longitude);
+            }
+
+            $task_appointment_duration = isset($value->appointment_duration) ? $value->appointment_duration : null;
+
+            $data = [
+                'order_id' => $order->id,
+                'task_type_id' => $value['task_type_id'],
+                'location_id' => $loc_id,
+                'appointment_duration' => $task_appointment_duration,
+                'dependent_task_id' => null,
+                'task_status' => $agent->id != null ? 1 : 0,
+                'allocation_type' => $request->allocation_type,
+                'assigned_time' => $order->scheduled_date_time,
+                'barcode' => $value['barcode'] ?? null
+            ];
+
+            Task::create($data);
+        }
+
+        $geo = $this->createRoster($send_loc_id);
+
+        $this->SendToAll($geo, $order->scheduled_date_time, $agent->id, $request->order_id, $customer, $pickup_location, $taskcount, $header, $allocation, $order->is_cab_pooling, $agent_tags, '', '');
+        DB::commit();
+
+        return response()->json(['status' => 200, 'message' => 'Order Rejected Successfull'],200);
+    } catch (\Throwable $th) {
+        DB::rollback();
+        return response()->json([
+            'message' => $th->getMessage()
+        ], 400);
+    }
+}
+
+public function OneByOne($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation)
+{
+    $allcation_type    = 'AR';
+    $date              = \Carbon\Carbon::today();
+    $auth              = Client::where('database_name', $header['client'][0])->with(['getAllocation', 'getPreference'])->first();
+    $expriedate        = (int)$auth->getAllocation->request_expiry;
+    $beforetime        = (int)$auth->getAllocation->start_before_task_time;
+    $maxsize           = (int)$auth->getAllocation->maximum_batch_size;
+    $type              = $auth->getPreference->acknowledgement_type;
+    $unit              = $auth->getPreference->distance_unit;
+    $try               = $auth->getAllocation->number_of_retries;
+    $cash_at_hand      = $auth->getAllocation->maximum_cash_at_hand_per_person??0;
+    $max_redius        = $auth->getAllocation->maximum_radius;
+    $max_task          = $auth->getAllocation->maximum_batch_size;
+    $time              = $this->checkTimeDiffrence($notification_time, $beforetime);
+    $randem            = rand(11111111, 99999999);
+    $data = [];
+    
+    if ($type == 'acceptreject') {
+        $allcation_type = 'AR';
+    } elseif ($type == 'acknowledge') {
+        $allcation_type = 'ACK';
+    } else {
+        $allcation_type = 'N';
+    }
+    
+    $extraData = [
+        'customer_name'            => $customer->name,
+        'customer_phone_number'    => $customer->phone_number,
+        'short_name'               => $finalLocation->short_name,
+        'address'                  => $finalLocation->address,
+        'lat'                      => $finalLocation->latitude,
+        'long'                     => $finalLocation->longitude,
+        'task_count'               => $taskcount,
+        'unique_id'                => $randem,
+        'created_at'               => Carbon::now()->toDateTimeString(),
+        'updated_at'               => Carbon::now()->toDateTimeString(),
+    ];
+    FacadesLog::warning(['geo' => $geo]);
+    $oneagent = Agent::where('id', $agent_id)->first();
+    $rosterData = [];
+    $data1 = [
+        'order_id'            => $orders_id,
+        'driver_id'           => $agent_id,
+        'notification_time'   => Carbon::now()->toDateTimeString(),
+        'type'                => $allcation_type,
+        'client_code'         => $auth->code,
+        'created_at'          => Carbon::now()->toDateTimeString(),
+        'updated_at'          => Carbon::now()->toDateTimeString(),
+        'device_type'         => $oneagent->device_type,
+        'device_token'        => $oneagent->device_token,
+        'detail_id'           => $randem,
+        'is_particular_driver' => 0
+    ];
+    FacadesLog::warning(['notification_time' => $notification_time]);
+    
+    $data2 = [
+        'order_id'            => $orders_id,
+        'driver_id'           => $agent_id,
+        'notification_time'   => Carbon::parse($notification_time)->subMinutes(3)->format('Y-m-d H:i:s'),
+        'type'                => $allcation_type,
+        'client_code'         => $auth->code,
+        'created_at'          => Carbon::now()->toDateTimeString(),
+        'updated_at'          => Carbon::now()->toDateTimeString(),
+        'device_type'         => $oneagent->device_type,
+        'device_token'        => $oneagent->device_token,
+        'detail_id'           => $randem,
+        'is_particular_driver' => 1
+    ];
+
+    array_push($rosterData, $data1);
+    array_push($rosterData, $data2);
+    FacadesLog::warning(['rosterData' => $rosterData]);
+
+    $this->dispatch(new RosterCreate($rosterData, $extraData));
+
+    if (isset($geo)) {
+
+        $geoagents_ids =  DriverGeo::where('geo_id', $geo)->pluck('driver_id');
+        $geoagents = Agent::where('id','!=', $agent_id)->whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
+            $f->whereDate('order_time', $date)->with('task');
+        }])->orderBy('id', 'DESC')->get();            
+        // FacadesLog::info(["sss" => $geoagents]);
+            foreach ($geoagents as $key =>  $geoitem) {
+                if (!empty($geoitem->device_token) && $geoitem->is_available == 1) {
+                    $datas = [
+                        'order_id'            => $orders_id,
+                        'driver_id'           => $geoitem->id,
+                        'notification_time'   => $time,
+                        'type'                => $allcation_type,
+                        'client_code'         => $auth->code,
+                        'created_at'          => Carbon::now()->toDateTimeString(),
+                        'updated_at'          => Carbon::now()->toDateTimeString(),
+                        'device_type'         => $geoitem->device_type,
+                        'device_token'        => $geoitem->device_token,
+                        'detail_id'           => $randem,
+                    ];
+                    
+                    array_push($data, $datas);
+                    if ($allcation_type == 'N' && 'ACK') {
+                        Order::where('id', $orders_id)->update(['driver_id'=>$geoitem->id]);
+                        break;
+                    }
+                }
+                $time = Carbon::parse($time)
+                ->addSeconds(30)
+                ->format('Y-m-d H:i:s');
+            }        
+        $this->dispatch(new RosterCreate($data, $extraData));
+    }
+
+} 
+
+public function seperate_connection($schemaName){
+    $default = [
+        'driver' => env('DB_CONNECTION', 'mysql'),
+        'host' => env('DB_HOST'),
+        'port' => env('DB_PORT'),
+        'database' => $schemaName,
+        'username' => env('DB_USERNAME'),
+        'password' => env('DB_PASSWORD'),
+        'charset' => 'utf8mb4',
+        'collation' => 'utf8mb4_unicode_ci',
+        'prefix' => '',
+        'prefix_indexes' => true,
+        'strict' => false,
+        'engine' => null
+    ];
+
+    Config::set("database.connections.$schemaName", $default);
+}
 }
