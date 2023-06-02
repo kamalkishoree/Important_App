@@ -7,7 +7,6 @@ use Carbon\Carbon;
 use App\Model\{Client,Order};
 use Illuminate\Support\Facades\Config;
 use App\Model\Timezone;
-use Illuminate\Support\Facades\Auth;
 
 
 trait AnalyticsTrait{
