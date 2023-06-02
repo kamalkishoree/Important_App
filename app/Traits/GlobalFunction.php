@@ -240,7 +240,6 @@ trait GlobalFunction{
     public function getPricingRuleDynamic($pricingRule,$distance,$perKm=0)
     {
         // \Log::info('dynamic in');
-        return 0; 
         try {
             // \Log::info('pricingRuleDistance nninn : '.$distance);
             $lastDistance = $distance - $pricingRule->base_distance??1;
