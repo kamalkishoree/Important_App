@@ -32,26 +32,26 @@ class OrderPanelController extends BaseController
         $latitude   = $request->latitude ?? '';
         $longitude  = $request->longitude ?? '';
 
-        $agentController = new AgentController();
-        $geoid           = $agentController->findLocalityByLatLng($latitude, $longitude);
+        // $agentController = new AgentController();
+        // $geoid           = $agentController->findLocalityByLatLng($latitude, $longitude);
       
         
-        $geoagents_ids    = DriverGeo::where('geo_id', $geoid)->pluck('driver_id');
+        // $geoagents_ids    = DriverGeo::where('geo_id', $geoid)->pluck('driver_id');
    
+        // \Log::info('getProductPrice');
+        // \Log::info($request->all());
    
-        $agent = Agent::whereIn('id',  $geoagents_ids)->with(['agentRating'=>function($q){
-            $q->where('review','!=','');
-        }])->whereHas('slots',function($q) use($myDate,$start_time,$end_time){
+        $agent = Agent::whereHas('slots',function($q) use($myDate,$start_time,$end_time){
             $q->whereDate('schedule_date', $myDate)
             ->where('start_time', '<=', $start_time)
             ->where('end_time', '>=', $end_time);
             return $q->where('booking_type','!=', 'blocked')->latest();
-        })->where(['type'=>'Freelancer','is_approved'=>1])
+        })->where(['is_approved'=>1])
                         ->with(['ProductPrices'=>function ($q) use ($request){
                             $q->where('product_variant_sku',$request->product_variant_sku);
                         }])->whereHas('ProductPrices',function ($q) use ($request){
                             $q->where('product_variant_sku',$request->product_variant_sku);
-                        } )->withCount('completeOrder')
+                        } )->withCount('completeOrder')->with('agentRating')
                         ->get();
             // dd(\DB::getQueryLog());
         $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain/';
@@ -75,6 +75,7 @@ class OrderPanelController extends BaseController
        // pr($agent->toArray());
 
     }
+
 
     public function getProductPriceByAgent(Request $request){
       
