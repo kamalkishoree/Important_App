@@ -23,8 +23,17 @@ class SendPushNotification
      */
     public function __construct()
     {
-   
+        //
+    }
 
+    /**
+     * Handle the event.
+     *
+     * @param  PushNotification  $event
+     * @return void
+     */
+    public function handle(PushNotification $event)
+    {
         $date =  Carbon::now()->toDateTimeString();
 
         try {
@@ -61,8 +70,6 @@ class SendPushNotification
 
     public function getData()
     {
-        //Log::info('rostersIDs lisner');
-        //Log::info('listener getdata working inder');
 
         $schemaName       = 'royodelivery_db';
         $date             =  Carbon::now()->toDateTimeString();
@@ -76,18 +83,14 @@ class SendPushNotification
         'roster_details.short_name','roster_details.address','roster_details.lat','roster_details.long','roster_details.task_count')->get();
         $getids           = $get->pluck('id');
         //$qr           = $get->toSql();
-        // Log::info($qr);
-        //Log::info($getids);
+
         DB::connection($schemaName)->table('rosters')->where('status',10)->delete();
         if(count($get) > 0){
-        // \Log::info('getdata count inder'.count($get));
-           DB::connection($schemaName)->table('rosters')->whereIn('id',$getids)->delete();
+            DB::connection($schemaName)->table('rosters')->whereIn('id',$getids)->delete();
             // DB::connection($schemaName)->table('rosters')->whereIn('id',$newget)->update(['status'=>1]);
-
-           // Log::info('getdata count inder='.count($get));
             $this->sendnotification($get);
         }else{
-          //  Log::info('Empty Roaster lisner');
+           Log::info('Empty Roaster lisner');
             $this->extraTime($schemaName);
 
 
@@ -101,31 +104,23 @@ class SendPushNotification
 
     public function sendnotification($recipients)
     {
-        //Log::info('sendnotification listener came');
          
     try {
 
         $array = json_decode(json_encode($recipients), true);
-      //  Log::info(json_encode($recipients));
-
 
         foreach($array as $item){
 
             if(isset($item['device_token']) && !empty($item['device_token'])){
-                //Log::info('Fcm Response 11');
 
                 $item['title']     = 'Pickup Request';
                 $item['body']      = 'Check All Details For This Request In App';
                 $new = [];
-             //  Log::info('sendnotification lister');
-           //    Log::info( $item);
 
                $item['notificationType'] = $item['type'];
                unset($item['type']); // done by Preet due to notification title is displaying like AR in iOS 
 
                 array_push($new,$item['device_token']);
-               // Log::info($new);
-
 
                 $clientRecord = Client::where('code', $item['client_code'])->first();
 
@@ -134,12 +129,9 @@ class SendPushNotification
                 
                 $client_preferences = DB::connection('db_'.$clientRecord->database_name)->table('client_preferences')->where('client_id', $item['client_code'])->first();
 
-                   // Log::info('Fcm Response');
-
                 if(isset($new)){
                     try{
                         $fcm_server_key = !empty($client_preferences->fcm_server_key)? $client_preferences->fcm_server_key : 'null';
-                        //Log::info($fcm_server_key);
 
                         $fcmObj = new Fcm($fcm_server_key);
 
@@ -176,11 +168,9 @@ class SendPushNotification
                             ->send();
                         }
 
-                     //   Log::info('Fcm Response in');
-                      //  Log::info($fcm_store);
                     }
                     catch(Exception $e){
-                      //  Log::info($e->getMessage());
+                       Log::info($e->getMessage());
                     }
 
                 }
