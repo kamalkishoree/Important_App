@@ -266,7 +266,7 @@ class ActivityController extends BaseController
             
             if(!empty($custom_mode->is_hide_customer_notification) && ($custom_mode->is_hide_customer_notification == 1) && !empty($clientPreference->is_send_customer_notification) && ($clientPreference->is_send_customer_notification == 'on')){
 
-                \Log::info('permission success');
+            //    \Log::info('permission success');
                 //get agent orders 
                 $orders = Order::where('driver_id', Auth::user()->id)->where('status', 'assigned')->orderBy('order_time')->pluck('id')->toArray();
                 if (count($orders) > 0) {
