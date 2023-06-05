@@ -421,7 +421,8 @@ class BulkUploadAllocationCron extends Command
 
             })
             ->groupBy('agent_logs.agent_id')
-            ->get();Log::info("Datas");
+            ->get();
+            // Log::info("Datas");
             for ($i = 0; $i <= $try-1; $i++) {
                 foreach ($getgeo as $key =>  $geoitem) {
                     $datas = [
