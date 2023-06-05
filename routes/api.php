@@ -133,6 +133,7 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
     Route::post('task/accecpt/reject', 'Api\TaskController@TaskUpdateReject'); // api for accecpt task reject task
     Route::get('refer_task', 'Api\ActivityController@getReferOrder');                    // api for task list
    
+    Route::post('task/reject', 'Api\TaskController@RejectOrder');
 
     Route::get('get/profile','Api\ActivityController@profile');                // api for get agent profile
     Route::post('update/profile','Api\ActivityController@updateProfile');       // api for updateprofile

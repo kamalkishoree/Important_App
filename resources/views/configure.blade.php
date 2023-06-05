@@ -818,13 +818,26 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                             id="editRoadSideSwitch"
                                             name="is_road_side_toggle"
                                             {{ $preference->is_road_side_toggle == 1 ? 'checked' : '' }}>
-                                        <label class="custom-control-label"
-                                            for="editRoadSideSwitch"></label>
+                                        <label class="custom-control-label" for="editRoadSideSwitch"></label>
+                                    </div>
+                                </div>
+                            </div> 
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="d-flex align-items-center justify-content-between mt-3 mb-2">
+                                    <h5 class="font-weight-normal m-0">{{ __('Show Driver Unique Id in Profile') }}</h5>
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox" class="custom-control-input"
+                                            id="unique_id_show"
+                                            name="unique_id_show"
+                                            {{ $preference->unique_id_show == 1 ? 'checked' : '' }}>
+                                            <label class="custom-control-label" for="unique_id_show"></label>
                                     </div>
                                 </div>
                             </div>
                         </div> 
-
                     </form>
                 </div>
             </div>

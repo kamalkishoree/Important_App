@@ -79,6 +79,14 @@ trait GlobalFunction{
                 });
             }
 
+            $order = Order::find($order_id);
+            if($order)
+            {
+                $geoagents_ids = $geoagents_ids->whereHas('agent', function($q) use ($order){
+                    $q->where('id', '!=', $order->driver_id);
+                });
+            }
+
             $geoagents_ids =  $geoagents_ids->pluck('driver_id');
 
 
@@ -270,7 +278,6 @@ trait GlobalFunction{
                     $distancePricing = DistanceWisePricingRule::where('price_rule_id',$pricingRule->id)->where('distance_fee','>=',$lastDistance)->orderBy('distance_fee','asc')->first();
                     // \Log::info('distancePricing');
                     // \Log::info(json_encode($distancePricing));
-
                     $sum = $lastDistance * $distancePricing->duration_price;
                 }
                     return $sum??0;

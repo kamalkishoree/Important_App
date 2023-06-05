@@ -20,6 +20,7 @@ class Kernel extends ConsoleKernel
         Commands\SendPushNotification::class,
         Commands\RunSingleSeederCommand::class,
         Commands\BulkUploadAllocationCron::class,
+        Commands\NotifyDriverBeforePickup::class,
     ];
 
     /**
@@ -36,8 +37,9 @@ class Kernel extends ConsoleKernel
            $schedule->command('Thresholdforday:send')->dailyAt('00:01');
            $schedule->command('Thresholdforweek:send')->weeklyOn(1, '00:01');
            $schedule->command('Thresholdformonth:send')->lastDayOfMonth('00:01');
-        // $schedule->command('push:send')->everyMinute();
+           $schedule->command('push:send')->everyMinute();
        //  $schedule->command('queue:restart')->everyMinute()
+        //    $schedule->command('notify:pickup')->everyMinute();
     }
 
     /**

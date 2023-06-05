@@ -153,21 +153,42 @@ class SendPushNotification
                         //Log::info($fcm_server_key);
 
                         $fcmObj = new Fcm($fcm_server_key);
-                        $fcm_store = $fcmObj->to($new) // $recipients must an array
-                                        ->priority('high')
-                                        ->timeToLive(0)
-                                        ->data($item)
-                                        ->notification([
-                                            'title'              => 'Pickup Request',
-                                            'body'               => 'Check All Details For This Request In App',
-                                            'sound'              => 'notification.mp3',
-                                            'android_channel_id' => 'Royo-Delivery',
-                                            'soundPlay'          => true,
-                                            'show_in_foreground' => true,
-                                        ])
-                                        ->send();
-                                        Log::info('Fcm Response in');
-                                        Log::info($fcm_store);
+
+                        if($item['is_particular_driver'] != 2 ){
+
+                            $fcm_store = $fcmObj->to($new) // $recipients must an array
+                                    ->priority('high')
+                                    ->timeToLive(0)
+                                    ->data($item)
+                                    ->notification([
+                                        'title'              => 'Pickup Request',
+                                        'body'               => 'Check All Details For This Request In App',
+                                        'sound'              => 'notification.mp3',
+                                        'android_channel_id' => 'Royo-Delivery',
+                                        'soundPlay'          => true,
+                                        'show_in_foreground' => true,
+                                    ])
+                            ->send();
+                        }
+                        else 
+                        {
+                            $fcmObj
+                            ->to([$item['device_token']])
+                            ->priority('high')
+                            ->timeToLive(0)
+                            ->data([
+                                'title' => 'Reminder Order',
+                                'body' => 'Pickup your order #'.$item['order_id'],
+                            ])
+                            ->notification([
+                                'title' => 'Reminder Order',
+                                'body' => 'Pickup your order #'.$item['order_id'],
+                            ])
+                            ->send();
+                        }
+
+                        Log::info('Fcm Response in');
+                        Log::info($fcm_store);
                     }
                     catch(Exception $e){
                         Log::info($e->getMessage());

@@ -170,7 +170,6 @@ class ActivityController extends BaseController
     public function profile(Request $request)
     {
         $agent = Agent::where('id', Auth::user()->id)->first();
-
         return response()->json([
         'data' => $agent,
         'status' => 200,
@@ -389,6 +388,9 @@ class ActivityController extends BaseController
         $agents['task_proof']         = $taskProof;
         $agents['averageTaskComplete']= $averageTaskComplete['averageRating'];
         $agents['CompletedTasks']= $averageTaskComplete['CompletedTasks'];
+        if($preferences->unique_id_show){
+            $agents['unique_id'] = base64_encode('DId_'.$agent->id);
+        }
         $datas['user']                = $agents;
         $datas['tasks']               = $tasks;
 
