@@ -153,7 +153,7 @@ class SendPushNotification
                         }
                         else 
                         {
-                            $fcmObj
+                            $fcm_store =   $fcmObj
                             ->to([$item['device_token']])
                             ->priority('high')
                             ->timeToLive(0)
@@ -167,6 +167,7 @@ class SendPushNotification
                             ])
                             ->send();
                         }
+                        \Log::info("fcm ".json_encode($fcm_store));
 
                     }
                     catch(Exception $e){
