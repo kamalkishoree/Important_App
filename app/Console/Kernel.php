@@ -32,8 +32,8 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
 
-           $schedule->command('create:batch')->everyFiveMinutes();
-           $schedule->command('BulkUploadAllocation:cron')->everyMinute();
+        //   $schedule->command('create:batch')->everyFiveMinutes();
+          // $schedule->command('BulkUploadAllocation:cron')->everyMinute();
            $schedule->command('Thresholdforday:send')->dailyAt('00:01');
            $schedule->command('Thresholdforweek:send')->weeklyOn(1, '00:01');
            $schedule->command('Thresholdformonth:send')->lastDayOfMonth('00:01');
