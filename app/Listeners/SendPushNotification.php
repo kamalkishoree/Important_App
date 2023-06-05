@@ -110,7 +110,7 @@ class SendPushNotification
         $array = json_decode(json_encode($recipients), true);
 
         foreach($array as $item){
-
+            \Log::info('item',json_encode($item));
             if(isset($item['device_token']) && !empty($item['device_token'])){
 
                 $item['title']     = 'Pickup Request';
@@ -136,7 +136,10 @@ class SendPushNotification
 
                         $fcmObj = new Fcm($fcm_server_key);
 
+                        \Log::info("fcm 2 ".json_encode($fcm_server_key));
                         if($item['is_particular_driver'] != 2 ){
+                        \Log::info("fcm 3 ".json_encode($new));
+
                             $fcm_store = $fcmObj->to($new) // $recipients must an array
                                     ->priority('high')
                                     ->timeToLive(0)
@@ -153,6 +156,8 @@ class SendPushNotification
                         }
                         else 
                         {
+                        \Log::info("fcm 3 ".json_encode($item['device_token']));
+
                             $fcm_store =   $fcmObj
                             ->to([$item['device_token']])
                             ->priority('high')
