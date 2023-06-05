@@ -61,7 +61,7 @@
                     }
 
                     $class='';
-                    if($route->task_status == 1 || $route->task_status == 2)
+                    if($route->task_status == 4 || $route->task_status == 2)
                     {
                       $class= 'is_delivered';
                     }
@@ -72,8 +72,8 @@
                     @endif
                     @if($route->task_type_id  == 1)
                     
-                        @if($route->task_status  == 1 )
-                        <span class="agent-name"> Picked up by Agent {{$order->agent->name}}  from {{ $route->location->address}}</span>
+                        @if($route->task_status  != 0)
+                        <span class="agent-name"> Pickup Location:- {{ $route->location->address}}  Agent Name:-  {{$order->agent->name ?? 'Unassigned'}}  Status:- {{ $route->status ?? 'Unassigned'}}</span>
                         
 
 
@@ -90,9 +90,9 @@
                     @else
                     @if($route->task_type_id  == 2)
                     
-                    @if($route->task_status  == 2 )
+                    @if($route->task_status  != 0)
 
-                    <span class="agent-name"> Dropped at   {{ $route->location->address}} by Agent {{$order->agent->name}}  from</span>
+                    <span class="agent-name"> Drop-Off Location:-   {{ $route->location->address}}   Agent Name:- {{$order->agent->name ?? 'Unassigned'}}  Status:- {{ $route->status ?? 'Unassigned'}}</span>
                     
 
                     @endif

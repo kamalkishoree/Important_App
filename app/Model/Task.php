@@ -35,7 +35,9 @@ class Task extends Model
         'quantity',
         'alcoholic_item',
         'warehouse_id',
-        'is_return'
+        'is_return',
+        'delivery_route_id',
+        'driver_id'
     ];
 
     public function order()

@@ -302,6 +302,7 @@ class TaskController extends BaseController
             }
             //}
         } else {
+
             $Order = Order::where('id', $orderId->order_id)->update([
                 'status' => $task_type,
                 'note' => $note
@@ -831,8 +832,12 @@ class TaskController extends BaseController
 
     public function TaskUpdateReject(Request $request)
     {
+        
         $header = $request->header();
         $client_details = Client::where('database_name', $header['client'][0])->first();
+        $preference = ClientPreference::where('id', 1)->first([
+            'is_dispatcher_allocation',
+        ]);
         $percentage = 0;
         $agent_id =  $request->driver_id  ? $request->driver_id : null;
         $driver   = Agent::where('id', $agent_id)->first();
@@ -958,8 +963,11 @@ class TaskController extends BaseController
                         'freelancer_commission_percentage' => $freelancer_commission_percentage
                     ]);
 
-                    Task::where('order_id', $batch->order_id)->update(['task_status' => 1]);
-                    $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')->where('id', $batch->order_id)->first();
+
+                        Task::where('order_id', $batch->order_id)->update(['task_status' => 1]);
+                        $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')->where('id', $batch->order_id)->first();
+                    
+                   
                     // event(new \App\Events\loadDashboardData($orderdata));
                 }
                 if ($check && $check->call_back_url) {
@@ -1041,7 +1049,22 @@ class TaskController extends BaseController
                         $bookingResponse =  $this->SlotBooking($data);
                     }
                 }
-                Task::where('order_id', $request->order_id)->update(['task_status' => 1]);
+
+                    if($preference->is_dispatcher_allocation == 1)
+                    {
+                        $task = Task::where(['order_id' => $request->order_id,'id' => $request->task_id])->update([
+                            'task_status' => 1,
+                            'driver_id' => $agent_id
+                        ]);
+                        $dependent_task = Task::where(['dependent_task_id' => $request->task_id])->update([
+                            'task_status' => 1,
+                            'driver_id' => $agent_id
+                        ]);
+                        Task::where('order_id', $request->order_id)->update(['task_status' => 1]);       
+                 
+                    }else{
+                           Task::where('order_id', $request->order_id)->update(['task_status' => 1]);
+                    }
                 if ($check && $check->call_back_url) {
                     $call_web_hook = $this->updateStatusDataToOrder($check, 2, 1);  # task accepted
                 }
