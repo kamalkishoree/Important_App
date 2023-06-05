@@ -4744,9 +4744,9 @@ public function OneByOne($geo, $notification_time, $agent_id, $orders_id, $custo
     array_push($rosterData, $data1);
     array_push($rosterData, $data2);
     array_push($rosterData, $data3);
-
+    FacadesLog::info(['rosterData' => $rosterData]);
     $this->dispatch(new RosterCreate($rosterData, $extraData));
-
+    FacadesLog::info(['geo' => $geo]);
     if (isset($geo)) {
 
         $geoagents_ids =  DriverGeo::where('geo_id', $geo)->pluck('driver_id');
