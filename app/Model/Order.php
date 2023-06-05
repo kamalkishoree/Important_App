@@ -95,7 +95,7 @@ class Order extends Model
         
         return $imgarray;
     }
-
+    
     public function fleet(){
         return $this->belongsTo('App\Model\Fleet')->select('id','name','registration_name','color','make','model','year');
     }
