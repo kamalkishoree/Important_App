@@ -847,7 +847,7 @@ class TaskController extends BaseController
         $driver   = Agent::where('id', $agent_id)->first();
 
         $orderdata = Order::where('id', $request->order_id)->first();
-        if ($driver->is_pooling_available == 1) {
+        if (@$driver && $driver->is_pooling_available == 1) {
             $assigned_orders  = Order::where('driver_id', $driver->id)->where('is_cab_pooling', 1)->where('status', 'assigned')->orderBy('id', 'asc')->first();
             $available_seats  = (!empty($assigned_orders)) ? $assigned_orders->available_seats : 0;
             if ($available_seats > 0) {
@@ -3980,7 +3980,7 @@ class TaskController extends BaseController
 
             $updateorder = [
                 'base_price' => $pricingRule->base_price,
-                'base_duration' => $pricingRule->base_duration,
+                'base_duration' => $paid_duration??$pricingRule->base_duration,
                 'base_distance' => $pricingRule->base_distance,
                 // 'base_waiting' => $pricingRule->base_waiting,
                 'duration_price' => $pricingRule->duration_price,
