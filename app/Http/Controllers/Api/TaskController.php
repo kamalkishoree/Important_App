@@ -273,7 +273,7 @@ class TaskController extends BaseController
             }
             //Send Next Dependent task details
             $tasks = Task::where('dependent_task_id', $orderId->id)->where('task_status', '!=', 4)->Where('task_status', '!=', 5)
-                ->with(['location', 'tasktype', 'order.customer', 'order.customer.resources', 'order.task.location', 'order.additionData'])->orderBy("order_id", "DESC")
+                ->with(['location', 'tasktype', 'order.customer', 'order.customer.resources', 'order.task.location', 'order.additionData','order.waitingTimeLogs'])->orderBy("order_id", "DESC")
                 ->orderBy("id", "ASC")
                 ->get();
             if (count($tasks) > 0) {
