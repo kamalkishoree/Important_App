@@ -167,7 +167,7 @@ class SendPushNotification
                             ])
                             ->send();
                         }
-                        // \Log::info("fcm ".json_encode($fcm_store));
+                        \Log::info("fcm ".json_encode($fcm_store));
 
                     }
                     catch(Exception $e){
