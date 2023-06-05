@@ -83,14 +83,12 @@ class SendPushNotification
         'roster_details.short_name','roster_details.address','roster_details.lat','roster_details.long','roster_details.task_count')->get();
         $getids           = $get->pluck('id');
         //$qr           = $get->toSql();
-            \Log::info("get ".json_encode($get));
-            \Log::info("getids ".json_encode($getids));
         if(count($getids) > 0){
             DB::connection($schemaName)->table('rosters')->whereIn('id',$getids)->delete();
             // DB::connection($schemaName)->table('rosters')->whereIn('id',$newget)->update(['status'=>1]);
             $this->sendnotification($get);
         }else{
-           Log::info('Empty Roaster lisner');
+        //    Log::info('Empty Roaster lisner');
             $this->extraTime($schemaName);
 
 
@@ -136,7 +134,7 @@ class SendPushNotification
                         $fcmObj = new Fcm($fcm_server_key);
 
                         if($item['is_particular_driver'] != 2 ){
-
+                            \Log::info('new'.json_encode($new));
                             $fcm_store = $fcmObj->to($new) // $recipients must an array
                                     ->priority('high')
                                     ->timeToLive(0)
