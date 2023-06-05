@@ -407,7 +407,7 @@ class BulkUploadAllocationCron extends Command
                     'detail_id'           => $randem,
                     'cash_to_be_collected' => $order_details->cash_to_be_collected??null,
                 ];
-                Log::info("if case RosterCreate send to all ");
+                // Log::info("if case RosterCreate send to all ");
                 RosterCreate::dispatch($data, $extraData);
             }
         } else {
@@ -437,7 +437,7 @@ class BulkUploadAllocationCron extends Command
                         'detail_id'           => $randem,
                         'cash_to_be_collected'=> $order_details->cash_to_be_collected??null,
                         ];
-                    Log::info($datas);
+                    // Log::info($datas);
                     array_push($data, $datas);
                     if ($allcation_type == 'N' && 'ACK') {Log::info('break');
                         DB::connection($database_name)->table('orders')->where('id', $orders_id)->update(['driver_id'=>$geoitem->driver_id]);
@@ -451,14 +451,14 @@ class BulkUploadAllocationCron extends Command
                         ->addSeconds($expriedate + 10)
                         ->format('Y-m-d H:i:s');
                 if ($allcation_type == 'N' && 'ACK') {
-                    Log::info('break2');
+                    // Log::info('break2');
                     break;
                 }
             }
-            Log::info($data);
+            // Log::info($data);
             RosterCreate::dispatch($data, $extraData);
             //$this->dispatch(new RosterCreate($data, $extraData));
-            Log::info("dispatch Done ");
+            // Log::info("dispatch Done ");
         }
     }
 

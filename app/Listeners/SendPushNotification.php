@@ -167,9 +167,7 @@ class SendPushNotification
                             ])
                             ->send();
                         }
-                        \Log::info("db ".$clientRecord->database_name);
-                        \Log::info('new'.json_encode($new));
-                        \Log::info("fcm ".json_encode($fcm_store));
+                        // \Log::info("fcm ".json_encode($fcm_store));
 
                     }
                     catch(Exception $e){
