@@ -92,7 +92,7 @@ class SendPushNotification
         DB::connection($schemaName)->table('rosters')->where('status',10)->delete();
         if(count($get) > 0){
         \Log::info('getdata count inder'.count($get));
-            DB::connection($schemaName)->table('rosters')->whereIn('id',$getids)->delete();
+          //  DB::connection($schemaName)->table('rosters')->whereIn('id',$getids)->delete();
             // DB::connection($schemaName)->table('rosters')->whereIn('id',$newget)->update(['status'=>1]);
 
            // Log::info('getdata count inder='.count($get));
