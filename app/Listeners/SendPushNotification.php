@@ -130,7 +130,6 @@ class SendPushNotification
                 $client_preferences = DB::connection('db_'.$clientRecord->database_name)->table('client_preferences')->where('client_id', $item['client_code'])->first();
 
                 if(isset($new)){
-                    \Log::info('new'.json_encode($new));
 
                     try{
                         $fcm_server_key = !empty($client_preferences->fcm_server_key)? $client_preferences->fcm_server_key : 'null';
@@ -168,6 +167,8 @@ class SendPushNotification
                             ])
                             ->send();
                         }
+                        \Log::info("db ".$clientRecord->database_name);
+                        \Log::info('new'.json_encode($new));
                         \Log::info("fcm ".json_encode($fcm_store));
 
                     }
@@ -192,10 +193,10 @@ class SendPushNotification
 
     public function extraTime($schemaName)
     {
-        Log::info('extraTime');
+      //  Log::info('extraTime');
         //sleep(30); ->addSeconds(45)
         $date             =  Carbon::now()->toDateTimeString();
-        Log::info($date);
+    //   /  Log::info($date);
         $check = DB::connection($schemaName)->table('rosters')
                         ->where(function ($query) use ( $date) {
                             $query->where('notification_time', '<=', $date)
