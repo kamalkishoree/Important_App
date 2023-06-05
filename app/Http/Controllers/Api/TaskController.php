@@ -4001,7 +4001,7 @@ class TaskController extends BaseController
             Order::where('id', $orders->id)->update($updateorder);
 
             if (isset($request->customer_phone_number)) {
-                $this->sendSms2($request->customer_phone_number, $dispatch_traking_url);
+                // $this->sendSms2($request->customer_phone_number, $dispatch_traking_url);
             }
 
             DB::commit();
