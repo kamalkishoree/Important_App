@@ -140,36 +140,73 @@ trait GlobalFunction{
     //---------function to get pricing rule based on agent_tag/geo fence/timetable/day/time
     public function getPricingRuleData($geoid, $agent_tag = '', $order_datetime = '')
     {
+
         try {
+        // if($geoid!='' && $agent_tag!='' && $order_datetime != '')
+        // {
 
-            if($geoid!='' && $agent_tag!='' && $order_datetime != '')
+        //     $dayname = Carbon::parse($order_datetime)->format('l');
+        //     $time    = Carbon::parse($order_datetime)->format('H:i');
+
+        //     $pricingRule = PricingRule::orderBy('id', 'desc')->whereHas('priceRuleTags.tagsForAgent',function($q)use($agent_tag){
+        //                         $q->where('name', $agent_tag);
+        //                     })->whereHas('priceRuleTags.geoFence',function($q)use($geoid){
+        //                         $q->where('id', $geoid);
+        //                     })->where('apply_timetable', '=', 1)
+        //                     ->whereHas('priceRuleTimeframe', function($query) use ($dayname, $time){
+        //                         $query->where('is_applicable', 1)
+        //                             ->Where('day_name', '=', $dayname)
+        //                             ->whereTime('start_time', '<=', $time)
+        //                             ->whereTime('end_time', '>=', $time);
+        //                     })->first();
+
+        //     if(empty($pricingRule)){
+        //         $pricingRule = PricingRule::orderBy('id', 'desc')->whereHas('priceRuleTags.tagsForAgent',function($q)use($agent_tag){
+        //             $q->where('name', $agent_tag);
+        //         })->whereHas('priceRuleTags.geoFence',function($q)use($geoid){
+        //             $q->where('id', $geoid);
+        //         })->where('apply_timetable', '!=', 1)->first();
+        //     }
+            
+        // }
+            $pricingRule = '';
+            if(!empty($geoid))
             {
+                $pricingRule = PricingRule::whereHas('priceRuleTags.geoFence',function($q)use($geoid){
+                    $q->where('id', $geoid);
+                });
 
-                $dayname = Carbon::parse($order_datetime)->format('l');
-                $time    = Carbon::parse($order_datetime)->format('H:i');
+                if(!empty($agent_tag)){
+                    $pricingRule->whereHas('priceRuleTags.tagsForAgent',function($q)use($agent_tag){
+                    $q->where('name', $agent_tag);
+                });
+                }
 
-                $pricingRule = PricingRule::orderBy('id', 'desc')->whereHas('priceRuleTags.tagsForAgent',function($q)use($agent_tag){
-                                    $q->where('name', $agent_tag);
-                                })->whereHas('priceRuleTags.geoFence',function($q)use($geoid){
-                                    $q->where('id', $geoid);
-                                })->where('apply_timetable', '=', 1)
-                                ->whereHas('priceRuleTimeframe', function($query) use ($dayname, $time){
-                                    $query->where('is_applicable', 1)
-                                        ->Where('day_name', '=', $dayname)
-                                        ->whereTime('start_time', '<=', $time)
-                                        ->whereTime('end_time', '>=', $time);
-                                })->first();
+                if(!empty($order_datetime)){
+                    $dayname =Carbon::parse($order_datetime)->format('l')  ;
+                    $time =  Carbon::parse($order_datetime)->format('H:i');
+                    $pricingRule->whereHas('priceRuleTimeframe', function($query) use ($dayname, $time){
+                        $query->where('is_applicable', 1)
+                            ->Where('day_name', '=', $dayname)
+                            ->whereTime('start_time', '<=', $time)
+                            ->whereTime('end_time', '>=', $time);
+                    });
+                }
+                $pricingRule =   $pricingRule->orderBy('id', 'desc')->first();
 
                 if(empty($pricingRule)){
-                    $pricingRule = PricingRule::orderBy('id', 'desc')->whereHas('priceRuleTags.tagsForAgent',function($q)use($agent_tag){
-                        $q->where('name', $agent_tag);
-                    })->whereHas('priceRuleTags.geoFence',function($q)use($geoid){
+                    $pricingRule = PricingRule::whereHas('priceRuleTags.geoFence',function($q)use($geoid){
                         $q->where('id', $geoid);
-                    })->where('apply_timetable', '!=', 1)->first();
+                    });
+    
+                    if(!empty($agent_tag)){
+                        $pricingRule->whereHas('priceRuleTags.tagsForAgent',function($q)use($agent_tag){
+                        $q->where('name', $agent_tag);
+                    });
+                    }
+                    $pricingRule =   $pricingRule->orderBy('id', 'desc')->where('apply_timetable', '!=', 1)->first();
                 }
-                
             }
-
             if(empty($pricingRule)){
                 $pricingRule = PricingRule::where('is_default', 1)->first();
             }
@@ -179,7 +216,6 @@ trait GlobalFunction{
         } catch (\Throwable $th) {
             return [];
         }
-    
     }
 
 // $numbers = ['10'=>7,'20'=>5,'50'=>2]; // array of numbers}
