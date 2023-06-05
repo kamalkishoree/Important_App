@@ -1052,15 +1052,19 @@ class TaskController extends BaseController
 
                     if($preference->is_dispatcher_allocation == 1)
                     {
-                        $task = Task::where(['order_id' => $request->order_id,'id' => $request->task_id])->update([
+                        $task = Task::where(['order_id' => $request->order_id,'task_type_id' => 1,'task_status' => 0])
+                        ->first();
+
+                        if ($task) {
+                            $task->task_status = 1;
+                            $task->driver_id = $agent_id;
+                            $task->save();
+                        
+                        $dependent_task = Task::where(['dependent_task_id' => $task->id])->update([
                             'task_status' => 1,
                             'driver_id' => $agent_id
                         ]);
-                        $dependent_task = Task::where(['dependent_task_id' => $request->task_id])->update([
-                            'task_status' => 1,
-                            'driver_id' => $agent_id
-                        ]);
-                        Task::where('order_id', $request->order_id)->update(['task_status' => 1]);       
+                    }
                  
                     }else{
                            Task::where('order_id', $request->order_id)->update(['task_status' => 1]);
@@ -3137,7 +3141,7 @@ class TaskController extends BaseController
             $db_name = client::select('database_name')->orderBy('id', 'asc')->first()->database_name;
             return response()->json([
                 'message' => 'Successfully',
-                'tasks' => $tasks,
+                'tasks' => '',
                 'order'  => $order,
                 'customer'  => $customer,
                 'agent_dbname'  => $db_name

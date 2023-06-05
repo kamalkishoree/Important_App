@@ -2236,8 +2236,6 @@ class TaskController extends BaseController
                             'cash_to_be_collected' => $order_details->cash_to_be_collected ?? null
                         ];
 
-                        \Log::info('Agent data');
-                        \Log::info($datas );
                         array_push($data, $datas);
                         if ($allcation_type == 'N' && 'ACK') {
                             Log::info('break');
