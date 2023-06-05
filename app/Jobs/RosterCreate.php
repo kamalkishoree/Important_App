@@ -30,15 +30,8 @@ class RosterCreate implements ShouldQueue
     {
         $this->data      = $data;
         $this->extraData = $extraData;
-    }
 
-    /**
-     * Execute the job.
-     *
-     * @return void
-     */
-    public function handle()
-    {
+        
 
         \Log::info('json_encode($this->data)');
         \Log::info(json_encode($this->data));

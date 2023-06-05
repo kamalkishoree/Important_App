@@ -23,18 +23,7 @@ class SendPushNotification
      */
     public function __construct()
     {
-        //
-    }
-
-    /**
-     * Handle the event.
-     *
-     * @param  PushNotification  $event
-     * @return void
-     */
-    public function handle(PushNotification $event)
-    {
-       //Log::info('handle listener working inder');
+   
 
         $date =  Carbon::now()->toDateTimeString();
 
