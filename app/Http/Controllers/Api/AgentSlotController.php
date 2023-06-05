@@ -558,7 +558,7 @@ class AgentSlotController extends BaseController
     }
     public function getGerenalSlot(Request $request)
     {
-       // pr($request->all());
+
         try {
             $ReturnArray= [];
             $key = 0;
