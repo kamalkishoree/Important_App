@@ -249,8 +249,7 @@ trait GlobalFunction{
         try {
             // \Log::info('pricingRuleDistance nninn : '.$distance);
             $lastDistance = $distance - $pricingRule->base_distance??1;
-
-
+            $sum = 0;
             if($perKm)
             {
                     $distancePricing = [];
@@ -258,7 +257,10 @@ trait GlobalFunction{
                         $distancePricing = DistanceWisePricingRule::where('price_rule_id',$pricingRule->id)->where('distance_fee','<=',$lastDistance)->orderBy('distance_fee','asc')->get();
                     }
                     $last = $pricingRule->base_distance??1;
-                    $sum = 0;
+                    if(empty($distancePricing)  && count($distancePricing)==0)
+                    {
+                        return $sum??0;  
+                    }
                     foreach($distancePricing as $key => $number)
                     {
                         $no = ($number->distance_fee - $last);
@@ -277,11 +279,14 @@ trait GlobalFunction{
                         $sum +=  $pr; 
                     }
                 }else{
-
                     $distancePricing = DistanceWisePricingRule::where('price_rule_id',$pricingRule->id)->where('distance_fee','>=',$lastDistance)->orderBy('distance_fee','asc')->first();
                     // \Log::info('distancePricing');
                     // \Log::info(json_encode($distancePricing));
-
+                    
+                    if(empty($distancePricing))
+                    {
+                        return $sum??0;  
+                    }
                     $sum = $lastDistance * $distancePricing->duration_price;
                 }
                     return $sum??0;
