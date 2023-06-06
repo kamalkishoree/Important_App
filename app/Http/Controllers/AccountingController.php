@@ -11,7 +11,8 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Traits\AnalyticsTrait;
 use App\Traits\GlobalFunction;
-
+use Illuminate\Support\Facades\Auth;
+use App\Model\Timezone;
 
 class AccountingController extends Controller
 {
@@ -25,31 +26,38 @@ class AccountingController extends Controller
      */
     public function index(Request $request)
     {
+        $user = Auth::user();
         $complete_order_analytics = '';
+        //pr(Carbon::now()->toDateString());
+        $timezone = $user->timezone ? $user->timezone : 'Asia/Kolkata';
+        $tz              = new Timezone();
+        $timezone_offset= $tz->timezone_gmt($timezone);
+        $client_timezone= $tz->timezone_name($timezone);
         $order_analytic_data = [];
         if ($request->has('date')) {
             $date_array =  (explode(" to ", $request->date));
-            $dateform = Carbon::parse($date_array[0])->startOfDay();
-            $dateto   = Carbon::parse(isset($date_array[1]) ? $date_array[1]:$date_array[0])->endOfDay();
+            $dateform = Carbon::parse($date_array[0]." 00:00:00")->startOfDay();
+            $dateto   = Carbon::parse(isset($date_array[1]) ? $date_array[1]." 23:59:59":$date_array[0]." 23:59:59")->endOfDay();
         } else {
-            $dateform = \Carbon\Carbon::today()->startOfDay();
-            $dateto   = \Carbon\Carbon::today()->endOfDay();
+            $dateform = date('Y-m-d')." 00:00:00";
+            $dateto   = date('Y-m-d')." 23:59:59";
             $order_analytic_data = $this->AnalyticsOrders();
         }
-
+        $dateform = Carbon::parse($dateform, $client_timezone)->setTimezone('UTC');        
+        $dateto = Carbon::parse($dateto, $client_timezone)->setTimezone('UTC');
 
         $counter            = 0;
-        $totalearning       = Order::whereBetween('order_time', [$dateform,$dateto])->sum('order_cost');
-        $totalagentearning  = Order::whereBetween('order_time', [$dateform,$dateto])->sum('driver_cost');
-        $totalorders        = Order::whereBetween('order_time', [$dateform,$dateto])->count();
+        $totalearning       = Order::whereRaw("CONVERT_TZ(`order_time`,'+00:00','".$timezone_offset."') between '".$dateform."' and '".$dateto."'")->sum('order_cost');        
+        $totalagentearning  = Order::whereRaw("CONVERT_TZ(`order_time`,'+00:00','".$timezone_offset."') between '".$dateform."' and '".$dateto."'")->sum('driver_cost');        
+        $totalorders        = Order::whereRaw("CONVERT_TZ(`order_time`,'+00:00','".$timezone_offset."') between '".$dateform."' and '".$dateto."'")->count();
         $totalagents        = Agent::count();
 
         $agents             = Agent::orderBy('cash_at_hand', 'DESC')->get();
         $customers          = Customer::withCount('orders')->orderBy('orders_count', 'DESC')->get();
-        $heatLatLog         = Location::whereIn('id', function ($query) use ($dateform, $dateto) {
+        $heatLatLog         = Location::whereIn('id', function ($query) use ($dateform, $dateto,$timezone_offset) {
             $query->select('location_id')
                               ->from(with(new Task)->getTable())
-                              ->whereBetween('created_at', [$dateform,$dateto]);
+                              ->whereRaw("CONVERT_TZ(`created_at`,'+00:00','".$timezone_offset."') between '".$dateform."' and '".$dateto."'");
         })->get();
 
         //print_r($heatLatLog); die;
@@ -65,8 +73,8 @@ class AccountingController extends Controller
                     $dates[]    = date("d M Y");
                     $serchdate  = date("Y-m-d");
 
-                    $countOrders[]  = Order::whereDate('order_time', $serchdate)->count();
-                    $sumOrders[]    = Order::whereDate('order_time', $serchdate)->sum('order_cost');
+                    $countOrders[]  = Order::whereRaw("DATE(CONVERT_TZ(`order_time`,'+00:00','".$timezone_offset."')) = '".$serchdate."'")->count();                   
+                    $sumOrders[]    = Order::whereRaw("DATE(CONVERT_TZ(`order_time`,'+00:00','".$timezone_offset."')) = '".$serchdate."'")->sum('order_cost');
 
                         $display        = date('d M Y', strtotime('-1 day', strtotime($serchdate)));
                         $check          = date('Y-m-d', strtotime('-1 day', strtotime($serchdate)));
@@ -89,14 +97,14 @@ class AccountingController extends Controller
                     $ts = strtotime($year.'W'.$week.$i);
                     $dates[]    = date("d M Y", $ts);
                     $serchdate  = date("Y-m-d", $ts);
-                    $countOrders[]  = Order::whereDate('order_time', $serchdate)->count();
-                    $sumOrders[]    = Order::whereDate('order_time', $serchdate)->sum('order_cost');
+                    $countOrders[]  = Order::whereRaw("DATE(CONVERT_TZ(`order_time`,'+00:00','".$timezone_offset."')) = '".$serchdate."'")->count();
+                    $sumOrders[]    = Order::whereRaw("DATE(CONVERT_TZ(`order_time`,'+00:00','".$timezone_offset."')) = '".$serchdate."'")->sum('order_cost');
 
                     if ($i == 1) {
                         $display        = date('d M Y', strtotime('-1 day', strtotime($serchdate)));
                         $check          = date('Y-m-d', strtotime('-1 day', strtotime($serchdate)));
-                        $lastcount      = Order::whereDate('order_time', $check)->count();
-                        $lastsum        = Order::whereDate('order_time', $check)->sum('order_cost');
+                        $lastcount      = Order::whereRaw("DATE(CONVERT_TZ(`order_time`,'+00:00','".$timezone_offset."') = '".$check."'")->count();                      
+                        $lastsum        = Order::whereRaw("DATE(CONVERT_TZ(`order_time`,'+00:00','".$timezone_offset."') = '".$check."'")->sum('order_cost');
                         array_unshift($countOrders, $lastcount);
                         array_unshift($sumOrders, $lastsum);
                     }
@@ -112,15 +120,14 @@ class AccountingController extends Controller
                     // add the date to the dates array
                     $dates[]        = str_pad($i, 2, '0', STR_PAD_LEFT) . " " . date('M') . " " . date('Y');
                     $serchdate      = date('Y')."-" . date('m') . "-" .str_pad($i, 2, '0', STR_PAD_LEFT);
-                    $countOrders[]  = Order::whereDate('order_time', $serchdate)->count();
-                    $sumOrders[]    = Order::whereDate('order_time', $serchdate)->sum('order_cost');
+                    $countOrders[]  = Order::whereRaw("DATE(CONVERT_TZ(`order_time`,'+00:00','".$timezone_offset."')) = '".$serchdate."'")->count();                  
+                    $sumOrders[]    = Order::whereRaw("DATE(CONVERT_TZ(`order_time`,'+00:00','".$timezone_offset."')) = '".$serchdate."'")->sum('order_cost');
 
                     if ($i == 1) {
                         $display        = date('d M Y', strtotime('-1 day', strtotime($serchdate)));
                         $check          = date('Y-m-d', strtotime('-1 day', strtotime($serchdate)));
-                        $lastcount      = Order::whereDate('order_time', $check)->count();
-                        $lastsum        = Order::whereDate('order_time', $check)->sum('order_cost');
-
+                        $lastcount      = Order::whereRaw("DATE(CONVERT_TZ(`order_time`,'+00:00','".$timezone_offset."')) = '".$check."'")->count();
+                        $lastsum        = Order::whereRaw("DATE(CONVERT_TZ(`order_time`,'+00:00','".$timezone_offset."')) = '".$check."'")->sum('order_cost');
 
                         array_unshift($countOrders, $lastcount);
                         array_unshift($sumOrders, $lastsum);
