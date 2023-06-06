@@ -68,7 +68,7 @@
                     @endphp
                     <li onclick="getTaskDetail({{$route->id}})" class="{{ $class}}">
                     @if($route->task_status  == 0 )
-                    {{ $route->location->address}}
+                    {{ $route->location->address ?? ''}}
                     @endif
                     @if($route->task_type_id  == 1)
                     

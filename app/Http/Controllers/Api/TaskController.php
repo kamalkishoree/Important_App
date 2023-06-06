@@ -101,18 +101,26 @@ class TaskController extends BaseController
         } else {
             $note = '';
         }
+        $preference = ClientPreference::where('id', 1)->first([
+            'is_dispatcher_allocation'
+        ]);
         if ($client_details->custom_domain && !empty($client_details->custom_domain)) {
             $client_url = "https://" . $client_details->custom_domain;
         } else {
             $client_url = "https://" . $client_details->sub_domain . \env('SUBDOMAIN');
         }
-
+    
+        
         // set dynamic smtp for email send
         $this->setMailDetail($client_details);
         $waiting_time = $request->waiting_time ?? 0;
         $orderId = Task::where('id', $request->task_id)->with([
             'tasktype'
         ])->first();
+
+
+      
+      
         $user = Auth::user();
 
         $orderAll = Task::where('order_id', $orderId->order_id)->get();
@@ -242,9 +250,9 @@ class TaskController extends BaseController
         if ($waiting_time) {
             Task::where('id', $request->task_id)->update(['waiting_time' => $waiting_time]);
         }
-
         if ($request->task_status == 4) {
-
+            
+           
             if ($check == 1) {
                 Order::where('id', $orderId->order_id)->update(['status' => $task_type]);
 
@@ -271,25 +279,43 @@ class TaskController extends BaseController
                 // event(new \App\Events\loadDashboardData($orderdata));
             }
             //Send Next Dependent task details
-            $tasks = Task::where('dependent_task_id', $orderId->id)->where('task_status', '!=', 4)->Where('task_status', '!=', 5)
+            if(($preference->is_dispatcher_allocation == 1) && ($orderId->tasktype->id == 2))
+            {
+                
+                    $tasks = Task::where('order_id', $order_details->id)->whereNull('dependent_task_id')->where('task_status', '!=', 4)->Where('task_status', '!=', 5)
+                    ->with(['location', 'tasktype', 'order.customer', 'order.customer.resources', 'order.task.location', 'order.additionData'])
+                    ->orderBy("id", "ASC")
+                    ->first();
+                
+             
+            
+            }else{
+
+                $tasks = Task::where('dependent_task_id', $orderId->id)->where('task_status', '!=', 4)->Where('task_status', '!=', 5)
                 ->with(['location', 'tasktype', 'order.customer', 'order.customer.resources', 'order.task.location', 'order.additionData'])->orderBy("order_id", "DESC")
                 ->orderBy("id", "ASC")
                 ->get();
-            if (count($tasks) > 0) {
-                // sort according to task_order
-                $tasks = $tasks->toArray();
-                if ($tasks[0]['task_order'] != 0) {
-                    usort($tasks, function ($a, $b) {
-                        return $a['task_order'] <=> $b['task_order'];
-                    });
+            
+                if (count($tasks) > 0) {
+                    // sort according to task_order
+                    $tasks = $tasks->toArray();
+                    if ($tasks[0]['task_order'] != 0) {
+                        usort($tasks, function ($a, $b) {
+                            return $a['task_order'] <=> $b['task_order'];
+                        });
+                    }
                 }
             }
+           
+            
+           
             if (@$request->attribute_data) {
                 $this->saveOrderFormAttribute($request, $orderId);
             }
         } elseif ($request->task_status == 5) {
             //cancel complete order if driver cancel pickup task
             //if ($checkfailed == 1) {
+            
             $Order  = Order::where('id', $orderId->order_id)->update(['status' => $task_type]);
             $task = Task::where('order_id', $orderId->order_id)->update(['task_status' => $request->task_status, 'note' => $note]);
             ////
@@ -301,12 +327,13 @@ class TaskController extends BaseController
                 }
             }
             //}
-        } else {
+        } else {   
 
             $Order = Order::where('id', $orderId->order_id)->update([
                 'status' => $task_type,
                 'note' => $note
             ]);
+            
             if ($order_details && $order_details->call_back_url) {
                 if ($request->task_status == 2 || $request->task_status == 3)
                     $stat = $request->task_status + 1;
@@ -551,7 +578,29 @@ class TaskController extends BaseController
         $newDetails['otpRequired'] = $otpRequired;
         $newDetails['qrCodeVendor'] = $codeVendor ?? null;
         $newDetails['nextTask'] = $tasks ?? null;
+    
+         if($preference->is_dispatcher_allocation == 1 && (is_object($tasks)))
+         {
+            if(!empty($tasks)&& ($request->task_status == 4) &&($tasks->task_type_id == 1) )
+            {
+                $geo = null;
+                
+                  $geo = $this->createRoster($tasks->location_id);    
+                  $agent_id = null;
+                  $notification_time = Carbon::now()->toDateTimeString();
+                  $customer = Customer::find($order_details->customer_id);
+                  
+                  $finalLocation = Location::where('id', $tasks->location_id)->first();
+                  $allocation = AllocationRule::where('id', 1)->first();
+                  $is_one_push_booking = isset($order_details->is_one_push_booking) ? $order_details->is_one_push_booking : 0;
+                 if(!empty($finalLocation))
+                 {
+                    
+                     $this->SendToAll($geo, $notification_time, $agent_id, $order_details->id, $customer, $finalLocation, 1, $header, $allocation,  $order_details->is_cab_pooling, null, 1, $is_one_push_booking);
+                 }
+            }
 
+         }
         return response()->json([
             'data' => $newDetails,
             'status' => 200,
@@ -3999,6 +4048,8 @@ class TaskController extends BaseController
     // update dropoff task function
     public function updateTask(Request $request)
     {
+
+
         try {
             $auth = $client = Client::with([
                 'getAllocation',
@@ -4022,7 +4073,7 @@ class TaskController extends BaseController
             $pricingRule = '';
             $agent_id = null;
             $allocation_type = '';
-
+        
             $orders = Order::where('call_back_url', '=', $request->call_back_url)->first();
             if (!empty($orders)) {
                 Task::where('order_id', $orders->id)->whereIn('task_status', [
