@@ -187,7 +187,7 @@ class AuthController extends BaseController
             return response()->json(['message' => __('Your account has been rejected. Please contact administration')], 422);
         }
 
-        $prefer = ClientPreference::with('currency')->select('theme', 'distance_unit', 'currency_id', 'language_id', 'agent_name', 'date_format', 'time_format', 'map_type', 'map_key_1', 'custom_mode', 'is_cab_pooling_toggle','is_edit_order_driver','is_go_to_home')->first();
+        $prefer = ClientPreference::with('currency')->select('theme', 'distance_unit', 'currency_id', 'language_id', 'agent_name', 'date_format', 'time_format', 'map_type', 'map_key_1', 'custom_mode', 'is_cab_pooling_toggle','is_edit_order_driver','is_go_to_home','unique_id_show')->first();
         $allcation = AllocationRule::first('request_expiry');
         $prefer['alert_dismiss_time'] = (int)$allcation->request_expiry;
         $taskProof = TaskProof::all();
@@ -227,6 +227,9 @@ class AuthController extends BaseController
         $averageTaskComplete   = $this->getDriverTaskDonePercentage( $agent->id);
         $agent['averageTaskComplete'] =  $averageTaskComplete['averageRating'];
         $agent['CompletedTasks'] =  $averageTaskComplete['CompletedTasks'];
+        if($prefer->unique_id_show){
+            $agent['unique_id'] = base64_encode('DId_'.$agent->id);
+        }
 
         $schemaName = 'royodelivery_db';
         $default = [

@@ -141,7 +141,7 @@ class ActivityController extends BaseController
 
         if (count($orders) > 0) {
             $tasks = Task::whereIn('order_id', $orders)->where('task_status', '!=', 4)->Where('task_status', '!=', 5)
-            ->with(['location','tasktype','order.customer','order.customer.resources','order.task.location','order.additionData'])->orderBy("order_id", "DESC")
+            ->with(['location','tasktype','order.customer','order.customer.resources','order.task.location','order.additionData','order.waitingTimeLogs'])->orderBy("order_id", "DESC")
             ->orderBy("id","ASC")
             ->get();
             if (count($tasks) > 0) {
@@ -170,7 +170,6 @@ class ActivityController extends BaseController
     public function profile(Request $request)
     {
         $agent = Agent::where('id', Auth::user()->id)->first();
-
         return response()->json([
         'data' => $agent,
         'status' => 200,
@@ -267,7 +266,7 @@ class ActivityController extends BaseController
             
             if(!empty($custom_mode->is_hide_customer_notification) && ($custom_mode->is_hide_customer_notification == 1) && !empty($clientPreference->is_send_customer_notification) && ($clientPreference->is_send_customer_notification == 'on')){
 
-                \Log::info('permission success');
+            //    \Log::info('permission success');
                 //get agent orders 
                 $orders = Order::where('driver_id', Auth::user()->id)->where('status', 'assigned')->orderBy('order_time')->pluck('id')->toArray();
                 if (count($orders) > 0) {
@@ -346,7 +345,7 @@ class ActivityController extends BaseController
 
 
         if (count($orders) > 0) {
-            $tasks = Task::whereIn('order_id', $orders)->where('task_status', '!=', 4)->Where('task_status', '!=', 5)->with(['location','tasktype','order.customer','order.additionData'])->orderBy('order_id', 'desc')->orderBy('id', 'ASC')->get();
+            $tasks = Task::whereIn('order_id', $orders)->where('task_status', '!=', 4)->Where('task_status', '!=', 5)->with(['location','tasktype','order.customer','order.additionData','order.waitingTimeLogs'])->orderBy('order_id', 'desc')->orderBy('id', 'ASC')->get();
             if (count($tasks) > 0) {
                 //sort according to task_order
                 $tasks = $tasks->toArray();
@@ -389,6 +388,9 @@ class ActivityController extends BaseController
         $agents['task_proof']         = $taskProof;
         $agents['averageTaskComplete']= $averageTaskComplete['averageRating'];
         $agents['CompletedTasks']= $averageTaskComplete['CompletedTasks'];
+        if($preferences->unique_id_show){
+            $agents['unique_id'] = base64_encode('DId_'.$agent->id);
+        }
         $datas['user']                = $agents;
         $datas['tasks']               = $tasks;
 
