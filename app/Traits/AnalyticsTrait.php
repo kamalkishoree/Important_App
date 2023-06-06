@@ -364,7 +364,6 @@ trait AnalyticsTrait{
              $prev_week                                 = json_encode($arr1);
              
           }
-
          
          if($this_month){
              $this_month =  $this->AgentOrderAnalytics($this_month,'this_month');
@@ -372,7 +371,6 @@ trait AnalyticsTrait{
          if($prev_month){
              $prev_month =  $this->AgentOrderAnalytics($prev_month,'prev_month');
          }
-
 
          /*** Percentage this month  and prev month */
 
