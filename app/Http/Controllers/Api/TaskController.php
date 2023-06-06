@@ -232,6 +232,9 @@ class TaskController extends BaseController
                 $sms_body = $sms_settings['notification_events'][3]['message'];
                 $link = '';
                 break;
+
+            default:
+                $link = '';
         }
 
         $send_sms_status = isset($sms_final_status['client_notification']['request_recieved_sms']) ? $sms_final_status['client_notification']['request_recieved_sms'] : 0;
@@ -304,10 +307,13 @@ class TaskController extends BaseController
             }
             //}
         } else {
-            $Order = Order::where('id', $orderId->order_id)->update([
-                'status' => $task_type,
-                'note' => $note
-            ]);
+            if(isset($task_type)){
+                $Order = Order::where('id', $orderId->order_id)->update([
+                    'status' => $task_type,
+                    'note' => $note
+                ]);
+            }
+            
             if ($order_details && $order_details->call_back_url) {
                 if ($request->task_status == 2 || $request->task_status == 3)
                     $stat = $request->task_status + 1;
@@ -328,9 +334,22 @@ class TaskController extends BaseController
                 'amount' => $orderId->order->duration_price * $waiting_time[0],
             ]);
 
+            $time = (float)($orderId->order->actual_time ?? 0) + (float)$waiting_time[0] + ((float)$waiting_time[1]/100);
+            $timeArray = explode('.',$time);
+            if($timeArray[1] >= 60){
+                $increaseMin = 1;
+                $remainingSec = $timeArray[1] - 60;
+                if($remainingSec < 10){
+                    $remainingSec = (int)'0'.$remainingSec; 
+                }
+            }else{
+                $increaseMin = 0;
+                $remainingSec = $timeArray[1] ;
+            }
+
             $updateData = [
-                'actual_time'   => ($orderId->order->actual_time ?? 0) + (int)$waiting_time[0] + (int)'0'.'.'.$waiting_time[0],
-                'cash_to_be_collected' => ($orderId->order->cash_to_be_collected ?? 0) + (($orderId->order->duration_price ?? 0) * $waiting_time[0]) 
+                'actual_time'   => (float)(($timeArray[0] + $increaseMin) .'.'.$remainingSec),
+                // 'cash_to_be_collected' => ($orderId->order->cash_to_be_collected ?? 0)
             ];
 
             Order::find($orderId->order_id)->update($updateData);
@@ -340,10 +359,12 @@ class TaskController extends BaseController
             $task = Task::where('id', $request->task_id)->update(['bag_qrcode' => $request->qr_code]);
         }
 
-        $task = Task::where('id', $request->task_id)->update([
-            'task_status' => $request->task_status,
-            'note' => $note
-        ]);
+        if(isset($request->task_status)){
+            $task = Task::where('id', $request->task_id)->update([
+                'task_status' => $request->task_status,
+                'note' => $note
+            ]);
+        }
 
         if (isset($request->image)) {
             if ($request->hasFile('image')) {
@@ -400,7 +421,7 @@ class TaskController extends BaseController
         }
         // dd($request->toArray());
 
-        $newDetails = Task::where('id', $request->task_id)->with(['location', 'tasktype', 'pricing', 'order.customer', 'order.additionData'])->first();
+        $newDetails = Task::where('id', $request->task_id)->with(['location', 'tasktype', 'pricing', 'order.customer', 'order.additionData','order.waitingTimeLogs'])->first();
 
         $sms_body = str_replace('"order_number"', $order_details->unique_id, $sms_body);
         $sms_body = str_replace('"driver_name"', $order_details->agent->name, $sms_body);

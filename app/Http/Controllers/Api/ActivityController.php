@@ -391,6 +391,8 @@ class ActivityController extends BaseController
         if($preferences->unique_id_show){
             $agents['unique_id'] = base64_encode('DId_'.$agent->id);
         }
+        $agents['is_road_side_toggle']= $preferences->is_road_side_toggle;
+
         $datas['user']                = $agents;
         $datas['tasks']               = $tasks;
 

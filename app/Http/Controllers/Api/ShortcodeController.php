@@ -86,6 +86,7 @@ class ShortcodeController extends BaseController
                 $client->client_db_code = $client_db_data->code;
                 $client->is_driver_slot = !empty($client_db_data->getPreference) && isset($client_db_data->getPreference->is_driver_slot) ? $client_db_data->getPreference->is_driver_slot : 0;
                 $client->is_freelancer = !empty($client_db_data->getPreference) && isset($client_db_data->getPreference->is_freelancer) ? $client_db_data->getPreference->is_freelancer : 0;
+                $client->is_road_side_toggle = !empty($client_db_data->getPreference) && isset($client_db_data->getPreference->is_road_side_toggle) ? $client_db_data->getPreference->is_road_side_toggle : 0;
                 $client['isAttendence'] = ($getAdditionalPreference['is_attendence'] == 1) ? $getAdditionalPreference['is_attendence'] : 0;
                 
             }
