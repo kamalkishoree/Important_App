@@ -2915,7 +2915,7 @@ class TaskController extends BaseController
 
 
         if(empty($pricingRule)){
-            \Log::info('in condition ');
+            // \Log::info('in condition ');
             $pricingRule = PricingRule::where('is_default', 1)->first();
         }
 
@@ -4776,8 +4776,7 @@ public function OneByOne($geo, $notification_time, $agent_id, $orders_id, $custo
     array_push($rosterData, $data1);
     array_push($rosterData, $data2);
     array_push($rosterData, $data3);
-    \Log::info('json_encode($rosterData)');
-    \Log::info(json_encode($rosterData));
+
     $this->dispatch(new RosterCreate($rosterData, $extraData));
     // FacadesLog::info(['geo' => $geo]);
     if (isset($geo)) {
