@@ -191,20 +191,13 @@ trait GlobalFunction{
                 }
             }
             \Log::info("Connected successfully to database in ".DB::connection()->getDatabaseName());
-
-            \Log::info('check in $pricingRule');
-            \Log::info(json_encode($pricingRule));
-            \Log::info('to array $pricingRule');
-            \Log::info(json_encode($pricingRule->toArray()));
-
-            if(count($pricingRule->toArray())>0){
+          
+            if(empty($pricingRule)){
                 $pricingRule = PricingRule::where('is_default', 1)->first();
 
                 \Log::info('get default pricing rule');
                 \Log::info(json_encode($pricingRule));
             }
-            \Log::info('check in $pricingRule');
-            \Log::info(json_encode($pricingRule));
             return $pricingRule;
 
         } catch (\Throwable $th) {

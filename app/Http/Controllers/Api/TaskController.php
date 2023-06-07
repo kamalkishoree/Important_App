@@ -2914,8 +2914,13 @@ class TaskController extends BaseController
         $pricingRule = $this->getPricingRuleData($geoid, $agent_tags, $order_datetime);
         $pricingRuleDistanceWise = $this->getPricingRuleDynamic($pricingRule, $getdata['distance']);
 
-        \Log::info('json_encode($pricingRule)');
-        \Log::info(json_encode($pricingRule));
+        \Log::info($pricingRule);
+
+        if(empty($pricingRule)){
+            \Log::info('in condition ');
+            $pricingRule = PricingRule::where('is_default', 1)->first();
+        }
+
         $paid_duration = $getdata['duration'] - $pricingRule->base_duration;
         $paid_distance = $getdata['distance'] - $pricingRule->base_distance;
         $paid_duration = $paid_duration < 0 ? 0 : $paid_duration;
