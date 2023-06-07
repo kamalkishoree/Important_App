@@ -86,22 +86,13 @@ class SendPushNotification
         'roster_details.short_name','roster_details.address','roster_details.lat','roster_details.long','roster_details.task_count');
         $getids           = $get->pluck('id');
         $get              = $get->get();
-        \Log::info($getids);
-
         if(count($getids) > 0){
-
-            \Log::info('in ids to delete');
-            \Log::info($getids);
-
             DB::connection($schemaName)->table('rosters')->whereIn('id',$getids)->delete();
             // \Log::info("get ids ".json_encode($getids) );
             // DB::connection($schemaName)->table('rosters')->whereIn('id',$newget)->update(['status'=>1]);
             $this->sendnotification($get);
         }else{
-        //    Log::info('Empty Roaster lisner');
             $this->extraTime($schemaName);
-
-
         }
 
         return;
