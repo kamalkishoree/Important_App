@@ -148,7 +148,7 @@ trait GlobalFunction{
     //---------function to get pricing rule based on agent_tag/geo fence/timetable/day/time
     public function getPricingRuleData($geoid, $agent_tag = '', $order_datetime = '')
     {
-
+        \Log::info("Connected successfully to database ".DB::connection()->getDatabaseName());
         try {
             $pricingRule = '';
             if(!empty($geoid))
@@ -190,6 +190,7 @@ trait GlobalFunction{
                     $pricingRule =   $pricingRule->orderBy('id', 'desc')->first();
                 }
             }
+            \Log::info("Connected successfully to database in ".DB::connection()->getDatabaseName());
 
             \Log::info('check in $pricingRule');
             \Log::info(json_encode($pricingRule));
