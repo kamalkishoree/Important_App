@@ -56,7 +56,6 @@ class SendPushNotification
 
                 Config::set("database.connections.$schemaName", $default);
                 config(["database.connections.mysql.database" => $schemaName]);
-                Log::info('handle '.$schemaName);
 
                 $this->getData();
 
@@ -82,10 +81,15 @@ class SendPushNotification
                                         })->where('status',0)
                                     ->leftJoin('roster_details', 'rosters.detail_id', '=', 'roster_details.unique_id')
                                     ->select('rosters.*', 'roster_details.customer_name', 'roster_details.customer_phone_number',
-        'roster_details.short_name','roster_details.address','roster_details.lat','roster_details.long','roster_details.task_count')->get();
+        'roster_details.short_name','roster_details.address','roster_details.lat','roster_details.long','roster_details.task_count');
         $getids           = $get->pluck('id');
 
-        \Log::info("get ids ".json_encode($getids) );
+        \Log::info("get ids ".json_encode($getids));
+
+        $get              = $get->get();
+
+        \Log::info('json_encode($get)');
+        \Log::info(json_encode($get));
 
         if(count($getids) > 0){
             DB::connection($schemaName)->table('rosters')->whereIn('id',$getids)->delete();

@@ -196,7 +196,6 @@ trait GlobalFunction{
                 $pricingRule = PricingRule::where('is_default', 1)->first();
 
                 \Log::info('get default pricing rule');
-                \Log::info(json_encode($pricingRule));
             }
             return $pricingRule;
 

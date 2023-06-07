@@ -2914,7 +2914,6 @@ class TaskController extends BaseController
         $pricingRule = $this->getPricingRuleData($geoid, $agent_tags, $order_datetime);
         $pricingRuleDistanceWise = $this->getPricingRuleDynamic($pricingRule, $getdata['distance']);
 
-        \Log::info($pricingRule);
 
         if(empty($pricingRule)){
             \Log::info('in condition ');
