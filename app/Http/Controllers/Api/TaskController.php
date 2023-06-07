@@ -1252,7 +1252,7 @@ class TaskController extends BaseController
             } else {
             }
             if($request->task_type == "schedule"){
-                $settime = convertDateTimeInTimeZone($request->schedule_time,$clienttimezone);
+                $settime = Carbon::parse($request->schedule_time)->utc();
             }else{
                 $settime = Carbon::now()->toDateTimeString();
             }
@@ -2915,7 +2915,6 @@ class TaskController extends BaseController
 
 
         if(empty($pricingRule)){
-            // \Log::info('in condition ');
             $pricingRule = PricingRule::where('is_default', 1)->first();
         }
 
