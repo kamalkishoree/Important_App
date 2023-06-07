@@ -1251,11 +1251,13 @@ class TaskController extends BaseController
                 }
             } else {
             }
-
             \Log::info('$request->schedule_time '.$request->schedule_time.' task_type : '.$request->task_type);
+            
+            date_default_timezone_set("UTC");
+            
             if($request->task_type == "schedule"){
               
-                $settime =  Carbon::parse(date('Y-m-d H:i:s',strtotime($request->schedule_time)), 'UTC');
+                $settime =  date('Y-m-d H:i:s',strtotime($request->schedule_time));
 
                 \Log::info(' settime '.$settime);
 
