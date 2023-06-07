@@ -1254,10 +1254,11 @@ class TaskController extends BaseController
 
             \Log::info('$request->schedule_time '.$request->schedule_time);
             if($request->task_type == "schedule"){
-                $settime = Carbon::parse($request->schedule_time)->utc();
+                $settime = Carbon::parse(date('Y-m-d H:i:s',strtotime($request->schedule_time)))->utc();
             }else{
                 $settime = Carbon::now()->toDateTimeString();
             }
+            \Log::info(' settime '.$settime);
             //here order save code is started
             // $settime = ($request->task_type == "schedule") ? $request->schedule_time : Carbon::now()->toDateTimeString();
             $notification_time = ($request->task_type == "schedule") ? $settime : Carbon::now()->toDateTimeString();
