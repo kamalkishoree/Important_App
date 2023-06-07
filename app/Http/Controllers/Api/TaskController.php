@@ -1251,9 +1251,13 @@ class TaskController extends BaseController
                 }
             } else {
             }
-
+            if($request->task_type == "schedule"){
+                $settime = convertDateTimeInTimeZone($request->schedule_time,$clienttimezone);
+            }else{
+                $settime = Carbon::now()->toDateTimeString();
+            }
             //here order save code is started
-            $settime = ($request->task_type == "schedule") ? $request->schedule_time : Carbon::now()->toDateTimeString();
+            // $settime = ($request->task_type == "schedule") ? $request->schedule_time : Carbon::now()->toDateTimeString();
             $notification_time = ($request->task_type == "schedule") ? $settime : Carbon::now()->toDateTimeString();
 
             $agent_id          = $request->allocation_type === 'm' ? $request->agent : null;
@@ -1550,10 +1554,8 @@ class TaskController extends BaseController
                 }
                 $orders->drivertags()->sync($tag_id);
             }
-            \Log::info('befor roster');
             $geo = null;
             if ($request->allocation_type === 'a') {
-            \Log::info('in befor roster');
 
                 $geo = $this->createRoster($send_loc_id);
 
@@ -1561,11 +1563,8 @@ class TaskController extends BaseController
             }
 
             $allocation = AllocationRule::where('id', 1)->first();
-            \Log::info('driver '.$request->driver_unique_id);
 
             if($request->driver_unique_id){
-            \Log::info('in driver');
-
                 $decode_id = base64_decode($request->driver_unique_id);
                 $agentId = explode('_',$decode_id)[1];
                 $agent = Agent::find($agentId);
@@ -4692,7 +4691,6 @@ public function RejectOrder(Request $request)
 
 public function OneByOne($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation,$is_cab_pooling, $agent_tags, $is_order_updated,$var,$notify_hour,$reminder_hour)
 {
-    \Log::info('in oneBYone');
 
     $allcation_type    = 'AR';
     $date              = \Carbon\Carbon::today();
