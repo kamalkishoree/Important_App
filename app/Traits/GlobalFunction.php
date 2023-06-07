@@ -190,10 +190,20 @@ trait GlobalFunction{
                     $pricingRule =   $pricingRule->orderBy('id', 'desc')->first();
                 }
             }
-            if(empty($pricingRule)){
+
+            \Log::info('check in $pricingRule');
+            \Log::info(json_encode($pricingRule));
+            \Log::info('to array $pricingRule');
+            \Log::info(json_encode($pricingRule->toArray()));
+
+            if(count($pricingRule->toArray())>0){
                 $pricingRule = PricingRule::where('is_default', 1)->first();
+
+                \Log::info('get default pricing rule');
+                \Log::info(json_encode($pricingRule));
             }
-            Log::info($pricingRule);
+            \Log::info('check in $pricingRule');
+            \Log::info(json_encode($pricingRule));
             return $pricingRule;
 
         } catch (\Throwable $th) {
