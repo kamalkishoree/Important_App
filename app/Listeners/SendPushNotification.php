@@ -56,12 +56,14 @@ class SendPushNotification
 
                 Config::set("database.connections.$schemaName", $default);
                 config(["database.connections.mysql.database" => $schemaName]);
+                Log::info('handle '.$schemaName);
 
                 $this->getData();
 
 
                 DB::disconnect($schemaName);
         } catch (Exception $ex) {
+           Log::info('handle Roaster lisner');
            return $ex->getMessage();
         }
 
@@ -82,7 +84,9 @@ class SendPushNotification
                                     ->select('rosters.*', 'roster_details.customer_name', 'roster_details.customer_phone_number',
         'roster_details.short_name','roster_details.address','roster_details.lat','roster_details.long','roster_details.task_count')->get();
         $getids           = $get->pluck('id');
-        //$qr           = $get->toSql();
+
+        \Log::info("get ids ".json_encode($getids) );
+
         if(count($getids) > 0){
             DB::connection($schemaName)->table('rosters')->whereIn('id',$getids)->delete();
 
@@ -104,13 +108,13 @@ class SendPushNotification
 
     public function sendnotification($recipients)
     {
+            \Log::info("in send Notification ");
          
     try {
 
         $array = json_decode(json_encode($recipients), true);
 
         foreach($array as $item){
-            \Log::info(['item' => $item]);
             if(isset($item['device_token']) && !empty($item['device_token'])){
 
                 $item['title']     = 'Pickup Request';
@@ -133,13 +137,9 @@ class SendPushNotification
 
                     try{
                         $fcm_server_key = !empty($client_preferences->fcm_server_key)? $client_preferences->fcm_server_key : 'null';
-
                         $fcmObj = new Fcm($fcm_server_key);
 
-                        \Log::info(["fcm 2 " => $fcm_server_key]);
                         if($item['is_particular_driver'] != 2 ){
-                        \Log::info(["fcm 3 " => $new]);
-
                             $fcm_store = $fcmObj->to($new) // $recipients must an array
                                     ->priority('high')
                                     ->timeToLive(0)
@@ -156,7 +156,8 @@ class SendPushNotification
                         }
                         else 
                         {
-                        \Log::info(["fcm 3 " => $item['device_token']]);
+
+                            \Log::info(json_encode($item['device_token']));
 
                             $fcm_store =   $fcmObj
                             ->to([$item['device_token']])
@@ -171,8 +172,10 @@ class SendPushNotification
                                 'body' => 'Pickup your order #'.$item['order_id'],
                             ])
                             ->send();
+                            
+                            \Log::info(json_encode($fcm_store));
+
                         }
-                        \Log::info(["fcm " => $fcm_store]);
 
                     }
                     catch(Exception $e){
