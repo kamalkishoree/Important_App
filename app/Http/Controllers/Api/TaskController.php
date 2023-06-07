@@ -1257,7 +1257,8 @@ class TaskController extends BaseController
             
             if($request->task_type == "schedule"){
               
-                $settime =  date('Y-m-d H:i:s',strtotime($request->schedule_time));
+                //$settime =  date('Y-m-d H:i:s',strtotime($request->schedule_time));
+                $settime =  date('Y-m-d H:i:s',strtotime("$request->schedule_time UTC"));
 
                 \Log::info(' settime '.$settime);
 
