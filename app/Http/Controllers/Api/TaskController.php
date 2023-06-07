@@ -1251,6 +1251,8 @@ class TaskController extends BaseController
                 }
             } else {
             }
+
+            \Log::info('$request->schedule_time '.$request->schedule_time);
             if($request->task_type == "schedule"){
                 $settime = Carbon::parse($request->schedule_time)->utc();
             }else{
