@@ -1253,7 +1253,7 @@ class TaskController extends BaseController
             }
             \Log::info('$request->schedule_time '.$request->schedule_time.' task_type : '.$request->task_type);
             
-            date_default_timezone_set("UTC");
+            \Log::info(date_default_timezone_get());
             
             if($request->task_type == "schedule"){
               
