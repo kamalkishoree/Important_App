@@ -1550,17 +1550,22 @@ class TaskController extends BaseController
                 }
                 $orders->drivertags()->sync($tag_id);
             }
-
+            \Log::info('befor roster');
             $geo = null;
             if ($request->allocation_type === 'a') {
+            \Log::info('in befor roster');
+
                 $geo = $this->createRoster($send_loc_id);
 
                 $agent_id = null;
             }
 
             $allocation = AllocationRule::where('id', 1)->first();
+            \Log::info('driver '.$request->driver_unique_id);
 
             if($request->driver_unique_id){
+            \Log::info('in driver');
+
                 $decode_id = base64_decode($request->driver_unique_id);
                 $agentId = explode('_',$decode_id)[1];
                 $agent = Agent::find($agentId);
@@ -4681,6 +4686,8 @@ public function RejectOrder(Request $request)
 
 public function OneByOne($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation,$is_cab_pooling, $agent_tags, $is_order_updated,$var,$notify_hour,$reminder_hour)
 {
+    \Log::info('in oneBYone');
+
     $allcation_type    = 'AR';
     $date              = \Carbon\Carbon::today();
     $auth              = Client::where('database_name', $header['client'][0])->with(['getAllocation', 'getPreference'])->first();
@@ -4765,8 +4772,8 @@ public function OneByOne($geo, $notification_time, $agent_id, $orders_id, $custo
     array_push($rosterData, $data1);
     array_push($rosterData, $data2);
     array_push($rosterData, $data3);
-    // \Log::info('json_encode($rosterData)');
-    // \Log::info(json_encode($rosterData));
+    \Log::info('json_encode($rosterData)');
+    \Log::info(json_encode($rosterData));
     $this->dispatch(new RosterCreate($rosterData, $extraData));
     // FacadesLog::info(['geo' => $geo]);
     if (isset($geo)) {

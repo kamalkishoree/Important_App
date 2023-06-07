@@ -296,9 +296,6 @@ trait GlobalFunction{
                     {
                         return $sum??0;  
                     }
-                    
-                    // \Log::info('distancePricing');
-                    // \Log::info(json_encode($distancePricing));
                     $sum = $lastDistance * $distancePricing->duration_price;
                 }
                     return $sum??0;
