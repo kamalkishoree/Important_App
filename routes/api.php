@@ -92,6 +92,8 @@ Route::group(['prefix' => 'auth'], function () {
 	Route::group(['middleware' => [
                     'dbCheck', 'AppAuth', 'apiLocalization']], function() {
         Route::get('logout', 'Api\AuthController@logout');
+        Route::post('send/referralcode', 'Api\ActivityController@postSendReffralCode');
+
     });
 
     Route::group(['middleware' => ['dbCheck','apiLocalization']], function() {
@@ -101,6 +103,7 @@ Route::group(['prefix' => 'auth'], function () {
         Route::post('signup', 'Api\AuthController@signup');
         Route::post('signup/sendOtp', 'Api\DriverRegistrationController@sendOtp');
         Route::post('signup/verifyOtp', 'Api\DriverRegistrationController@verifyOtp');
+        Route::post('get-driver-refferal', 'Api\AuthController@driverRefferal')->middleware('ConnectDbFromOrder');
         //Route::get('cmscontent','Api\ActivityController@cmsData');
 
         // driver with product pricing  agent/category_with_product
