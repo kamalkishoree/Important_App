@@ -1254,7 +1254,7 @@ class TaskController extends BaseController
 
             \Log::info('$request->schedule_time '.$request->schedule_time);
             if($request->task_type == "schedule"){
-                $settime = Carbon::parse(date('Y-m-d H:i:s',strtotime($request->schedule_time)))->utc();
+                $settime =  Carbon::parse(date('Y-m-d H:i:s',strtotime($request->schedule_time)), 'UTC');
             }else{
                 $settime = Carbon::now()->toDateTimeString();
             }
