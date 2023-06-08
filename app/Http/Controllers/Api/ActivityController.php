@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\DriverRefferal;
 use App\Http\Controllers\Api\BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use App\Model\{Agent, AgentLog, AllocationRule, Client, ClientPreference, Cms, Order, Task, TaskProof, Timezone, User, PaymentOption, UserBidRideRequest, DeclineBidRequest, DriverGeo,UserRating};
+use App\Model\{Agent, AgentLog, AllocationRule, Client, ClientPreference, Cms, Order, Task, TaskProof, Timezone, User, PaymentOption, UserBidRideRequest, DeclineBidRequest, DriverGeo, SmtpDetail, UserRating};
 use Validation;
 use DB, Log;
 use Illuminate\Support\Facades\Storage;
@@ -16,6 +17,10 @@ use Illuminate\Support\Facades\URL;
 use GuzzleHttp\Client as GClient;
 use App\Traits\FormAttributeTrait;
 use App\Traits\{GlobalFunction};
+use Exception;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
+
 class ActivityController extends BaseController
 {
     use FormAttributeTrait;
@@ -760,4 +765,50 @@ class ActivityController extends BaseController
         ], 200);
     }
 
+    public function postSendReffralCode(Request $request)
+    {          
+        $validator = Validator::make($request->all(), [
+            'email' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['status' => 201, 'message' => $validator->errors()->first()], 201);
+        }
+
+        // try {
+            $driver = Auth::user();
+            $client = Client::first();
+            
+            $driver_refferal_detail = DriverRefferal::where('driver_id', $driver->id)->first();
+            if ($driver_refferal_detail) {
+                $smtp = SmtpDetail::where('id', 1)->first();
+                if(!empty($smtp) && !empty($client->contact_email))
+                {             
+                    $email_template_content = '';
+                    $email_template_content = str_ireplace("{code}", $driver_refferal_detail->refferal_code, $email_template_content);
+                    $email_template_content = str_ireplace("{customer_name}", ucwords($driver->name), $email_template_content);
+                    
+                    $sendto = $request->email;
+                    $client_name = $client->name;
+                    $mail_from = $smtp->from_address;
+                    $t = Mail::send('email.verify', [
+                        'email' => $request->email,
+                        'mail_from' => $smtp->from_address,
+                        'client_name' => $client->name,
+                        'code' => $request->refferal_code,
+                        'logo' => $client->logo['original'],
+                        'customer_name' => "Link from " . $driver->name,
+                        'code_text' => 'Register yourself using this referral code below to get bonus offer',
+                        'link' => url()."/user/register?refferal_code=" . $request->refferal_code,
+                        'email_template_content' => $email_template_content
+                    ], function ($message) use ($sendto, $client_name, $mail_from) {
+                        $message->from($mail_from, $client_name);
+                        $message->to($sendto)->subject('Referral For Registration');
+                    });
+                }
+            }
+        // } catch (Exception $e) {
+        //     return response()->json($e->getMessage());
+        // }
+    }
 }
