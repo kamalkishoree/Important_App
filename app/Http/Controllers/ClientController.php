@@ -584,7 +584,9 @@ class ClientController extends Controller
 
         $agents    = Agent::where('is_activated','1')->get();
         $smsTypes = SmsProvider::where('status', '1')->get();
-        return view('configure')->with(['preference' => $preference, 'customMode' => $customMode, 'client' => $client,'subClients'=> $subClients,'smtp_details'=>$smtp, 'agent_docs' => $agent_docs,'smsTypes'=>$smsTypes,'vehicleType'=>$vehicleType, 'warehoseMode' => $warehoseMode, 'dashboardMode' => $dashboardMode,'agents'=>$agents,'driverRatingQuestion'=>$driverRatingQuestion]);
+        $data['preferenceAdditional']  = ClientPreferenceAdditional::where('client_code', Auth::user()->code)->pluck('key_value','key_name');
+
+        return view('configure', $data)->with(['preference' => $preference, 'customMode' => $customMode, 'client' => $client,'subClients'=> $subClients,'smtp_details'=>$smtp, 'agent_docs' => $agent_docs,'smsTypes'=>$smsTypes,'vehicleType'=>$vehicleType, 'warehoseMode' => $warehoseMode, 'dashboardMode' => $dashboardMode,'agents'=>$agents,'driverRatingQuestion'=>$driverRatingQuestion]);
     }
 
 

@@ -19,7 +19,9 @@ trait ClientPreferenceManager
         'pickup_type',
         'drop_type',
         'is_attendence',
-        'idle_time'
+        'idle_time',
+        'reffered_to_amount',
+        'reffered_by_amount'
     ];
 
     /**

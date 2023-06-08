@@ -3977,7 +3977,8 @@ class TaskController extends BaseController
                     'task_status' => $agent_id != null ? 1 : 0,
                     'allocation_type' => $request->allocation_type,
                     'assigned_time' => $settime,
-                    'barcode' => $value['barcode'] ?? null
+                    'barcode' => $value['barcode'] ?? null,
+                    'is_road_side' => 1
                 ];
                 $task = Task::create($data);
                 $dep_id = $task->id;
