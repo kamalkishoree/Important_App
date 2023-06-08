@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use DB;
 use App;
+use App\DriverRefferal;
 use Crypt;
 use Config;
 use JWT\Token;
@@ -22,7 +23,7 @@ use Illuminate\Support\Facades\Hash;
 use Twilio\Rest\Client as TwilioClient;
 use Faker\Generator as Faker;
 use Illuminate\Support\Facades\Storage;
-use App\Model\{User, Agent, AgentDocs, AgentFleet, AllocationRule, AgentSmsTemplate, Client, EmailTemplate, SmtpDetail, ClientPreference, BlockedToken, Fleet, Otp, TaskProof, TagsForTeam, SubAdminTeamPermissions, SubAdminPermissions, TagsForAgent, Team};
+use App\Model\{User, Agent, AgentDocs, AgentFleet, AllocationRule, AgentSmsTemplate, Client, EmailTemplate, SmtpDetail, ClientPreference, BlockedToken, ClientPreferenceAdditional, Fleet, Otp, TaskProof, TagsForTeam, SubAdminTeamPermissions, SubAdminPermissions, TagsForAgent, Team};
 
 
 class AuthController extends BaseController
@@ -511,6 +512,12 @@ class AuthController extends BaseController
         ];
 
         $agent = Agent::create($data);
+
+        $driverRefferal = new DriverRefferal();
+        $driverRefferal->refferal_code = $this->randomData("driver_refferals");
+        $driverRefferal->driver_id = $agent->id;
+        $driverRefferal->save();
+
         $fleetChk = ClientPreference::value('manage_fleet');
         if($fleetChk)
         {
@@ -643,6 +650,28 @@ class AuthController extends BaseController
             DB::rollBack();
             return response()->json(['massage' => __('Something went wrong!')], 400);
                
+        }
+    }
+
+    public function driverRefferal(Request $request)
+    {
+        $DriverRefferal = DriverRefferal::where('refferal_code', $request->refferal_code)->first();
+        if($DriverRefferal){
+            $agent = Agent::where('id',$DriverRefferal->driver_id)->first();
+            $client_preference_additional = ClientPreferenceAdditional::pluck('key_value','key_name');
+            $agent_wallet = $agent->wallet;
+            $agent_wallet->deposit($client_preference_additional['reffered_by_amount'], ['Referral code used by <b>' . $request->user_name . '</b>']);
+            $agent_wallet->balance;
+
+            return response()->json([
+                'message' => 'success',
+                'refferal_amount' => $client_preference_additional['reffered_to_amount'],
+                'refer_by_name' => $agent->name
+            ]);
+        }else{
+            return response()->json([
+                'message' => 'failed'
+            ]);
         }
     }
 }

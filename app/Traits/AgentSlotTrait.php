@@ -155,14 +155,17 @@ trait AgentSlotTrait{
     }
     public function getAgentSlotBlocked($request){
         $date = date('Y-m-d');
-        $AgentSlotRoster = AgentSlot::where('agent_id',$request->agent_id)->with('SlotRoster','SlotDay');
+        $AgentRoster = AgentSlotRoster::where('agent_id', $request->agent_id)->whereDate('schedule_date', '>=', $date)->where('booking_type','blocked')->orderBy('schedule_date', 'asc');
+      
+        $AgentSlotRoster = $AgentRoster->get();
+        // $AgentSlotRoster = AgentSlot::where('agent_id',$request->agent_id)->with('SlotRoster','SlotDay');
             
-        $AgentSlotRoster = $AgentSlotRoster->whereHas('SlotRoster',function ($query) use ($date,$request ){
-            $query->whereDate('schedule_date', '>=', $date)
-            ->where('booking_type','blocked');
-        } );
+        // $AgentSlotRoster = $AgentSlotRoster->whereHas('SlotRoster',function ($query) use ($date,$request ){
+        //     $query->whereDate('schedule_date', '>=', $date)
+        //     ->where('booking_type','blocked');
+        // } );
        
-        $AgentSlotRoster = $AgentSlotRoster->get();
+        // $AgentSlotRoster = $AgentSlotRoster->get();
         
         return $AgentSlotRoster;
     }

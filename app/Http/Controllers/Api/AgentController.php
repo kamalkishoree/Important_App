@@ -225,7 +225,7 @@ class AgentController extends BaseController
 
         $all     = $request->all;
         $tasks   = [];
-        $orders = Order::where('driver_id', $id);//->where('status',  $orderStatus);
+        $ordersDats =  $orders = Order::where('driver_id', $id);//->where('status',  $orderStatus);
         //if ($all != 1) { //geting today task
             $orders = $orders->whereIn(DB::raw('DATE(order_time)'), $selectedDatesArray );
             //$orders = $orders->whereBetween('order_time', [$utc_start,$utc_end]);
@@ -233,6 +233,8 @@ class AgentController extends BaseController
        
         $orders = $orders->orderBy("order_time","ASC")->orderBy("id","ASC")->pluck('id')->toArray();
      
+        $ordersDates = Order::where('driver_id', $id)->where('status', 'assigned')->orderBy("order_time","ASC")->orderBy("id","ASC")->pluck('order_time')->toArray();
+
         if (count($orders) > 0) {
             
             $tasks = Task::whereIn('order_id', $orders)
@@ -250,11 +252,12 @@ class AgentController extends BaseController
             }
         }
         $request->merge(['agent_id'=> $id]);
-        $AgentSlotRoster = $this->getAgentSlotByType($request);
+        $AgentSlotRoster  = $this->getAgentSlotByType($request);
         $AgentBlockRoster = $this->getAgentSlotBlocked($request);
         $response =  [
                         'tasks' => $tasks,
                         'agent_slots'=> $AgentSlotRoster,
+                        'ordersDates' => $ordersDates,
                         'agent_blocked_dates'=> $AgentBlockRoster
                     ];
         return response()->json([

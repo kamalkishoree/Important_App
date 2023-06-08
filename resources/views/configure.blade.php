@@ -1370,6 +1370,28 @@ $sms_crendential = json_decode($preference->sms_credentials);
                     </div>
                 </form>
             </div> 
+
+            <div class="col-md-4 mb-3">
+                <form method="POST" class="h-100" action="{{ route('preference', Auth::user()->code) }}">
+                    @csrf
+                    <input type="hidden" name="send_to" id="send_to" value="customize">
+                    <div class="card-box mb-0 pb-1 h-100">
+                        <div class="d-flex align-items-center justify-content-between">
+                        <h4 class="header-title">{{ __("Refer and Earn") }}</h4>
+                        <button class="btn btn-outline-info d-block" type="submit"> {{ __("Save") }} </button>
+                        </div>
+                        <div class="col-xl-12 my-2" id="addCur-160">
+                        <label class="primaryCurText">{{ __("Referred To Amount") }} </label>
+                        <input class="form-control" type="number" id="reffered_to_amount" name="reffered_to_amount" value="{{ $preferenceAdditional['reffered_to_amount'] ?? '' }}" min="0" step="any">
+                        </div>
+                        <div class="col-xl-12 mb-2 mt-3" id="addCur-160">
+                        <label class="primaryCurText">{{ __("Referred By Amount") }} </label>
+                        <input class="form-control" type="number" name="reffered_by_amount" id="reffered_by_amount" value="{{ $preferenceAdditional['reffered_by_amount'] ?? '' }}" min="0" step="any">
+                        </div>
+                    </div>
+                </form>
+            </div>
+
         </div>
 
 

@@ -221,4 +221,13 @@ class BaseController extends Controller
             'message' => 'Authentication failed'
         ]);
     }
+
+    public function randomData($table){
+        $random_string = 'D'.substr(md5(microtime()), 0, 6);
+        // after creating, check if string is already used
+        while(\DB::table($table)->where('refferal_code', $random_string)->exists()){
+            $random_string = 'D'.substr(md5(microtime()), 0, 6);
+        }
+        return $random_string;
+    }
 }
