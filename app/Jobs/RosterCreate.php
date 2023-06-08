@@ -31,9 +31,6 @@ class RosterCreate implements ShouldQueue
         $this->data      = $data;
         $this->extraData = $extraData;
 
-        \Log::info('json_encode($this->data)');
-        \Log::info(json_encode($this->data));
-
         try {
             $schemaName = 'royodelivery_db';
             $default = [
