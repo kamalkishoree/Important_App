@@ -1250,14 +1250,20 @@ class TaskController extends BaseController
                 }
             } else {
             }
-           
+           $app_call = $request->app_call??0;
             
             
             if($request->task_type == "schedule"){
+                \Log::info(' $request->app_call '.$app_call);
                 \Log::info(' $request->schedule_time '.$request->schedule_time);
-                date_default_timezone_set($clienttimezone);
-                $settime = Carbon::createFromFormat('Y-m-d H:i:s', $request->schedule_time)->setTimezone('UTC');
-                \Log::info(' settime '.$settime);
+                $settime = $request->schedule_time;
+                //Check Api call from Mobile side = 1 or website = 0
+                if($app_call){
+                    date_default_timezone_set($clienttimezone);
+                    $settime = Carbon::createFromFormat('Y-m-d H:i:s', $request->schedule_time)->setTimezone('UTC');
+                    \Log::info(' settime '.$settime);
+                }
+
             }else{
                 $settime = Carbon::now()->toDateTimeString();
             }
@@ -1575,8 +1581,6 @@ class TaskController extends BaseController
                 $agent = Agent::find($agentId);
                 $title = 'Scheduled New Order';
                 $body  = 'The schedule timing of order number #'.$request->order_number.' by the customer.';
-                \Log::info(json_encode($agent));
-                \Log::info($body);
                 // $this->sendPushNotificationtoDriver($title,$body,$auth,[$agent->device_token],$dispatch_traking_url);
                 $this->OneByOne($geo, $notification_time, $agentId, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, $agent_tags, $is_order_updated, '',$request->notify_hour,$request->reminder_hour);
             }
