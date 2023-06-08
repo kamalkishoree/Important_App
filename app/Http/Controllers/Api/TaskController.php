@@ -1159,21 +1159,20 @@ class TaskController extends BaseController
             }
             
             $client = ClientPreference::where('id', 1)->first();
+            $clientTimeZoneId = Client::where('id', 1)->value('timezone');
 
             if ($request->task_type == 'later')
                 $request->task_type = 'schedule';
 
             DB::beginTransaction();
 
-            // $auth = Client::with(['getAllocation', 'getPreference'])->first();
             $tz = new Timezone();
-
             if (isset($request->order_time_zone) && !empty($request->order_time_zone))
                 $auth->timezone = $request->order_time_zone;
             else
                 $auth->timezone = $tz->timezone_name($auth->timezone);
 
-            $clienttimezone = $tz->timezone_name($client->timezone);
+            $clienttimezone = $tz->timezone_name($clientTimeZoneId??251);
 
             $loc_id = $cus_id = $send_loc_id = $newlat = $newlong = 0;
             $images = [];
@@ -1251,17 +1250,13 @@ class TaskController extends BaseController
                 }
             } else {
             }
-            \Log::info('$request->schedule_time '.$request->schedule_time.' task_type : '.$request->task_type);
+           
             
-            \Log::info(date_default_timezone_get());
             
             if($request->task_type == "schedule"){
-              
-                //$settime =  date('Y-m-d H:i:s',strtotime($request->schedule_time));
-                $settime =  date('Y-m-d H:i:s',strtotime("$request->schedule_time UTC"));
-
-                \Log::info(' settime '.$settime);
-
+                date_default_timezone_set($clienttimezone);
+                $settime = Carbon::createFromFormat('Y-m-d H:i:s', $request->schedule_time)->setTimezone('UTC');
+                // \Log::info(' settime '.$settime);
             }else{
                 $settime = Carbon::now()->toDateTimeString();
             }
