@@ -1142,7 +1142,7 @@ class TaskController extends BaseController
             if($request->driver_unique_id)
             {            
                 $agent = explode('_',base64_decode($request->driver_unique_id));
-                $agent = Agent::find($agent[1]);
+                $agent = Agent::find($agent[1]??0);
                 if(!$agent){
                     $inValidAgent = response()->json([
                         'status' => 201,
@@ -1254,9 +1254,10 @@ class TaskController extends BaseController
             
             
             if($request->task_type == "schedule"){
+                \Log::info(' $request->schedule_time '.$request->schedule_time);
                 date_default_timezone_set($clienttimezone);
                 $settime = Carbon::createFromFormat('Y-m-d H:i:s', $request->schedule_time)->setTimezone('UTC');
-                // \Log::info(' settime '.$settime);
+                \Log::info(' settime '.$settime);
             }else{
                 $settime = Carbon::now()->toDateTimeString();
             }
@@ -1574,6 +1575,8 @@ class TaskController extends BaseController
                 $agent = Agent::find($agentId);
                 $title = 'Scheduled New Order';
                 $body  = 'The schedule timing of order number #'.$request->order_number.' by the customer.';
+                \Log::info(json_encode($agent));
+                \Log::info($body);
                 // $this->sendPushNotificationtoDriver($title,$body,$auth,[$agent->device_token],$dispatch_traking_url);
                 $this->OneByOne($geo, $notification_time, $agentId, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, $agent_tags, $is_order_updated, '',$request->notify_hour,$request->reminder_hour);
             }
