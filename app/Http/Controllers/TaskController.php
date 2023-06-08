@@ -375,7 +375,7 @@ class TaskController extends BaseController
 
         $orders = $orders->where('status', $request->routesListingType)->where('status', '!=', null)->orderBy('updated_at', 'desc');
         // dd($orders->get());
-        $preference = ClientPreference::where('id', 1)->first(['theme','date_format','time_format']);
+        $preference = ClientPreference::where('id', 1)->first(['theme','date_format','time_format','is_dispatcher_allocation']);
         $getAdditionalPreference = getAdditionalPreference(['pickup_type', 'drop_type']); 
         return Datatables::of($orders)
                 ->addColumn('customer_id', function ($orders) use ($request) {
@@ -400,6 +400,14 @@ class TaskController extends BaseController
                         $type = 'Return';
                     }
                     return $type;
+                })
+                ->addColumn('is_dispatcher_allocation', function ($orders) use ($preference) {
+                    
+                    if($preference->is_dispatcher_allocation == 1)
+                    {
+                        return 1;
+                    }
+                    return 0;
                 })
                 ->addColumn('agent_name', function ($orders) use ($request) {
                     $checkActive = (!empty($orders->agent->name) && $orders->agent->is_available == 1) ? ' '.__('Active') : ' '. __('InActive');
@@ -508,6 +516,17 @@ class TaskController extends BaseController
     }
 
 
+    public function getTaskRoute(Request $request )
+    {
+           
+
+        $order = Order::with('task')->where('id',$request->order_id)->first();
+        $agents = Agent::all();
+        $returnHTML = view('tasks.route-modal')->with(['order' => $order,'agents' =>$agents])->render();
+        return response()->json(array('success' => true, 'html'=>$returnHTML));
+     
+        
+    }
     public function tasksExport(Request $request)
     {
         $header = [
@@ -732,6 +751,7 @@ class TaskController extends BaseController
             $drop_quantity = 0;
              
 
+         
             
             foreach ($request->task_type_id as $key => $value) {
                 $taskcount ++;
@@ -812,6 +832,17 @@ class TaskController extends BaseController
 
                     $vendor_ids = array_merge($array, array_unique(array_column($product_data, 'vendor_id')));
                 }
+
+                if ($client->is_dispatcher_allocation == 1) {
+                    if ($value == 2) {
+                        $lastTask = Task::where('order_id', $orders->id)
+                        ->where('task_type_id', 1)
+                        ->orderBy('id', 'desc')
+            
+                        ->first();
+                        $dep_id = $lastTask->id;
+                 }
+                 }
                 $data = [
                     'order_id' => $orders->id,
                     'task_type_id' => $value,
@@ -826,6 +857,8 @@ class TaskController extends BaseController
                     'quantity' => $request->quantity[$key] ?? '',
                     'alcoholic_item' => ! empty($request->alcoholic_item[$key]) ? $request->alcoholic_item[$key] : ''
                 ];
+
+                
                 if (checkColumnExists('tasks', 'warehouse_id')) {
                     $data['warehouse_id'] = $request->warehouse_id[$key];
                 }
@@ -870,10 +903,14 @@ class TaskController extends BaseController
                         if ($value == 1) {
                         $this->createWarehouseTasks($client,$value,$request,$orders,$dep_id,$Loction,$cus_id);
                      }
-                    }
 
+                     
+
+                    }
+ 
                 }
-                
+
+
                 // for net quantity
                 if ($value == 1) {
                     $pickup_quantity = $pickup_quantity + !empty($request->quantity[$key]) ? $request->quantity[$key]:0;
@@ -1098,6 +1135,8 @@ class TaskController extends BaseController
     // function for assigning driver to unassigned orders
     public function assignAgent(Request $request)
     {
+
+
         try {
             if ($request->type != 'B') {
                 $agent_id = $request->has('agent_id') ? $request->agent_id : null;
@@ -1148,10 +1187,27 @@ class TaskController extends BaseController
                             'freelancer_commission_fixed' => $freelancer_commission_fixed,
                             'freelancer_commission_percentage' => $freelancer_commission_percentage
                         ]);
+                        
 
-                        $task = Task::where('order_id', $order->id)->update([
-                            'task_status' => 1
-                        ]);
+                        if($request->has('task_id'))
+                        {
+                            $task = Task::where(['order_id' => $order->id,'id' => $request->task_id])->update([
+                                'task_status' => 1,
+                                'driver_id' => $agent_id
+                            ]);
+                            $dependent_task = Task::where(['dependent_task_id' => $request->task_id])->update([
+                                'task_status' => 1,
+                                'driver_id' => $agent_id
+                            ]);
+                        }else
+                        {
+                            $task = Task::where('order_id', $order->id)->update([
+                                'task_status' => 1
+                            ]);
+
+                        }
+                        
+                      
 
                         $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')
                             ->where('id', $order->id)
@@ -2160,6 +2216,7 @@ class TaskController extends BaseController
             //     $f->whereDate('order_time', $date)->with('task');
             // }])->orderBy('id', 'DESC')->get()->where("agent_cash_at_hand", '<', $cash_at_hand);
             $geoagents = $this->getGeoBasedAgentsData($geo, '0', '', $date, $cash_at_hand,$orders_id);
+ 
 
             for ($i = 0; $i <= $try-1; $i++) {
                 foreach ($geoagents as $key =>  $geoitem) {
@@ -2178,6 +2235,7 @@ class TaskController extends BaseController
                             'detail_id' => $randem,
                             'cash_to_be_collected' => $order_details->cash_to_be_collected ?? null
                         ];
+
                         array_push($data, $datas);
                         if ($allcation_type == 'N' && 'ACK') {
                             Log::info('break');
