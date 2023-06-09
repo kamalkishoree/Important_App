@@ -2448,8 +2448,10 @@ class TaskController extends BaseController
                 $this->dispatch(new RosterCreate($data, $extraData));
             }
         } else {
+            Log::info('check');
             $geoagents = $this->getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag, $date, $cash_at_hand, $orders_id);
-            if (count($geoagents) > 0) {
+            Log::info($geoagents);
+            if(!empty($geoagents)){
                 for ($i = 1; $i <= $try; $i++) {
                     foreach ($geoagents as $key =>  $geoitem) {
                         if (!empty($geoitem->device_token) && !empty($geoitem->device_type)  && $geoitem->is_available == 1) {
