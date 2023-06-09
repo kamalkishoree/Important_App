@@ -2448,6 +2448,7 @@ class TaskController extends BaseController
                 $this->dispatch(new RosterCreate($data, $extraData));
             }
         } else {
+            Log::info($geo);
             Log::info('check');
             $geoagents = $this->getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag, $date, $cash_at_hand, $orders_id);
             Log::info($geoagents);
