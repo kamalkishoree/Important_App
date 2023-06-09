@@ -79,13 +79,13 @@ trait GlobalFunction{
                 });
             }
 
-            // $order = Order::find($order_id);
-            // if($order)
-            // {
-            //     $geoagents_ids = $geoagents_ids->whereHas('agent', function($q) use ($order){
-            //         $q->where('id', '!=', $order->driver_id);
-            //     });
-            // }
+            $order = Order::find($order_id);
+            if($order)
+            {
+                $geoagents_ids = $geoagents_ids->whereHas('agent', function($q) use ($order){
+                    $q->where('id', '!=', $order->driver_id);
+                });
+            }
 
             $geoagents_ids =  $geoagents_ids->pluck('driver_id');
 
