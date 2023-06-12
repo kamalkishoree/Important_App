@@ -53,9 +53,8 @@ class RosterCreate implements ShouldQueue
         
             config(["database.connections.mysql.database" => $schemaName]);
 
-            Log::info($this->data);
-            Log::info($this->extraData);
             DB::connection($schemaName)->table('rosters')->insert($this->data);
+            Log::info(DB::connection($schemaName)->table('rosters')->get());
 
             DB::connection($schemaName)->table('roster_details')->insert($this->extraData);
        
