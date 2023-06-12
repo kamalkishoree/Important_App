@@ -4713,7 +4713,10 @@ public function RejectOrder(Request $request)
 
 public function OneByOne($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation,$is_cab_pooling, $agent_tags, $is_order_updated,$var,$notify_hour,$reminder_hour)
 {
-
+    Log::info($notification_time);
+    Log::info($notify_hour);
+    Log::info($reminder_hour);
+    
     $allcation_type    = 'AR';
     $date              = \Carbon\Carbon::today();
     $auth              = Client::where('database_name', $header['client'][0])->with(['getAllocation', 'getPreference'])->first();
