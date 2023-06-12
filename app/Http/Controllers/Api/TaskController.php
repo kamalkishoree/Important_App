@@ -1582,7 +1582,7 @@ class TaskController extends BaseController
                 $title = 'Scheduled New Order';
                 $body  = 'The schedule timing of order number #'.$request->order_number.' by the customer.';
                 // $this->sendPushNotificationtoDriver($title,$body,$auth,[$agent->device_token],$dispatch_traking_url);
-                $this->OneByOne($geo, $notification_time, $agentId, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, $agent_tags, $is_order_updated, '',$request->notify_hour,$request->reminder_hour);
+                $this->OneByOne($geo, $request->schedule_time, $agentId, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, $agent_tags, $is_order_updated, '',$request->notify_hour,$request->reminder_hour);
             }
             // If batch allocation is on them return from there no job is created
 

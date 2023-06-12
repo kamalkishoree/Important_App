@@ -35,6 +35,7 @@ class SendPushNotification
     public function handle(PushNotification $event)
     {
         $date =  Carbon::now()->toDateTimeString();
+        Log::info($date);
 
         try {
 
