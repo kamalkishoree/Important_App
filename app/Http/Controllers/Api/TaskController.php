@@ -4486,18 +4486,11 @@ class TaskController extends BaseController
 
             $cash_at_hand      = $auth->getAllocation->maximum_cash_at_hand_per_person ?? 0;
 
-            \Log::info([
-                'geoid' => $geoid,
-                'agent_tag' => $agent_tag,
-                'date' => $date,
-                'cash_at_hand' => $cash_at_hand,
-            ]);
-
             $geoagents = $this->getGeoBasedAgentsData($geoid, 0, $agent_tag, $date, $cash_at_hand);
-            \Log::info(['geoagents' => $geoagents]);
+
             if (count($geoagents) > 0) {
                 foreach ($geoagents as $key =>  $geoitem) {
-                    if (empty($geoitem->device_token)) {
+                    if (!empty($geoitem->device_token)) {
                         $notificationdata = [
                             'driver_id'           => $geoitem->id,
                             'notification_time'   => Carbon::now()->addSeconds(2)->format('Y-m-d H:i:s'),
