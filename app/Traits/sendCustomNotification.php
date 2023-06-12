@@ -30,8 +30,7 @@ trait sendCustomNotification{
                                 'show_in_foreground' => true,
                             ])
                             ->send();
-            
-            
+            \Log::info(['notify' => $fcm_store]);
         }
     }
     //-------------------------------------------------------------------------------------------//
