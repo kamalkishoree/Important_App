@@ -4766,6 +4766,8 @@ public function OneByOne($geo, $notification_time, $agent_id, $orders_id, $custo
         'detail_id'           => $randem,
         'is_particular_driver' => 0
     ];
+
+    Log::info("Current_notification".$data1);
     
     $data2 = [
         'order_id'            => $orders_id,
@@ -4780,7 +4782,7 @@ public function OneByOne($geo, $notification_time, $agent_id, $orders_id, $custo
         'detail_id'           => $randem,
         'is_particular_driver' => 1
     ];
-
+    Log::info("accept_reject_notification". $data2);
     $data3 = [
         'order_id'            => $orders_id,
         'driver_id'           => $agent_id,
@@ -4794,6 +4796,7 @@ public function OneByOne($geo, $notification_time, $agent_id, $orders_id, $custo
         'detail_id'           => $randem,
         'is_particular_driver' => 2
     ];
+    Log::info("reminder_notification" .$data3);
 
     array_push($rosterData, $data1);
     array_push($rosterData, $data2);
