@@ -210,6 +210,6 @@ class Agent extends Authenticatable implements  Wallet, WalletFloat
 
     public function getRefferalCodeAttribute()
     {
-        return $this->driverRefferal->refferal_code;
+        return $this->driverRefferal->refferal_code??'';
     }
 }

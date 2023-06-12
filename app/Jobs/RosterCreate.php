@@ -31,11 +31,6 @@ class RosterCreate implements ShouldQueue
         $this->data      = $data;
         $this->extraData = $extraData;
 
-
-
-        // \Log::info('json_encode($this->data)');
-        // \Log::info(json_encode($this->data));
-       
         try {
             $schemaName = 'royodelivery_db';
             $default = [
@@ -59,7 +54,7 @@ class RosterCreate implements ShouldQueue
             config(["database.connections.mysql.database" => $schemaName]);
         
             DB::connection($schemaName)->table('rosters')->insert($this->data);
-            //  Log::info('RosterCreate insert');
+
             DB::connection($schemaName)->table('roster_details')->insert($this->extraData);
        
             DB::disconnect($schemaName);

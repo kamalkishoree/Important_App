@@ -62,6 +62,7 @@ class SendPushNotification
 
                 DB::disconnect($schemaName);
         } catch (Exception $ex) {
+           Log::info('handle Roaster lisner');
            return $ex->getMessage();
         }
 
@@ -73,6 +74,8 @@ class SendPushNotification
 
         $schemaName       = 'royodelivery_db';
         $date             =  Carbon::now()->toDateTimeString();
+
+
         $get              =  DB::connection($schemaName)->table('rosters')
                                         ->where(function ($query) use ( $date) {
                                             $query->where('notification_time', '<=', $date)
@@ -80,20 +83,18 @@ class SendPushNotification
                                         })->where('status',0)
                                     ->leftJoin('roster_details', 'rosters.detail_id', '=', 'roster_details.unique_id')
                                     ->select('rosters.*', 'roster_details.customer_name', 'roster_details.customer_phone_number',
-        'roster_details.short_name','roster_details.address','roster_details.lat','roster_details.long','roster_details.task_count')->get();
+        'roster_details.short_name','roster_details.address','roster_details.lat','roster_details.long','roster_details.task_count');
         $getids           = $get->pluck('id');
-        //$qr           = $get->toSql();
+        $get              = $get->get();
+        // \Log::info("get ids ".json_encode($getids));
+
         if(count($getids) > 0){
             DB::connection($schemaName)->table('rosters')->whereIn('id',$getids)->delete();
-
             // \Log::info("get ids ".json_encode($getids) );
             // DB::connection($schemaName)->table('rosters')->whereIn('id',$newget)->update(['status'=>1]);
             $this->sendnotification($get);
         }else{
-        //    Log::info('Empty Roaster lisner');
             $this->extraTime($schemaName);
-
-
         }
 
         return;
@@ -110,7 +111,6 @@ class SendPushNotification
         $array = json_decode(json_encode($recipients), true);
 
         foreach($array as $item){
-            \Log::info(['item' => $item]);
             if(isset($item['device_token']) && !empty($item['device_token'])){
 
                 $item['title']     = 'Pickup Request';
@@ -133,13 +133,9 @@ class SendPushNotification
 
                     try{
                         $fcm_server_key = !empty($client_preferences->fcm_server_key)? $client_preferences->fcm_server_key : 'null';
-
                         $fcmObj = new Fcm($fcm_server_key);
 
-                        \Log::info(["fcm 2 " => $fcm_server_key]);
                         if($item['is_particular_driver'] != 2 ){
-                        \Log::info(["fcm 3 " => $new]);
-
                             $fcm_store = $fcmObj->to($new) // $recipients must an array
                                     ->priority('high')
                                     ->timeToLive(0)
@@ -156,7 +152,6 @@ class SendPushNotification
                         }
                         else 
                         {
-                        \Log::info(["fcm 3 " => $item['device_token']]);
 
                             $fcm_store =   $fcmObj
                             ->to([$item['device_token']])
@@ -171,8 +166,8 @@ class SendPushNotification
                                 'body' => 'Pickup your order #'.$item['order_id'],
                             ])
                             ->send();
+
                         }
-                        \Log::info(["fcm " => $fcm_store]);
 
                     }
                     catch(Exception $e){

@@ -190,13 +190,16 @@ trait GlobalFunction{
                     $pricingRule =   $pricingRule->orderBy('id', 'desc')->first();
                 }
             }
+          
             if(empty($pricingRule)){
                 $pricingRule = PricingRule::where('is_default', 1)->first();
             }
-            Log::info($pricingRule);
             return $pricingRule;
 
         } catch (\Throwable $th) {
+            
+            // \Log::info('Eror '.$th->getMessage());
+
             return [];
         }
     }
@@ -254,6 +257,8 @@ trait GlobalFunction{
     //---------function to get pricing rule based on agent_tag/geo fence/timetable/day/time
     public function getPricingRuleDynamic($pricingRule,$distance,$perKm=0)
     {
+        // \Log::info('dynamic in');
+        return 0; 
         try {
             // \Log::info('pricingRuleDistance nninn : '.$distance);
             $lastDistance = $distance - $pricingRule->base_distance??1;
@@ -264,8 +269,8 @@ trait GlobalFunction{
                     if(!empty($pricingRule) && $distance>1){
                         $distancePricing = DistanceWisePricingRule::where('price_rule_id',$pricingRule->id)->where('distance_fee','<=',$lastDistance)->orderBy('distance_fee','asc')->get();
                     }
-                    $last = $pricingRule->base_distance??1;
                     $sum = 0;
+                    $last = $pricingRule->base_distance??1;
 
                     if(empty($distancePricing)  && count($distancePricing)==0)
                     {
@@ -291,14 +296,10 @@ trait GlobalFunction{
                     }
                 }else{
                     $distancePricing = DistanceWisePricingRule::where('price_rule_id',$pricingRule->id)->where('distance_fee','>=',$lastDistance)->orderBy('distance_fee','asc')->first();
-
                     if(empty($distancePricing)  && count($distancePricing)==0)
                     {
                         return $sum??0;  
                     }
-                    
-                    // \Log::info('distancePricing');
-                    // \Log::info(json_encode($distancePricing));
                     $sum = $lastDistance * $distancePricing->duration_price;
                 }
                     return $sum??0;

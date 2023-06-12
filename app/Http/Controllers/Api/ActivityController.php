@@ -396,6 +396,8 @@ class ActivityController extends BaseController
         if($preferences->unique_id_show){
             $agents['unique_id'] = base64_encode('DId_'.$agent->id);
         }
+        $agents['is_road_side_toggle']= $preferences->is_road_side_toggle;
+
         $datas['user']                = $agents;
         $datas['tasks']               = $tasks;
 
@@ -442,12 +444,13 @@ class ActivityController extends BaseController
     public function taskHistory(Request $request)
     {
         $id    = Auth::user()->id;
+       
         $orders = Order::where('driver_id', $id);
         if(!empty($request->from_date) && !empty($request->to_date)){
-            $orders =  $orders->whereBetween('order_time', [$request->from_date." 00:00:00",$request->to_date." 23:59:59"])->pluck('id')->toArray();
+            $orders =  $orders->whereBetween('order_time', [$request->from_date." 00:00:00",$request->to_date." 23:59:59"])->pluck('id');
         }
 
-        $orders =  $orders->pluck('id')->toArray();
+        $orders =  $orders->pluck('id');
         
         $hisoryStatus = [4,5];
 
