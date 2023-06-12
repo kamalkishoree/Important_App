@@ -35,7 +35,7 @@ class SendPushNotification
     public function handle(PushNotification $event)
     {
         $date =  Carbon::now()->toDateTimeString();
-        Log::info($date);
+     
 
         try {
 
@@ -153,7 +153,7 @@ class SendPushNotification
                         }
                         else 
                         {
-
+                          Log::info('check_remidner');
                             $fcm_store =   $fcmObj
                             ->to([$item['device_token']])
                             ->priority('high')
