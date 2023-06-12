@@ -288,27 +288,28 @@ trait AnalyticsTrait{
         if(!empty($agent_id)){
             $order         =  $order->where('driver_id',$agent_id);
         }
-        $this_day         = clone $order;
+             // Get all orders
+        $this_day         =  clone $order;
         $prev_day         =  clone $order;
-        $this_week        = clone $order;
-        $prev_week        = clone $order;
+        $this_week        =  clone $order;
+        $prev_week        =  clone $order;
         $this_month       =  clone $order;
         $prev_month       =  clone $order;
-             // Get all orders
-        $yesterday        =  date("Y-m-d", strtotime( '-1 days' ) );       
-        $this_day         =  $this_day->whereRaw("DATE(CONVERT_TZ(`order_time`,'+00:00','".$timezone_offset."')) ='".Carbon::now()->toDateString()."'")->get();
-        $prev_day         =  $prev_day->whereRaw("DATE(CONVERT_TZ(`order_time`,'+00:00','".$timezone_offset."')) = '".$yesterday."'")->get();
-        $this_week        =  $this_week->whereRaw("CONVERT_TZ(`order_time`,'+00:00','".$timezone_offset."') between '".Carbon::now()->startOfWeek()."' and '".Carbon::now()->endOfWeek()."'")->get();
+        
+        $yesterday        =  date("Y-m-d", strtotime( '-1 days' ) );
+        $this_day         =  $this_day->whereRaw("DATE(CONVERT_TZ(`order_time`,'+00:00','".$timezone_offset."')) ='".Carbon::now()->toDateString()."'")->get();       
+        $prev_day         =  $prev_day->whereRaw("DATE(CONVERT_TZ(`order_time`,'+00:00','".$timezone_offset."')) = '".$yesterday."'")->get();       
+        $this_week        =  $this_week->whereRaw("CONVERT_TZ(`order_time`,'+00:00','".$timezone_offset."') between '".Carbon::now()->startOfWeek()."' and '".Carbon::now()->endOfWeek()."'")->get();       
         $prev_week        =  $prev_week->whereRaw("CONVERT_TZ(`order_time`,'+00:00','".$timezone_offset."') between '".Carbon::now()->subWeek()->startOfWeek()."' and '".Carbon::now()->subWeek()->endOfWeek()."'")->get();        
-        $this_month       =  $this_month->whereRaw("MONTH(CONVERT_TZ(`order_time`,'+00:00','".$timezone_offset."')) ='".Carbon::now()->month."'")->get();       
+        $this_month       =  $this_month->whereRaw("MONTH(CONVERT_TZ(`order_time`,'+00:00','".$timezone_offset."')) ='".Carbon::now()->month."'")->get();        
         $prev_month       =  $prev_month->whereRaw("MONTH(CONVERT_TZ(`order_time`,'+00:00','".$timezone_offset."')) ='".Carbon::now()->subMonth()->month."'")->get();  
 
         if($this_day){
             $this_day    =  $this->AgentOrderAnalytics($this_day,'this_day');
-         }
-         if($prev_day){
-           $prev_day     =  $this->AgentOrderAnalytics($prev_day,'prev_day');
-         }
+        }
+        if($prev_day){
+            $prev_day     =  $this->AgentOrderAnalytics($prev_day,'prev_day');
+        }
 
          /*** Percentage this day and prev day */
 
