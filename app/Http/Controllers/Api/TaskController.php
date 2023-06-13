@@ -1257,14 +1257,12 @@ class TaskController extends BaseController
                 \Log::info(' $request->app_call '.$app_call);
                 \Log::info(' $request->schedule_time '.$request->schedule_time);
                 $settime = $request->schedule_time;
-                $time = Carbon::now()->createFromFormat('Y-m-d H:i:s')->setTimezone('UTC');
+                $time = Carbon::now()->setTimezone('UTC');
                 //Check Api call from Mobile side = 1 or website = 0
                 if($app_call){
                     date_default_timezone_set($clienttimezone);
                     $settime = Carbon::createFromFormat('Y-m-d H:i:s', $request->schedule_time.':00')->setTimezone('UTC');
                     \Log::info(' settime '.$settime);
-                    $time = Carbon::now()->createFromFormat('Y-m-d H:i:s')->setTimezone('UTC');
-                    \Log::info(' current_time '.$time);
                 }
 
             }else{
