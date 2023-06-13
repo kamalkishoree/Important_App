@@ -31,7 +31,7 @@ class RosterCreate implements ShouldQueue
         $this->data      = $data;
         $this->extraData = $extraData;
 
-        // try {
+        try {
             $schemaName = 'royodelivery_db';
             $default = [
                 'driver' => env('DB_CONNECTION', 'mysql'),
@@ -68,10 +68,10 @@ class RosterCreate implements ShouldQueue
             ]);
             $date   =  Carbon::now()->toDateTimeString();
          
-        // } catch (Exception $ex) {
-        //     Log::info($exception->getMessage());
-        //    return $ex->getMessage();
-        // }
+        } catch (Exception $ex) {
+            Log::info($exception->getMessage());
+           return $ex->getMessage();
+        }
 
     }
 
