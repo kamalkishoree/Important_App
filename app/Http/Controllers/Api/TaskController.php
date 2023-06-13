@@ -4731,6 +4731,8 @@ public function OneByOne($geo, $notification_time, $agent_id, $orders_id, $custo
     } else {
         $allcation_type = 'N';
     }
+    date_default_timezone_set('UTC');
+        $date  =  Carbon::now()->toDateTimeString();
     
     $extraData = [
         'customer_name'            => $customer->name,
@@ -4750,7 +4752,7 @@ public function OneByOne($geo, $notification_time, $agent_id, $orders_id, $custo
     $data1 = [
         'order_id'            => $orders_id,
         'driver_id'           => $agent_id,
-        'notification_time'   => Carbon::now()->toDateTimeString(),
+        'notification_time'   => $date,
         'type'                => $allcation_type,
         'client_code'         => $auth->code,
         'created_at'          => Carbon::now()->toDateTimeString(),

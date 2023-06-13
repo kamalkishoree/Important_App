@@ -80,8 +80,7 @@ class SendPushNotification
 
         $get              =  DB::connection($schemaName)->table('rosters')
                                         ->where(function ($query) use ( $date) {
-                                            $query->where('notification_time', '<=', $date)
-                                                ->orWhere('notification_befor_time', '<=', $date);
+                                            $query->where('notification_time', '<=', $date);
                                         })->where('status',0)
                                     ->leftJoin('roster_details', 'rosters.detail_id', '=', 'roster_details.unique_id')
                                     ->select('rosters.*', 'roster_details.customer_name', 'roster_details.customer_phone_number',
