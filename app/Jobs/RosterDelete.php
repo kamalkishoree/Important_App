@@ -56,10 +56,13 @@ class RosterDelete implements ShouldQueue
             Config::set("database.connections.$schemaName", $default);
             config(["database.connections.mysql.database" => $schemaName]);
             if($this->type=='B'){
-                DB::connection($schemaName)->table('rosters')->where('batch_no',$this->order_id)->delete();
-            }
-            else{
-                DB::connection($schemaName)->table('rosters')->where('order_id',$this->order_id)->delete();
+                DB::connection($schemaName)->table('rosters')->where('batch_no',$this->order_id)->where('is_particular_driver','!=',2)->delete();
+            }else if($this->type=='PD'){
+                DB::connection($schemaName)->table('rosters')->where('order_id',$this->order_id)
+                ->where('is_particular_driver',0)
+                ->delete();
+            }else{
+                DB::connection($schemaName)->table('rosters')->where('order_id',$this->order_id)->where('is_particular_driver','!=',2)->delete();
             }
             DB::disconnect($schemaName);
         } catch (Exception $ex) {
