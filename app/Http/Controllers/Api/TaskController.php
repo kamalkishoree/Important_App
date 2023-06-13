@@ -1257,11 +1257,14 @@ class TaskController extends BaseController
                 \Log::info(' $request->app_call '.$app_call);
                 \Log::info(' $request->schedule_time '.$request->schedule_time);
                 $settime = $request->schedule_time;
+                $time = Carbon::now()->createFromFormat('Y-m-d H:i:s')->setTimezone('UTC');
                 //Check Api call from Mobile side = 1 or website = 0
                 if($app_call){
                     date_default_timezone_set($clienttimezone);
                     $settime = Carbon::createFromFormat('Y-m-d H:i:s', $request->schedule_time.':00')->setTimezone('UTC');
                     \Log::info(' settime '.$settime);
+                    $time = Carbon::now()->createFromFormat('Y-m-d H:i:s')->setTimezone('UTC');
+                    \Log::info(' current_time '.$time);
                 }
 
             }else{
@@ -1582,7 +1585,7 @@ class TaskController extends BaseController
                 $title = 'Scheduled New Order';
                 $body  = 'The schedule timing of order number #'.$request->order_number.' by the customer.';
                 // $this->sendPushNotificationtoDriver($title,$body,$auth,[$agent->device_token],$dispatch_traking_url);
-                $this->OneByOne($geo, $notification_time, $agentId, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, $agent_tags, $is_order_updated, '',$request->notify_hour,$request->reminder_hour);
+                $this->OneByOne($geo, $notification_time,$time, $agentId, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, $agent_tags, $is_order_updated, '',$request->notify_hour,$request->reminder_hour);
             }
             // If batch allocation is on them return from there no job is created
 
@@ -4704,7 +4707,7 @@ public function RejectOrder(Request $request)
     }
 }
 
-public function OneByOne($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation,$is_cab_pooling, $agent_tags, $is_order_updated,$var,$notify_hour,$reminder_hour)
+public function OneByOne($geo, $notification_time,$time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation,$is_cab_pooling, $agent_tags, $is_order_updated,$var,$notify_hour,$reminder_hour)
 {
    
   
@@ -4750,7 +4753,7 @@ public function OneByOne($geo, $notification_time, $agent_id, $orders_id, $custo
     $data1 = [
         'order_id'            => $orders_id,
         'driver_id'           => $agent_id,
-        'notification_time'   => Carbon::now()->toDateTimeString(),
+        'notification_time'   => $time,
         'type'                => $allcation_type,
         'client_code'         => $auth->code,
         'created_at'          => Carbon::now()->toDateTimeString(),
