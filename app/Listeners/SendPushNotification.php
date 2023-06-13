@@ -91,9 +91,9 @@ class SendPushNotification
          
 
         if(count($getids) > 0){
-            \Log::info($get_querry->toSql());
-            \Log::info("get ids ".json_encode($getids));
-            \Log::info("get_time" .$date);
+            // \Log::info($get_querry->toSql());
+            // \Log::info("get ids ".json_encode($getids));
+            // \Log::info("get_time" .$date);
 
             DB::connection($schemaName)->table('rosters')->whereIn('id',$getids)->delete();
             // \Log::info("get ids ".json_encode($getids) );
@@ -158,7 +158,7 @@ class SendPushNotification
                         }
                         else 
                         {
-                          Log::info('check_remidner');
+                        //   Log::info('check_remidner');
                             $fcm_store =   $fcmObj
                             ->to([$item['device_token']])
                             ->priority('high')

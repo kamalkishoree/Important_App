@@ -2448,10 +2448,10 @@ class TaskController extends BaseController
                 $this->dispatch(new RosterCreate($data, $extraData));
             }
         } else {
-            Log::info($geo);
-            Log::info('check');
+            // Log::info($geo);
+            // Log::info('check');
             $geoagents = $this->getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag, $date, $cash_at_hand, $orders_id);
-            Log::info($geoagents);
+            // Log::info($geoagents);
             if(!empty($geoagents)){
                 for ($i = 1; $i <= $try; $i++) {
                     foreach ($geoagents as $key =>  $geoitem) {
@@ -4763,7 +4763,7 @@ public function OneByOne($geo, $notification_time, $agent_id, $orders_id, $custo
         'is_particular_driver' => 0
     ];
 
-    Log::info($data1);
+    // Log::info($data1);
     
     $data2 = [
         'order_id'            => $orders_id,
@@ -4778,7 +4778,7 @@ public function OneByOne($geo, $notification_time, $agent_id, $orders_id, $custo
         'detail_id'           => $randem,
         'is_particular_driver' => 1
     ];
-    Log::info($data2);
+    // Log::info($data2);
     $data3 = [
         'order_id'            => $orders_id,
         'driver_id'           => $agent_id,
@@ -4792,7 +4792,7 @@ public function OneByOne($geo, $notification_time, $agent_id, $orders_id, $custo
         'detail_id'           => $randem,
         'is_particular_driver' => 2
     ];
-    Log::info($data3);
+    // Log::info($data3);
 
     array_push($rosterData, $data1);
     array_push($rosterData, $data2);
