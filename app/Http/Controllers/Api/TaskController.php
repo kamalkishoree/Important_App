@@ -572,7 +572,6 @@ class TaskController extends BaseController
 
 
 
-
         // ------------------------------------------------------------------------------------------------//
         $newDetails['otpEnabled'] = $otpEnabled;
         $newDetails['otpRequired'] = $otpRequired;
@@ -583,6 +582,10 @@ class TaskController extends BaseController
          {
             if(!empty($tasks)&& ($request->task_status == 4) &&($tasks->task_type_id == 1) )
             {
+                
+                \Log::info('request data');
+                \Log::info($request->all());
+                if(isset($request->image) || isset($request->proof_face) || isset($request->signature) ){{
                 $geo = null;
                 
                   $geo = $this->createRoster($tasks->location_id);    
@@ -598,9 +601,11 @@ class TaskController extends BaseController
                     
                      $this->SendToAll($geo, $notification_time, $agent_id, $order_details->id, $customer, $finalLocation, 1, $header, $allocation,  $order_details->is_cab_pooling, null, 1, $is_one_push_booking);
                  }
+                }
             }
 
          }
+        }
         return response()->json([
             'data' => $newDetails,
             'status' => 200,
@@ -3184,12 +3189,28 @@ class TaskController extends BaseController
     public function notificationTrackingDetail(Request $request, $id)
     {
         $order = Order::with('additionData')->where('id', $id)->first();
+        $user_id = Auth::id();
+        $client_prefrence = ClientPreference::where('id', '>', 0)->first();
         if (isset($order->id)) {
+
+           
             $customer = DB::table('customers')->where('id', $order->customer_id)->first();
             $order->order_cost = $order->cash_to_be_collected ?? $order->order_cost;
-            $tasks = DB::table('tasks')->where('order_id', $order->id)->leftJoin('locations', 'tasks.location_id', '=', 'locations.id')
-                ->select('tasks.*', 'locations.latitude', 'locations.longitude', 'locations.short_name', 'locations.address')->orderBy('id')->get();
-            $db_name = client::select('database_name')->orderBy('id', 'asc')->first()->database_name;
+          
+                if($client_prefrence->is_dispatcher_allocation == 1 )
+                {    \Log::info('in here List');
+                    $tasks = DB::table('tasks')->where('order_id', $order->id)->where('task_status',0)->leftJoin('locations', 'tasks.location_id', '=', 'locations.id')
+                    ->select('tasks.*', 'locations.latitude', 'locations.longitude', 'locations.short_name', 'locations.address')->orderBy('id')->limit(2)->get();
+               
+                }else{
+                    $tasks = DB::table('tasks')->where('order_id', $order->id)->leftJoin('locations', 'tasks.location_id', '=', 'locations.id')
+                    ->select('tasks.*', 'locations.latitude', 'locations.longitude', 'locations.short_name', 'locations.address')->orderBy('id')->get();
+               
+                    
+                }
+             \Log::info('Task List');
+             \Log::info($tasks);
+                $db_name = client::select('database_name')->orderBy('id', 'asc')->first()->database_name;
             return response()->json([
                 'message' => 'Successfully',
                 'tasks' => $tasks,
