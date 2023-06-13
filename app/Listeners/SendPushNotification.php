@@ -74,7 +74,8 @@ class SendPushNotification
     {
 
         $schemaName       = 'royodelivery_db';
-        $date             =  Carbon::now()->toDateTimeString();
+        date_default_timezone_set('UTC');
+        $date  =  Carbon::now()->toDateTimeString();
         
 
         $get              =  DB::connection($schemaName)->table('rosters')
