@@ -90,7 +90,7 @@ class SendPushNotification
          \Log::info("get ids ".json_encode($getids));
 
         if(count($getids) > 0){
-            DB::connection($schemaName)->table('rosters')->whereIn('id',$getids)->delete();
+            // DB::connection($schemaName)->table('rosters')->whereIn('id',$getids)->delete();
             // \Log::info("get ids ".json_encode($getids) );
             // DB::connection($schemaName)->table('rosters')->whereIn('id',$newget)->update(['status'=>1]);
             $this->sendnotification($get);
