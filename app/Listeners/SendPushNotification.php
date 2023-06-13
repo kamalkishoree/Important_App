@@ -75,7 +75,7 @@ class SendPushNotification
 
         $schemaName       = 'royodelivery_db';
         $date             =  Carbon::now()->toDateTimeString();
-
+        
 
         $get              =  DB::connection($schemaName)->table('rosters')
                                         ->where(function ($query) use ( $date) {
@@ -85,12 +85,17 @@ class SendPushNotification
                                     ->leftJoin('roster_details', 'rosters.detail_id', '=', 'roster_details.unique_id')
                                     ->select('rosters.*', 'roster_details.customer_name', 'roster_details.customer_phone_number',
         'roster_details.short_name','roster_details.address','roster_details.lat','roster_details.long','roster_details.task_count');
+        $get_querry = clone $get;
         $getids           = $get->pluck('id');
         $get              = $get->get();
-         \Log::info("get ids ".json_encode($getids));
+         
 
         if(count($getids) > 0){
-            // DB::connection($schemaName)->table('rosters')->whereIn('id',$getids)->delete();
+            \Log::info($get_querry->toSql());
+            \Log::info("get ids ".json_encode($getids));
+            \Log::info("get_time" .$date);
+
+            DB::connection($schemaName)->table('rosters')->whereIn('id',$getids)->delete();
             // \Log::info("get ids ".json_encode($getids) );
             // DB::connection($schemaName)->table('rosters')->whereIn('id',$newget)->update(['status'=>1]);
             $this->sendnotification($get);
