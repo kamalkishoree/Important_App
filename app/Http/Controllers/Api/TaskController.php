@@ -4798,40 +4798,40 @@ public function OneByOne($geo, $notification_time, $agent_id, $orders_id, $custo
 
     $this->dispatch(new RosterCreate($rosterData, $extraData));
     // FacadesLog::info(['geo' => $geo]);
-    if (isset($geo)) {
+    // if (isset($geo)) {
 
-        $geoagents_ids =  DriverGeo::where('geo_id', $geo)->pluck('driver_id');
-        $geoagents = Agent::where('id','!=', $agent_id)->whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
-            $f->whereDate('order_time', $date)->with('task');
-        }])->orderBy('id', 'DESC')->get();            
-        // FacadesLog::info(["sss" => $geoagents]);
-            foreach ($geoagents as $key =>  $geoitem) {
-                if (!empty($geoitem->device_token) && $geoitem->is_available == 1) {
-                    $datas = [
-                        'order_id'            => $orders_id,
-                        'driver_id'           => $geoitem->id,
-                        'notification_time'   => $time,
-                        'type'                => $allcation_type,
-                        'client_code'         => $auth->code,
-                        'created_at'          => Carbon::now()->toDateTimeString(),
-                        'updated_at'          => Carbon::now()->toDateTimeString(),
-                        'device_type'         => $geoitem->device_type,
-                        'device_token'        => $geoitem->device_token,
-                        'detail_id'           => $randem,
-                    ];
+    //     $geoagents_ids =  DriverGeo::where('geo_id', $geo)->pluck('driver_id');
+    //     $geoagents = Agent::where('id','!=', $agent_id)->whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
+    //         $f->whereDate('order_time', $date)->with('task');
+    //     }])->orderBy('id', 'DESC')->get();            
+    //     // FacadesLog::info(["sss" => $geoagents]);
+    //         foreach ($geoagents as $key =>  $geoitem) {
+    //             if (!empty($geoitem->device_token) && $geoitem->is_available == 1) {
+    //                 $datas = [
+    //                     'order_id'            => $orders_id,
+    //                     'driver_id'           => $geoitem->id,
+    //                     'notification_time'   => $time,
+    //                     'type'                => $allcation_type,
+    //                     'client_code'         => $auth->code,
+    //                     'created_at'          => Carbon::now()->toDateTimeString(),
+    //                     'updated_at'          => Carbon::now()->toDateTimeString(),
+    //                     'device_type'         => $geoitem->device_type,
+    //                     'device_token'        => $geoitem->device_token,
+    //                     'detail_id'           => $randem,
+    //                 ];
                     
-                    array_push($data, $datas);
-                    if ($allcation_type == 'N' && 'ACK') {
-                        Order::where('id', $orders_id)->update(['driver_id'=>$geoitem->id]);
-                        break;
-                    }
-                }
-                $time = Carbon::parse($time)
-                ->addSeconds(30)
-                ->format('Y-m-d H:i:s');
-            }        
-        $this->dispatch(new RosterCreate($data, $extraData));
-    }
+    //                 array_push($data, $datas);
+    //                 if ($allcation_type == 'N' && 'ACK') {
+    //                     Order::where('id', $orders_id)->update(['driver_id'=>$geoitem->id]);
+    //                     break;
+    //                 }
+    //             }
+    //             $time = Carbon::parse($time)
+    //             ->addSeconds(30)
+    //             ->format('Y-m-d H:i:s');
+    //         }        
+    //     $this->dispatch(new RosterCreate($data, $extraData));
+    // }
 
 } 
 
