@@ -91,7 +91,6 @@ class TaskController extends BaseController
 
     public function updateTaskStatus(Request $request)
     {
-        Log::info('api_hit');
         $header = $request->header();
         $tasks = null;
         $client_details = Client::where('database_name', $header['client'][0])->first();
@@ -299,13 +298,11 @@ class TaskController extends BaseController
             //if ($checkfailed == 1) {
             $Order  = Order::where('id', $orderId->order_id)->update(['status' => $task_type]);
             $task = Task::where('order_id', $orderId->order_id)->update(['task_status' => $request->task_status, 'note' => $note]);
-            ////
-                Log::info('checkColumnExists');
+
 
             if (checkColumnExists('orders', 'rejectable_order')) {
                 // if ($order_details && isset($order_details->rejectable_order) && $order_details->rejectable_order == 1) {
                     if ($order_details &&  $order_details->call_back_url) {
-                        Log::info('updateStatusDataToOrder');
                         $call_web_hook = $this->updateStatusDataToOrder($order_details, 6, 2);  # task rejected
                     }
                 // }
@@ -1262,14 +1259,11 @@ class TaskController extends BaseController
             
             
             if($request->task_type == "schedule"){
-                \Log::info(' $request->app_call '.$app_call);
-                \Log::info(' $request->schedule_time '.$request->schedule_time);
                 $settime = $request->schedule_time;
                 //Check Api call from Mobile side = 1 or website = 0
                 if($app_call){
                     date_default_timezone_set($clienttimezone);
                     $settime = Carbon::createFromFormat('Y-m-d H:i:s', $request->schedule_time.':00')->setTimezone('UTC');
-                    \Log::info(' settime '.$settime);
                 }
 
             }else{
@@ -2396,7 +2390,6 @@ class TaskController extends BaseController
     {
         $allcation_type    = 'AR';
         $date              = \Carbon\Carbon::today();
-        Log::info("header client: " . $header['client'][0]);
         $auth              = Client::where('database_name', $header['client'][0])->with(['getAllocation', 'getPreference'])->first();
         $expriedate        = (int)$auth->getAllocation->request_expiry;
         $beforetime        = (int)$auth->getAllocation->start_before_task_time;
@@ -2456,10 +2449,7 @@ class TaskController extends BaseController
                 $this->dispatch(new RosterCreate($data, $extraData));
             }
         } else {
-            // Log::info($geo);
-            // Log::info('check');
             $geoagents = $this->getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag, $date, $cash_at_hand, $orders_id);
-            // Log::info($geoagents);
             if(!empty($geoagents)){
                 for ($i = 1; $i <= $try; $i++) {
                     foreach ($geoagents as $key =>  $geoitem) {
@@ -4586,7 +4576,6 @@ class TaskController extends BaseController
 
 public function sendPushNotificationtoDriver($title, $body, $auth, $device_token, $call_back_url)
 {
-    FacadesLog::info(['dsss' => $auth]);
     $this->seperate_connection('db_'.$auth->database_name);   
     $client_preferences = DB::connection('db_'.$auth->database_name)->table('client_preferences')->where('client_id', $auth->code)->first();
     $fcm_server_key = !empty($client_preferences->fcm_server_key)? $client_preferences->fcm_server_key : config('laravel-fcm.server_key');
@@ -4621,7 +4610,6 @@ public function sendPushNotificationtoDriver($title, $body, $auth, $device_token
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($dataString));
     $result = curl_exec($ch);
-    Log::info($result);
     curl_close($ch);
     return true;
 }
