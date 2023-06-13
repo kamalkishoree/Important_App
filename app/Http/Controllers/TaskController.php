@@ -1192,7 +1192,7 @@ class TaskController extends BaseController
                         if($request->has('task_id'))
                         {
                             $task = Task::where(['order_id' => $order->id,'id' => $request->task_id])->update([
-                                'task_status' => 1,
+                                'task_status' => 4,
                                 'driver_id' => $agent_id
                             ]);
                             $dependent_task = Task::where(['dependent_task_id' => $request->task_id])->update([

@@ -583,8 +583,6 @@ class TaskController extends BaseController
             if(!empty($tasks)&& ($request->task_status == 4) &&($tasks->task_type_id == 1) )
             {
                 
-                \Log::info('request data');
-                \Log::info($request->all());
                 if(isset($request->image) || isset($request->proof_face) || isset($request->signature) ){{
                 $geo = null;
                 
@@ -3208,8 +3206,6 @@ class TaskController extends BaseController
                
                     
                 }
-             \Log::info('Task List');
-             \Log::info($tasks);
                 $db_name = client::select('database_name')->orderBy('id', 'asc')->first()->database_name;
             return response()->json([
                 'message' => 'Successfully',
