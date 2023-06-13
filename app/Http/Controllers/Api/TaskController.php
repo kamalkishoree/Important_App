@@ -91,6 +91,7 @@ class TaskController extends BaseController
 
     public function updateTaskStatus(Request $request)
     {
+        Log::info('api_hit');
         $header = $request->header();
         $tasks = null;
         $client_details = Client::where('database_name', $header['client'][0])->first();
@@ -140,6 +141,7 @@ class TaskController extends BaseController
                 $codeVendor = $qrcode_web_hook;
             }
         }
+       
 
         $allCount = Count($orderAll);
         $inProgress = $orderAll->where('task_status', 2);
@@ -243,7 +245,7 @@ class TaskController extends BaseController
         // for recipient email and sms
         $send_recipient_sms_status = isset($sms_final_status['client_notification']['recipient_request_recieved_sms']) ? $sms_final_status['client_notification']['recipient_request_recieved_sms'] : 0;
         $send_recipient_email_status = isset($sms_final_status['client_notification']['recipient_request_received_email']) ? $sms_final_status['client_notification']['recipient_request_received_email'] : 0;
-
+       
         if ($waiting_time) {
             Task::where('id', $request->task_id)->update(['waiting_time' => $waiting_time]);
         }
@@ -261,7 +263,6 @@ class TaskController extends BaseController
 
 
                 if ($order_details && $order_details->call_back_url) {
-
                     // \Log::info(json_encode($waitingDetails));
                     // \Log::info(' total_waiting_time  - '.$waitingDetails->total_waiting_time??0);
                     // \Log::info(' total_waiting_price - '.$waitingDetails->total_waiting_price??0);
@@ -293,14 +294,18 @@ class TaskController extends BaseController
                 $this->saveOrderFormAttribute($request, $orderId);
             }
         } elseif ($request->task_status == 5) {
+          
             //cancel complete order if driver cancel pickup task
             //if ($checkfailed == 1) {
             $Order  = Order::where('id', $orderId->order_id)->update(['status' => $task_type]);
             $task = Task::where('order_id', $orderId->order_id)->update(['task_status' => $request->task_status, 'note' => $note]);
             ////
+                Log::info('checkColumnExists');
+
             if (checkColumnExists('orders', 'rejectable_order')) {
                 // if ($order_details && isset($order_details->rejectable_order) && $order_details->rejectable_order == 1) {
                     if ($order_details &&  $order_details->call_back_url) {
+                        Log::info('updateStatusDataToOrder');
                         $call_web_hook = $this->updateStatusDataToOrder($order_details, 6, 2);  # task rejected
                     }
                 // }
@@ -762,11 +767,13 @@ class TaskController extends BaseController
                 'getAllocation',
                 'getPreference'
             ])->first();
+
             if ($auth->custom_domain && !empty($auth->custom_domain)) {
                 $client_url = "https://" . $auth->custom_domain;
             } else {
                 $client_url = "https://" . $auth->sub_domain . \env('SUBDOMAIN');
             }
+
             $dispatch_traking_url = $client_url . '/order/tracking/' . $auth->code . '/' . $order_details->unique_id;
 
             $client = new GClient(['content-type' => 'application/json']);
@@ -788,6 +795,7 @@ class TaskController extends BaseController
                 // Log::info($response);
             }
         } catch (\Exception $e) {
+            Log::info($e->getMessage());
             return response()->json([
                 'status' => __('error'),
                 'message' => $e->getMessage()
