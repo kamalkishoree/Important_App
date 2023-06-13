@@ -35,6 +35,7 @@ class SendPushNotification
     public function handle(PushNotification $event)
     {
         $date =  Carbon::now()->toDateTimeString();
+     
 
         try {
 
@@ -73,22 +74,27 @@ class SendPushNotification
     {
 
         $schemaName       = 'royodelivery_db';
-        $date             =  Carbon::now()->toDateTimeString();
-
+        date_default_timezone_set('UTC');
+        $date  =  Carbon::now()->toDateTimeString();
+        
 
         $get              =  DB::connection($schemaName)->table('rosters')
                                         ->where(function ($query) use ( $date) {
-                                            $query->where('notification_time', '<=', $date)
-                                                ->orWhere('notification_befor_time', '<=', $date);
+                                            $query->where('notification_time', '<=', $date);
                                         })->where('status',0)
                                     ->leftJoin('roster_details', 'rosters.detail_id', '=', 'roster_details.unique_id')
                                     ->select('rosters.*', 'roster_details.customer_name', 'roster_details.customer_phone_number',
         'roster_details.short_name','roster_details.address','roster_details.lat','roster_details.long','roster_details.task_count');
+        $get_querry = clone $get;
         $getids           = $get->pluck('id');
         $get              = $get->get();
-        // \Log::info("get ids ".json_encode($getids));
+         
 
         if(count($getids) > 0){
+            // \Log::info($get_querry->toSql());
+            // \Log::info("get ids ".json_encode($getids));
+            // \Log::info("get_time" .$date);
+
             DB::connection($schemaName)->table('rosters')->whereIn('id',$getids)->delete();
             // \Log::info("get ids ".json_encode($getids) );
             // DB::connection($schemaName)->table('rosters')->whereIn('id',$newget)->update(['status'=>1]);
@@ -152,7 +158,7 @@ class SendPushNotification
                         }
                         else 
                         {
-
+                        //   Log::info('check_remidner');
                             $fcm_store =   $fcmObj
                             ->to([$item['device_token']])
                             ->priority('high')

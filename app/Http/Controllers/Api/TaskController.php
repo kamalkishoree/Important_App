@@ -1590,7 +1590,7 @@ class TaskController extends BaseController
                 $title = 'Scheduled New Order';
                 $body  = 'The schedule timing of order number #'.$request->order_number.' by the customer.';
                 // $this->sendPushNotificationtoDriver($title,$body,$auth,[$agent->device_token],$dispatch_traking_url);
-                $this->OneByOne($geo, $notification_time, $agentId, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, $agent_tags, $is_order_updated, '',$request->notify_hour,$request->reminder_hour);
+                $this->OneByOne($geo, $settime, $agentId, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, $agent_tags, $is_order_updated, '',$request->notify_hour,$request->reminder_hour);
             }
             // If batch allocation is on them return from there no job is created
 
@@ -2456,10 +2456,10 @@ class TaskController extends BaseController
                 $this->dispatch(new RosterCreate($data, $extraData));
             }
         } else {
-            Log::info($geo);
-            Log::info('check');
+            // Log::info($geo);
+            // Log::info('check');
             $geoagents = $this->getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag, $date, $cash_at_hand, $orders_id);
-            Log::info($geoagents);
+            // Log::info($geoagents);
             if(!empty($geoagents)){
                 for ($i = 1; $i <= $try; $i++) {
                     foreach ($geoagents as $key =>  $geoitem) {
@@ -4495,9 +4495,10 @@ class TaskController extends BaseController
             $cash_at_hand      = $auth->getAllocation->maximum_cash_at_hand_per_person ?? 0;
 
             $geoagents = $this->getGeoBasedAgentsData($geoid, 0, $agent_tag, $date, $cash_at_hand);
+
             if (count($geoagents) > 0) {
                 foreach ($geoagents as $key =>  $geoitem) {
-                    if (empty($geoitem->device_token)) {
+                    if (!empty($geoitem->device_token)) {
                         $notificationdata = [
                             'driver_id'           => $geoitem->id,
                             'notification_time'   => Carbon::now()->addSeconds(2)->format('Y-m-d H:i:s'),
@@ -4713,7 +4714,8 @@ public function RejectOrder(Request $request)
 
 public function OneByOne($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation,$is_cab_pooling, $agent_tags, $is_order_updated,$var,$notify_hour,$reminder_hour)
 {
-
+   
+  
     $allcation_type    = 'AR';
     $date              = \Carbon\Carbon::today();
     $auth              = Client::where('database_name', $header['client'][0])->with(['getAllocation', 'getPreference'])->first();
@@ -4737,6 +4739,8 @@ public function OneByOne($geo, $notification_time, $agent_id, $orders_id, $custo
     } else {
         $allcation_type = 'N';
     }
+    date_default_timezone_set('UTC');
+        $date  =  Carbon::now()->toDateTimeString();
     
     $extraData = [
         'customer_name'            => $customer->name,
@@ -4756,7 +4760,7 @@ public function OneByOne($geo, $notification_time, $agent_id, $orders_id, $custo
     $data1 = [
         'order_id'            => $orders_id,
         'driver_id'           => $agent_id,
-        'notification_time'   => Carbon::now()->toDateTimeString(),
+        'notification_time'   => $date,
         'type'                => $allcation_type,
         'client_code'         => $auth->code,
         'created_at'          => Carbon::now()->toDateTimeString(),
@@ -4766,6 +4770,8 @@ public function OneByOne($geo, $notification_time, $agent_id, $orders_id, $custo
         'detail_id'           => $randem,
         'is_particular_driver' => 0
     ];
+
+    // Log::info($data1);
     
     $data2 = [
         'order_id'            => $orders_id,
@@ -4780,7 +4786,7 @@ public function OneByOne($geo, $notification_time, $agent_id, $orders_id, $custo
         'detail_id'           => $randem,
         'is_particular_driver' => 1
     ];
-
+    // Log::info($data2);
     $data3 = [
         'order_id'            => $orders_id,
         'driver_id'           => $agent_id,
@@ -4794,6 +4800,7 @@ public function OneByOne($geo, $notification_time, $agent_id, $orders_id, $custo
         'detail_id'           => $randem,
         'is_particular_driver' => 2
     ];
+    // Log::info($data3);
 
     array_push($rosterData, $data1);
     array_push($rosterData, $data2);
@@ -4801,40 +4808,40 @@ public function OneByOne($geo, $notification_time, $agent_id, $orders_id, $custo
 
     $this->dispatch(new RosterCreate($rosterData, $extraData));
     // FacadesLog::info(['geo' => $geo]);
-    if (isset($geo)) {
+    // if (isset($geo)) {
 
-        $geoagents_ids =  DriverGeo::where('geo_id', $geo)->pluck('driver_id');
-        $geoagents = Agent::where('id','!=', $agent_id)->whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
-            $f->whereDate('order_time', $date)->with('task');
-        }])->orderBy('id', 'DESC')->get();            
-        // FacadesLog::info(["sss" => $geoagents]);
-            foreach ($geoagents as $key =>  $geoitem) {
-                if (!empty($geoitem->device_token) && $geoitem->is_available == 1) {
-                    $datas = [
-                        'order_id'            => $orders_id,
-                        'driver_id'           => $geoitem->id,
-                        'notification_time'   => $time,
-                        'type'                => $allcation_type,
-                        'client_code'         => $auth->code,
-                        'created_at'          => Carbon::now()->toDateTimeString(),
-                        'updated_at'          => Carbon::now()->toDateTimeString(),
-                        'device_type'         => $geoitem->device_type,
-                        'device_token'        => $geoitem->device_token,
-                        'detail_id'           => $randem,
-                    ];
+    //     $geoagents_ids =  DriverGeo::where('geo_id', $geo)->pluck('driver_id');
+    //     $geoagents = Agent::where('id','!=', $agent_id)->whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
+    //         $f->whereDate('order_time', $date)->with('task');
+    //     }])->orderBy('id', 'DESC')->get();            
+    //     // FacadesLog::info(["sss" => $geoagents]);
+    //         foreach ($geoagents as $key =>  $geoitem) {
+    //             if (!empty($geoitem->device_token) && $geoitem->is_available == 1) {
+    //                 $datas = [
+    //                     'order_id'            => $orders_id,
+    //                     'driver_id'           => $geoitem->id,
+    //                     'notification_time'   => $time,
+    //                     'type'                => $allcation_type,
+    //                     'client_code'         => $auth->code,
+    //                     'created_at'          => Carbon::now()->toDateTimeString(),
+    //                     'updated_at'          => Carbon::now()->toDateTimeString(),
+    //                     'device_type'         => $geoitem->device_type,
+    //                     'device_token'        => $geoitem->device_token,
+    //                     'detail_id'           => $randem,
+    //                 ];
                     
-                    array_push($data, $datas);
-                    if ($allcation_type == 'N' && 'ACK') {
-                        Order::where('id', $orders_id)->update(['driver_id'=>$geoitem->id]);
-                        break;
-                    }
-                }
-                $time = Carbon::parse($time)
-                ->addSeconds(30)
-                ->format('Y-m-d H:i:s');
-            }        
-        $this->dispatch(new RosterCreate($data, $extraData));
-    }
+    //                 array_push($data, $datas);
+    //                 if ($allcation_type == 'N' && 'ACK') {
+    //                     Order::where('id', $orders_id)->update(['driver_id'=>$geoitem->id]);
+    //                     break;
+    //                 }
+    //             }
+    //             $time = Carbon::parse($time)
+    //             ->addSeconds(30)
+    //             ->format('Y-m-d H:i:s');
+    //         }        
+    //     $this->dispatch(new RosterCreate($data, $extraData));
+    // }
 
 } 
 

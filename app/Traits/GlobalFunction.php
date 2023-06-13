@@ -65,7 +65,6 @@ trait GlobalFunction{
         try {
             $preference = ClientPreference::select('manage_fleet', 'is_cab_pooling_toggle', 'is_threshold','is_go_to_home','go_to_home_radians')->first();
             $geoagents_ids =  DriverGeo::where('geo_id', $geo);
-
             if($preference->is_cab_pooling_toggle == 1 && $is_cab_pooling == 1){
                 $geoagents_ids = $geoagents_ids->whereHas('agent', function($q) use ($geo, $is_cab_pooling){
                     $q->where('is_pooling_available', $is_cab_pooling);
@@ -75,11 +74,12 @@ trait GlobalFunction{
             if($agent_tag !='')
             {
                 $geoagents_ids = $geoagents_ids->whereHas('agent.tags', function($q) use ($agent_tag){
-                    $q->where('name', '=', $agent_tag);
+                    // $q->where('name', '=', $agent_tag);
                 });
             }
 
             $order = Order::find($order_id);
+
             if($order)
             {
                 $geoagents_ids = $geoagents_ids->whereHas('agent', function($q) use ($order){
