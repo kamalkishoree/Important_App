@@ -1093,6 +1093,8 @@ class TaskController extends BaseController
                 }
             }
 
+           
+
             // this is roster create accounding to the allocation methed
             if ($request->allocation_type === 'a' || $request->allocation_type === 'm') {
                 switch ($allocation->auto_assign_logic) {
@@ -1192,7 +1194,7 @@ class TaskController extends BaseController
                         if($request->has('task_id'))
                         {
                             $task = Task::where(['order_id' => $order->id,'id' => $request->task_id])->update([
-                                'task_status' => 4,
+                                'task_status' => 1,
                                 'driver_id' => $agent_id
                             ]);
                             $dependent_task = Task::where(['dependent_task_id' => $request->task_id])->update([
@@ -2188,6 +2190,8 @@ class TaskController extends BaseController
             'updated_at' => Carbon::now()->toDateTimeString()
         ];
 
+
+       
         if (! isset($geo)) {
             Log::info('innergeoty');
             $oneagent = Agent::where('id', $agent_id)->first();
@@ -2217,7 +2221,7 @@ class TaskController extends BaseController
             // }])->orderBy('id', 'DESC')->get()->where("agent_cash_at_hand", '<', $cash_at_hand);
             $geoagents = $this->getGeoBasedAgentsData($geo, '0', '', $date, $cash_at_hand,$orders_id);
  
-
+           
             for ($i = 0; $i <= $try-1; $i++) {
                 foreach ($geoagents as $key =>  $geoitem) {
                     if (!empty($geoitem->device_token) && $geoitem->is_available == 1) {
