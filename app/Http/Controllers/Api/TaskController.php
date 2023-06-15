@@ -1269,9 +1269,12 @@ class TaskController extends BaseController
             }else{
                 $settime = Carbon::now()->toDateTimeString();
             }
+            \Log::info('app_call-'.$app_call.'time : '.$settime);
             //here order save code is started
             // $settime = ($request->task_type == "schedule") ? $request->schedule_time : Carbon::now()->toDateTimeString();
             $notification_time = ($request->task_type == "schedule") ? $settime : Carbon::now()->toDateTimeString();
+
+            \Log::info('app_call-'.$app_call.'time : '.$settime);
 
             $agent_id          = $request->allocation_type === 'm' ? $request->agent : null;
 
@@ -1649,6 +1652,7 @@ class TaskController extends BaseController
                 $diff_in_minutes = round(abs($to_time - $from_time) / 60);
 
                 $schduledata = [];
+                \Log::info('app_call-'.$app_call.'time : '.$settime.'notification_time'.$notification_time);
 
                 if ($diff_in_minutes > $beforetime) {
 
@@ -1657,8 +1661,8 @@ class TaskController extends BaseController
                         ->addMinutes($finaldelay)
                         ->format('Y-m-d H:i:s');
                     $schduledata['geo']               = $geo;
-                    $schduledata['notification_time'] = $time;
-                    $schduledata['notification_befor_time'] = $notification_time;
+                    $schduledata['notification_time'] = $settime??$time;
+                    $schduledata['notification_befor_time'] = $settime??$notification_time;
                     $schduledata['agent_id']          = $agent_id;
                     $schduledata['orders_id']         = $orders->id;
                     $schduledata['customer']          = $customer;
