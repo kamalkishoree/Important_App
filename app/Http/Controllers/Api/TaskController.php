@@ -1720,6 +1720,20 @@ class TaskController extends BaseController
             }
             $dispatch_traking_url = $client_url . '/order/tracking/' . $auth->code . '/' . $orders->unique_id;
 
+
+            // if($request->task_type == "schedule" && $request->allocation_type === 'a')
+            // {
+            //     $fcm_server_key = ClientPreference::value('fcm_server_key');
+            //     $order = $orders;
+                    
+            //     $data['registration_ids']     = [$order->agent->device_token];
+            //     $data['notification'] = [
+            //         'title'     => 'Order Received',
+            //         'body'      => 'Your order #'.$order->order_number.' has been received!'
+            //     ];
+            //     sendNotification($data,$fcm_server_key);
+            // }
+
             DB::commit();
             // $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')->where('id', $orders->id)->first();
             //event(new \App\Events\loadDashboardData($orderdata));
@@ -2482,7 +2496,10 @@ class TaskController extends BaseController
                     }
                 }
             }
+           
+            if(!empty($data))
             $this->dispatch(new RosterCreate($data, $extraData));
+            
         }
     }
 

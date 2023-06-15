@@ -11,6 +11,7 @@ use App\Model\PaymentOption;
 use Illuminate\Support\Facades\Schema;
 use App\Model\ClientPreferenceAdditional;
 use App\Model\Order;
+use Kawankoding\Fcm\Fcm;
 
 if (!function_exists('setUserCode')) {
     function setUserCode(){
@@ -407,5 +408,28 @@ if (!function_exists('decimal_format')) {
         {
             $km = Order::where('fleet_id',$id)->sum('actual_distance');
             return $km;
+        }
+    }
+
+    if (!function_exists('sendnotification')) {
+        function sendNotification($data,$fcmKey)
+        {
+            if(isset($data)){
+                $fcmObj = new Fcm($fcmKey);
+                
+                return $fcmObj
+                ->to($data['registration_ids'])
+                ->priority('high')
+                ->timeToLive(0)
+                ->data([
+                    'title' => $data['notification']['title'],
+                    'body' => $data['notification']['body'],
+                ])
+                ->notification([
+                    'title' => $data['notification']['title'],
+                    'body' => $data['notification']['body'],
+                ])
+                ->send();
+            }
         }
     }
