@@ -38,15 +38,8 @@ class scheduleNotification implements ShouldQueue
 
 
         $this->schemaName = $schemaName;
-    }
 
-    /**
-     * Execute the job.
-     *
-     * @return void
-     */
-    public function handle()
-    {
+        
         Log::info('schedule notification scheduleNotification');
 
         try {
