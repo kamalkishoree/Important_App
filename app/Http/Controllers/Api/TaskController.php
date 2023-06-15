@@ -792,7 +792,7 @@ class TaskController extends BaseController
                 // Log::info($response);
             }
         } catch (\Exception $e) {
-            Log::info($e->getMessage());
+            \Log::info($e->getMessage());
             return response()->json([
                 'status' => __('error'),
                 'message' => $e->getMessage()
@@ -1257,14 +1257,11 @@ class TaskController extends BaseController
             }
            $app_call = $request->app_call??0;
             
-           \Log::info('app_call-'.$app_call.'time : '.$request->schedule_time);
+            
             if($request->task_type == "schedule"){
                 $settime = $request->schedule_time;
                 //Check Api call from Mobile side = 1 or website = 0
                 if($app_call){
-
-           \Log::info('clienttimezone-'.$app_call.'clienttimezone : '.$clienttimezone);
-
                     date_default_timezone_set($clienttimezone);
                     $settime = Carbon::createFromFormat('Y-m-d H:i:s', $request->schedule_time.':00')->setTimezone('UTC');
                 }
@@ -1272,12 +1269,9 @@ class TaskController extends BaseController
             }else{
                 $settime = Carbon::now()->toDateTimeString();
             }
-            \Log::info('app_call-'.$app_call.'time : '.$settime);
             //here order save code is started
             // $settime = ($request->task_type == "schedule") ? $request->schedule_time : Carbon::now()->toDateTimeString();
             $notification_time = ($request->task_type == "schedule") ? $settime : Carbon::now()->toDateTimeString();
-
-            \Log::info('app_call-'.$app_call.'time : '.$settime);
 
             $agent_id          = $request->allocation_type === 'm' ? $request->agent : null;
 
@@ -1655,7 +1649,6 @@ class TaskController extends BaseController
                 $diff_in_minutes = round(abs($to_time - $from_time) / 60);
 
                 $schduledata = [];
-                \Log::info('app_call-'.$app_call.'time : '.$settime.'notification_time'.$notification_time);
 
                 if ($diff_in_minutes > $beforetime) {
 
