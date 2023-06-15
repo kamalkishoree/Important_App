@@ -125,6 +125,7 @@ class ActivityController extends BaseController
     {
         $header = $request->header();
         $client_code = Client::where('database_name', $header['client'][0])->first();
+        $client_currency = ClientPreference::with('currency')->where('client_id', $client_code->code)->first();
         $tz = new Timezone();
         $client_code->timezone = $tz->timezone_name($client_code->timezone);
         $start     = Carbon::now($client_code->timezone ?? 'UTC')->startOfDay();
@@ -162,6 +163,7 @@ class ActivityController extends BaseController
 
         return response()->json([
             'data' => $tasks,
+            'currency' => $client_currency->currency,
             'status' => 200,
             'message' => __('success')
         ], 200);
