@@ -294,11 +294,11 @@ class TaskController extends BaseController
                 $task = Task::where('order_id', $orderId->order_id)->update(['task_status' => $request->task_status,'note' => $note ]);
                 ////
                 if(checkColumnExists('orders','rejectable_order')){
-                    if($order_details && isset( $order_details->rejectable_order) && $order_details->rejectable_order ==1){
+                   // if($order_details && isset( $order_details->rejectable_order) && $order_details->rejectable_order ==1){
                         if ($order_details &&  $order_details->call_back_url) {
                             $call_web_hook = $this->updateStatusDataToOrder($order_details, 6,2);  # task rejected
                         }
-                    }
+                   // }
                 }
             //}
         } else {
