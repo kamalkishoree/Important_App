@@ -235,6 +235,7 @@ class ActivityController extends BaseController
 
     public function agentLog(Request $request)
     {
+        $user_id = Auth::id();
         $header = $request->header();
         $client_code = Client::where('database_name', $header['client'][0])->first();
         $preferences = ClientPreference::with('currency')->first();
@@ -285,8 +286,16 @@ class ActivityController extends BaseController
                 if (count($orders) > 0) {
                     //\Log::info('get order');
                     
+                   
                     //get agent current task
-                    $tasks = Task::whereIn('order_id', $orders)->where('task_status', 2)->with(['location','tasktype','order.customer','order.additionData'])->orderBy('order_id', 'desc')->orderBy('id', 'ASC')->get()->first();
+                   if($preferences->is_dispatcher_allocation == 1)
+                   {
+                      $tasks = Task::whereIn('order_id', $orders)->where(['task_status' => 2,'driver_id' => $user_id ])->with(['location','tasktype','order.customer','order.additionData'])->orderBy('order_id', 'desc')->orderBy('id', 'ASC')->get()->first();
+
+                   }else{
+
+                       $tasks = Task::whereIn('order_id', $orders)->where('task_status', 2)->with(['location','tasktype','order.customer','order.additionData'])->orderBy('order_id', 'desc')->orderBy('id', 'ASC')->get()->first();
+                   }
                     if (!empty($tasks)) {
 
                         //\Log::info('get tasks--');
