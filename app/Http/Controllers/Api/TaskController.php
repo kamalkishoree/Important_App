@@ -1118,11 +1118,13 @@ class TaskController extends BaseController
                         if ($task) {
                             $task->task_status = 1;
                             $task->driver_id = $agent_id;
+                            $task->assigned_time = date('Y-m-d H:i:s');
                             $task->save();
                         
                         $dependent_task = Task::where(['dependent_task_id' => $task->id])->update([
                             'task_status' => 1,
-                            'driver_id' => $agent_id
+                            'driver_id' => $agent_id,
+                            
                         ]);
                     }
                  
