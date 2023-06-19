@@ -235,7 +235,7 @@ class ActivityController extends BaseController
 
     public function agentLog(Request $request)
     {
-        $user_id = Auth::id();
+        $user_id = Auth::user()->id;
         $header = $request->header();
         $client_code = Client::where('database_name', $header['client'][0])->first();
         $preferences = ClientPreference::with('currency')->first();
