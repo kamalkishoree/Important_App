@@ -51,6 +51,11 @@
             <div class="form-group">
                 
                 <ul class="custom-list">
+                @php
+
+               $flag = true;
+               $select_block = 'd-none';        
+              @endphp 
                     @foreach($order->task as $route)
                     @php
                     if($route->task_type_id ==1)
@@ -58,6 +63,11 @@
                     $type ='Pickup';
                     }else{
                     $type ='Drop Off';
+
+                    if(($route->task_status != 4) && ($flag = true))
+                    {
+                       $flag  = false;
+                    }
                     }
 
                     $class='';
@@ -66,7 +76,7 @@
                       $class= 'is_delivered';
                     }
                     @endphp
-                    <li onclick="getTaskDetail({{$route->id}})" class="{{ $class}}">
+                    <li  class="{{ $class}}">
                     @if($route->task_status  == 0 )
                     {{ $route->location->address ?? ''}}
                     @endif
@@ -78,13 +88,16 @@
 
 
                         @else
-                         <select class="agent-select select_agent" data-id="{{ $order->id}}" task-id="{{$route->id}}">
+                         
+
+                        
+                        <select class="agent-select select_agent @if($flag == false) d-none   @endif" data-id="{{ $order->id}}" task-id="{{$route->id}}">
                             <option value="">Select Agent</option>
                             @foreach($agents as $agent)
                             <option value="{{ $agent->id }}">{{ $agent->name }}</option>
                             @endforeach
                         </select>
-
+                    
                         @endif
                        
                     @else
