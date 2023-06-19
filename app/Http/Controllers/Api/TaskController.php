@@ -876,15 +876,15 @@ class TaskController extends BaseController
         }
 
 
-        if (isset($check) && $check->driver_id != null) {
-            if ($check && $check->call_back_url) {
-                $call_web_hook = $this->updateStatusDataToOrder($check, 2,1);  # task accepted
+        if (isset($orderdata) && $orderdata->driver_id != null) {
+            if ($orderdata && $orderdata->call_back_url) {
+                $call_web_hook = $this->updateStatusDataToOrder($orderdata, 2,1);  # task accepted
             }
             //Send SMS in case of friend's booking
-            if(isset($check->type) && $check->type == 1 && strlen($check->friend_phone_number) > 8)
+            if(isset($orderdata->type) && $orderdata->type == 1 && strlen($orderdata->friend_phone_number) > 8)
             {
-                $friend_sms_body = 'Hi '.($check->friend_name).', '.($check->customer->name??'Our customer').' has booked a ride for you.';
-                $send = $this->sendSms2($check->friend_phone_number , $friend_sms_body);
+                $friend_sms_body = 'Hi '.($orderdata->friend_name).', '.($orderdata->customer->name??'Our customer').' has booked a ride for you.';
+                $send = $this->sendSms2($orderdata->friend_phone_number , $friend_sms_body);
             }
             return response()->json([
                 'message' => __('Task Accecpted Successfully'),
@@ -2426,7 +2426,7 @@ class TaskController extends BaseController
                 $this->dispatch(new RosterCreate($data, $extraData));
             }
         } else {
-            $geoagents = $this->getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag, $date, $cash_at_hand,$orders_id);
+            $geoagents = $this->getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag, $date, $cash_at_hand,$orders_id);           
             if(count($geoagents) > 0){
                 for ($i = 1; $i <= $try; $i++) {
                     foreach ($geoagents as $key =>  $geoitem) {
