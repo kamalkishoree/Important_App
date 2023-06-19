@@ -1196,7 +1196,7 @@ class TaskController extends BaseController
                 $request->task_type = 'schedule';
 
             DB::beginTransaction();
-            D
+            
             // $auth = Client::with(['getAllocation', 'getPreference'])->first();
             $tz = new Timezone();
 
