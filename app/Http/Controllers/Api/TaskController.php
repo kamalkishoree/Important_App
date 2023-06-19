@@ -1196,7 +1196,7 @@ class TaskController extends BaseController
                 $request->task_type = 'schedule';
 
             DB::beginTransaction();
-
+            D
             // $auth = Client::with(['getAllocation', 'getPreference'])->first();
             $tz = new Timezone();
 
@@ -1443,6 +1443,10 @@ class TaskController extends BaseController
                     'warehouse_id' => isset($vendor_id) ? $vendor_id->id : null
                 ];
 
+                if (($client->is_dispatcher_allocation == 1) && ($key  == 1)) {
+
+                    $data['driver_id'] = null;
+                }
                 $task = Task::create($data);
                 
                 $dep_id = $task->id;
