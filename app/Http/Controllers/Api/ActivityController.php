@@ -235,7 +235,7 @@ class ActivityController extends BaseController
 
     public function agentLog(Request $request)
     {
-        $user_id = Auth::id();
+        $user_id = Auth::user()->id;
         $header = $request->header();
         $client_code = Client::where('database_name', $header['client'][0])->first();
         $preferences = ClientPreference::with('currency')->first();
@@ -367,7 +367,15 @@ class ActivityController extends BaseController
 
 
         if (count($orders) > 0) {
-            $tasks = Task::whereIn('order_id', $orders)->where('task_status', '!=', 4)->Where('task_status', '!=', 5)->with(['location','tasktype','order.customer','order.additionData'])->orderBy('order_id', 'desc')->orderBy('id', 'ASC')->get();
+
+            if($preferences->is_dispatcher_allocation == 1)
+            {
+                $tasks = Task::whereIn('order_id', $orders)->where('driver_id' ,$id)->where('task_status', '!=', 4)->Where('task_status', '!=', 5)->with(['location','tasktype','order.customer','order.additionData'])->orderBy('order_id', 'desc')->orderBy('id', 'ASC')->get();
+
+            }else{
+
+                $tasks = Task::whereIn('order_id', $orders)->where('task_status', '!=', 4)->Where('task_status', '!=', 5)->with(['location','tasktype','order.customer','order.additionData'])->orderBy('order_id', 'desc')->orderBy('id', 'ASC')->get();
+            }
             if (count($tasks) > 0) {
                 //sort according to task_order
                 $tasks = $tasks->toArray();

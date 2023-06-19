@@ -1445,7 +1445,7 @@ class TaskController extends BaseController
 
                 if (($client->is_dispatcher_allocation == 1) && ($key  == 1)) {
 
-                    $data['driver_id'] = null;
+                    $data['driver_id'] = 0;
                 }
                 $task = Task::create($data);
                 
