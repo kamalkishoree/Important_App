@@ -88,11 +88,7 @@
 
 
                         @else
-                          
-                        @php
-
                          
-                        @endphp
 
                         
                         <select class="agent-select select_agent @if($flag == false) d-none   @endif" data-id="{{ $order->id}}" task-id="{{$route->id}}">
