@@ -439,7 +439,7 @@ class AuthController extends BaseController
             return response()->json(['message' => $validator->errors()->first()], 422);
         }
 
-        $agent = Agent::where('phone_number', $request->phone_number)->first();
+        $agent = Agent::where(['phone_number'=> $request->phone_number,'deleted_at' => NULL])->first();
         if (!empty($agent)) {
             return response()->json(['message' => 'User already registered. Please login'], 422);
         }
@@ -597,9 +597,6 @@ class AuthController extends BaseController
                             $message->to($clientEmail)->subject('Agent SignUp');
                             $message->setBody($emailTemplate, 'text/html'); // for HTML rich messages
                         });
-                    Log::info('send vendor sign up email to admin--');
-                    Log::info(count(Mail::failures()));
-                    Log::info('send vendor sign up email to admin--');
                 }
             }
         }

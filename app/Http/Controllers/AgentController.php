@@ -437,7 +437,7 @@ class AgentController extends Controller
                 'min:6',
                 'max:15',
                 Rule::unique('agents')->where(function ($query) use ($full_number) {
-                    return $query->where('phone_number', $full_number);
+                    return $query->where(['phone_number'=> $full_number,'deleted_at' => NULL]);
                 })
             ],
             // 'color' => ['required'],
@@ -689,7 +689,7 @@ class AgentController extends Controller
                 'min:6',
                 'max:15',
                 Rule::unique('agents')->where(function ($query) use ($full_number, $id) {
-                    return $query->where('phone_number', $full_number)
+                    return $query->where(['phone_number'=> $full_number,'deleted_at' => NULL])
                         ->where('id', '!=', $id);
                 })
             ],
