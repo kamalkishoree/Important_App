@@ -1139,6 +1139,7 @@ class TaskController extends BaseController
     {
 
 
+
         try {
             if ($request->type != 'B') {
                 $agent_id = $request->has('agent_id') ? $request->agent_id : null;
@@ -1333,6 +1334,7 @@ class TaskController extends BaseController
             'getAllocation',
             'getPreference'
         ])->first();
+
         $notification_time = $batchTime ?? $order_details->order_time;
         $expriedate = (int) $auth->getAllocation->request_expiry;
         $beforetime = (int) $auth->getAllocation->start_before_task_time;
@@ -1342,8 +1344,8 @@ class TaskController extends BaseController
         $time = $this->checkTimeDiffrence($notification_time, $beforetime); // this function is check the time diffrence and give the notification time
         $rostersbeforetime = $this->checkBeforeTimeDiffrence($notification_time, $beforetime);
         $randem = rand(11111111, 99999999);
-
-        $allcation_type = 'ACK';
+        
+         $allcation_type = 'ACK';
 
         foreach ($order_details->task as $key => $value) {
             $taskcount = count($order_details->task);

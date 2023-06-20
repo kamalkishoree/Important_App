@@ -1428,7 +1428,16 @@ class TaskController extends BaseController
 
                 $task_appointment_duration = isset($value->appointment_duration) ? $value->appointment_duration : null;
 
-
+                if ($client->is_dispatcher_allocation == 1) {   
+                    if ($value['task_type_id'] == 2) {
+                        $lastTask = Task::where('order_id', $orders->id)
+                        ->where('task_type_id', 1)
+                        ->orderBy('id', 'desc')
+            
+                        ->first();
+                        $dep_id = $lastTask->id;
+                 }
+                 }
                 $data = [
                     'order_id' => $orders->id,
                     'task_type_id' => $value['task_type_id'],
@@ -1443,10 +1452,7 @@ class TaskController extends BaseController
                     'warehouse_id' => isset($vendor_id) ? $vendor_id->id : null
                 ];
 
-                if (($client->is_dispatcher_allocation == 1) && ($key  == 1)) {
-
-                    $data['driver_id'] = 0;
-                }
+              
                 $task = Task::create($data);
                 
                 $dep_id = $task->id;
