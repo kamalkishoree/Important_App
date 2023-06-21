@@ -756,7 +756,8 @@ $sms_crendential = json_decode($preference->sms_credentials);
                             <div class="col-3 pt-2">
                                 <input class="form-control" type="number" id="radius_for_pooling_km" name="radius_for_pooling_km" value="{{ old('radius_for_pooling_km', $preference->radius_for_pooling_km ?? '0') }}" min="0">
                             </div>
-                        </div>  
+                        </div>
+                        {{-- </div> --}}
                         <div class="row">
                             <div class="col-12">
                                 <div class="d-flex align-items-center justify-content-between mt-3 mb-2">
@@ -1132,7 +1133,6 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                 </div>
                             </div>
 
-
                         </div>
                     </div>
                 </form>
@@ -1315,6 +1315,45 @@ $sms_crendential = json_decode($preference->sms_credentials);
                     </div>
                 </form>
             </div>
+            {{-- <div class="col-md-4 mb-3">
+                <form method="POST" class="h-100" action="{{ route('preference', Auth::user()->code) }}">
+                @csrf
+                    <input type="hidden" name="dispatcher_autoallocation" value="1">
+                    <div class="card-box h-100">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <h4 class="header-title text-uppercase mb-0">{{__("Dispatcher Route Auto Allocation")}}</h4>
+                            <button class="btn btn-outline-info d-block" type="submit"> {{__('Save')}} </button>
+                        </div>
+                        <div class="row align-items-start">
+                            <div class="col-md-12">
+                                <div class="form-group d-flex justify-content-between mb-3">
+                                    <label for="enabled-threshold" class="mr-2 mb-0">{{__("Enable")}} </label>
+                                    <div class="d-flex align-items-center justify-content-between mb-2">
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input " id="is_dispatcher" name="is_dispatcher" {{ (!empty($preference->is_dispatcher_allocation) && $preference->is_dispatcher_allocation > 0) ? 'checked' :'' }}>
+                                            <label class="custom-control-label" for="is_dispatcher"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row dispatcher-section  {{ (!empty($preference->is_dispatcher_allocation) && $preference->is_dispatcher_allocation > 0) ? 'd-block' :'d-none' }}">
+
+                        <div class="col-md-12">
+                                <div class="form-group d-flex justify-content-between mb-3">
+                                    <label for="enabled-dispatcher" class="mr-2 mb-0">{{__("Use Large Hubs")}} </label>
+                                    <div class="d-flex align-items-center justify-content-between mb-2">
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input " id="use_large_hub" name="use_large_hub" {{ (!empty($preference->use_large_hub) && $preference->use_large_hub > 0) ? 'checked' :'' }}>
+                                            <label class="custom-control-label" for="use_large_hub"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> 
+                    </div>
+                </form>
+            </div> --}}
         </div>
 
 
@@ -1706,6 +1745,13 @@ $sms_crendential = json_decode($preference->sms_credentials);
                 $('.threshold-section').removeClass('d-none').addClass('d-block');
             }else{
                 $('.threshold-section').removeClass('d-block').addClass('d-none');
+            }
+        });
+        $('#is_dispatcher').on('change',function(){
+            if ($(this).is(":checked")) {
+                $('.dispatcher-section').removeClass('d-none').addClass('d-block');
+            }else{
+                $('.dispatcher-section').removeClass('d-block').addClass('d-none');
             }
         });
 

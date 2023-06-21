@@ -73,6 +73,8 @@ class ClientController extends Controller
     public function storePreference(Request $request, $domain = '', $id)
     {
 
+
+       
         try {
             $this->updatePreferenceAdditional($request);
             // return redirect()->back()->with('success', 'Client settings updated successfully!');
@@ -111,6 +113,7 @@ class ClientController extends Controller
             $warehouseMode['show_warehouse_module'] = (!empty($request->warehouse_mode['show_warehouse_module']) && $request->warehouse_mode['show_warehouse_module'] == 'on')? 1 : 0;
 
             $warehouseMode['show_category_module'] = (!empty($request->warehouse_mode['show_category_module']) && $request->warehouse_mode['show_category_module'] == 'on')? 1 : 0;
+            $warehouseMode['show_inventory_module'] = (!empty($request->warehouse_mode['show_inventory_module']) && $request->warehouse_mode['show_inventory_module'] == 'on')? 1 : 0;
             $data = [];
             if(checkColumnExists('client_preferences', 'warehouse_mode')){
                 $data = ['warehouse_mode'=>json_encode($warehouseMode)];
@@ -134,7 +137,38 @@ class ClientController extends Controller
 
             return redirect()->back()->with('success', 'Preference updated successfully!');
         }
+      
+       // Dispatcher Auto Allocation Route Code
 
+       if($request->has('dispatcher_autoallocation')){
+        if (!empty($request->is_dispatcher)) {
+            if ($request->is_dispatcher == 'on') {
+                $data = [
+                    'is_dispatcher_allocation' => 1,
+                    'use_large_hub' => ($request->use_large_hub == 'on') ? 1 : 0
+                ];
+            } else {
+                $data = [
+                    'is_dispatcher_allocation' => 0,
+                    'use_large_hub' => 0
+                ];
+            }
+            ClientPreference::where('client_id', $id)->update($data);
+            return redirect()->back()->with('success', 'Preference updated successfully!');
+        }else{
+
+             $data = [
+                    'is_dispatcher_allocation' => 0,
+                    'use_large_hub' => 0
+                ];
+                ClientPreference::where('client_id', $id)->update($data);
+                return redirect()->back()->with('success', 'Preference updated successfully!');
+        }
+
+    }
+      
+        
+       
         if(!empty($request->fcm_server_key)){
             $data = ['fcm_server_key'=>$request->fcm_server_key];
             ClientPreference::where('client_id', $id)->update($data);
@@ -344,6 +378,12 @@ class ClientController extends Controller
                     'api_key' => $request->sms_partner_api_key,
                     'sender_id' => $request->sms_partner_sender_id,
                 ];
+            } elseif($request->sms_provider == 8) // for ethiopia
+            {
+                $sms_credentials = [
+                    'sms_username' => $request->sms_username,
+                    'sms_password' => $request->sms_password,
+                ];
             }
             //for static otp
             $sms_credentials['static_otp'] = ($request->has('static_otp') && $request->static_otp == 'on') ? 1 : 0;
@@ -379,7 +419,7 @@ class ClientController extends Controller
         }
 
         if($request->has('cancel_verify_edit_order_config')){
-            
+
             $request->request->add(['verify_phone_for_driver_registration' => ($request->has('verify_phone_for_driver_registration') && $request->verify_phone_for_driver_registration == 'on') ? 1 : 0]);
             $request->request->add(['is_edit_order_driver' => ($request->has('is_edit_order_driver') && $request->is_edit_order_driver == 'on') ? 1 : 0]);
             $request->request->add(['is_cancel_order_driver' => ($request->has('is_cancel_order_driver') && $request->is_cancel_order_driver == 'on') ? 1 : 0]);
@@ -401,12 +441,11 @@ class ClientController extends Controller
             $request->request->add(['show_limited_address' => ($request->has('show_limited_address') && $request->show_limited_address == 'on') ? 1 : 0]);
         }
 
-
         $request->request->add(['toll_fee' => ($request->has('toll_fee') && $request->toll_fee == 'on') ? 1 : 0]);
+        $request->request->add(['is_road_side_pickup' => ($request->has('is_road_side_pickup') && $request->is_road_side_pickup == 'on') ? 1 : 0]);
         $updatePreference = ClientPreference::updateOrCreate([
             'client_id' => $id
         ], $request->all());
-
 
 
         if ($request->ajax()) {
@@ -493,9 +532,9 @@ class ClientController extends Controller
      */
     public function ShowPreference()
     {
-      
+
         $attributes = FormAttribute::getFormAttribute(1);
-        
+
         $preference  = ClientPreference::where('client_id', Auth::user()->code)->first();
         $currencies  = Currency::orderBy('iso_code')->get();
         $cms         = Cms::all('content');
@@ -540,7 +579,7 @@ class ClientController extends Controller
         $vehicleType = VehicleType::latest()->get();
         $agent_docs = DriverRegistrationDocument::get();
         $driverRatingQuestion = FormAttribute::getFormAttribute(2); // 2 for driverRatingQuestion 1 for defoult FormAttribute
-      
+
         $agents    = Agent::where('is_activated','1')->get();
         $smsTypes = SmsProvider::where('status', '1')->get();
         return view('configure')->with(['preference' => $preference, 'customMode' => $customMode, 'client' => $client,'subClients'=> $subClients,'smtp_details'=>$smtp, 'agent_docs' => $agent_docs,'smsTypes'=>$smsTypes,'vehicleType'=>$vehicleType, 'warehoseMode' => $warehoseMode, 'dashboardMode' => $dashboardMode,'agents'=>$agents,'driverRatingQuestion'=>$driverRatingQuestion]);

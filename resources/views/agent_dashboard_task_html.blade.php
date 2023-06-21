@@ -68,17 +68,21 @@ $agentslocations[] = $defaultmaplocation;
                         <div class="col-md-9 col-9">
                             <h6 class="mb-0 header-title scnd">
                                 {{ ucfirst($agent['name']) }}
-                                <div class="optimizebtn1">
-                                    {!! $optimize !!}
-                                </div>
-                                <div class="exportbtn1">
-                                    {!! $turnbyturn !!}
-                                </div>
+                               
                             </h6>
                             <p class="mb-0"><span class="badge badge-blue text-white">{{ $item['name']??'' }}</span></p>
 
                             <p class="mb-0">{{count($agent['order'])>0?__('Busy '):__('Free ')}}<span>{{$agent['agent_task_count']}} {{__('Tasks')}}</span> {!!$agent['total_distance']==''?'':' <i class="fas fa-route"></i>'!!}<span class="dist_sec totdis{{ $agent['id'] }}  ml-1">{{ $agent['total_distance'] }}</span></p>
+                            <div class="d-flex mt-1">
+                            <div class="optimizebtn1">
+                                    {!! $optimize !!}
+                                </div>
+                                <div class="exportbtn1 ml-2">
+                                    {!! $turnbyturn !!}
+                                </div>
+                            </div>
                         </div>
+                        
                     </div>
                     @php
                         $checkAgentActive = ($agent['is_available'] == 1)? ' ('.__('Online').')' : ' ('.__('Offline').')';

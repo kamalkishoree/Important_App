@@ -133,12 +133,44 @@ $(document).ready(function(){
                 }
             });
         }
+        $(document).on('change','.warehouse',function()
+{
 
+    var id = $(this).val();
+    var data_id = $(this).attr('data-id');
+    $.ajax({
+        method: "POST",
+        url: "/get-warehouse/"+id,
+        headers: {
+            'X-CSRF-Token': '{{ csrf_token() }}',
+        },
+        success: function (response) {
+    
+            $('#add'+data_id+'-address_email').val(response.email);
+            $('#add'+data_id+'-address_phone_number').val(response.phone_no);
+            $("#alsavedaddress"+data_id).find('.withradio .append').remove();
+            $("#alsavedaddress"+data_id).find('.withradio .showsimage').remove();
+            $("#alsavedaddress" + data_id).find('.withradio').append(
+    '<div class="append"><div class="custom-control custom-radio count"><input type="radio" id="' + data_id+ '" name="old_address_id' + data_id + '" value="' + response.address + '" class="custom-control-input redio old-select-address callradio" checked data-srtadd="'+ response.address +'""><label class="custom-control-label" for="' + data_id + '"><span class="spanbold">' + response.address +
+    '</span>-' + response.address +
+    '</label></div></div>');
+
+        },
+        error: function (response) {
+          
+        },
+    });
+});
 
         //////////////////// ************************** end delete single task ************************* ///////////////////////////
         
         var a = totalcountEdit-1;
         var post_count = 1;
+        var warehouse_count = 15;
+        var email_count = 15;
+        var phone_no_count = 15;
+        var address_count = 15;
+        var choose_warehouse_count = 15;
         $('#adds a').click(function() {
            
             countEdit = countEdit + 1;
@@ -146,12 +178,13 @@ $(document).ready(function(){
             var newcount = $('#newcount').val();
             
             post_count = parseInt(newcount) + 1;
+            
           
             a++;
            
                     var newids = null;
                     
-                    var $div = $('div[class^="alTaskType copyin check-validation"]:last');
+                    var $div = $('div[class^="alTaskType copyin check-validation"]:first');
                     var newcheck = $div.find('.redio');
                     $.each(newcheck, function(index, elem){
                         var jElem = $(elem); // jQuery element
@@ -163,11 +196,13 @@ $(document).ready(function(){
                     });
                    
                     var num = parseInt( $div.prop("id").match(/\d+/g), 10 ) +1;
-                    var $clone = $div.clone().prop('class', 'alTaskType copyin check-validation');
+                    var $clone = $div.clone();
+                    $clone.find('h6.show-product').remove();
+                    $clone=$clone.prop('class', 'alTaskType copyin check-validation');
                     $clone.insertAfter('[class^="alTaskType copyin check-validation"]:last');
                     // get all the inputs inside the clone
                     var inputs = $clone.find('.redio');
-
+                   
                     $clone.find('.mainaddress').prop('id', 'add' + countEdit);
                     $clone.find('.cust1_add').prop('id', 'add' + countEdit +'-input');
                     $clone.find('.cust1_btn').prop('num', 'add' + countEdit);
@@ -282,7 +317,53 @@ $(document).ready(function(){
                         post_count++;
                     });
 
-
+                    var warehouse_clone = $clone.find('.warehouse');
+                    $.each(warehouse_clone, function(index, elem){
+                        var jElem = $(elem);
+                        var name = jElem.prop('id');
+                        name = name.replace(/\d+/g, '');
+                        name = 'add'+warehouse_count+'-warehouse';
+                        jElem.prop('id', name);
+                        jElem.attr('data-id', warehouse_count);
+                        warehouse_count++;
+                        
+                    });
+                    var address_email = $clone.find('.address_email');
+                    $.each(address_email, function(index, elem){
+                        var jElem = $(elem);
+                        var name = jElem.prop('id');
+                        name = name.replace(/\d+/g, '');
+                        name = 'add'+email_count+'-address_email';
+                        jElem.prop('id', name);
+                        jElem.attr('data-id', email_count);
+                        email_count++;
+                    });
+                    var choose_warehouse = $clone.find('.choose_warehouse');
+                    $.each(choose_warehouse, function(index, elem){
+                        var jElem = $(elem);
+                        jElem.attr('data-id', choose_warehouse_count);
+                        choose_warehouse_count++;
+                    });
+                    var address_phone_number = $clone.find('.address_phone_number');
+                    $.each(address_phone_number, function(index, elem){
+                        var jElem = $(elem);
+                        var name = jElem.prop('id');
+                        name = name.replace(/\d+/g, '');
+                        name = 'add'+phone_no_count+'-address_phone_number';
+                        jElem.prop('id', name);
+                        jElem.attr('data-id', phone_no_count);
+                        phone_no_count++;
+                    });
+                    var saved_address = $clone.find('.alsavedaddress');
+                    $.each(saved_address, function(index, elem){
+                        var jElem = $(elem);
+                        jElem.find('.append').remove();
+                        var name = jElem.prop('id');
+                        name = name.replace(/\d+/g, '');
+                        name = 'alsavedaddress'+address_count;
+                        jElem.prop('id', name);
+                        address_count++;
+                    });
                     $('input[id='+newids+']').prop("checked",true);
                    
 
@@ -529,26 +610,34 @@ $(document).ready(function(){
                     $("#taskFormHeader #dialCode").val(customerdata.dial_code);
                     
                     //getting instance of intlTelInput
-                    var input = document.querySelector("#taskFormHeader .phone_number");
-                    var iti = window.intlTelInputGlobals.getInstance(input);
-                    iti.setCountry(countrycode);
+                 
 
                     $("#taskFormHeader").find("input[name='email']").val(customerdata.email);
+                    $(".alTaskType").each(function(){
+                        if (!($(this).hasClass('is_warehouse_selected'))) {
+                            $(this).find('.editwithradio .append').remove();
+                        }
+                      });
 
-                    $('.editwithradio .append').remove();
+
                     jQuery.each(array, function(i, val) {
                         var countz = '';
                         var rand =  Math.random().toString(36).substring(7);
                         $(".editwithradio").each(function(){
                             var count = parseInt(countz);if(isNaN(count)){count = 0;}
+                            var id = $(this).parent().closest('.alTaskType').hasClass('is_warehouse_selected');   
+                       if(!id){
                             $(this).append(
                             '<div class="append"><div class="custom-control custom-radio count"><input type="radio" id="' + (rand + count) + '" name="old_address_id' + countz + '" value="' + val.id + '" class="custom-control-input redio old-select-address callradio" data-srtadd="'+ val.short_name +'" data-flat_no="'+ val.flat_no +'"  data-adr="'+ val.address +'" data-lat="'+ val.latitude +'" data-long="'+ val.longitude +'" data-pstcd="'+ val.post_code +'" data-emil="'+ val.email +'" data-ph="'+ val.phone_number +'"><label class="custom-control-label" for="' + (rand + count) + '"><span class="spanbold">' + val.short_name +
                             '</span>-' + val.address +
                             '</label></div></div>');
                             countz = count + 1;
+                       }
                         });
                     });
-
+                    var input = document.querySelector("#taskFormHeader .phone_number");
+                    var iti = window.intlTelInputGlobals.getInstance(input);
+                    iti.setCountry(countrycode);
                 }
             });
         }
@@ -748,6 +837,31 @@ $(document).on('click', '.mdi-delete-single-task', function() {
 
             }
         });
+
+       function showProductDetail(id){          
+ 
+       $.ajax({
+                url: "/get-product-detail",
+                type: "get",
+                datatype: "html",
+                data: {
+                    id: id,
+                },
+                success: (data) => {
+                 $('.product-title').empty().append(data.title);
+                 $('.product-body').empty().append(data.html);
+                 $("#show-product-modal").modal("show");
+                },
+                error: () => {
+//                     $(".inventory-products").empty().html(data);
+                },
+                complete: function(data) {
+                    // hideLoader();
+                }
+            });
+ 
+ }
+
 
 
 </script>

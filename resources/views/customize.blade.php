@@ -670,7 +670,7 @@ getAdditionalPreference(['pickup_type',
 													class="custom-control custom-switch">
                                                 <input type="checkbox"
 														class="custom-control-input event_type"
-														id="customSwitch_{{$key.''.$counter.'13'}}"
+														id="customSwitch_{{$key.''.$counter.'11'}}"
 														name="face_{{$key+1}}" {{!empty($taskproof->face) && $taskproof->face == 1 ? 'checked':''}}>
                                                 <label
 														class="custom-control-label"
@@ -683,7 +683,7 @@ getAdditionalPreference(['pickup_type',
 													class="custom-control custom-switch">
                                                 <input type="checkbox"
 														class="custom-control-input event_type otp-requried-check"
-														id="customSwitch_{{$key.''.$counter.'14'}}"
+														id="customSwitch_{{$key.''.$counter.'12'}}"
 														name="face_requried_{{$key+1}}" {{!empty($taskproof->face_requried) && $taskproof->face_requried == 1 ? 'checked':''}}>
                                                 <label
 														class="custom-control-label"
@@ -705,11 +705,11 @@ getAdditionalPreference(['pickup_type',
 													class="custom-control custom-switch">
                                                 <input type="checkbox"
 														class="custom-control-input event_type"
-														id="customSwitch_{{$key.''.$counter.'11'}}"
+														id="customSwitch_{{$key.''.$counter.'13'}}"
 														name="qrcode_{{$key+1}}" {{!empty($taskproof->qrcode) && $taskproof->qrcode == 1 ? 'checked':''}}>
                                                 <label
 														class="custom-control-label"
-														for="customSwitch_{{$key.''.$counter.'11'}}"></label>
+														for="customSwitch_{{$key.''.$counter.'13'}}"></label>
                                             </div>
                                         </td>
 
@@ -718,11 +718,11 @@ getAdditionalPreference(['pickup_type',
 													class="custom-control custom-switch">
                                                 <input type="checkbox"
 														class="custom-control-input event_type otp-requried-check"
-														id="customSwitch_{{$key.''.$counter.'12'}}"
+														id="customSwitch_{{$key.''.$counter.'14'}}"
 														name="qrcode_requried_{{$key+1}}" {{!empty($taskproof->qrcode_requried) && $taskproof->qrcode_requried == 1 ? 'checked':''}}>
                                                 <label
 														class="custom-control-label"
-														for="customSwitch_{{$key.''.$counter.'12'}}"></label>
+														for="customSwitch_{{$key.''.$counter.'14'}}"></label>
                                             </div>
                                         </td>
 

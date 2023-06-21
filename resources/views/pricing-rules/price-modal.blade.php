@@ -119,7 +119,7 @@
                                 <hr>
                                 <h5 class="text-uppercase bg-light-yellopink p-2 mt-0 mb-3">Pricing Values @if(checkColumnExists('client_preferences', 'is_bid_ride_toggle')) @if($client->getPreference->is_bid_ride_toggle == 1) (Recommendation) @endif @endif</h5>
                                 <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-md-6">
                                         <div class="form-group" id="">
                                             {!! Form::label('title', __('Base Price'),['class' => 'control-label']) !!}
                                             {!! Form::text('base_price', 10, ['class' => 'form-control','required' => 'required']) !!}
@@ -129,6 +129,18 @@
 
                                         </div>
                                     </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group" id="">
+                                            {!! Form::label('title', __('Waiting Price'),['class' => 'control-label']) !!}
+                                            {{-- <a href="javascript:void(0)" class="btn btn-success btn-sm mb-1  add_more_button add_button float-right"  data-id="1" style=""><i class="mdi mdi-plus-circle mr-1" aria-hidden="true"></i> Add Distance wise Price</a> --}}
+                                            {!! Form::number('waiting_price', 1, ['class' => 'form-control']) !!}
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong></strong>
+                                            </span>
+
+                                        </div>
+                                    </div>
+
                                 </div>
 
                                 <div class="row">
@@ -157,7 +169,7 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group" id="">
-                                            {!! Form::label('title', __('Duration Price(per minute)'),['class' => 'control-label']) !!}
+                                            {!! Form::label('title', __('Duration Price (per minute)'),['class' => 'control-label']) !!}
                                             {!! Form::text('duration_price', 1, ['class' => 'form-control','required' => 'required']) !!}
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
@@ -168,7 +180,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group" id="">
                                             {!! Form::label('title', __('Distance Fee'),['class' => 'control-label']) !!}
-                                            {!! Form::text('distance_fee', 1, ['class' => 'form-control','required' => 'required']) !!}
+                                            <input type="text" name="distance_fee" value="1" class="form-control" id="distance_fee" required>
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
                                             </span>
@@ -176,6 +188,8 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <span id="new-rows"></span>
                                 @if(checkColumnExists('client_preferences', 'is_bid_ride_toggle')) @if($client->getPreference->is_bid_ride_toggle == 1)
                                 <hr>
                                 <h5 class="text-uppercase bg-light-yellopink p-2 mt-0 mb-3">Pricing Values (Minimum)</h5>
@@ -215,7 +229,7 @@
                                     </div>
                                 </div>
 
-                                <div class="row">
+                                <div class="row d-none">
                                     <div class="col-md-6">
                                         <div class="form-group" id="">
                                             {!! Form::label('title', __('Duration Price(per minute)'),['class' => 'control-label']) !!}
@@ -276,10 +290,10 @@
                                     </div>
                                 </div>
 
-                                <div class="row">
+                                {{-- <div class="row d-none">
                                     <div class="col-md-6">
                                         <div class="form-group" id="">
-                                            {!! Form::label('title', __('Duration Price(per minute)'),['class' => 'control-label']) !!}
+                                            {!! Form::label('title', __('Duration Price (per minute)'),['class' => 'control-label']) !!}
                                             {!! Form::text('duration_price_maximum', 1, ['class' => 'form-control','required' => 'required']) !!}
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>
@@ -297,7 +311,7 @@
 
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
                                 <hr>
                                 @endif @endif
                                 <div class="row">
@@ -382,3 +396,62 @@
         </div>
     </div>
 </div>
+<script>
+ $(document).on('click','.add_more_button',function(){
+    var main_id = $(this).attr('data-id');
+    section_id  = parseInt(main_id);
+    var val = $('#distance_fee'+section_id).val();
+
+    if(val==0 || val == undefined)
+        {
+            var val = $('#distance_fee').val();
+            val  = parseInt(val) + 1;
+        }else{
+            val = parseInt(val) + 1;
+        }
+
+    if(section_id !== 1){
+        $(this).hide();
+    }else{
+        $(this).prop('disabled', true);
+        $(this).addClass('disabled');
+    }
+
+    $('#remove_button'+section_id).hide();
+
+    id          = section_id +1;
+        addTemplate(id,val);
+        $('#add_button').attr('data-id',id);
+    });
+
+    function addTemplate(section_id,val){
+        id = section_id;
+        var data  = '';
+
+        var data = '<div class="row" id="remove'+id+'"><div class="col-md-6"><div class="form-group" id="">{!! Form::label('title', __('Price (per km)'),['class' => 'control-label']) !!}{!! Form::number('duration_price_arr[]', 1, ['class' => 'form-control']) !!}</div></div><div class="col-md-6"><div class="form-group" id="">{!! Form::label('title', __('Distance km'),['class' => 'control-label']) !!}<a href="javascript:void(0)" class="action-icon remove_more_button float-right" id="remove_button'+id+'" data-rid="'+id+'"> <i class="mdi mdi-delete"></i></a><a href="javascript:void(0)" class="ml-1 add_more_button float-right" id="add_button'+id+'" data-id="'+id+'" style=""><i class="mdi mdi-plus-circle mr-1" aria-hidden="true"></i></a><input type="number" name="distance_fee_arr[]" value="'+val+'" class="form-control" id="distance_fee'+id+'" min="'+val+'" ></div></div></div>';
+
+        var chk = $('#option-check').val();
+        if(chk == 1){
+            $('#new-rows').append(data);
+        }else{
+            $('#new-rows-edit').append(data);
+        }
+
+    }
+
+
+    $(document).on('click','.remove_more_button',function(){
+        var id = $(this).attr('data-rid');
+        $('#remove'+ id).remove();
+        id  = id - 1;
+        if(id !== 1){
+            $('#add_button'+id).show();
+        }else{
+            $('.add_button').prop('disabled', false);
+            $('.add_button').removeClass('disabled');
+
+        }
+        $('#remove_button'+id).show();
+
+    });
+</script>
