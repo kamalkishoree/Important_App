@@ -892,7 +892,7 @@ class TaskController extends BaseController
                     '{plate-no}' => $driver->plate_number ?? '',
                     '{track-url}' => $call_web_hook??''
                 ];
-                $friend_sms_body = sendSmsTemplate('friend-sms', $keyData);              
+                $friend_sms_body = sendSmsTemplate('friend-sms', $keyData);   
                 $this->sendSmsNew($orderdata->friend_phone_number, $friend_sms_body);         
             }
             return response()->json([
