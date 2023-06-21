@@ -44,7 +44,7 @@ class AgentSMSTemplateSeeder extends Seeder
             ],
             [
               'slug' => 'friend-sms',
-              'tags' => '{user-name},{customer-name},{agent-name},{car-model},{plate-no}',
+              'tags' => '{user-name},{customer-name},{agent-name},{car-model},{plate-no},{track-url}',
               'label' => 'Friend-sms',
               'content' => 'Hi {user-name}, {customer-name} have booked a ride for you. {agent-name} in our {car-model} with license plate {plate-no} has been assgined',
             ]
@@ -62,7 +62,7 @@ class AgentSMSTemplateSeeder extends Seeder
               $ops = AgentSmsTemplate::where('slug', $option['slug'])->first();
  
               if ($ops !== null) {
-                //   $ops->update(['content' => $option['content']]);
+                $find->update(['tags' => $option['tags']]);
               } else {
                   $ops = AgentSmsTemplate::create([
                     'slug' => $option['slug'],
