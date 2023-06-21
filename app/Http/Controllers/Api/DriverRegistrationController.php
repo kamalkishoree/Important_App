@@ -34,7 +34,7 @@ class DriverRegistrationController extends BaseController
                 return $this->error($validator->errors()->first(), 422);
             }
             $phone = '+' . $request->dial_code . $request->phone_number;
-            $agent = Agent::where('phone_number', $phone)->first();
+            $agent = Agent::where(['phone_number'=> $phone,'deleted_at' => NULL])->first();
 
             if ($agent) {
                 return response()->json([
