@@ -62,7 +62,7 @@ class AgentSMSTemplateSeeder extends Seeder
               $ops = AgentSmsTemplate::where('slug', $option['slug'])->first();
  
               if ($ops !== null) {
-                $find->update(['tags' => $option['tags']]);
+                $ops->update(['tags' => $option['tags']]);
               } else {
                   $ops = AgentSmsTemplate::create([
                     'slug' => $option['slug'],
