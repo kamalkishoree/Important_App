@@ -38,6 +38,7 @@ Route::get('get-all-teams', 'Api\TaskController@getAllTeams')->middleware('Conne
 Route::post('update-create-vendor-order', 'Api\AuthController@updateCreateVendorOrder')->middleware('ConnectDbFromOrder');
 Route::post('task/update', 'Api\TaskController@UpdateTask')->middleware('ConnectDbFromOrder');
 
+
 Route::post('task/addwaitingtime', 'Api\TaskController@addWaitingTime')->middleware('ConnectDbFromOrder');
 Route::post('task/update_order_prepration_time', 'Api\TaskController@addBufferTime')->middleware('ConnectDbFromOrder');
 
@@ -92,6 +93,8 @@ Route::group(['prefix' => 'auth'], function () {
 	Route::group(['middleware' => [
                     'dbCheck', 'AppAuth', 'apiLocalization']], function() {
         Route::get('logout', 'Api\AuthController@logout');
+        Route::post('send/referralcode', 'Api\ActivityController@postSendReffralCode');
+
     });
 
     Route::group(['middleware' => ['dbCheck','apiLocalization']], function() {
@@ -101,6 +104,7 @@ Route::group(['prefix' => 'auth'], function () {
         Route::post('signup', 'Api\AuthController@signup');
         Route::post('signup/sendOtp', 'Api\DriverRegistrationController@sendOtp');
         Route::post('signup/verifyOtp', 'Api\DriverRegistrationController@verifyOtp');
+        Route::post('get-driver-refferal', 'Api\AuthController@driverRefferal')->middleware('ConnectDbFromOrder');
         //Route::get('cmscontent','Api\ActivityController@cmsData');
 
         // driver with product pricing  agent/category_with_product
@@ -124,7 +128,7 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
 
     Route::get('user', 'Api\AuthController@user');
     Route::post('agent/delete', 'Api\AuthController@deleteAgent');
-
+    Route::post('agent/add_delete_block_slot', 'Api\AgentSlotController@AddDeleteBlockSlot');
     Route::get('taskList', 'Api\ActivityController@tasks');                    // api for task list
     Route::get('updateStatus', 'Api\ActivityController@updateDriverStatus');   // api for chnage driver status active ,in-active
     Route::post('updateCabPoolingStatus', 'Api\ActivityController@updateDriverCabPoolingStatus');  // api for change status of drivers pooling availability
@@ -133,6 +137,7 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
     Route::post('task/accecpt/reject', 'Api\TaskController@TaskUpdateReject'); // api for accecpt task reject task
     Route::get('refer_task', 'Api\ActivityController@getReferOrder');                    // api for task list
    
+    Route::post('task/reject', 'Api\TaskController@RejectOrder');
 
     Route::get('get/profile','Api\ActivityController@profile');                // api for get agent profile
     Route::post('update/profile','Api\ActivityController@updateProfile');       // api for updateprofile

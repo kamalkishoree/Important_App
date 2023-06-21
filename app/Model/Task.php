@@ -35,7 +35,8 @@ class Task extends Model
         'quantity',
         'alcoholic_item',
         'warehouse_id',
-        'is_return'
+        'is_return',
+        'is_road_side'
     ];
 
     public function order()
@@ -65,7 +66,7 @@ class Task extends Model
 
     public function vendor()
     {
-        return $this->hasOne('App\Model\Warehouse', 'id', 'vendor_id')->select('id', 'name', 'code','address','latitude','longitude');
+        return $this->hasOne('App\Model\Warehouse', 'id', 'vendor_id')->select('id', 'name', 'code','address','latitude','longitude','email','phone_no');
     }
 
     /*

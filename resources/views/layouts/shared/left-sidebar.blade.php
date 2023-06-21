@@ -82,7 +82,15 @@
                         <span> {{__('Routes')}} </span>
                     </a>
                 </li>
+                <li>
+                    <a href="{{route('driver-accountancy.index')}}">
+                        <i class="fe-users"></i>
+                        <span> {{__('Driver Accountancy')}} </span>
+                    </a>
+                </li>
+
                 @endif
+                <li class="menu-title mt-2">{{__('Hub and Spoke')}}</li>
                 @php
                     $warehouse_mode = checkWarehouseMode();
                 @endphp
@@ -103,66 +111,30 @@
                     </a>
                 </li>
                 @endif
-                
+                @if($warehouse_mode['show_category_module'] == 1)
                 <li>
-                    <a href="{{route('driver-accountancy.index')}}">
+                    <a href="{{route('order-panel-db.index')}}">
                         <i class="fe-users"></i>
-                        <span> {{__('Driver Accountancy')}} </span>
+                        <span> {{__('Order Panel')}} </span>
                     </a>
                 </li>
-
-               
-                
-                <li class="menu-title mt-2">{{__('Settings')}}</li>
-
-                @if(in_array('Profile',$allowed) || Auth::user()->is_superadmin == 1)
-                <li>
-                    <a href="{{route('profile.index')}}">
-                        <i class="fe-user"></i>
-                        <span> {{__('Profile')}} </span>
-                    </a>
-                </li>
+                </li> 
                 @endif
-
-                @if(in_array('Customize',$allowed) || Auth::user()->is_superadmin == 1)
+                @if($warehouse_mode['show_inventory_module'] == 1)
                 <li>
-                    <a href="{{route('preference.show')}}">
-                        <i class="fe-settings"></i>
-                        <span> {{__('Customize')}} </span>
+                    <a href="{{route('inventory-panel-db')}}">
+                        <i class="fe-users"></i>
+                        <span> {{__('Inventory Panel')}} </span>
                     </a>
-                </li>
+                </li> 
                 @endif
-                        
+                <li class="menu-title mt-2">{{__('Agent')}}</li>
                 @if(in_array('Teams',$allowed) || Auth::user()->is_superadmin == 1)
                 <li>
                     <a href="{{route('team.index')}}">
                         <i class="fe-users"></i>  
                         <span> {{__('Teams')}} </span>
                     </a>
-                </li>
-                @endif
-                @if($warehouse_mode['show_category_module'] == 1)
-                <li>
-                    <a href="{{route('order-panel-db.index')}}">
-                        <i class="fe-users"></i>
-                        <span> {{__('Order Panel DB Details')}} </span>
-                    </a>
-                </li> 
-               
-                @endif
-                @if($warehouse_mode['show_inventory_module'] == 1)
-                <li>
-                    <a href="{{route('inventory-panel-db')}}">
-                        <i class="fe-users"></i>
-                        <span> {{__('Inventory Panel Details')}} </span>
-                    </a>
-                </li> 
-               
-                @endif
-
-                @if(in_array('ACL',$allowed) || Auth::user()->is_superadmin == 1)
-                <li class="menu-title mt-2">{{__('Managers')}}</li>
-                @endif
                 </li>
 
                 @if(in_array('Agents',$allowed) || Auth::user()->is_superadmin == 1)
@@ -184,6 +156,46 @@
 
                 @endif
 
+                @endif
+
+                <li class="menu-title mt-2">{{__('Settings')}}</li>
+
+                @if(in_array('Profile',$allowed) || Auth::user()->is_superadmin == 1)
+                <li>
+                    <a href="{{route('profile.index')}}">
+                        <i class="fe-user"></i>
+                        <span> {{__('Profile')}} </span>
+                    </a>
+                </li>
+                @endif
+
+                @if(in_array('Customize',$allowed) || Auth::user()->is_superadmin == 1)
+                <li>
+                    <a href="{{route('preference.show')}}">
+                        <i class="fe-settings"></i>
+                        <span> {{__('Customize')}} </span>
+                    </a>
+                </li>
+                @endif
+                        
+               
+                
+
+                <!-- @if(in_array('ACL',$allowed) || Auth::user()->is_superadmin == 1)
+                <li class="menu-title mt-2">{{__('Managers')}}</li>
+                @endif
+                </li> -->
+
+                @if(in_array('ACL',$allowed) || Auth::user()->is_superadmin == 1)
+                <li>
+                    <a href="{{route('subadmins.index')}}">
+                        <i class="fe-users"></i>
+                        <span> {{__('Managers')}} </span>
+                    </a>
+                </li>
+                @endif
+               
+             
                
 
                 @if($hide_subscription_module != 1 && (in_array('Subscription',$allowed) || Auth::user()->is_superadmin == 1) )

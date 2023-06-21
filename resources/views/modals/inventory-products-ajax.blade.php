@@ -12,7 +12,6 @@
  else{
 	$path = asset('assets/images/bg-material.png') ;
  }
- \Log::info($product);
  @endphp
 <li>
 	<div class="prod">
