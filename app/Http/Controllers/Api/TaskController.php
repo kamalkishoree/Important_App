@@ -757,6 +757,7 @@ class TaskController extends BaseController
             if ($response) {
                 // Log::info($response);
             }
+            return $dispatch_traking_url;
         } catch (\Exception $e) {
             return response()->json([
                 'status' => __('error'),
@@ -836,7 +837,7 @@ class TaskController extends BaseController
         $percentage = 0;
         $agent_id =  $request->driver_id  ? $request->driver_id : null;
         $driver   = Agent::where('id', $agent_id)->first();
-
+        $call_web_hook = '';
         $orderdata = Order::where('id', $request->order_id)->first();
         if($driver->is_pooling_available == 1)
         {
@@ -883,8 +884,16 @@ class TaskController extends BaseController
             //Send SMS in case of friend's booking
             if(isset($orderdata->type) && $orderdata->type == 1 && strlen($orderdata->friend_phone_number) > 8)
             {
-                $friend_sms_body = 'Hi '.($orderdata->friend_name).', '.($orderdata->customer->name??'Our customer').' has booked a ride for you.';
-                $send = $this->sendSms2($orderdata->friend_phone_number , $friend_sms_body);
+                $keyData = [
+                    '{user-name}' => $orderdata->friend_name,
+                    '{customer-name}' => $orderdata->customer->name ?? 'Our customer',
+                    '{agent-name}' => $driver->name ?? '',
+                    '{car-model}' => $driver->make_model ?? '',
+                    '{plate-no}' => $driver->plate_number ?? '',
+                    '{track-url}' => $call_web_hook??''
+                ];
+                $friend_sms_body = sendSmsTemplate('friend-sms', $keyData);   
+                $this->sendSmsNew($orderdata->friend_phone_number, $friend_sms_body);         
             }
             return response()->json([
                 'message' => __('Task Accecpted Successfully'),
@@ -1058,9 +1067,18 @@ class TaskController extends BaseController
 
             //Send SMS in case of friend's booking
             if(isset($check->type) && $check->type == 1 && strlen($check->friend_phone_number) > 8)
-            {
-                $friend_sms_body = 'Hi '.($check->friend_name).', '.($check->customer->name??'Our customer').' has booked a ride for you.';
-                $send = $this->sendSms2($check->friend_phone_number , $friend_sms_body);
+            {                
+                $keyData = [
+                    '{user-name}' => $check->friend_name,
+                    '{customer-name}' => $check->customer->name ?? 'Our customer',
+                    '{agent-name}' => $driver->name ?? '',
+                    '{car-model}' => $driver->make_model ?? '',
+                    '{plate-no}' => $driver->plate_number ?? '',
+                    '{track-url}' => $call_web_hook??''
+                ];
+                $friend_sms_body = sendSmsTemplate('friend-sms', $keyData);
+                
+                $send = $this->sendSmsNew($check->friend_phone_number, $friend_sms_body);                              
             }
             return response()->json([
                 'message' => __('Task Accecpted Successfully'),
