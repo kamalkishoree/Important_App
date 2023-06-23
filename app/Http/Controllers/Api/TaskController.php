@@ -873,6 +873,15 @@ class TaskController extends BaseController
         $driver   = Agent::where('id', $agent_id)->first();
         $call_web_hook = '';
         $orderdata = Order::where('id', $request->order_id)->first();
+
+        if($orderdata->status == 'failed' || $orderdata->status == 'cancelled'){
+            return response()->json([
+            'message' => __('This task has already been cancelled by user.'),
+            'status'=>$orderdata->status
+            ], 400);
+        }
+
+
         if (@$driver && $driver->is_pooling_available == 1) {
             $assigned_orders  = Order::where('driver_id', $driver->id)->where('is_cab_pooling', 1)->where('status', 'assigned')->orderBy('id', 'asc')->first();
             $available_seats  = (!empty($assigned_orders)) ? $assigned_orders->available_seats : 0;
