@@ -15,6 +15,7 @@ class RosterDelete implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     protected $order_id;
+    protected $type;
 
     /**
      * Create a new job instance.
@@ -55,9 +56,13 @@ class RosterDelete implements ShouldQueue
             Config::set("database.connections.$schemaName", $default);
             config(["database.connections.mysql.database" => $schemaName]);
             if($this->type=='B'){
-                DB::connection($schemaName)->table('rosters')->where('batch_no',$this->order_id)->delete();
+                DB::connection($schemaName)->table('rosters')->where('batch_no',$this->order_id)->where('is_particular_driver','=',0)->delete();
+            }else if($this->type=='PD'){
+                DB::connection($schemaName)->table('rosters')->where('order_id',$this->order_id)
+                ->where('is_particular_driver',0)
+                ->delete();
             }else{
-                DB::connection($schemaName)->table('rosters')->where('order_id',$this->order_id)->delete();
+                DB::connection($schemaName)->table('rosters')->where('order_id',$this->order_id)->where('is_particular_driver',0)->delete();
             }
             DB::disconnect($schemaName);
         } catch (Exception $ex) {

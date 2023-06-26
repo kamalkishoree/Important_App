@@ -29,7 +29,7 @@ trait inventoryManagement
             // Headers
             $headers = [
                 'shortcode' => $code,
-    //          'code' => $code,
+             // 'code' => $code,
                 'key' => $code
             ];
             $response = Http::withHeaders($headers)->post($apiAuthCheckURL, $postInput);
