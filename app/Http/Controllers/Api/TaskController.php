@@ -1478,11 +1478,11 @@ class TaskController extends BaseController
             //$total         = $pricingRule->base_price + ($paid_distance * $pricingRule->distance_fee) + ($paid_duration * $pricingRule->duration_price);
             if($pricingRuleDistance)
             {
-                \Log::info('in 1');
+                // \Log::info('in 1');
                 $total         = $pricingRule->base_price + ($pricingRuleDistance) + ($paid_duration * $pricingRule->duration_price);
 
             }else{
-                \Log::info('in 2');
+                // \Log::info('in 2');
 
                 $total         = $pricingRule->base_price + ($paid_distance * $pricingRule->distance_fee) + ($paid_duration * $pricingRule->duration_price);
             }
