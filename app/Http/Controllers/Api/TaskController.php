@@ -1284,7 +1284,7 @@ class TaskController extends BaseController
             }
            $app_call = $request->app_call??0;
             
-            
+           $schedule_time = $request->schedule_time;
             if($request->task_type == "schedule"){
                 $settime = $request->schedule_time;
                 Log::info('<<<<<< settime 1 >>>>>>');
@@ -1327,7 +1327,7 @@ class TaskController extends BaseController
             $order = [
                 'order_number' => $request->order_number ?? null,
                 'customer_id' => $cus_id,
-                'scheduled_date_time' => ($request->task_type == "schedule") ? $notification_time : null,
+                'scheduled_date_time' => ($request->task_type == "schedule") ? $schedule_time : null,
                 'recipient_phone' => $request->recipient_phone,
                 'Recipient_email' => $request->recipient_email,
                 'task_description' => $request->task_description,
@@ -1462,7 +1462,7 @@ class TaskController extends BaseController
                     'dependent_task_id' => $dep_id,
                     'task_status' => $agent_id != null ? 1 : 0,
                     'allocation_type' => $request->allocation_type,
-                    'assigned_time' => $notification_time,
+                    'assigned_time' => $schedule_time,
                     'barcode' => $value['barcode'] ?? null,
                     'vendor_id' => isset($vendor_id) ? $vendor_id->id : '',
                     'warehouse_id' => isset($vendor_id) ? $vendor_id->id : null
