@@ -1287,31 +1287,19 @@ class TaskController extends BaseController
            $schedule_time = $request->schedule_time;
             if($request->task_type == "schedule"){
                 $settime = $request->schedule_time;
-                Log::info('<<<<<< settime 1 >>>>>>');
                 Log::info($settime);
-                Log::info('<<<<<< end settime 1 >>>>>>');
                 //Check Api call from Mobile side = 1 or website = 0
                 if($app_call){
                     date_default_timezone_set($clienttimezone);
                     $settime = Carbon::createFromFormat('Y-m-d H:i:s', $request->schedule_time.':00')->setTimezone('UTC');
-                    Log::info('<<<<<< settime 2 >>>>>>');
-                    Log::info($settime);
-                    Log::info('<<<<<< end settime 2 >>>>>>');
                 }
 
             }else{
                 $settime = Carbon::now()->toDateTimeString();
-                Log::info('<<<<<< settime 3 >>>>>>');
-                Log::info($settime);
-                Log::info('<<<<<< end settime 3 >>>>>>');
             }
             //here order save code is started
             // $settime = ($request->task_type == "schedule") ? $request->schedule_time : Carbon::now()->toDateTimeString();
             $notification_time = ($request->task_type == "schedule") ? $settime : Carbon::now()->toDateTimeString();
-
-            Log::info('<<<<<< notification_time 1 >>>>>>');
-            Log::info($notification_time);
-            Log::info('<<<<<< end notification_time >>>>>>');
 
             $agent_id          = $request->allocation_type === 'm' ? $request->agent : null;
 
