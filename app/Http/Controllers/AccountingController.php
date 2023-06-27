@@ -103,8 +103,8 @@ class AccountingController extends Controller
                     if ($i == 1) {
                         $display        = date('d M Y', strtotime('-1 day', strtotime($serchdate)));
                         $check          = date('Y-m-d', strtotime('-1 day', strtotime($serchdate)));
-                        $lastcount      = Order::whereRaw("DATE(CONVERT_TZ(`order_time`,'+00:00','".$timezone_offset."') = '".$check."'")->count();                      
-                        $lastsum        = Order::whereRaw("DATE(CONVERT_TZ(`order_time`,'+00:00','".$timezone_offset."') = '".$check."'")->sum('order_cost');
+                        $lastcount      = Order::whereRaw("DATE(CONVERT_TZ(`order_time`,'+00:00','".$timezone_offset."')) = '".$check."'")->count();                      
+                        $lastsum        = Order::whereRaw("DATE(CONVERT_TZ(`order_time`,'+00:00','".$timezone_offset."')) = '".$check."'")->sum('order_cost');
                         array_unshift($countOrders, $lastcount);
                         array_unshift($sumOrders, $lastsum);
                     }
