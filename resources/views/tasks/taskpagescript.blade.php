@@ -103,7 +103,7 @@
                         }
                     }},
                     {data: 'order_time', name: 'order_time', orderable: true, searchable: false, "mRender": function ( data, type, full ) {
-                        
+
                         return '<div class="datetime_div"><i class="mdi mdi-av-timer"></i> '+full.order_time+'</div>';
                     }},
                     {data: 'short_name', name: 'short_name', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
@@ -117,7 +117,8 @@
                     {data: 'order_cost', name: 'order_cost', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                         return '<button class="showaccounting btn btn-primary-outline action-icon setcolor" value="'+full.id+'">'+full.order_cost+'</button>';
                     }},
-                    {data: 'updated_at', name: 'updated_at', orderable: true, searchable: false},
+                    {data: 'created_at', name: 'created_at', orderable: true, searchable: false},
+                    // {data: 'updated_at', name: 'updated_at', orderable: true, searchable: false},
                     {data: 'action', name: 'action', orderable: true, searchable: false}
                 ];
             }else{
@@ -139,11 +140,12 @@
                         });
                         return routes;
                     }},
-                    
+
                     {data: 'order_cost', name: 'order_cost', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                         return '<button class="showaccounting btn btn-primary-outline action-icon setcolor" value="'+full.id+'">'+full.order_cost+'</button>';
                     }},
-                    {data: 'updated_at', name: 'updated_at', orderable: true, searchable: false},
+                    {data: 'created_at', name: 'created_at', orderable: true, searchable: false},
+                    // {data: 'updated_at', name: 'updated_at', orderable: true, searchable: false},
                     {data: 'action', name: 'action', orderable: true, searchable: false}
                 ]
             }
@@ -165,32 +167,32 @@
                 url: '{{route("assign.agent")}}',
                 data: {_token: CSRF_TOKEN, orders_id: order_id, agent_id: $(this).val()},
                 success: function( msg ) {
-                    $.toast({ 
+                    $.toast({
                     heading:"Success!",
-                    text : "{{__(getAgentNomenclature()) }} assigned successfully.", 
-                    showHideTransition : 'slide', 
-                    bgColor : 'green',              
-                    textColor : '#eee',            
-                    allowToastClose : true,      
-                    hideAfter : 5000,            
-                    stack : 5,                   
-                    textAlign : 'left',         
-                    position : 'top-right'      
+                    text : "{{__(getAgentNomenclature()) }} assigned successfully.",
+                    showHideTransition : 'slide',
+                    bgColor : 'green',
+                    textColor : '#eee',
+                    allowToastClose : true,
+                    hideAfter : 5000,
+                    stack : 5,
+                    textAlign : 'left',
+                    position : 'top-right'
                     });
                     location.reload();
                 },
                 error: function(errors){
-                    $.toast({ 
+                    $.toast({
                     heading:"Error!",
-                    text : "{{__(getAgentNomenclature()) }} can not be assigned.", 
-                    showHideTransition : 'slide', 
-                    bgColor : 'red',              
-                    textColor : '#eee',            
-                    allowToastClose : true,      
-                    hideAfter : 5000,            
-                    stack : 5,                   
-                    textAlign : 'left',         
-                    position : 'top-right'      
+                    text : "{{__(getAgentNomenclature()) }} can not be assigned.",
+                    showHideTransition : 'slide',
+                    bgColor : 'red',
+                    textColor : '#eee',
+                    allowToastClose : true,
+                    hideAfter : 5000,
+                    stack : 5,
+                    textAlign : 'left',
+                    position : 'top-right'
                     });
                     location.reload();
                 }
@@ -288,7 +290,7 @@
                 }else{
                     $("#seatsspan_acc").hide();
                 }
-                
+
                 $("#toll_fee").text(data.toll_fee);
                 $("#order_cost").text(data.order_cost);
                 $("#driver_cost").text(data.driver_cost ? data.driver_cost : 0.00 );
@@ -553,17 +555,17 @@
                 success: function(response) {
                     if(response.status == 'Success')
                     {var color = 'green';var heading="Success!";}else{var color = 'red';var heading="Error!";}
-                    $.toast({ 
+                    $.toast({
                     heading:heading,
-                    text : response.message, 
-                    showHideTransition : 'slide', 
-                    bgColor : color,              
-                    textColor : '#eee',            
-                    allowToastClose : true,      
-                    hideAfter : 5000,            
-                    stack : 5,                   
-                    textAlign : 'left',         
-                    position : 'top-right'      
+                    text : response.message,
+                    showHideTransition : 'slide',
+                    bgColor : color,
+                    textColor : '#eee',
+                    allowToastClose : true,
+                    hideAfter : 5000,
+                    stack : 5,
+                    textAlign : 'left',
+                    position : 'top-right'
                     });
                     if (response.status == 'Success') {
                             $("#upload-bulk-tasks .close").click();
@@ -582,7 +584,7 @@
                     setTimeout(function() {
                         location.reload();
                     }, 2000);
-                
+
                 }
             });
         }
