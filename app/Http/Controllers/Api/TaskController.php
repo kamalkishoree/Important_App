@@ -1724,17 +1724,7 @@ class TaskController extends BaseController
             }
 
             // this is roster create accounding to the allocation methed
-            
             DB::commit();
-
-            $dispatch_traking_url = $client_url . '/order/tracking/' . $auth->code . '/' . $orders->unique_id;
-            $order_array = [
-                'message' => __('Task Added Successfully'),
-                'task_id' => $orders->id,
-                'status' => $orders->status,
-                'dispatch_traking_url' => $dispatch_traking_url ?? null,
-                'invalid_agent' => $inValidAgent
-            ];
 
             if ($request->allocation_type === 'a' || $request->allocation_type === 'm') {
                 $allocation = AllocationRule::where('id', 1)->first();
@@ -1746,7 +1736,7 @@ class TaskController extends BaseController
                         break;
                     case 'send_to_all':
                         //this is called when allocation type is send to all
-                        $this->SendToAll($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, $agent_tags, $is_order_updated, $is_one_push_booking, $order_array);
+                        $this->SendToAll($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, $agent_tags, $is_order_updated, $is_one_push_booking);
                         break;
                     case 'round_robin':
                         //this is called when allocation type is round robin
@@ -1757,6 +1747,7 @@ class TaskController extends BaseController
                         $this->batchWise($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, $agent_tags, $is_order_updated, $is_one_push_booking);
                 }
             }
+            $dispatch_traking_url = $client_url . '/order/tracking/' . $auth->code . '/' . $orders->unique_id;
 
 
             // if($request->task_type == "schedule" && $request->allocation_type === 'a')
@@ -1774,8 +1765,6 @@ class TaskController extends BaseController
 
             // $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')->where('id', $orders->id)->first();
             //event(new \App\Events\loadDashboardData($orderdata));
-
-            \Log::info('last retrun');
             return response()->json([
                 'message' => __('Task Added Successfully'),
                 'task_id' => $orders->id,
@@ -2313,7 +2302,6 @@ class TaskController extends BaseController
                     'detail_id' => $randem
                 ];
                 $this->dispatch(new RosterCreate($data, $extraData)); // this job is for create roster in main database for send the notification in manual alloction
-
             }
         } else {
             $unit = $auth->getPreference->distance_unit;
@@ -2421,7 +2409,6 @@ class TaskController extends BaseController
                     }
                 }
                 $this->dispatch(new RosterCreate($all, $extraData)); // //this job is for create roster in main database for send the notification in auto alloction
-
             }
         }
     }
@@ -2441,7 +2428,7 @@ class TaskController extends BaseController
         }
     }
 
-    public function SendToAll($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling, $agent_tag = '', $is_order_updated, $is_one_push_booking = 0,$order_array = [])
+    public function SendToAll($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling, $agent_tag = '', $is_order_updated, $is_one_push_booking = 0)
     {
         $allcation_type    = 'AR';
         $date              = \Carbon\Carbon::today();
@@ -2528,8 +2515,6 @@ class TaskController extends BaseController
                                 break;
                             }
                         }
-                        \Log::info('echo response');
-                        echo json_encode($order_array);
                     }
                     $time = Carbon::parse($time)
                         ->addSeconds($expriedate + 10)
@@ -2544,9 +2529,6 @@ class TaskController extends BaseController
             $this->dispatch(new RosterCreate($data, $extraData));
             
         }
-
-        return response()->json($order_array, 200);
-        
     }
 
    
