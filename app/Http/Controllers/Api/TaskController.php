@@ -2528,6 +2528,8 @@ class TaskController extends BaseController
                                 break;
                             }
                         }
+                        \Log::info('echo response');
+                        echo json_encode($order_array);
                     }
                     $time = Carbon::parse($time)
                         ->addSeconds($expriedate + 10)
