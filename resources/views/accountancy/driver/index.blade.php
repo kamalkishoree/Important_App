@@ -261,10 +261,10 @@ function initializeAgentListing(){
     $('.driver-datatable').DataTable({
         "dom": '<"toolbar">Bfrtip',
         "destroy": true,
-        "scrollX": true,
+        // "scrollX": true,
         "processing": true,
         "serverSide": true,
-        "responsive": true,
+        // "responsive": true,
         "iDisplayLength": 20,
         "paging": true,
         "lengthChange" : true,
