@@ -82,7 +82,7 @@ div#DataTables_Table_0_filter label input {
 
                 <div class="col-md-3 d-flex align-items-center mt-3">
                     <form class="mb-0" name="getTask" id="getTask" method="get" action="{{ route('driver-accountancy.index') }}">
-                        <div class="login-form">
+                        <div class="login-form driver-accounting">
                             <ul class="list-inline mb-0">
                                 <li class="d-inline-block mr-2 {{ $status == 'settlement' ? 'border-0' : '' }}">
                                     <input type="radio" id="teacher" name="status" onclick="handleClick(this);"

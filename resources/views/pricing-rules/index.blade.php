@@ -119,7 +119,7 @@
                     </div>
 
                     <div class="table-responsive">
-                        <table class="table table-striped dt-responsive nowrap w-100" id="pricing-datatable">
+                        <table class="table table-striped dt-responsive nowrap w-100 pricing-rules" id="pricing-datatable">
                             <thead>
                                 <tr>
                                     <th>{{__("Name")}}</th>
