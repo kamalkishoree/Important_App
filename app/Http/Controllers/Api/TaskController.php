@@ -1726,6 +1726,9 @@ class TaskController extends BaseController
 
             // this is roster create accounding to the allocation methed
 
+            //Commit Transaction befor send notification
+            DB::commit();
+
             if ($request->allocation_type === 'a' || $request->allocation_type === 'm') {
                 $allocation = AllocationRule::where('id', 1)->first();
                 $is_one_push_booking = isset($orders->is_one_push_booking) ? $orders->is_one_push_booking : 0;
@@ -1763,7 +1766,6 @@ class TaskController extends BaseController
             //     sendNotification($data,$fcm_server_key);
             // }
 
-            DB::commit();
             // $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')->where('id', $orders->id)->first();
             //event(new \App\Events\loadDashboardData($orderdata));
             return response()->json([
@@ -3243,7 +3245,7 @@ class TaskController extends BaseController
     # notification data
     public function notificationTrackingDetail(Request $request, $id)
     {
-        sleep(20);
+        // sleep(2);
         $order = Order::with('additionData')->where('id', $id)->first();
         if (isset($order->id)) {
             $customer = DB::table('customers')->where('id', $order->customer_id)->first();
