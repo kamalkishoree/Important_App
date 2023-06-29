@@ -19,9 +19,9 @@ class OboPaymentController extends Controller
     private $obo_market_place_id;
     private $testMode;
     const TEST_MODE_TOKEN_API = 'https://www.obo-pay.co.rw/test/payments/v1/token';
-    const TOKEN_API           = "";
+    const TOKEN_API           = 'https://www.obo-pay.co.rw/payments/v1/token';
     const TEST_MODE_URL_API   = "https://www.obo-pay.co.rw/test/payments/v1/payment";
-    const URL_API             = "";
+    const URL_API             = 'https://www.obo-pay.co.rw/payments/v1/token';
 
     public function __construct()
     {
