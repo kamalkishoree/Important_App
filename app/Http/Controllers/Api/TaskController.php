@@ -76,7 +76,8 @@ use App\Model\Users;
 use App\Models\OrderPanel;
 use App\Model\OrderPanelDetail;
 use App\OrderWaitTimeLog;
-use Illuminate\Support\Facades\Log as FacadesLog;
+// use Illuminate\Support\Facades\Log as FacadesLog;
+// use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Exp;
 
 class TaskController extends BaseController
 {
@@ -1153,6 +1154,26 @@ class TaskController extends BaseController
                 'message' => __('Task Rejected Successfully')
             ], 200);
         }
+    }
+
+    public function callNotification(CreateTaskRequest $request)
+    {
+
+        try {
+            $auth = $client = Client::with([
+                'getAllocation',
+                'getPreference'
+            ])->first();
+            $header = $request->header();
+            if (isset($header['client'][0])) {
+            } else {
+                $header['client'][0] = $client->database_name;
+            }
+        }catch(\Execption $e)
+        {
+
+        }
+
     }
 
 
