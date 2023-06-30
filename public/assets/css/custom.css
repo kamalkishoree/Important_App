@@ -2139,6 +2139,10 @@ span.copied_txt {
     body.light .custom-body-table .dt-buttons.btn-group.flex-wrap{
         visibility: hidden;
     }
+    .mobile-attribute-rwd {
+        flex: 100% !important;
+        max-width: 100%;
+    }
     span.logo-sm img {
         width: 100%;
         height: auto;
@@ -4140,7 +4144,10 @@ div#scrollbar {
         margin-bottom: 30px;
     }
     .page-title-box .page-title {
-        padding-left: 0;
+        padding-left: 0;margin-left:0px;
+    }
+    .nomencla_rwd .page-title-box .page-title {
+        margin-left:0px;
     }
     body.dark .card-box.side_table {
         min-height: auto;
