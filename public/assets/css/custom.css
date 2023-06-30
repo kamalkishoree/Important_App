@@ -14,6 +14,9 @@
 .price_geo-fence span.switchery.switchery-default {
     height: 20px;
 }
+body.light .card-body.custom-body-table .login-form ul li {
+    margin-bottom: 20px;
+}
 .price_geo-fence span.switchery.switchery-default small {
     width: 20px;
     height: 20px;
@@ -2136,6 +2139,14 @@ span.copied_txt {
     body.light .custom-body-table .dt-buttons.btn-group.flex-wrap{
         visibility: hidden;
     }
+    .mobile-attribute-rwd {
+        flex: 100% !important;
+        max-width: 100%;
+    }
+    span.logo-sm img {
+        width: 100%;
+        height: auto;
+    }
     .configure_responsive .col-md-4 {
         width: 100% !important;
         max-width: 100% !important;
@@ -4133,7 +4144,10 @@ div#scrollbar {
         margin-bottom: 30px;
     }
     .page-title-box .page-title {
-        padding-left: 0;
+        padding-left: 0;margin-left:0px;
+    }
+    .nomencla_rwd .page-title-box .page-title {
+        margin-left:0px;
     }
     body.dark .card-box.side_table {
         min-height: auto;
