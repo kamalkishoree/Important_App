@@ -60,8 +60,8 @@ $agentslocations[] = $defaultmaplocation;
         ?>
         <div id="accordion-1" class="mb-2">
             <div class="card no-border-radius">
-                <div class="card-header ml-2" id="by1">
-                    <div class="row p-2">
+                <div class="card-header" id="by1">
+                    <div class="row align-items-center">
                         <div class="col-md-3 col-3">
                             <img class="profile-circle" src="{{isset($agent['profile_picture']) ? $imgproxyurl.Storage::disk('s3')->url($agent['profile_picture']):'https://dummyimage.com/36x36/ccc/fff'}}">
                         </div>

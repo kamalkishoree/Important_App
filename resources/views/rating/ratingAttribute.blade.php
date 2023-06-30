@@ -1,4 +1,4 @@
-<div class="col-6">
+<div class="col-md-4">
     <div class="">
         <div class="driver-rating-quiestions-list">
             <div class="">
