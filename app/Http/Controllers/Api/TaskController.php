@@ -1156,25 +1156,76 @@ class TaskController extends BaseController
         }
     }
 
-    public function callNotification(CreateTaskRequest $request)
+    public function callNotification(Request $request)
     {
-
         try {
-            $auth = $client = Client::with([
-                'getAllocation',
-                'getPreference'
-            ])->first();
+
+            $client = Client::first();
             $header = $request->header();
             if (isset($header['client'][0])) {
             } else {
                 $header['client'][0] = $client->database_name;
             }
+            $ordersId = Order::where('sync_order_id',$request->order_id)->value('id');
+
+            $this->addRosterNotification($ordersId,$header);
+
         }catch(\Execption $e)
         {
-
+            \Log::info(' callNotification function call'.$e->getMessage());
         }
 
     }
+
+    public function addRosterNotification($order_id,$header)
+    {
+        try{
+            $orders = Order::findOrFail($order_id);
+            $taskcount = $orders->task->count();
+            $send_loc_id = $orders->pickup_task_first->location_id;
+            $geo = null;
+            $agent_id = null;
+            $customer = Customer::where('id', $orders->customer_id)->first();
+
+            $finalLocation = Location::where('id', $send_loc_id)->first();
+            $pickup_location = $finalLocation;
+            $agent_tags = $orders->agent_tags??'';
+            $is_order_updated = 0;
+            if ($orders->allocation_type === 'a') {
+                $geo = $this->createRoster($send_loc_id); 
+            }
+            $notification_time = $orders->order_time;
+            $allocation = AllocationRule::where('id', 1)->first();
+            $is_one_push_booking = isset($orders->is_one_push_booking) ? $orders->is_one_push_booking : 0;
+
+
+            switch ($allocation->auto_assign_logic) {
+                case 'one_by_one':
+                    //this is called when allocation type is one by one
+                    $this->finalRoster($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, $agent_tags, $is_order_updated, $is_one_push_booking);
+                    break;
+                case 'send_to_all':
+                    //this is called when allocation type is send to all
+                    $this->SendToAll($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, $agent_tags, $is_order_updated, $is_one_push_booking);
+                    break;
+                case 'round_robin':
+                    //this is called when allocation type is round robin
+                    $this->roundRobin($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, $agent_tags, $is_order_updated, $is_one_push_booking);
+                    break;
+                default:
+                    //this is called when allocation type is batch wise
+                    $this->batchWise($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, $agent_tags, $is_order_updated, $is_one_push_booking);
+            }
+
+                
+            }catch(\Exception $e)
+            {
+                \Log::info(' addRosterNotification Notification call'.$e->getMessage());
+            }
+        return true;
+
+    }
+
 
 
     public function CreateTask(CreateTaskRequest $request)
@@ -1308,7 +1359,6 @@ class TaskController extends BaseController
            $schedule_time = $request->schedule_time;
             if($request->task_type == "schedule"){
                 $settime = $request->schedule_time;
-                Log::info($settime);
                 //Check Api call from Mobile side = 1 or website = 0
                 if($app_call){
                     date_default_timezone_set($clienttimezone);
@@ -1425,6 +1475,7 @@ class TaskController extends BaseController
 
             $dep_id = null;
             $pickup_location = null;
+
 
             foreach ($request->task as $key => $value) {
                 $taskcount++;
@@ -1560,7 +1611,8 @@ class TaskController extends BaseController
                 'actual_distance' => $getdata['distance'],
                 'order_cost' => $total + $toll_amount,
                 'toll_fee' => $toll_amount,
-                'driver_cost' => $percentage
+                'driver_cost' => $percentage,
+                'agent_tags' => $agent_tags
             ];
 
             if ($request->has('driverCost') && ($request->driverCost > 0)) {
@@ -1747,45 +1799,35 @@ class TaskController extends BaseController
             // this is roster create accounding to the allocation methed
             DB::commit();
 
-            if ($request->allocation_type === 'a' || $request->allocation_type === 'm') {
-                $allocation = AllocationRule::where('id', 1)->first();
-                $is_one_push_booking = isset($orders->is_one_push_booking) ? $orders->is_one_push_booking : 0;
-                switch ($allocation->auto_assign_logic) {
-                    case 'one_by_one':
-                        //this is called when allocation type is one by one
-                        $this->finalRoster($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, $agent_tags, $is_order_updated, $is_one_push_booking);
-                        break;
-                    case 'send_to_all':
-                        //this is called when allocation type is send to all
-                        $this->SendToAll($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, $agent_tags, $is_order_updated, $is_one_push_booking);
-                        break;
-                    case 'round_robin':
-                        //this is called when allocation type is round robin
-                        $this->roundRobin($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, $agent_tags, $is_order_updated, $is_one_push_booking);
-                        break;
-                    default:
-                        //this is called when allocation type is batch wise
-                        $this->batchWise($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, $agent_tags, $is_order_updated, $is_one_push_booking);
-                }
+            if (($request->allocation_type === 'a' || $request->allocation_type === 'm') && $request->call_notification == 0) {
+
+                $this->addRosterNotification($orders->id,$header);
+
+                // $allocation = AllocationRule::where('id', 1)->first();
+                // $is_one_push_booking = isset($orders->is_one_push_booking) ? $orders->is_one_push_booking : 0;
+
+                // switch ($allocation->auto_assign_logic) {
+                //     case 'one_by_one':
+                //         //this is called when allocation type is one by one
+                //         $this->finalRoster($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, $agent_tags, $is_order_updated, $is_one_push_booking);
+                //         break;
+                //     case 'send_to_all':
+                //         //this is called when allocation type is send to all
+                //         $this->SendToAll($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, $agent_tags, $is_order_updated, $is_one_push_booking);
+                //         break;
+                //     case 'round_robin':
+                //         //this is called when allocation type is round robin
+                //         $this->roundRobin($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, $agent_tags, $is_order_updated, $is_one_push_booking);
+                //         break;
+                //     default:
+                //         //this is called when allocation type is batch wise
+                //         $this->batchWise($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, $agent_tags, $is_order_updated, $is_one_push_booking);
+                // }
             }
             $dispatch_traking_url = $client_url . '/order/tracking/' . $auth->code . '/' . $orders->unique_id;
 
 
-            // if($request->task_type == "schedule" && $request->allocation_type === 'a')
-            // {
-            //     $fcm_server_key = ClientPreference::value('fcm_server_key');
-            //     $order = $orders;
-                    
-            //     $data['registration_ids']     = [$order->agent->device_token];
-            //     $data['notification'] = [
-            //         'title'     => 'Order Received',
-            //         'body'      => 'Your order #'.$order->order_number.' has been received!'
-            //     ];
-            //     sendNotification($data,$fcm_server_key);
-            // }
 
-            // $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')->where('id', $orders->id)->first();
-            //event(new \App\Events\loadDashboardData($orderdata));
             return response()->json([
                 'message' => __('Task Added Successfully'),
                 'task_id' => $orders->id,
@@ -2199,8 +2241,6 @@ class TaskController extends BaseController
         $lat = $getletlong->latitude;
         $long = $getletlong->longitude;
 
-        // $allgeo = Geo::all();
-
         return $check = $this->findLocalityByLatLng($lat, $long);
     }
 
@@ -2492,7 +2532,8 @@ class TaskController extends BaseController
             'updated_at' => Carbon::now()->toDateTimeString()
         ];
 
-        if (!isset($geo)) {
+          
+        if (!isset($geo) && !empty($geo)) {
             $oneagent = Agent::where('id', $agent_id)->first();
             if (isset($oneagent) && !empty($oneagent->device_token) && $oneagent->is_available == 1) {
                 $allcation_type = 'ACK';
@@ -2512,7 +2553,9 @@ class TaskController extends BaseController
                 $this->dispatch(new RosterCreate($data, $extraData));
             }
         } else {
-            $geoagents = $this->getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag, $date, $cash_at_hand,$orders_id);           
+          
+            $geoagents = $this->getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag, $date, $cash_at_hand,$orders_id);     
+             
             if(count($geoagents) > 0){
                 for ($i = 1; $i <= $try; $i++) {
                     foreach ($geoagents as $key =>  $geoitem) {
@@ -2545,7 +2588,7 @@ class TaskController extends BaseController
                     }
                 }
             }
-           
+
             if(!empty($data))
             $this->dispatch(new RosterCreate($data, $extraData));
             
