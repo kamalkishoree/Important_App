@@ -1444,6 +1444,9 @@ form#UpdateClient div#favicon_container {
         width: auto!important;
         max-width: inherit!important;
     }
+    .iphad-space {
+        margin-top: 60px;
+    }    
     body.light .card-body.custom-body-table div#agents-datatable_filter label{
         top:5% !important;
     }
