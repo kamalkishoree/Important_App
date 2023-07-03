@@ -11,6 +11,10 @@
     border-color: transparent; */
     cursor: pointer;
 }
+.pay-popop-dispatcher .btn.dropdown-toggle {
+    padding: 7px 10px;
+    border-radius: 0px;
+}
 .price_geo-fence span.switchery.switchery-default {
     height: 20px;
 }
