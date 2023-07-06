@@ -11,7 +11,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 <style>
     .agents-datatable tbody td,.dataTables_scrollHead thead th {
         display: table-cell !important;
-    } 
+    }
     #wrapper {
         overflow: auto !important;
     }
@@ -70,8 +70,8 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
         width: 135px;
     }
 
-    
-    
+
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
@@ -197,7 +197,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                                     <select name="search_warehouse" class="form-control"  onchange="handleClick(this);" id="search_warehouse">
                                                         <option value="">All</option>
                                                         @foreach ($warehouses as $warehouse)
-                                                            <option value="{{$warehouse->id}}" @if (app('request')->input('search_warehouse') == $warehouse->id) {{'selected="selected"'}} @endif>{{$warehouse->name}}</option>                                                            
+                                                            <option value="{{$warehouse->id}}" @if (app('request')->input('search_warehouse') == $warehouse->id) {{'selected="selected"'}} @endif>{{$warehouse->name}}</option>
                                                         @endforeach
                                                     </select>
                                                 </li>
@@ -206,7 +206,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                                     <select name="warehouse_manager" class="form-control" onchange="handleClick(this);"  id="warehouse_manager">
                                                         <option value="">Select Warehouse Manager</option>
                                                         @foreach ($warehouse_manager as $manager)
-                                                            <option value="{{$manager->id}}" @if (app('request')->input('warehouse_manager') == $manager->id) {{'selected="selected"'}} @endif>{{$manager->name}}</option>                                                            
+                                                            <option value="{{$manager->id}}" @if (app('request')->input('warehouse_manager') == $manager->id) {{'selected="selected"'}} @endif>{{$manager->name}}</option>
                                                         @endforeach
                                                     </select>
                                                 </li>
@@ -216,7 +216,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                                 <a href="{{route('tasks.index')}}" type="button" class="btn btn-info btn-sm">Clear</a>
 
                                             <li class="d-inline-block mr-2">
-                                                <button type="button" class="btn btn-info bulkupload" data-toggle="modal" data-target="#upload-bulk-tasks" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-cloud-upload mr-1"></i> {{__("Upload")}}</button> 
+                                                <button type="button" class="btn btn-info bulkupload" data-toggle="modal" data-target="#upload-bulk-tasks" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-cloud-upload mr-1"></i> {{__("Upload")}}</button>
                                             </li>
                                         </ul>
                                     </div>
@@ -226,10 +226,10 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                             @if(!empty($preference->create_batch_hours) && $preference->create_batch_hours > 0)
                             <a href="{{route('batch.list')}}"><button type="button" class="btn btn-info" >All Batches</button></a>
                             @endif
-                            
+
                             <div class="col-md-4 assign-toggle assign-show mt-3">
-                                <button type="button" class="btn btn-info assign_agent" data-toggle="modal" data-target="#add-assgin-agent-model" data-backdrop="static" data-keyboard="false">{{__("Assign")}}</button> 
-                                <button type="button" class="btn btn-info assign_date" data-toggle="modal" data-target="#add-assgin-date-model" data-backdrop="static" data-keyboard="false">{{__("Change Date")}}/{{__("Time")}}</button> 
+                                <button type="button" class="btn btn-info assign_agent" data-toggle="modal" data-target="#add-assgin-agent-model" data-backdrop="static" data-keyboard="false">{{__("Assign")}}</button>
+                                <button type="button" class="btn btn-info assign_date" data-toggle="modal" data-target="#add-assgin-date-model" data-backdrop="static" data-keyboard="false">{{__("Change Date")}}/{{__("Time")}}</button>
                             </div>
                         </div>
                         <input type="hidden" id="routes-listing-status" value="unassigned">
@@ -251,12 +251,13 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                         <!-- <th>{{__("Tracking URL")}}</th>
                                          <th>{{__("Route Proofs")}}</th> -->
                                         <th>{{__("Pricing")}}</th>
-                                        <th>{{__("Updated At")}}</th>
+                                        <th>{{__("Created At")}}</th>
+                                        {{-- <th>{{__("Updated At")}}</th> --}}
                                         <th style="width: 85px;">{{__("Action")}}</th>
                                     </tr>
                                 </thead>
                                 <tbody style="height: 8%;overflow: auto !important;">
-                                
+
                                 </tbody>
                             </table>
                         </div>
@@ -304,7 +305,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     select option:hover {
         background:#d4a34a !important;
 }
-select:focus > option:checked { 
+select:focus > option:checked {
     background:#d4a34a !important;
 }
 .address_box span {
