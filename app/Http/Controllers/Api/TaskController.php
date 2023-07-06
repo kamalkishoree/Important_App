@@ -268,7 +268,9 @@ class TaskController extends BaseController
                     // \Log::info(json_encode($waitingDetails));
                     // \Log::info(' total_waiting_time  - '.$waitingDetails->total_waiting_time??0);
                     // \Log::info(' total_waiting_price - '.$waitingDetails->total_waiting_price??0);
+                    if($multimedia!=1){
                     $call_web_hook = $this->updateStatusDataToOrder($order_details, 5, $orderId->task_type_id, $waitingDetails->total_waiting_price ?? 0, $waitingDetails->total_waiting_time ?? 0);  # call web hook when order completed
+                    }
                 }
                 if (isset($request->qr_code)) {
                     $codeVendor = $this->checkQrcodeStatusDataToOrderPanel($order_details, $request->qr_code, 5);
