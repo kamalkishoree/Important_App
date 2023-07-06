@@ -92,12 +92,13 @@ class TaskController extends BaseController
 
     public function updateTaskStatus(Request $request)
     {
-        Log::info('testFunction');
+      
         $header = $request->header();
         $tasks = null;
         $client_details = Client::where('database_name', $header['client'][0])->first();
         $proof_image = '';
         $proof_face = '';
+        $multimedia= $request->multimedia ?? 0;
         $proof_signature = '';
         $note = '';
         if (isset($request->note)) {
@@ -323,7 +324,11 @@ class TaskController extends BaseController
                 else
                     $stat = $request->task_status;
 
-                $call_web_hook = $this->updateStatusDataToOrder($order_details, $stat, $orderId->task_type_id); # call web hook when order update
+                    if($multimedia!=1){
+                        $call_web_hook = $this->updateStatusDataToOrder($order_details, $stat, $orderId->task_type_id); # call web hook when order update   
+                    }
+
+                # call web hook when order update
             }
         }
 
@@ -761,8 +766,7 @@ class TaskController extends BaseController
     public function updateStatusDataToOrder($order_details, $dispatcher_status_option_id, $task_type, $total_waiting_price = 0, $total_waiting_time = 0)
     {
 
-        Log::info('test');
-        Log::info(time());
+        
         try {
             $auth = Client::with([
                 'getAllocation',
