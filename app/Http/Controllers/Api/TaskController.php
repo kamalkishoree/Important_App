@@ -759,6 +759,9 @@ class TaskController extends BaseController
     /////////////////// **********************   update status in order panel also **********************************  ///////////////////////
     public function updateStatusDataToOrder($order_details, $dispatcher_status_option_id, $task_type, $total_waiting_price = 0, $total_waiting_time = 0)
     {
+
+        Log::info('test');
+        Log::info(time());
         try {
             $auth = Client::with([
                 'getAllocation',
