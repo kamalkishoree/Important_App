@@ -92,6 +92,7 @@ class TaskController extends BaseController
 
     public function updateTaskStatus(Request $request)
     {
+        Log::info('testFunction');
         $header = $request->header();
         $tasks = null;
         $client_details = Client::where('database_name', $header['client'][0])->first();
