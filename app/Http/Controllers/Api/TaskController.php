@@ -777,13 +777,13 @@ class TaskController extends BaseController
 
             $dispatch_traking_url = $client_url . '/order/tracking/' . $auth->code . '/' . $order_details->unique_id;
 
-            $client = new GClient(['content-type' => 'application/json']);
-            $url = $order_details->call_back_url;
-            $res = $client->get($url . '?dispatcher_status_option_id=' . $dispatcher_status_option_id . '&dispatch_traking_url=' . $dispatch_traking_url . '&task_type=' . $task_type . '&waiting_price=' . $total_waiting_price . '&waiting_time=' . $total_waiting_time);
-            $response = json_decode($res->getBody(), true);
-            if ($response) {
-                //    Log::info($response);
-            }
+            // $client = new GClient(['content-type' => 'application/json']);
+            // $url = $order_details->call_back_url;
+            // $res = $client->get($url . '?dispatcher_status_option_id=' . $dispatcher_status_option_id . '&dispatch_traking_url=' . $dispatch_traking_url . '&task_type=' . $task_type . '&waiting_price=' . $total_waiting_price . '&waiting_time=' . $total_waiting_time);
+            // $response = json_decode($res->getBody(), true);
+            // if ($response) {
+            //     //    Log::info($response);
+            // }
 
 
             $client = new GClient([
