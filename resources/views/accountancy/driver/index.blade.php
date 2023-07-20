@@ -395,17 +395,6 @@ $('#driver_export_btn').on('click',function(){
     $('#driver_id').val(driver_id);
     $('#status_type').val(status_type);
     document.getElementById("driver_export").submit();
-        // $.ajax({
-        //     method:"GET",
-        //     url: ,
-        //     data:{
-              
-        //     },
-        //     success:function(response){
-        //    console.log(response)
-        //    alert(1)
-        //     }
-        // });
     });
 
     
