@@ -99,6 +99,19 @@ div#DataTables_Table_0_filter label input {
                     </form>
                 </div>
                 <div class="col-md-2 d-flex align-items-center mt-3">
+                    <div class="text-center">
+                    <form action="{{route('driver-accounting.export')}}" id ="driver_export" method="post"> 
+                    @csrf
+                    <input type="hidden" name="status_type" id="status_type" />
+                    <input type="hidden" name="driver_id" id="driver_id" />
+                    <input type="hidden" name="date_filter" id="date_filter" />
+                </form>
+                <button class="btn btn-info waves-effect waves-light text-sm-right" id="driver_export_btn" >
+                    <i class="mdi mdi-plus-circle mr-1"></i> {{ __('Export') }}
+                </button>
+                    </div>
+                </div>    
+                <div class="col-md-2 d-flex align-items-center mt-3">
                     <div class="text-center outter_bx">
                         <p class="h4">Total Commision : <span class="total_commission"></span></p>                        
                     </div>
@@ -168,6 +181,7 @@ div#DataTables_Table_0_filter label input {
                         <th>Pay To Driver</th>
                         <th>Payment Type</th>
                         <th>Tip</th>
+                        <th>Date of order</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -332,6 +346,7 @@ function dataTableColumn(){
         {data: 'pay_to_driver', name: 'pay_to_driver', orderable: false, searchable: false},
         {data: 'payment_type', name: 'payment_type', orderable: false, searchable: false},
         {data: 'tip', name: 'tip', orderable: false, searchable: false},
+        {data: 'order_date', name: 'order_date', orderable: false, searchable: false},
     ];
 }
 
@@ -370,5 +385,29 @@ function showHidePayBtn() {
 function handleClick(myRadio) {
     $('#getTask').submit();
 }
+
+$('#driver_export_btn').on('click',function(){
+    var date_filter = $('#date_picker').val();
+    var driver_id = $('#agent_id').val();
+    var status = $('input[name=status]:checked').val();
+
+    $('#date_filter').val(date_filter);
+    $('#driver_id').val(driver_id);
+    $('#status_type').val(status_type);
+    document.getElementById("driver_export").submit();
+        // $.ajax({
+        //     method:"GET",
+        //     url: ,
+        //     data:{
+              
+        //     },
+        //     success:function(response){
+        //    console.log(response)
+        //    alert(1)
+        //     }
+        // });
+    });
+
+    
 </script>
 @endsection

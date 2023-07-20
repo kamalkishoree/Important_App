@@ -226,6 +226,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 				Route::get('driver-list', 'Accountancy\DriverAccountingController@driverList')->name('driver-list');
 				Route::get('driver-datatable', 'Accountancy\DriverAccountingController@driverDatatable')->name('driver-datatable');
 				Route::post('pay-to-agent', 'Accountancy\DriverAccountingController@agentPayoutRequestComplete')->name('pay-to-agent');
+				Route::post('/export', 'Accountancy\DriverAccountingController@export')->name('driver-accounting.export');
 			});
 			Route::get('changeStatus', 'CustomerController@changeStatus');
 			Route::resource('tag', 'TagController');
