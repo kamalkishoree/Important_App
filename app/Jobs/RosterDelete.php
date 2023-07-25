@@ -21,6 +21,7 @@ class RosterDelete implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     protected $order_id;
+    protected $type;
     protected $driver_id;
 
     /**
