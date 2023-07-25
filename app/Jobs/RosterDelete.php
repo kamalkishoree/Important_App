@@ -124,6 +124,7 @@ class RosterDelete implements ShouldQueue
             
             
             foreach($array as $item){
+                \Log::info($item);
                 
                 if(isset($item['device_token']) && !empty($item['device_token'])){
                     //Log::info('Fcm Response 11');
@@ -168,7 +169,7 @@ class RosterDelete implements ShouldQueue
                             }
                             else
                             {
-                                //   Log::info('check_remidner');
+                                 \Log::info('check_remidner');
                                 $fcm_store =   $fcmObj
                                 ->to([$item['device_token']])
                                 ->priority('high')
