@@ -77,9 +77,9 @@ class SendPushNotification
                                     ->select('rosters.*', 'roster_details.customer_name', 'roster_details.customer_phone_number',
         'roster_details.short_name','roster_details.address','roster_details.lat','roster_details.long','roster_details.task_count')->get();
         $getids           = $get->pluck('id');
-        DB::connection($schemaName)->table('rosters')->where('status',10)->delete();
+        // DB::connection($schemaName)->table('rosters')->where('status',10)->delete();
         if(count($get) > 0){
-            DB::connection($schemaName)->table('rosters')->whereIn('id',$getids)->delete();
+            // DB::connection($schemaName)->table('rosters')->whereIn('id',$getids)->delete();
             $this->sendnotification($get);
         }else{
             $this->extraTime($schemaName);
