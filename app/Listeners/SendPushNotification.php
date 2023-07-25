@@ -95,7 +95,7 @@ class SendPushNotification
 
         $array = json_decode(json_encode($recipients), true);
         foreach($array as $item){
-
+            \Log::info($item);
             if(isset($item['device_token']) && !empty($item['device_token'])){
                 $item['title']     = 'Pickup Request';
                 $item['body']      = 'Check All Details For This Request In App';
@@ -134,7 +134,7 @@ class SendPushNotification
                         }
                         else
                         {
-                            //   Log::info('check_remidner');
+                             \Log::info('check_remidner');
                             $fcm_store =   $fcmObj
                             ->to([$item['device_token']])
                             ->priority('high')
