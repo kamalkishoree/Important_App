@@ -210,10 +210,6 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
     Route::get('task/pending_payment_order','Api\ActivityController@pendingPaymentOrder');            // api for get task history
     Route::post('product_sku/bydb','Api\SalerController@getProductSkeParticulerDB');            // api for get task history
 });
-
-
-
-
         
     Route::group(['prefix' => 'v1', 'middleware' => ['apiLocalization']], function () {
         
