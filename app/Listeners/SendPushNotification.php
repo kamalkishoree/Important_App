@@ -95,7 +95,6 @@ class SendPushNotification
 
         $array = json_decode(json_encode($recipients), true);
         foreach($array as $item){
-            \Log::info($item);
             if(isset($item['device_token']) && !empty($item['device_token'])){
                 $item['title']     = 'Pickup Request';
                 $item['body']      = 'Check All Details For This Request In App';
@@ -125,7 +124,7 @@ class SendPushNotification
                             ->notification([
                                 'title'              => 'Pickup Request',
                                 'body'               => 'Check All Details For This Request In App',
-                                'sound'              => 'notification.mp3',
+                                'sound'              => ($item['device_type'] == 'ios')?'notification.wav':'notification.mp3',
                                 'android_channel_id' => 'Royo-Delivery',
                                 'soundPlay'          => true,
                                 'show_in_foreground' => true,
@@ -134,7 +133,6 @@ class SendPushNotification
                         }
                         else
                         {
-                             \Log::info('check_remidner');
                             $fcm_store =   $fcmObj
                             ->to([$item['device_token']])
                             ->priority('high')
