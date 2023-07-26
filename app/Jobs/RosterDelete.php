@@ -21,6 +21,7 @@ class RosterDelete implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     protected $order_id;
+    protected $type;
     protected $driver_id;
 
     /**
@@ -66,12 +67,16 @@ class RosterDelete implements ShouldQueue
             Config::set("database.connections.$schemaName", $default);
             config(["database.connections.mysql.database" => $schemaName]);
             if($this->type=='B'){
-                DB::connection($schemaName)->table('rosters')->where('batch_no',$this->order_id)->delete();
+                DB::connection($schemaName)->table('rosters')->where('batch_no',$this->order_id)->where('is_particular_driver','=',0)->delete();
+            }else if($this->type=='PD'){
+                DB::connection($schemaName)->table('rosters')->where('order_id',$this->order_id)
+                ->where('is_particular_driver',0)
+                ->delete();
             }else{
                 if(empty($this->driver_id)){
-                    DB::connection($schemaName)->table('rosters')->where('order_id',$this->order_id)->delete();
+                    DB::connection($schemaName)->table('rosters')->where('order_id',$this->order_id)->where('is_particular_driver','=',0)->delete();
                 }else{
-                    DB::connection($schemaName)->table('rosters')->where('order_id',$this->order_id)->where('driver_id',$this->driver_id)->delete();
+                    DB::connection($schemaName)->table('rosters')->where('order_id',$this->order_id)->where('is_particular_driver','=',0)->where('driver_id',$this->driver_id)->delete();
                     $this->getData();
                 }
             }
@@ -88,13 +93,15 @@ class RosterDelete implements ShouldQueue
     {
         $schemaName       = 'royodelivery_db';
         $date             =  Carbon::now()->toDateTimeString();
-        $get              =  DB::connection($schemaName)->table('rosters')->where('status',0)->where('order_id',$this->order_id)
+        $get              =  DB::connection($schemaName)->table('rosters')
+        ->where(function ($query) use ( $date) {
+            $query->where('notification_time', '<=', $date)
+            ->orWhere('notification_befor_time', '<=', $date);
+        })->where('status',0)
         ->leftJoin('roster_details', 'rosters.detail_id', '=', 'roster_details.unique_id')
         ->select('rosters.*', 'roster_details.customer_name', 'roster_details.customer_phone_number',
-            'roster_details.short_name','roster_details.address','roster_details.lat','roster_details.long','roster_details.task_count')->orderBy('id','asc')->limit(1)->get();
-       
+            'roster_details.short_name','roster_details.address','roster_details.lat','roster_details.long','roster_details.task_count')->get();
         $getids           = $get->pluck('id');
-        
         //$qr           = $get->toSql();
         DB::connection($schemaName)->table('rosters')->where('status',10)->delete();
         if(count($get) > 0){
@@ -117,6 +124,7 @@ class RosterDelete implements ShouldQueue
             
             
             foreach($array as $item){
+                \Log::info($item);
                 
                 if(isset($item['device_token']) && !empty($item['device_token'])){
                     //Log::info('Fcm Response 11');
@@ -139,24 +147,45 @@ class RosterDelete implements ShouldQueue
                     // Log::info('Fcm Response');
                     
                     if(isset($new)){
+                        
                         try{
                             $fcm_server_key = !empty($client_preferences->fcm_server_key)? $client_preferences->fcm_server_key : 'null';
-                            \Log::info($fcm_server_key);
-                            
                             $fcmObj = new Fcm($fcm_server_key);
-                            $fcm_store = $fcmObj->to($new) // $recipients must an array
-                            ->priority('high')
-                            ->timeToLive(0)
-                            ->data($item)
-                            ->notification([
-                                'title'              => 'Pickup Request',
-                                'body'               => 'Check All Details For This Request In App',
-                                'sound'              => 'notification.mp3',
-                                'android_channel_id' => 'Royo-Delivery',
-                                'soundPlay'          => true,
-                                'show_in_foreground' => true,
-                            ])
-                            ->send();
+                            
+                            if($item['is_particular_driver'] != 2 ){
+                                $fcm_store = $fcmObj->to($new) // $recipients must an array
+                                ->priority('high')
+                                ->timeToLive(0)
+                                ->data($item)
+                                ->notification([
+                                    'title'              => 'Pickup Request',
+                                    'body'               => 'Check All Details For This Request In App',
+                                    'sound'              => 'notification.mp3',
+                                    'android_channel_id' => 'Royo-Delivery',
+                                    'soundPlay'          => true,
+                                    'show_in_foreground' => true,
+                                ])
+                                ->send();
+                            }
+                            else
+                            {
+                                 \Log::info('check_remidner');
+                                $fcm_store =   $fcmObj
+                                ->to([$item['device_token']])
+                                ->priority('high')
+                                ->timeToLive(0)
+                                ->data([
+                                    'title' => 'Reminder Order',
+                                    'body' => 'Pickup your order #'.$item['order_id'],
+                                ])
+                                ->notification([
+                                    'title' => 'Reminder Order',
+                                    'body' => 'Pickup your order #'.$item['order_id'],
+                                ])
+                                ->send();
+                                
+                            }
+                            
                         }
                         catch(Exception $e){
                             Log::info($e->getMessage());

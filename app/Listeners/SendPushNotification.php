@@ -95,7 +95,7 @@ class SendPushNotification
 
         $array = json_decode(json_encode($recipients), true);
         foreach($array as $item){
-
+            \Log::info($item);
             if(isset($item['device_token']) && !empty($item['device_token'])){
                 $item['title']     = 'Pickup Request';
                 $item['body']      = 'Check All Details For This Request In App';
@@ -112,27 +112,50 @@ class SendPushNotification
                 $client_preferences = DB::connection('db_'.$clientRecord->database_name)->table('client_preferences')->where('client_id', $item['client_code'])->first();
 
                 if(isset($new)){
+                    
                     try{
                         $fcm_server_key = !empty($client_preferences->fcm_server_key)? $client_preferences->fcm_server_key : 'null';
                         $fcmObj = new Fcm($fcm_server_key);
-                        $fcm_store = $fcmObj->to($new) // $recipients must an array
-                                        ->priority('high')
-                                        ->timeToLive(0)
-                                        ->data($item)
-                                        ->notification([
-                                            'title'              => 'Pickup Request',
-                                            'body'               => 'Check All Details For This Request In App',
-                                            'sound'              => 'notification.mp3',
-                                            'android_channel_id' => 'Royo-Delivery',
-                                            'soundPlay'          => true,
-                                            'show_in_foreground' => true,
-                                        ])
-                                        ->send();
+                        
+                        if($item['is_particular_driver'] != 2 ){
+                            $fcm_store = $fcmObj->to($new) // $recipients must an array
+                            ->priority('high')
+                            ->timeToLive(0)
+                            ->data($item)
+                            ->notification([
+                                'title'              => 'Pickup Request',
+                                'body'               => 'Check All Details For This Request In App',
+                                'sound'              => 'notification.mp3',
+                                'android_channel_id' => 'Royo-Delivery',
+                                'soundPlay'          => true,
+                                'show_in_foreground' => true,
+                            ])
+                            ->send();
+                        }
+                        else
+                        {
+                             \Log::info('check_remidner');
+                            $fcm_store =   $fcmObj
+                            ->to([$item['device_token']])
+                            ->priority('high')
+                            ->timeToLive(0)
+                            ->data([
+                                'title' => 'Reminder Order',
+                                'body' => 'Pickup your order #'.$item['order_id'],
+                            ])
+                            ->notification([
+                                'title' => 'Reminder Order',
+                                'body' => 'Pickup your order #'.$item['order_id'],
+                            ])
+                            ->send();
+                            
+                        }
+                        
                     }
                     catch(Exception $e){
                         Log::info($e->getMessage());
                     }
-
+                    
                 }
             }
 
