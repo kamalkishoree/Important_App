@@ -91,7 +91,7 @@ class SendPushNotification
         DB::connection($schemaName)->table('rosters')->where('status',10)->delete();
         if(count($getids) > 0){
             DB::connection($schemaName)->table('rosters')->whereIn('id',$getids)->update(['status'=>1]);
-            DB::connection($schemaName)->table('rosters')->whereIn('id',$getids)->delete();
+          //  DB::connection($schemaName)->table('rosters')->whereIn('id',$getids)->delete();
             $this->sendnotification($get);
         }else{
             $this->extraTime($schemaName);
