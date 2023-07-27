@@ -75,9 +75,10 @@ class SendPushNotification
                                         })->where('status',0)
                                     ->leftJoin('roster_details', 'rosters.detail_id', '=', 'roster_details.unique_id')
                                     ->select('rosters.*', 'roster_details.customer_name', 'roster_details.customer_phone_number',
-        'roster_details.short_name','roster_details.address','roster_details.lat','roster_details.long','roster_details.task_count')->get();
+        'roster_details.short_name','roster_details.address','roster_details.lat','roster_details.long','roster_details.task_count');
         $getids           = $get->pluck('id');
-        DB::connection($schemaName)->table('rosters')->where('status',10)->delete();
+        $get              = $get->get();
+        // DB::connection($schemaName)->table('rosters')->where('status',10)->delete();
         if(count($get) > 0){
             DB::connection($schemaName)->table('rosters')->whereIn('id',$getids)->update(['status'=>1]);
             DB::connection($schemaName)->table('rosters')->whereIn('id',$getids)->delete();
@@ -109,8 +110,6 @@ class SendPushNotification
                 $this->seperate_connection('db_'.$clientRecord->database_name);
                 $client_preferences = DB::connection('db_'.$clientRecord->database_name)->table('client_preferences')->where('client_id', $item['client_code'])->first();
                 
-                $client_preferences = DB::connection('db_'.$clientRecord->database_name)->table('client_preferences')->where('client_id', $item['client_code'])->first();
-
                 if(isset($new)){
                     
                     try{
@@ -178,7 +177,7 @@ class SendPushNotification
                         ->where(function ($query) use ( $date) {
                             $query->where('notification_time', '<=', $date)
                                 ->orWhere('notification_befor_time', '<=', $date);
-                        })->where('status',0)
+                        })
                     ->get();
         if(count($check) > 0){
             sleep(15);
