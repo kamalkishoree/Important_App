@@ -88,15 +88,9 @@ class SendPushNotification
         $get_querry = clone $get;
         $getids           = $get->pluck('id');
         $get              = $get->get();
-         
-
+        DB::connection($schemaName)->table('rosters')->where('status',10)->delete();
         if(count($getids) > 0){
-            // \Log::info($get_querry->toSql());
-            // \Log::info("get ids ".json_encode($getids));
-            // \Log::info("get_time" .$date);
-
             DB::connection($schemaName)->table('rosters')->whereIn('id',$getids)->delete();
-            // \Log::info("get ids ".json_encode($getids) );
             // DB::connection($schemaName)->table('rosters')->whereIn('id',$newget)->update(['status'=>1]);
             $this->sendnotification($get);
         }else{
@@ -116,7 +110,9 @@ class SendPushNotification
 
         $array = json_decode(json_encode($recipients), true);
 
-        foreach($array as $item){
+        foreach($array as $k => $item){
+            \Log::info("notification ".$k+1);
+            \Log::info("notification ".$item['type']);
             if(isset($item['device_token']) && !empty($item['device_token'])){
 
                 $item['title']     = 'Pickup Request';
@@ -197,7 +193,7 @@ class SendPushNotification
 
     public function extraTime($schemaName)
     {
-      //  Log::info('extraTime');
+       \Log::info('extraTime');
         //sleep(30); ->addSeconds(45)
         $date             =  Carbon::now()->toDateTimeString();
     //   /  Log::info($date);
@@ -207,8 +203,8 @@ class SendPushNotification
                                 ->orWhere('notification_befor_time', '<=', $date);
                         })
                     ->get();
-                  //  Log::info('extraTime check');      
-                  //  Log::info($check);
+                  \Log::info('extraTime check');      
+                  \Log::info($check);
         
         if(count($check) > 0){
             sleep(15);
