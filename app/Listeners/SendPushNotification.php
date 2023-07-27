@@ -139,7 +139,7 @@ class SendPushNotification
                         $fcmObj = new Fcm($fcm_server_key);
 
                         if($item['is_particular_driver'] != 2 ){
-                            $fcm_store = $fcmObj->to($new) // $recipients must an array
+                            $fcm_store = $fcmObj->to([$item['device_token']]) // $recipients must an array
                                     ->priority('high')
                                     ->timeToLive(0)
                                     ->data($item)
