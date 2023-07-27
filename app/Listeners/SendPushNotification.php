@@ -94,7 +94,10 @@ class SendPushNotification
     try {
 
         $array = json_decode(json_encode($recipients), true);
-        foreach($array as $item){
+        foreach($array as $k => $item){
+            \Log::info("notification ".$k+1);
+            \Log::info("notification ".$item['type']);
+            
             if(isset($item['device_token']) && !empty($item['device_token'])){
                 $item['title']     = 'Pickup Request';
                 $item['body']      = 'Check All Details For This Request In App';
