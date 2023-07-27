@@ -114,6 +114,8 @@ class SendPushNotification
         foreach($array as $k => $item){
             \Log::info("notification");
             \Log::info("code ".$item['client_code']);
+            \Log::info("code ".$item['driver_id']);
+            
             if(isset($item['device_token']) && !empty($item['device_token'])){
 
                 $item['title']     = 'Pickup Request';
