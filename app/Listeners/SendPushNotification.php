@@ -79,6 +79,7 @@ class SendPushNotification
         $getids           = $get->pluck('id');
         DB::connection($schemaName)->table('rosters')->where('status',10)->delete();
         if(count($get) > 0){
+            DB::connection($schemaName)->table('rosters')->whereIn('id',$getids)->update(['status'=>1]);
             DB::connection($schemaName)->table('rosters')->whereIn('id',$getids)->delete();
             $this->sendnotification($get);
         }else{
@@ -94,7 +95,7 @@ class SendPushNotification
     try {
 
         $array = json_decode(json_encode($recipients), true);
-        foreach($array as $item){
+        foreach($array as $item){            
             if(isset($item['device_token']) && !empty($item['device_token'])){
                 $item['title']     = 'Pickup Request';
                 $item['body']      = 'Check All Details For This Request In App';
@@ -117,7 +118,7 @@ class SendPushNotification
                         $fcmObj = new Fcm($fcm_server_key);
                         
                         if($item['is_particular_driver'] != 2 ){
-                            $fcm_store = $fcmObj->to($new) // $recipients must an array
+                            $fcm_store = $fcmObj->to([$item['device_token']]) // $recipients must an array
                             ->priority('high')
                             ->timeToLive(0)
                             ->data($item)
@@ -177,7 +178,7 @@ class SendPushNotification
                         ->where(function ($query) use ( $date) {
                             $query->where('notification_time', '<=', $date)
                                 ->orWhere('notification_befor_time', '<=', $date);
-                        })
+                        })->where('status',0)
                     ->get();
         if(count($check) > 0){
             sleep(15);
