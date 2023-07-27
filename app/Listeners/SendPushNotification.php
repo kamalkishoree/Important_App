@@ -113,6 +113,7 @@ class SendPushNotification
 
         foreach($array as $k => $item){
             \Log::info("notification");
+            \Log::info("code ".$item['client_code']);
             if(isset($item['device_token']) && !empty($item['device_token'])){
 
                 $item['title']     = 'Pickup Request';
@@ -125,12 +126,9 @@ class SendPushNotification
                 array_push($new,$item['device_token']);
 
                 $clientRecord = Client::where('code', $item['client_code'])->first();
-
                 $this->seperate_connection('db_'.$clientRecord->database_name);
                 $client_preferences = DB::connection('db_'.$clientRecord->database_name)->table('client_preferences')->where('client_id', $item['client_code'])->first();
                 
-                $client_preferences = DB::connection('db_'.$clientRecord->database_name)->table('client_preferences')->where('client_id', $item['client_code'])->first();
-
                 if(isset($new)){
 
                     try{
