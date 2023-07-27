@@ -91,7 +91,7 @@ class SendPushNotification
         DB::connection($schemaName)->table('rosters')->where('status',10)->delete();
         if(count($getids) > 0){
             DB::connection($schemaName)->table('rosters')->whereIn('id',$getids)->update(['status'=>1]);
-          //  DB::connection($schemaName)->table('rosters')->whereIn('id',$getids)->delete();
+            DB::connection($schemaName)->table('rosters')->whereIn('id',$getids)->delete();
             $this->sendnotification($get);
         }else{
             $this->extraTime($schemaName);
@@ -106,19 +106,11 @@ class SendPushNotification
     public function sendnotification($recipients)
     {
          
-    try {
-        \Log::info("roster ");
-        
+    try {        
         $array = json_decode(json_encode($recipients), true);
 
         foreach($array as $k => $item){
-            \Log::info("notification");
-            \Log::info("code : ".$item['client_code']);
-            \Log::info("driver id : ".$item['driver_id']);
-            \Log::info("token : ".$item['device_token']);
-            
             if(isset($item['device_token']) && !empty($item['device_token'])){
-
                 $item['title']     = 'Pickup Request';
                 $item['body']      = 'Check All Details For This Request In App';
                 $new = [];
@@ -174,7 +166,6 @@ class SendPushNotification
 
                     }
                     catch(Exception $e){
-                        \Log::info("error log ");
                        \Log::info($e->getMessage());
                     }
 
@@ -187,7 +178,6 @@ class SendPushNotification
         sleep(5);
         $this->getData();
         } catch (Exception $ex) {
-            \Log::info("error now log ");
             \Log::info($ex->getMessage());
 
         }
@@ -196,18 +186,14 @@ class SendPushNotification
 
     public function extraTime($schemaName)
     {
-       \Log::info('extraTime');
         //sleep(30); ->addSeconds(45)
-        $date             =  Carbon::now()->toDateTimeString();
-    //   /  Log::info($date);
+        $date =  Carbon::now()->toDateTimeString();
         $check = DB::connection($schemaName)->table('rosters')
                         ->where(function ($query) use ( $date) {
                             $query->where('notification_time', '<=', $date)
                                 ->orWhere('notification_befor_time', '<=', $date);
                         })
                     ->get();
-                  \Log::info('extraTime check');      
-                  \Log::info($check);
         
         if(count($check) > 0){
             sleep(15);
