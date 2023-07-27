@@ -1300,7 +1300,7 @@ class TaskController extends BaseController
             // $settime = ($request->task_type == "schedule") ? $request->schedule_time : Carbon::now()->toDateTimeString();
             $notification_time = ($request->task_type == "schedule") ? $settime : Carbon::now()->toDateTimeString();
 
-            $agent_id          = $request->allocation_type === 'm' ? $request->agent : null;
+            $agent_id          = $request->allocation_type === 'm' ? $request->agent :  $request->driver_id ?? Null;
 
             $rejectable_order   = isset($request->rejectable_order) ? $request->rejectable_order : 0;
             $refer_driver_id = null;
@@ -1339,7 +1339,6 @@ class TaskController extends BaseController
                 'available_seats' => isset($request->available_seats) ? $request->available_seats : 0,
                 'no_seats_for_pooling' => isset($request->no_seats_for_pooling) ? $request->no_seats_for_pooling : 0,
                 'is_cab_pooling' => isset($request->is_cab_pooling) ? $request->is_cab_pooling : 0,
-                'driver_id'     => $request->driver_id ?? null,
             ];
 
             if (checkColumnExists('orders', 'rejectable_order')) {
