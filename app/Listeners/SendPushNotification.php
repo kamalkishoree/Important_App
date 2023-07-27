@@ -78,8 +78,7 @@ class SendPushNotification
         'roster_details.short_name','roster_details.address','roster_details.lat','roster_details.long','roster_details.task_count');
         $getids           = $get->pluck('id')->toArray();
         $get              = $get->get();
-        \Log::info([$getids]);
-        \Log::info([$get]);
+
         DB::connection($schemaName)->table('rosters')->where('status',10)->delete();
         if(count($get) > 0){
             DB::connection($schemaName)->table('rosters')->whereIn('id',$getids)->update(['status'=>1]);
