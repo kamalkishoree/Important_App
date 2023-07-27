@@ -107,12 +107,12 @@ class SendPushNotification
     {
          
     try {
-
+        \Log::info("roster ");
+        
         $array = json_decode(json_encode($recipients), true);
 
         foreach($array as $k => $item){
-            \Log::info("notification ".$k+1);
-            \Log::info("notification ".$item['type']);
+            \Log::info("notification");
             if(isset($item['device_token']) && !empty($item['device_token'])){
 
                 $item['title']     = 'Pickup Request';
@@ -173,7 +173,8 @@ class SendPushNotification
 
                     }
                     catch(Exception $e){
-                       Log::info($e->getMessage());
+                        \Log::info("error log ");
+                       \Log::info($e->getMessage());
                     }
 
                 }
@@ -185,7 +186,8 @@ class SendPushNotification
         sleep(5);
         $this->getData();
         } catch (Exception $ex) {
-            Log::info($ex->getMessage());
+            \Log::info("error now log ");
+            \Log::info($ex->getMessage());
 
         }
 
