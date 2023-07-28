@@ -4711,7 +4711,7 @@ public function sendPushNotificationtoDriver($title, $body, $auth, $device_token
         "notification" => [
             'title' => $title,
             'body'  => $body,
-            'sound' => "notification.wav",
+            'sound' => "notification.mp3",
             "icon" => '',
             'click_action' => $call_back_url,
             "android_channel_id" => "sound-channel-id"
