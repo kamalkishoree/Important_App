@@ -3378,7 +3378,7 @@ class TaskController extends BaseController
                                 ->notification([
                                     'title' => 'Edit Order Status',
                                     'body' => 'Check Status of Edit Order Approval',
-                                    'sound' => 'notification.mp3',
+                                    'sound' => 'notification',
                                     'android_channel_id' => 'Royo-Delivery',
                                     'soundPlay' => true,
                                     'show_in_foreground' => true
@@ -3443,7 +3443,7 @@ class TaskController extends BaseController
                                 ->notification([
                                     'title' => 'Cancel Order Status',
                                     'body' => 'Check Status of Cancel Order Request',
-                                    'sound' => 'notification.mp3',
+                                    'sound' => 'notification',
                                     'android_channel_id' => 'Royo-Delivery',
                                     'soundPlay' => true,
                                     'show_in_foreground' => true
@@ -4711,7 +4711,7 @@ public function sendPushNotificationtoDriver($title, $body, $auth, $device_token
         "notification" => [
             'title' => $title,
             'body'  => $body,
-            'sound' => "notification.mp3",
+            'sound' => "notification",
             "icon" => '',
             'click_action' => $call_back_url,
             "android_channel_id" => "sound-channel-id"

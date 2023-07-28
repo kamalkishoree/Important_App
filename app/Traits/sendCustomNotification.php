@@ -24,7 +24,7 @@ trait sendCustomNotification{
                             ->notification([
                                 'title'              => (empty($data['title']))?'Pickup Request':$data['title'],
                                 'body'               => (empty($data['body']))?'Check All Details For This Request In App':$data['body'],
-                                'sound'              => 'notification.mp3',
+                                'sound'              => 'notification',
                                 'android_channel_id' => 'Royo-Delivery',
                                 'soundPlay'          => true,
                                 'show_in_foreground' => true,
