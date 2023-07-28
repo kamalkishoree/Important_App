@@ -12,10 +12,12 @@ use App\Http\Controllers\{BaseController, StripeGatewayController};
 use App\Traits\ApiResponser;
 use DB, Log;
 use App\Traits\GlobalFunction;
+use App\Traits\DriverExportTrait;
+use Maatwebsite\Excel\Facades\Excel;
 
 class DriverAccountingController extends BaseController
 {
-    use ApiResponser,GlobalFunction;
+    use ApiResponser,GlobalFunction,DriverExportTrait;
    
     public function index(Request $request) {
         // $geoagents = $this->getGeoBasedAgentsData('6', '0', '', '30-03-2023', '100','113');
@@ -156,6 +158,9 @@ class DriverAccountingController extends BaseController
                 ->addColumn('agent_sum', function($orders) use($driver_cost) {
                     return $driver_cost ?? '0.00';
                 })
+                ->addColumn('order_date', function($orders) {
+                    return ($orders->created_at ?? '')->format("d-m-Y h:i A");
+                })
                 ->filter(function ($instance) use ($request) {
                     if (!empty($request->get('search'))) {
                        
@@ -176,6 +181,10 @@ class DriverAccountingController extends BaseController
                 ;
     }
 
+
+    public function export(Request $request){
+        return  $this->exportDriver($request);
+     }
     /**
      * Payout to agent
      */
