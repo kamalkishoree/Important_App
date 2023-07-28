@@ -160,7 +160,7 @@ class RosterDelete implements ShouldQueue
                                 ->notification([
                                     'title'              => 'Pickup Request',
                                     'body'               => 'Check All Details For This Request In App',
-                                    'sound'              => 'notification',
+                                    'sound'              => 'notification.mp3',
                                     'android_channel_id' => 'Royo-Delivery',
                                     'soundPlay'          => true,
                                     'show_in_foreground' => true,
