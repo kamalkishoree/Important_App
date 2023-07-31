@@ -68,6 +68,7 @@ class SendPushNotification
     {
         $schemaName       = 'royodelivery_db';
         $date             =  Carbon::now()->toDateTimeString();
+        \Log::info("Date ". $date);
         $get              =  DB::connection($schemaName)->table('rosters')
                                         ->where(function ($query) use ( $date) {
                                             $query->where('notification_time', '<=', $date)
