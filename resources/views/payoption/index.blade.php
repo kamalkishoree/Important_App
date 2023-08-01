@@ -83,6 +83,7 @@
                 $vnpay_server_key = (isset($creds->vnpay_server_key)) ? $creds->vnpay_server_key : '';
                 $access_code = (isset($creds->access_code)) ? $creds->access_code : '';
                 $enc_key = (isset($creds->enc_key)) ? $creds->enc_key : '';
+                $custom_url = (isset($creds->custom_url)) ? $creds->custom_url : '';
                 ?>
 
                 <div class="card-box h-100">
@@ -404,6 +405,13 @@
                                     <input type="text" name="ccavenue_enc_key" id="ccavenue_enc_key" class="form-control" value="{{$enc_key}}" @if($opt->status == 1) required @endif>
                                 </div>
                             </div>
+                            <div class="col-12">
+								<label>{{__('Custom Url')}}</label> <select class="form-control"
+									name="custom_url" id="url">
+									<option value="com">.com</option>
+									<option value="ae" @if($custom_url== "ae")selected @endif>.ae</option>
+								</select>
+							</div>
                         </div>
                     </div>
                     @endif
