@@ -108,7 +108,8 @@ class TaskController extends BaseController
         } else {
             $client_url = "https://" . $client_details->sub_domain . \env('SUBDOMAIN');
         }
-
+        \Log::info('request data one basket');
+        \Log::info($request->all());
         // set dynamic smtp for email send
         $this->setMailDetail($client_details);
         $waiting_time = $request->waiting_time ?? 0;
@@ -175,7 +176,8 @@ class TaskController extends BaseController
                 $sms_final_status = $sms_settings['notification_events'][0];
                 $sms_body = $sms_settings['notification_events'][0]['message'];
                 $link = $client_url . '/order/tracking/' . $client_details->code . '/' . $order_details->unique_id;
-
+                \Log::info('link url');
+                \Log::info($link);
                 break;
             case 3:
                 $task_type = 'assigned';
@@ -320,7 +322,8 @@ class TaskController extends BaseController
                     $stat = $request->task_status + 1;
                 else
                     $stat = $request->task_status;
-
+                    \Log::info('stat value');
+                    \Log::info($stat);
                 $call_web_hook = $this->updateStatusDataToOrder($order_details, $stat, $orderId->task_type_id); # call web hook when order update
             }
         }
@@ -785,10 +788,17 @@ class TaskController extends BaseController
                 'content-type' => 'application/json'
             ]);
             $url = $order_details->call_back_url;
+            \Log::info('order url');
+            \Log::info($url);
+            \Log::info('complete order url');
+            \Log::info($url . '?dispatcher_status_option_id=' . $dispatcher_status_option_id . '&dispatch_traking_url=' . $dispatch_traking_url . '&task_type=' . $task_type);
+         
+         
             $res = $client->get($url . '?dispatcher_status_option_id=' . $dispatcher_status_option_id . '&dispatch_traking_url=' . $dispatch_traking_url . '&task_type=' . $task_type);
             $response = json_decode($res->getBody(), true);
             if ($response) {
-                // Log::info($response);
+                \Log::info('response');
+                \Log::info($response);
             }
             return $dispatch_traking_url;
         } catch (\Exception $e) {
