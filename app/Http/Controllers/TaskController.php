@@ -49,7 +49,7 @@ use App\Exports\RoutesExport;
 use Excel;
 use GuzzleHttp\Client as Gclient;
 use App\Http\Controllers\Api\BaseController;
-use App\Traits\{ApiResponser,GlobalFunction};
+use App\Traits\{ApiResponser, DispatcherRouteAllocation, GlobalFunction};
 use App\Traits\TollFee;
 use App\Imports\OrderImport;
 use App\Model\Product;
@@ -60,7 +60,7 @@ use App\Model\ProductVariant;
 class TaskController extends BaseController
 {
     
-    use ApiResponser,GlobalFunction;
+    use ApiResponser,GlobalFunction,DispatcherRouteAllocation;
     use TollFee,inventoryManagement;
     /**
      * Display a listing of the resource.
@@ -618,6 +618,8 @@ class TaskController extends BaseController
         return Excel::download(new RoutesExport($data, $header), "task.xlsx");
     }
 
+
+   
     // function for saving new order
     public function newtasks(Request $request)
     {
@@ -626,7 +628,7 @@ class TaskController extends BaseController
 
             $loc_id = $cus_id = $send_loc_id = $newlat = $newlong = 0;
             $iinputs = $request->toArray();
-
+            $client = ClientPreference::where('id',1)->first();
             $old_address_ids = array();
             foreach ($iinputs as $key => $value) {
                 if (substr_count($key, "old_address_id") == 1) {
@@ -728,6 +730,9 @@ class TaskController extends BaseController
             $dep_id = null; // this is used as dependent task id
             $pickup_quantity = 0;
             $drop_quantity = 0;
+             
+
+            
             foreach ($request->task_type_id as $key => $value) {
                 $taskcount ++;
                 if (isset($request->address[$key])) {
@@ -748,7 +753,7 @@ class TaskController extends BaseController
 
                     $loc_id = $Loction->id;
                     $send_loc_id = $loc_id;
-                } else {
+                } else { 
                     if ($key == 0) {
                         $loc_id = $request->old_address_id;
                         $send_loc_id = $loc_id;
@@ -795,7 +800,7 @@ class TaskController extends BaseController
                     );
                     $loc_id = $Loction->id;
                 }
-
+               
                 $task_appointment_duration = empty($request->appointment_date[$key]) ? '0' : $request->appointment_date[$key];
 
                 $array = [
@@ -856,8 +861,19 @@ class TaskController extends BaseController
                 if(isset($product_data)){
                 $this->inventoryUpdate(json_encode($product_data));
                 }
-                $dep_id = $task->id;
 
+                
+                $dep_id = $task->id;
+                if(in_array(2,$request->task_type_id)){
+
+                    if ($client->is_dispatcher_allocation == 1) {
+                        if ($value == 1) {
+                        $this->createWarehouseTasks($client,$value,$request,$orders,$dep_id,$Loction,$cus_id);
+                     }
+                    }
+
+                }
+                
                 // for net quantity
                 if ($value == 1) {
                     $pickup_quantity = $pickup_quantity + !empty($request->quantity[$key]) ? $request->quantity[$key]:0;
@@ -1305,15 +1321,24 @@ class TaskController extends BaseController
         ];
         // Send message to customer friend
         try {
+            
+            
+            
             if (isset($order_details->type) && $order_details->type == 1 && strlen($order_details->friend_phone_number) > 8) {
                 // $friend_sms_body = 'Hi '.($order_details->friend_name).', '.($order_details->customer->name??'Our customer').' have booked a ride for you. '.getAgentNomenclature().' '.($oneagent->name??'').' in our '.($oneagent->make_model ?? '').' with license plate '.($oneagent->plate_number??'').' has been assgined.';
-
+                if ($auth->custom_domain && ! empty($auth->custom_domain)) {
+                    $client_url = "https://" . $auth->custom_domain;
+                } else {
+                    $client_url = "https://" . $auth->sub_domain . \env('SUBDOMAIN');
+                }
+                $dispatch_traking_url = $client_url.'/order/tracking/'.$auth->code.'/'.$order_details->unique_id;
                 $keyData = [
                     '{user-name}' => $order_details->friend_name,
                     '{customer-name}' => $order_details->customer->name ?? 'Our customer',
                     '{agent-name}' => $oneagent->name ?? '',
                     '{car-model}' => $oneagent->make_model ?? '',
-                    '{plate-no}' => $oneagent->plate_number ?? ''
+                    '{plate-no}' => $oneagent->plate_number ?? '',
+                    '{track-url}' => $dispatch_traking_url??''
                 ];
                 $friend_sms_body = sendSmsTemplate('friend-sms', $keyData);
 
@@ -1334,7 +1359,7 @@ class TaskController extends BaseController
     public function create(Request $request)
     {
         $product_ids = ! empty($request->product_id) ? $request->product_id : '';
-
+   
         if (! empty($product_ids)) {
             $vendor_ids = Product::whereIn('id', $product_ids)->select('vendor_id')
                 ->groupBy('vendor_id')
@@ -1380,7 +1405,8 @@ class TaskController extends BaseController
 
         $preference = ClientPreference::where('id', 1)->first([
             'route_flat_input',
-            'route_alcoholic_input'
+            'route_alcoholic_input',
+            'is_dispatcher_allocation'
         ]);
         $warehouses = [];
         if (checkTableExists('warehouses')) {
@@ -2794,7 +2820,10 @@ class TaskController extends BaseController
                 }
             }
 
+            $client = ClientPreference::first();
+
             $task_id = Order::find($id);
+          
             $validator = $this->validator($request->all())
                 ->validate();
             $loc_id = 0;
@@ -2913,6 +2942,8 @@ class TaskController extends BaseController
             Task::where('order_id', $id)->delete();
             OrderVendorProduct::where('order_id', $id)->delete();
             $dep_id = null;
+
+
             foreach ($request->task_type_id as $key => $value) {
                 if (isset($request->address[$key])) {
                     $loc = [
@@ -2981,6 +3012,16 @@ class TaskController extends BaseController
                 }
                 $task = Task::create($data);
                 $dep_id = $task->id;
+
+                if(in_array(2,$request->task_type_id)){
+
+                    if ($client->is_dispatcher_allocation == 1) {
+                        if ($value == 1) {
+                        $this->createWarehouseTasks($client,$value,$request,$task_id,$dep_id,$Loction ?? '',$cus_id);
+                     }
+                    }
+
+                }
             }
 
             if (isset($request->allocation_type) && $request->allocation_type === 'a') {
@@ -3502,6 +3543,7 @@ class TaskController extends BaseController
         }
     }
 
-      
-      
+   
+    
+    
 }

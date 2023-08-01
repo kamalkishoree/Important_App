@@ -558,7 +558,7 @@ class AgentSlotController extends BaseController
     }
     public function getGerenalSlot(Request $request)
     {
-       // pr($request->all());
+
         try {
             $ReturnArray= [];
             $key = 0;
@@ -598,6 +598,62 @@ class AgentSlotController extends BaseController
             return $this->success($ReturnArray, __('Success'), 200);
         } catch (\Exception $e) {
             return $this->error($e->getMessage(), $e->getCode());
+        }
+    }
+
+      /**   get agent according to getAgentsSlotByTagsTest long  */
+      public function AddDeleteBlockSlot(Request $request){
+        try {
+            $agent = auth()->user();
+            $dateNow = Carbon::now()->format('Y-m-d');
+            $slot_date    = $request->has('slot_date') ? $request->slot_date :  Carbon::now();
+
+            $seleted_date = Carbon::parse($slot_date)->format('Y-m-d');
+            if ($seleted_date < $dateNow) {
+                return response()->json(array('success' => false, 'message' => __("You can't delete past date.")));
+            }
+            if($request->type ==1){
+                    AgentSlotRoster::whereDate('schedule_date',$seleted_date)
+                              ->where('agent_id',$agent->id)
+                              ->where('booking_type','working_hours')
+                              ->update(['booking_type'=>'blocked','is_block'=>1]);
+                    $slot = new AgentSlot();
+                    $slot->agent_id     = $agent->id;
+                    $slot->start_time   = '00.01';
+                    $slot->end_time     = '23.59';
+                    $slot->start_date   = $seleted_date;
+                    $slot->end_date     = $seleted_date;
+                    $slot->recurring    =0;
+                    $slot->save();
+                    $AgentSlotData['slot_id']        = $slot->id;
+                    $AgentSlotData['agent_id']       = $agent->id;
+                    $AgentSlotData['start_time']     = '00.01';
+                    $AgentSlotData['end_time']       = '23.59';
+                    $AgentSlotData['schedule_date']  = $seleted_date;
+                    $AgentSlotData['booking_type']   = 'blocked' ;
+                    $AgentSlotData['memo']           = __('blocked Hours');
+                    AgentSlotRoster::insert($AgentSlotData);
+                    $msg = __('Date Blocked successfully!');
+            }else{
+                AgentSlotRoster::whereDate('schedule_date',$seleted_date)
+                                ->where('agent_id',$agent->id)
+                                ->where('is_block',1)
+                                ->update(['booking_type'=>'working_hours','is_block'=>0]);
+               $agent_slot= AgentSlotRoster::whereDate('schedule_date',$seleted_date)->where('agent_id',$agent->id)->delete();
+             
+                $msg = __('Date Unblocked successfully!');
+            }
+           
+            
+            return response()->json([
+                'status' => 200,
+                'message' => $msg ,
+            ], 200);
+   
+        }catch (Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 400);
         }
     }
 }

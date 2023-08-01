@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\DriverRefferal;
 use App\Http\Controllers\Api\BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use App\Model\{Agent, AgentLog, AllocationRule, Client, ClientPreference, Cms, Order, Task, TaskProof, Timezone, User, PaymentOption, UserBidRideRequest, DeclineBidRequest, DriverGeo,UserRating};
+use App\Model\{Agent, AgentLog, AllocationRule, Client, ClientPreference, Cms, Order, Task, TaskProof, Timezone, User, PaymentOption, UserBidRideRequest, DeclineBidRequest, DriverGeo, SmtpDetail, UserRating};
 use Validation;
 use DB, Log;
 use Illuminate\Support\Facades\Storage;
@@ -16,6 +17,10 @@ use Illuminate\Support\Facades\URL;
 use GuzzleHttp\Client as GClient;
 use App\Traits\FormAttributeTrait;
 use App\Traits\{GlobalFunction};
+use Exception;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
+
 class ActivityController extends BaseController
 {
     use FormAttributeTrait;
@@ -120,6 +125,7 @@ class ActivityController extends BaseController
     {
         $header = $request->header();
         $client_code = Client::where('database_name', $header['client'][0])->first();
+        $client_currency = ClientPreference::with('currency')->where('client_id', $client_code->code)->first();
         $tz = new Timezone();
         $client_code->timezone = $tz->timezone_name($client_code->timezone);
         $start     = Carbon::now($client_code->timezone ?? 'UTC')->startOfDay();
@@ -141,7 +147,7 @@ class ActivityController extends BaseController
 
         if (count($orders) > 0) {
             $tasks = Task::whereIn('order_id', $orders)->where('task_status', '!=', 4)->Where('task_status', '!=', 5)
-            ->with(['location','tasktype','order.customer','order.customer.resources','order.task.location','order.additionData'])->orderBy("order_id", "DESC")
+            ->with(['location','tasktype','order.customer','order.customer.resources','order.task.location','order.additionData','order.waitingTimeLogs'])->orderBy("order_id", "DESC")
             ->orderBy("id","ASC")
             ->get();
             if (count($tasks) > 0) {
@@ -157,6 +163,7 @@ class ActivityController extends BaseController
 
         return response()->json([
             'data' => $tasks,
+            'currency' => $client_currency->currency,
             'status' => 200,
             'message' => __('success')
         ], 200);
@@ -170,7 +177,6 @@ class ActivityController extends BaseController
     public function profile(Request $request)
     {
         $agent = Agent::where('id', Auth::user()->id)->first();
-
         return response()->json([
         'data' => $agent,
         'status' => 200,
@@ -267,7 +273,7 @@ class ActivityController extends BaseController
             
             if(!empty($custom_mode->is_hide_customer_notification) && ($custom_mode->is_hide_customer_notification == 1) && !empty($clientPreference->is_send_customer_notification) && ($clientPreference->is_send_customer_notification == 'on')){
 
-                \Log::info('permission success');
+            //    \Log::info('permission success');
                 //get agent orders 
                 $orders = Order::where('driver_id', Auth::user()->id)->where('status', 'assigned')->orderBy('order_time')->pluck('id')->toArray();
                 if (count($orders) > 0) {
@@ -346,7 +352,7 @@ class ActivityController extends BaseController
 
 
         if (count($orders) > 0) {
-            $tasks = Task::whereIn('order_id', $orders)->where('task_status', '!=', 4)->Where('task_status', '!=', 5)->with(['location','tasktype','order.customer','order.additionData'])->orderBy('order_id', 'desc')->orderBy('id', 'ASC')->get();
+            $tasks = Task::whereIn('order_id', $orders)->where('task_status', '!=', 4)->Where('task_status', '!=', 5)->with(['location','tasktype','order.customer','order.additionData','order.waitingTimeLogs'])->orderBy('order_id', 'desc')->orderBy('id', 'ASC')->get();
             if (count($tasks) > 0) {
                 //sort according to task_order
                 $tasks = $tasks->toArray();
@@ -389,6 +395,11 @@ class ActivityController extends BaseController
         $agents['task_proof']         = $taskProof;
         $agents['averageTaskComplete']= $averageTaskComplete['averageRating'];
         $agents['CompletedTasks']= $averageTaskComplete['CompletedTasks'];
+        if($preferences->unique_id_show){
+            $agents['unique_id'] = base64_encode('DId_'.$agent->id);
+        }
+        $agents['is_road_side_toggle']= $preferences->is_road_side_toggle;
+
         $datas['user']                = $agents;
         $datas['tasks']               = $tasks;
 
@@ -438,7 +449,7 @@ class ActivityController extends BaseController
        
         $orders = Order::where('driver_id', $id);
         if(!empty($request->from_date) && !empty($request->to_date)){
-            $orders =  $orders->whereBetween('order_time', [$request->from_date." 00:00:00",$request->to_date." 23:59:59"])->pluck('id');
+            $orders =  $orders->whereBetween('order_time', [$request->from_date." 00:00:00",$request->to_date." 23:59:59"]);
         }
 
         $orders =  $orders->pluck('id');
@@ -759,4 +770,50 @@ class ActivityController extends BaseController
         ], 200);
     }
 
+    public function postSendReffralCode(Request $request)
+    {          
+        $validator = Validator::make($request->all(), [
+            'email' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['status' => 201, 'message' => $validator->errors()->first()], 201);
+        }
+
+        // try {
+            $driver = Auth::user();
+            $client = Client::first();
+            
+            $driver_refferal_detail = DriverRefferal::where('driver_id', $driver->id)->first();
+            if ($driver_refferal_detail) {
+                $smtp = SmtpDetail::where('id', 1)->first();
+                if(!empty($smtp) && !empty($client->contact_email))
+                {             
+                    $email_template_content = '';
+                    $email_template_content = str_ireplace("{code}", $driver_refferal_detail->refferal_code, $email_template_content);
+                    $email_template_content = str_ireplace("{customer_name}", ucwords($driver->name), $email_template_content);
+                    
+                    $sendto = $request->email;
+                    $client_name = $client->name;
+                    $mail_from = $smtp->from_address;
+                    $t = Mail::send('email.verify', [
+                        'email' => $request->email,
+                        'mail_from' => $smtp->from_address,
+                        'client_name' => $client->name,
+                        'code' => $request->refferal_code,
+                        'logo' => $client->logo['original'],
+                        'customer_name' => "Link from " . $driver->name,
+                        'code_text' => 'Register yourself using this referral code below to get bonus offer',
+                        'link' => url()."/user/register?refferal_code=" . $request->refferal_code,
+                        'email_template_content' => $email_template_content
+                    ], function ($message) use ($sendto, $client_name, $mail_from) {
+                        $message->from($mail_from, $client_name);
+                        $message->to($sendto)->subject('Referral For Registration');
+                    });
+                }
+            }
+        // } catch (Exception $e) {
+        //     return response()->json($e->getMessage());
+        // }
+    }
 }

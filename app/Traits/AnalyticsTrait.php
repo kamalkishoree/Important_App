@@ -282,7 +282,8 @@ trait AnalyticsTrait{
         $user = Client::select('timezone')->first();
         $timezone = !empty($user->timezone) ? $user->timezone : 'Asia/Kolkata';
         $tz              = new Timezone();
-        $timezone_offset = $tz->timezone_gmt($timezone);
+        $timezone_offset = $tz->timezone_gmt($timezone);       
+        
         $order = new Order();
         if(!empty($agent_id)){
             $order         =  $order->where('driver_id',$agent_id);
@@ -364,7 +365,6 @@ trait AnalyticsTrait{
              $prev_week                                 = json_encode($arr1);
              
           }
-
          
          if($this_month){
              $this_month =  $this->AgentOrderAnalytics($this_month,'this_month');
@@ -372,7 +372,6 @@ trait AnalyticsTrait{
          if($prev_month){
              $prev_month =  $this->AgentOrderAnalytics($prev_month,'prev_month');
          }
-
 
          /*** Percentage this month  and prev month */
 

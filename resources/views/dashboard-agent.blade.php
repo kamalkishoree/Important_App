@@ -28,7 +28,7 @@
                 </div>
             </div> --}}
             <div id="scrollbar" class="col-md-3 col-xl-3 left-sidebar pt-3">
-                <div class="side_head mb-2 p-2">
+                <div class="side_head mb-2 py-2">
                     <div class="d-flex align-items-center justify-content-center mb-2"> 
                         <i class="mdi mdi-sync mr-1" onclick="reloadData()" aria-hidden="true"></i>
                         <div class="radio radio-primary form-check-inline ml-3 mr-2">
@@ -89,7 +89,7 @@
             </div>
             {{-- @dd($unassigned_orders) --}}
             <div id="scrollbar" class="col-md-3 col-xl-3 left-sidebar pt-3">
-                <div class="side_head mb-2 p-2">
+                <div class="side_head mb-2 py-2">
                     <div class="select_bar_date mb-2 d-flex align-items-center justify-content-center">
                         <input type="date"  id="basic-datepicker" class="datetime form-control" value="{{date('Y-m-d', strtotime($date))}}" data-date-format="YY-mm-dd" onchange="handler();" style="width: 250px;">
                         <div style="display:none">
@@ -228,6 +228,7 @@
         };
 
         function initMap(is_refresh) {
+            
             //new code for route
             var color = ["blue", "green", "red", "purple", "skyblue", "yellow", "orange"];
             const haightAshbury = {
