@@ -15,9 +15,29 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     #wrapper {
         overflow: auto !important;
     }
+    .dt-buttons .btn.btn-secondary,.dt-buttons .btn.btn-secondary:focus,.dt-buttons .btn.btn-secondary:active {
+        border-radius: 5px;
+        background: #6658ddd6 !important;
+    }
     .footer{
         z-index: 3;
     }
+    .dataTables_scrollHead thead th {
+        cursor: pointer;
+    }
+    .agents-datatable tbody td, .dataTables_scrollHead thead th {
+        vertical-align: middle;
+    }
+    .btn-label,.btn-label:focus,.btn-label:active {
+        background-color: rgb(102 88 221) !important;
+    }
+    .table thead th {
+    font-size: 14px;
+    font-weight: 600;
+    vertical-align: middle !important;
+}
+.light .btn-info{border-radius: 4px;font-size:13px;padding: 6px 20px;}
+.sort-icon .fa-sort{top:30px !important;bottom:0px !important;transform: translate(-20%, -20%);}
     #agents-datatable_processing {
         position: absolute !important;
         background: transparent !important;
@@ -31,9 +51,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
         float: right;
         margin: 5px 0 10px 15px;
     }
-    .agents-datatable tbody td, .dataTables_scrollHead thead th {
-        vertical-align: middle;
-    }
+  
     div#agents-datatable_filter {
         padding-top: 5px;
     }
@@ -43,16 +61,6 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     .dataTables_filter label .form-control {
         height: 37px;
         font-size: 16px;
-    }
-    .dt-buttons .btn.btn-secondary,.dt-buttons .btn.btn-secondary:focus,.dt-buttons .btn.btn-secondary:active {
-        border-radius: 5px;
-        background: #6658ddd6 !important;
-    }
-    .dataTables_scrollHead thead th {
-        cursor: pointer;
-    }
-    .btn-label,.btn-label:focus,.btn-label:active {
-        background-color: rgb(102 88 221) !important;
     }
     .datetime_div{
     display:flex;
@@ -69,6 +77,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     select#agent_name_id {
         width: 135px;
     }
+   
 
 
 
@@ -160,7 +169,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                 </div>
                             </div>
                             @csrf
-                            <div class="col-md-12">
+                            <div class="col-md-6">
                                 <form class="mb-0" name="getTask" id="getTask" method="get" action="{{ route('tasks.index') }}">
                                     <div class="login-form">
                                         <ul class="list-inline mb-0">
@@ -226,10 +235,10 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                             @if(!empty($preference->create_batch_hours) && $preference->create_batch_hours > 0)
                             <a href="{{route('batch.list')}}"><button type="button" class="btn btn-info" >All Batches</button></a>
                             @endif
-
-                            <div class="col-md-4 assign-toggle assign-show mt-3">
-                                <button type="button" class="btn btn-info assign_agent" data-toggle="modal" data-target="#add-assgin-agent-model" data-backdrop="static" data-keyboard="false">{{__("Assign")}}</button>
-                                <button type="button" class="btn btn-info assign_date" data-toggle="modal" data-target="#add-assgin-date-model" data-backdrop="static" data-keyboard="false">{{__("Change Date")}}/{{__("Time")}}</button>
+                            
+                            <div class="col-md-6 assign-toggle assign-show">
+                                <button type="button" class="btn btn-info assign_agent" data-toggle="modal" data-target="#add-assgin-agent-model" data-backdrop="static" data-keyboard="false">{{__("Assign")}}</button> 
+                                <button type="button" class="btn btn-info assign_date" data-toggle="modal" data-target="#add-assgin-date-model" data-backdrop="static" data-keyboard="false">{{__("Change Date")}}/{{__("Time")}}</button> 
                             </div>
                         </div>
                         <input type="hidden" id="routes-listing-status" value="unassigned">

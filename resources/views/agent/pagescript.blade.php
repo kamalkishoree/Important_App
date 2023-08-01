@@ -593,9 +593,10 @@
     $(document).on('click', '.mdi-delete', function(e) {
       e.preventDefault();
             var r = confirm("Are you sure?");
-            if (r == true) {
-               var agentid = $(this).attr('agentid');
-               $('form#agentdelete'+agentid).submit();
+            if (r != true) {
+                return false;
             }
+            var agentid = $(this).attr('agentid');
+            $('form#agentdelete'+agentid).submit();
     });
 </script>

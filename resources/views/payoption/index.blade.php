@@ -252,7 +252,7 @@
                             </div>
                         </div>
                     </div>
-                    @endif 
+                    @endif
 
                     @if ( (strtolower($opt->code) == 'razorpay') )
                     <div id="razorpay_fields_wrapper" @if($opt->status != 1) style="display:none" @endif>
@@ -377,7 +377,7 @@
                                     <input type="text" name="vnpay_server_key" id="vnpay_server_key" class="form-control" value="{{$vnpay_server_key}}" @if($opt->status == 1) required @endif>
                                 </div>
                             </div>
-                            
+
                         </div>
                     </div>
                     @endif
@@ -428,7 +428,44 @@
                         </div>
                     </div>
                     @endif
+                    @if ( (strtolower($opt->code) == 'obo') )
+                    @php
 
+                        $obo_business_name = (isset($creds->obo_business_name)) ? $creds->obo_business_name : '';
+                        $obo_client_id = (isset($creds->obo_client_id)) ? $creds->obo_client_id : '';
+                        $obo_key_id= (isset($creds->obo_key_id)) ? $creds->obo_key_id : '';
+                        $obo_market_place_id= (isset($creds->obo_market_place_id)) ? $creds->obo_market_place_id : '';
+
+                    @endphp
+                    <div class="mt-2" id="obo_fields_wrapper" @if($opt->status != 1) style="display:none" @endif>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group mb-2">
+                                    <label for="obo_business_name" class="mr-3">{{ __("OBO BUSINESS NAME") }}</label>
+                                    <input type="text" name="obo_business_name" id="obo_business_name" class="form-control" value="{{$obo_business_name}}" @if($opt->status == 1) required @endif>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group mb-2">
+                                    <label for="obo_client_id" class="mr-3">{{ __("OBO CLIENT ID") }}</label>
+                                    <input type="number" name="obo_client_id" id="obo_client_id" class="form-control" value="{{$obo_client_id}}" @if($opt->status == 1) required @endif>
+                                </div>
+                            </div>
+							 <div class="col-12">
+                                <div class="form-group mb-2">
+                                    <label for="obo_key_id" class="mr-3">{{ __("OBO CLIENT KEY") }}</label>
+                                    <input type="text" name="obo_key_id" id="obo_key_id" class="form-control" value="{{$obo_key_id}}" @if($opt->status == 1) required @endif>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group mb-2">
+                                    <label for="obo_market_place_id." class="mr-3">{{ __("OBO MARKET PLACE ID") }}</label>
+                                    <input type="text" name="obo_market_place_id" id="obo_market_place_id" class="form-control" value="{{$obo_market_place_id}}" @if($opt->status == 1) required @endif>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
                     <!-- <div class="d-flex align-items-center justify-content-between mb-2">
                         <button class="btn btn-info d-block" type="submit"> Save </button>
                     </div> -->
@@ -475,7 +512,7 @@
                         <h4 class="header-title mb-0">
                             <span class="alPaymentImage" style="height:24px;width:24px;display:inline-block;">
                                 <img style="width:100%;" src="{{asset('paymentsLogo/'.$opt->code.'.png')}}" alt="">
-                            </span>    
+                            </span>
                         {{__($opt->title)}}</h4>
                     </div>
                     <div class="row">
@@ -485,8 +522,8 @@
                                 <input type="checkbox" data-id="{{$opt->id}}" data-title="{{$opt->code}}" data-plugin="switchery" name="active[{{$opt->id}}]" class="chk_box payout_all_select" data-color="#43bee1" @if($opt->status == 1) checked @endif>
                             </div>
                         </div>
-                        @if ( (strtolower($opt->code) != 'cash') 
-                        &&  (strtolower($opt->code) != 'razorpay') 
+                        @if ( (strtolower($opt->code) != 'cash')
+                        &&  (strtolower($opt->code) != 'razorpay')
                         &&  (strtolower($opt->code) != 'simplify')
                         &&  (strtolower($opt->code) != 'bank_account_m_india') )
                         <div class="col-6">
@@ -554,7 +591,7 @@
 @section('script')
 <script src="{{asset('assets/libs/mohithg-switchery/mohithg-switchery.min.js')}}"></script>
 <script type="text/javascript">
-    
+
     var elems = Array.prototype.slice.call(document.querySelectorAll('.chk_box'));
         elems.forEach(function(html) {
         var switchery =new Switchery(html);

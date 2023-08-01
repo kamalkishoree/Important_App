@@ -8,7 +8,7 @@
     <div class="container-fluid">
         
         <!-- start page title -->
-        <div class="row">
+        <div class="row notification-dispa-mobile">
             <div class="col-12">
                 <div class="page-title-box">
                     <h4 class="page-title">{{__("Notifications")}}</h4>
@@ -16,7 +16,7 @@
             </div>
         </div>     
         
-        <div class="row">
+        <div class="row notification-dispa-mobile   ">
             <div class="col-xl-12">
                 <div class="card-box">
                     <h4 class="header-title">{{__("Notifications")}}</h4>

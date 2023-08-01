@@ -93,10 +93,11 @@
 /* agent page css here */
 .edit-icon-div {
     position: relative;
+    display:block;
 }
 .edit-icon-div:hover .child-icon.editIcon {
     display: block !important;
-    right: -5px;
+    right: 0px;
     position: absolute;
     top: 0;
     border-radius: 2px;
