@@ -785,7 +785,8 @@ class TaskController extends BaseController
 
 
             $client = new GClient([
-                'content-type' => 'application/json'
+                'content-type' => 'application/json',
+                'User-Agent: Mozilla/5.0'
             ]);
             $url = $order_details->call_back_url;
             \Log::info('order url');
@@ -793,12 +794,7 @@ class TaskController extends BaseController
             \Log::info('complete order url');
             \Log::info([$url . '?dispatcher_status_option_id=' . $dispatcher_status_option_id . '&dispatch_traking_url=' . $dispatch_traking_url . '&task_type=' . $task_type]);
          
-            $queryParams = [
-                'dispatcher_status_option_id' => $dispatcher_status_option_id,
-                'dispatch_traking_url' => $dispatch_traking_url,
-                'task_type' => $task_type,
-            ];
-
+         
             $res = $client->get($url . '?dispatcher_status_option_id=' . $dispatcher_status_option_id . '&dispatch_traking_url=' . $dispatch_traking_url . '&task_type=' . $task_type);
             $response = json_decode($res->getBody(), true);
             if ($response) {
@@ -808,8 +804,6 @@ class TaskController extends BaseController
             return $dispatch_traking_url;
         } catch (\Exception $e) {
             \Log::info($e->getMessage());
-
-            $this->orderUpdateCurl($url,$queryParams);
             return response()->json([
                 'status' => __('error'),
                 'message' => $e->getMessage()
@@ -817,37 +811,6 @@ class TaskController extends BaseController
         }
     }
 
-
-
-    public function orderUpdateCurl($url,$queryParams)
-    {
-        $curl = curl_init();
-
-    // Build the cURL URL with query parameters
-    $curlUrl = $url . '?' . http_build_query($queryParams);
-
-    curl_setopt_array($curl, [
-        CURLOPT_URL => $curlUrl,
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_HEADER => false,
-        CURLOPT_FOLLOWLOCATION => true,
-        CURLOPT_MAXREDIRS => 10,
-        CURLOPT_CUSTOMREQUEST => 'GET',
-        CURLOPT_HTTPHEADER => [
-            'Content-Type: application/json',
-            'User-Agent: Mozilla/5.0',
-        ],
-    ]);
-
-    $curlResponse = curl_exec($curl);
-    $curlError = curl_error($curl);
-    curl_close($curl);
-
-    if ($curlError) {
-        \Log::error('cURL request failed: ' . $curlError);
-        // Handle cURL request error
-    } 
-    }
     // ///////////////// ********************** check qrcode exist in order panel ********************************** ///////////////////////
     public function checkQrcodeStatusDataToOrderPanel($order_details, $orderQrcode, $checkQr = '0')
     {
