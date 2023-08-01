@@ -49,7 +49,7 @@
 
         <!-- start page title -->
         <div class="row">
-            <div class="col-12">
+            <div class="col-12 auto-location-dispat">
                 <div class="page-title-box">
                     <h4 class="page-title">{{__("Auto Allocation")}}</h4>
                 </div>
@@ -67,7 +67,7 @@
             </div>
         </div>
         <!-- end page title -->
-        <div class="row">
+        <div class="row location_page-mobile">
             <div class="col-xl-11 col-md-offset-1">
                 <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
                     @csrf

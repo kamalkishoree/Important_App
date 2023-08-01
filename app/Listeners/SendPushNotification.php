@@ -78,14 +78,13 @@ class SendPushNotification
         'roster_details.short_name','roster_details.address','roster_details.lat','roster_details.long','roster_details.task_count');
         $getids           = $get->pluck('id')->toArray();
         $get              = $get->get();
-
         DB::connection($schemaName)->table('rosters')->where('status',10)->delete();
-        if(count($get) > 0){
-            DB::connection($schemaName)->table('rosters')->whereIn('id',$getids)->update(['status'=>1]);
+        if(count($getids) > 0){
+            // DB::connection($schemaName)->table('rosters')->whereIn('id',$getids)->update(['status'=>1]);
             DB::connection($schemaName)->table('rosters')->whereIn('id',$getids)->delete();
             $this->sendnotification($get);
         }else{
-            $this->extraTime($schemaName);
+            // $this->extraTime($schemaName);
         }
 
         return;
@@ -94,8 +93,7 @@ class SendPushNotification
     public function sendnotification($recipients)
     {
          
-    try {
-
+    try {        
         $array = json_decode(json_encode($recipients), true);
         foreach($array as $item){            
             if(isset($item['device_token']) && !empty($item['device_token'])){
@@ -107,7 +105,6 @@ class SendPushNotification
 
                 array_push($new,$item['device_token']);
                 $clientRecord = Client::where('code', $item['client_code'])->first();
-
                 $this->seperate_connection('db_'.$clientRecord->database_name);
                 $client_preferences = DB::connection('db_'.$clientRecord->database_name)->table('client_preferences')->where('client_id', $item['client_code'])->first();
                 
@@ -119,17 +116,17 @@ class SendPushNotification
                         
                         if($item['is_particular_driver'] != 2 ){
                             $fcm_store = $fcmObj->to([$item['device_token']]) // $recipients must an array
-                            ->priority('high')
-                            ->timeToLive(0)
-                            ->data($item)
-                            ->notification([
-                                'title'              => 'Pickup Request',
-                                'body'               => 'Check All Details For This Request In App',
-                                'sound'              => 'notification.mp3',
-                                'android_channel_id' => 'Royo-Delivery',
-                                'soundPlay'          => true,
-                                'show_in_foreground' => true,
-                            ])
+                                    ->priority('high')
+                                    ->timeToLive(0)
+                                    ->data($item)
+                                    ->notification([
+                                        'title'              => 'Pickup Request',
+                                        'body'               => 'Check All Details For This Request In App',
+                                        'sound'              => 'notification.mp3',
+                                        'android_channel_id' => 'Royo-Delivery',
+                                        'soundPlay'          => true,
+                                        'show_in_foreground' => true,
+                                    ])
                             ->send();
                         }
                         else
@@ -152,7 +149,7 @@ class SendPushNotification
                         
                     }
                     catch(Exception $e){
-                        Log::info($e->getMessage());
+                       \Log::info($e->getMessage());
                     }
                     
                 }
@@ -164,7 +161,7 @@ class SendPushNotification
         sleep(5);
         $this->getData();
         } catch (Exception $ex) {
-            Log::info($ex->getMessage());
+            \Log::info($ex->getMessage());
 
         }
 
@@ -173,13 +170,14 @@ class SendPushNotification
     public function extraTime($schemaName)
     {
         //sleep(30); ->addSeconds(45)
-        $date             =  Carbon::now()->toDateTimeString();
+        $date =  Carbon::now()->toDateTimeString();
         $check = DB::connection($schemaName)->table('rosters')
                         ->where(function ($query) use ( $date) {
                             $query->where('notification_time', '<=', $date)
                                 ->orWhere('notification_befor_time', '<=', $date);
                         })
                     ->get();
+        
         if(count($check) > 0){
             sleep(15);
             $this->getData();

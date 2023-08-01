@@ -85,20 +85,20 @@ exit;
 @section('content')
     <div class="container-fluid">
 
-        <div class="row align-items-center">
+        <div class="row align-items-center iphad-space">
             <div class="col-5">
-                <div class="page-title-box">
+                <div class="page-title-box pt-0">
                     <h4 class="page-title"> <a href="{{ route('geo.fence.list') }}">
                             <h4 class="page-title">{{__("Back")}}</h4>
                         </a></h4>
                 </div>
             </div>
             <div class="col-7">
-                <div class="input-group p-4">
+                <div class="input-group p-4 geo-input_fence">
 
                     <input type="text" id="pac-input" class="form-control" placeholder="Search by name " aria-label="Recipient's username" aria-describedby="button-addon2">
                     <div class="input-group-append">
-                      <button class="btn btn-info" type="button" id="refresh">{{__("Edit Mode")}}</button>
+                      <button class="btn btn-info m-0" type="button" id="refresh">{{__("Edit Mode")}}</button>
                     </div>
                     
                   </div>
@@ -121,7 +121,7 @@ exit;
             @csrf
             <input type="hidden" name="latlongs" value="" id="latlongs" />
             <input type="hidden" name="zoom_level" value="13" id="zoom_level" />
-            <div class="row">
+            <div class="row geo_fence_row">
                 <div class="col-lg-5">
                     <div class="card-box card_outer mb-0">
                         <h4 class="header-title mb-3">{{__("Add Geofence")}}</h4>
@@ -143,7 +143,7 @@ exit;
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group mb-0">
-                                        <label for="Description">{{__("Description (Optional)")}}</label>
+                                        <label for="Description" class="pt-2">{{__("Description (Optional)")}}</label>
                                         <textarea class="form-control" id="Description" name="description"></textarea>
                                     </div>
                                 </div>
@@ -151,7 +151,7 @@ exit;
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label>{{__("Team")}}</label> <br />
+                                        <label class="pt-2">{{__("Team")}}</label> <br />
                                         <select id="selectize-select" name="team_id">
                                             @if(Auth::user()->is_superadmin == 1 || Auth::user()->all_team_access == 1)
                                             <option value="0">{{__("All")}}</option>

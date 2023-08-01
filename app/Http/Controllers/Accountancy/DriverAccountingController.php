@@ -178,6 +178,10 @@ class DriverAccountingController extends BaseController
                 ;
     }
 
+
+    public function export(Request $request){
+        return  $this->exportDriver($request);
+     }
     /**
      * Payout to agent
      */

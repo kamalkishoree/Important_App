@@ -25,16 +25,16 @@ class CreateTaskRequest extends FormRequest
     public function rules()
     {
         return [
-            'customer_email' => 'required',
+           // 'customer_email' => 'required',
             'customer_name' => 'required',
-            'customer_phone_number' => 'required',
+            //'customer_phone_number' => 'required',
             ];
     }
 
     public function messages()
     {
         return [
-            'customer_email.required' => 'Customer Email is required',
+          //  'customer_email.required' => 'Customer Email is required',
             
             
         ];

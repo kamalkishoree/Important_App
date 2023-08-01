@@ -82,7 +82,7 @@ div#DataTables_Table_0_filter label input {
 
                 <div class="col-md-3 d-flex align-items-center mt-3">
                     <form class="mb-0" name="getTask" id="getTask" method="get" action="{{ route('driver-accountancy.index') }}">
-                        <div class="login-form">
+                        <div class="login-form driver-accounting">
                             <ul class="list-inline mb-0">
                                 <li class="d-inline-block mr-2 {{ $status == 'settlement' ? 'border-0' : '' }}">
                                     <input type="radio" id="teacher" name="status" onclick="handleClick(this);"
@@ -99,7 +99,7 @@ div#DataTables_Table_0_filter label input {
                     </form>
                 </div>
                 <div class="col-md-2 d-flex align-items-center mt-3">
-                    <div class="text-center">
+                <div class="text-center">
                     <form action="{{route('driver-accounting.export')}}" id ="driver_export" method="post"> 
                     @csrf
                     <input type="hidden" name="status_type" id="status_type" />
@@ -275,10 +275,10 @@ function initializeAgentListing(){
     $('.driver-datatable').DataTable({
         "dom": '<"toolbar">Bfrtip',
         "destroy": true,
-        "scrollX": true,
+        // "scrollX": true,
         "processing": true,
         "serverSide": true,
-        "responsive": true,
+        // "responsive": true,
         "iDisplayLength": 20,
         "paging": true,
         "lengthChange" : true,
@@ -390,13 +390,10 @@ $('#driver_export_btn').on('click',function(){
     var date_filter = $('#date_picker').val();
     var driver_id = $('#agent_id').val();
     var status = $('input[name=status]:checked').val();
-
     $('#date_filter').val(date_filter);
     $('#driver_id').val(driver_id);
     $('#status_type').val(status_type);
     document.getElementById("driver_export").submit();
-    });
-
-    
+});
 </script>
 @endsection

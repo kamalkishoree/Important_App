@@ -118,10 +118,10 @@ $(function(){
              text: 'Are you sure?',
            
            }).then(({value}) => {
-            if (value === "Yes") {
+            if (value) {
                  deleteGeneralSlot(destroy_id);
-                
               }
+
               //  else {
              //     Swal.fire({
              //         icon: 'error',
