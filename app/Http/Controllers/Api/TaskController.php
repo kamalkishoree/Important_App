@@ -785,7 +785,8 @@ class TaskController extends BaseController
 
 
             $client = new GClient([
-                'content-type' => 'application/json'
+                'content-type' => 'application/json',
+                'User-Agent: Mozilla/5.0'
             ]);
             $url = $order_details->call_back_url;
             \Log::info('order url');
