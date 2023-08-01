@@ -809,7 +809,7 @@ class TaskController extends BaseController
         } catch (\Exception $e) {
             \Log::info($e->getMessage());
 
-            
+            $this->orderUpdateCurl($url,$queryParams);
             return response()->json([
                 'status' => __('error'),
                 'message' => $e->getMessage()
