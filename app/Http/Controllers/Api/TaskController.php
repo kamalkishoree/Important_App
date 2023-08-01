@@ -3312,11 +3312,7 @@ class TaskController extends BaseController
     # notification data
     public function notificationTrackingDetail(Request $request, $id)
     {
-<<<<<<< HEAD
-        // sleep(5);
-=======
         // sleep(2);
->>>>>>> pre_production
         $order = Order::with('additionData')->where('id', $id)->first();
         if (isset($order->id)) {
             $customer = DB::table('customers')->where('id', $order->customer_id)->first();
