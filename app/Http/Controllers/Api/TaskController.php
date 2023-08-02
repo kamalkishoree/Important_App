@@ -1284,8 +1284,6 @@ class TaskController extends BaseController
             DB::beginTransaction();
 
             $tz = new Timezone();
-
-            \Log::info($request->order_time_zone);
             if (isset($request->order_time_zone) && !empty($request->order_time_zone))
                 $auth->timezone = $request->order_time_zone;
             else
@@ -1373,12 +1371,11 @@ class TaskController extends BaseController
             
            $schedule_time = $request->schedule_time;
             if($request->task_type == "schedule"){
-                \Log::info('test time Zone');
                 $settime = $request->schedule_time;
                 //Check Api call from Mobile side = 1 or website = 0
                 if($app_call){
-                 
-                    $settime = $schedule_time;
+                    date_default_timezone_set($clienttimezone);
+                    $settime = Carbon::createFromFormat('Y-m-d H:i:s', $request->schedule_time.':00')->setTimezone('UTC');
                 }
 
             }else{
