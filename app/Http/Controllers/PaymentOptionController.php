@@ -239,12 +239,14 @@ class PaymentOptionController extends BaseController
                     $validatedData = $request->validate([
                         'ccavenue_merchant_id' => 'required',
                         'ccavenue_access_code' => 'required',
-                        'ccavenue_enc_key' => 'required'
+                        'ccavenue_enc_key' => 'required',
+                        'custom_url' => 'required'
                     ]);
                     $json_creds = json_encode(array(
                         'merchant_id' => $request->ccavenue_merchant_id,
                         'access_code' => $request->ccavenue_access_code,
-                        'enc_key' => $request->ccavenue_enc_key
+                        'enc_key' => $request->ccavenue_enc_key,
+                        'custom_url' => $request->custom_url
                     ));
                 }
                 else if ((isset($method_name_arr[$key])) && (strtolower($method_name_arr[$key]) == 'khalti')) {
