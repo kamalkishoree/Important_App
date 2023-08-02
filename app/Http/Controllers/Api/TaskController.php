@@ -1377,12 +1377,11 @@ class TaskController extends BaseController
                 $settime = $request->schedule_time;
                 //Check Api call from Mobile side = 1 or website = 0
                 if($app_call){
-                    //  date_default_timezone_set($clienttimezone);
-                    $settime = Carbon::createFromFormat('Y-m-d H:i:s', $request->schedule_time.':00')->setTimezone('UTC');
+                 
+                    $settime = $schedule_time;
                 }
 
             }else{
-
                 $settime = Carbon::now()->toDateTimeString();
             }
             //here order save code is started
