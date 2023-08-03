@@ -303,8 +303,6 @@ class DriverAccountingController extends BaseController
             return $this->error($ex->getMessage(), $ex->getCode());
         }
     }
-    public function export(Request $request){
-       return  $this->exportDriver($request);
-    }
+
 
 }
