@@ -19,9 +19,9 @@ class PaymentOptionController extends BaseController{
 
     public function getPaymentOptions(Request $request, $page = ''){
         if($page == 'wallet'){
-            $code = array('paypal', 'stripe', 'yoco', 'paylink','razorpay','simplify','square','vnpay','ccavenue', 'khalti','flutterwave');
+            $code = array('paypal', 'stripe', 'yoco', 'paylink','razorpay','simplify','square','vnpay','ccavenue', 'khalti','flutterwave','paystack');
         }else{
-            $code = array('cod', 'paypal', 'payfast', 'stripe', 'mobbex','yoco','paylink','razorpay','gcash','simplify','square','flutterwave');
+            $code = array('cod', 'paypal', 'payfast', 'stripe', 'mobbex','yoco','paylink','razorpay','gcash','simplify','square','flutterwave','paystack');
         }
         $payment_options = PaymentOption::whereIn('code', $code)->where('status', 1)->get(['id', 'code', 'title', 'credentials', 'off_site']);
         foreach($payment_options as $option){
