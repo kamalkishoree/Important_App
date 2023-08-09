@@ -39,6 +39,7 @@ class PaymentOptionController extends BaseController{
     }
 
     public function postPayment(Request $request, $gateway = ''){
+
         if(!empty($gateway)){
             $header = $request->header();
             $client = Client::where('database_name', $header['client'][0])->first();
@@ -112,6 +113,11 @@ class PaymentOptionController extends BaseController{
     public function postPaymentVia_obo(Request $request){
         $gateway = new OboPaymentController();
           return $gateway->mobilePay($request);
+    }
+
+    public function postPaymentVia_paystack(Request $request){
+        $gateway = new PaystackGatewayController();
+        return $gateway->paystackPurchase($request);
     }
     // public function postPaymentVia_simplify(Request $request){
     //     $gateway = new SimplifyGatewayController();
