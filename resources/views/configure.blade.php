@@ -25,7 +25,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
             </div>
         @endif
         <!-- start page title -->
-        <div class="row">
+        <div class="row maps-configure-mobile">
             <div class="col-12">
                 <div class="page-title-box">
                     <h4 class="page-title">{{ __('MAP, SMS and EMAILS') }}</h4>
@@ -33,7 +33,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
             </div>
         </div>
         <!-- end page title -->
-        <div class="row">
+        <div class="row configure_responsive">
             <div class="col-md-4 mb-3">
                 <form method="POST" class="h-100" action="{{ route('preference', Auth::user()->code) }}">
                     @csrf
@@ -424,7 +424,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                             <button class="btn btn-outline-info d-block" type="submit"> {{__('Save')}} </button>
                         </div>
                         <p class="sub-header">{{ __('View and update your SMTP credentials.') }}</p>
-                        <div class="row mb-2">
+                        <div class="row mb-2 configure_responsive">
 
                             <div class="col-md-4">
                                 <div class="form-group mb-3">
@@ -479,7 +479,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                             </p>
                         </div>
                     </div> --}}
-                        <div class="row mb-2">
+                        <div class="row mb-2 configure_responsive">
 
                             <div class="col-md-4">
                                 <div class="form-group mb-3">
@@ -527,14 +527,14 @@ $sms_crendential = json_decode($preference->sms_credentials);
             </div>
         </div>
 
-        <div class="row">
+        <div class="row maps-configure-mobile">
             <div class="col-12">
                 <div class="page-title-box">
                     <h4 class="page-title">{{ __('FCM, API ACCESS TOKEN and CUSTOM DOMAIN') }}</h4>
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div class="row configure_responsive">
             <div class="col-md-4 mb-3">
                 <form method="POST" class="h-100" action="{{ route('preference', Auth::user()->code) }}">
                     @csrf
@@ -645,7 +645,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
             </div>
         </div>
 
-        <div class="row">
+        <div class="row configure_responsive">
             <div class="col-md-4 mb-3">
                 <div class="card-box h-100">
                     <form method="POST" class="h-100" action="{{ route('preference', Auth::user()->code) }}">
@@ -951,7 +951,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
             </div>
         </div>
 
-        <div class="row">
+        <div class="row configure_responsive">
             <div class="col-md-4 mb-3 dashboard-custom-temp">
                 <div class="card">
                     <form method="POST" class="h-100" action="{{ route('preference', Auth::user()->code) }}">
@@ -1075,7 +1075,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                             <button class="btn btn-outline-info d-block" type="submit"> {{__('Save')}} </button>
                         </div>
 
-                        <div class="row align-items-start">
+                        <div class="row align-items-start custom-mods-rwd">
                             <div class="col-md-12">
                                 <div class="form-group d-flex justify-content-between mb-3">
                                 <label for="pharmacy_check" class="mr-2 mb-0">{{__("Customer Notification Per Distance")}} <small class="d-block pr-5">{{__('Enable to show customer notification per distance from notifications.')}}</small></label>

@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 // use Omnipay\Common\CreditCard;
 use App\Traits\ApiResponser;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Controllers\Api\{BaseController, RazorpayGatewayController,VnpayController,CcavenueController, KhaltiGatewayController};
+use App\Http\Controllers\Api\{BaseController, RazorpayGatewayController,VnpayController,CcavenueController, KhaltiGatewayController,OboPaymentController};
 use App\Model\{Client, ClientPreference, Agent, PaymentOption};
 
 class PaymentOptionController extends BaseController{
@@ -109,7 +109,10 @@ class PaymentOptionController extends BaseController{
         $gateway = new KhaltiGatewayController();
         return $gateway->khaltiPurchase($request);
     }
-
+    public function postPaymentVia_obo(Request $request){
+        $gateway = new OboPaymentController();
+          return $gateway->mobilePay($request);
+    }
     // public function postPaymentVia_simplify(Request $request){
     //     $gateway = new SimplifyGatewayController();
     //     return $gateway->simplifyPurchase($request);

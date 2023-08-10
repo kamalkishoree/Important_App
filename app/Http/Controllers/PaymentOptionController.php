@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\BaseController;
+use App\Http\Controllers\Api\OboPaymentController;
+
 use App\Model\{Client, ClientPreference, PaymentOption, PayoutOption};
 
 class PaymentOptionController extends BaseController
@@ -26,8 +28,8 @@ class PaymentOptionController extends BaseController
      */
     public function index()
     {
-        $payment_codes = array('razorpay', 'stripe','vnpay','ccavenue', 'khalti');
-        $payout_codes = array('cash', 'stripe', 'bank_account_m_india','razorpay');
+        $payment_codes = array('razorpay', 'stripe','vnpay','ccavenue', 'khalti','obo');
+        $payout_codes = array('cash', 'stripe', 'bank_account_m_india','razorpay','obo');
         $payOption = PaymentOption::whereIn('code', $payment_codes)->get();
         $payoutOption = PayoutOption::whereIn('code', $payout_codes)->get();
         return view('payoption/index')->with(['payOption' => $payOption, 'payoutOption' => $payoutOption]);
@@ -253,6 +255,20 @@ class PaymentOptionController extends BaseController
                     $json_creds = json_encode(array(
                         'api_key' => $request->khalti_public_key,
                         'api_secret_key' => $request->khalti_secret_key
+                    ));
+                }
+                else if ((isset($method_name_arr[$key])) && (strtolower($method_name_arr[$key]) == 'obo')) {
+                    $validatedData = $request->validate([
+                       'obo_business_name' => 'required',
+                        'obo_client_id' => 'required',
+                        'obo_key_id' => 'required',
+                        'obo_market_place_id' => 'required',
+                    ]);
+                    $json_creds = json_encode(array(
+                        'obo_business_name' => $request->obo_business_name,
+                        'obo_client_id' => $request->obo_client_id,
+                        'obo_key_id' => $request->obo_key_id,
+                        'obo_market_place_id' => $request->obo_market_place_id,
                     ));
                 }
             }
