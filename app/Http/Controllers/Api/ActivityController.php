@@ -681,7 +681,7 @@ class ActivityController extends BaseController
         {
             $tags[] = $agenttags->name;
         }
-        if(count($tags) > 0 && count($geo_ids) > 0){
+        if(count($geo_ids) > 0){
             $currenttime = Carbon::now()->format('Y-m-d H:i:s');
             $requestdata = UserBidRideRequest::where(function($q) use ($geo_ids,$tags) {
                 $q->whereIn('geo_id', $geo_ids);
