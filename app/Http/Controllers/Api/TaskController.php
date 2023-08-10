@@ -1386,7 +1386,7 @@ class TaskController extends BaseController
             $notification_time = ($request->task_type == "schedule") ? $settime : Carbon::now()->toDateTimeString();
 
             $agent_id          = $request->allocation_type === 'm' ? $request->agent : null;
-
+            $agent_id =  isset($request->driver_id) ? $request->driver_id : $agent_id ;
             $rejectable_order   = isset($request->rejectable_order) ? $request->rejectable_order : 0;
             $refer_driver_id = null;
             if ($rejectable_order == 1 && checkColumnExists('orders', 'rejectable_order')) {
@@ -1394,7 +1394,6 @@ class TaskController extends BaseController
                 $refer_driver_id  = $request->agent ?? null;
                 $request->allocation_type = 'u';
             }
-
 
             $order = [
                 'order_number' => $request->order_number ?? null,
@@ -1423,8 +1422,7 @@ class TaskController extends BaseController
                 'sync_order_id' => $request->order_id,
                 'available_seats' => isset($request->available_seats) ? $request->available_seats : 0,
                 'no_seats_for_pooling' => isset($request->no_seats_for_pooling) ? $request->no_seats_for_pooling : 0,
-                'is_cab_pooling' => isset($request->is_cab_pooling) ? $request->is_cab_pooling : 0,
-                'driver_id'     => $request->driver_id ?? null,
+                'is_cab_pooling' => isset($request->is_cab_pooling) ? $request->is_cab_pooling : 0
             ];
 
             if (checkColumnExists('orders', 'rejectable_order')) {
@@ -1454,7 +1452,7 @@ class TaskController extends BaseController
             if (checkColumnExists('order_addition_data', 'id')) {
                 $this->updateOrderAdditional($request, $orders->id);
             }
-            $agent_id =  $request->agent ?? null;
+         //   $agent_id =  $request->agent ?? null;
             /**
              * booking for appointment
              * task_type_id =3= appointment type
