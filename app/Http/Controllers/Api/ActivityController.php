@@ -449,7 +449,7 @@ class ActivityController extends BaseController
        
         $orders = Order::where('driver_id', $id);
         if(!empty($request->from_date) && !empty($request->to_date)){
-            $orders =  $orders->whereBetween('order_time', [$request->from_date." 00:00:00",$request->to_date." 23:59:59"]);
+            $orders =  $orders->whereBetween('order_time', [$request->from_date." 00:00:00",$request->to_date." 23:59:59"])->pluck('id');
         }
 
         $orders =  $orders->pluck('id');
@@ -681,16 +681,13 @@ class ActivityController extends BaseController
         {
             $tags[] = $agenttags->name;
         }
-        if(count($geo_ids) > 0){
+
+        if(count($tags) > 0 && count($geo_ids) > 0){
             $currenttime = Carbon::now()->format('Y-m-d H:i:s');
-            $requestdata = UserBidRideRequest::where(function($q) use ($geo_ids,$tags) {
-                $q->whereIn('geo_id', $geo_ids);
-                if(count($tags)){
-                    $q->whereIn('agent_tag', $tags);
-                }
-            })->where('expired_at', '>', $currenttime)->whereDoesntHave('declinedbyAgent', function($q) use ($id){
-                $q->where('agent_id', $id);
-            })->get();
+            $requestdata = UserBidRideRequest::whereIn('geo_id', $geo_ids)->whereIn('agent_tag', $tags)->where('expired_at', '>', $currenttime)
+                           ->whereDoesntHave('declinedbyAgent', function($q) use ($id){
+                            $q->where('agent_id', $id);
+                        })->get();
         }else{
             $requestdata = [];
         }
