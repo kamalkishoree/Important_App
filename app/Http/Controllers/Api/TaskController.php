@@ -111,7 +111,8 @@ class TaskController extends BaseController
         } else {
             $client_url = "https://" . $client_details->sub_domain . \env('SUBDOMAIN');
         }
-
+        \Log::info('request data one basket');
+        \Log::info([$request->all()]);
         // set dynamic smtp for email send
         $this->setMailDetail($client_details);
         $waiting_time = $request->waiting_time ?? 0;
@@ -178,7 +179,8 @@ class TaskController extends BaseController
                 $sms_final_status = $sms_settings['notification_events'][0];
                 $sms_body = $sms_settings['notification_events'][0]['message'];
                 $link = $client_url . '/order/tracking/' . $client_details->code . '/' . $order_details->unique_id;
-
+                \Log::info('link url');
+                \Log::info([$link]);
                 break;
             case 3:
                 $task_type = 'assigned';
@@ -793,13 +795,21 @@ class TaskController extends BaseController
 
 
             $client = new GClient([
-                'content-type' => 'application/json'
+                'content-type' => 'application/json',
+                'User-Agent: Mozilla/5.0'
             ]);
             $url = $order_details->call_back_url;
+            \Log::info('order url');
+            \Log::info([$url]);
+            \Log::info('complete order url');
+            \Log::info([$url . '?dispatcher_status_option_id=' . $dispatcher_status_option_id . '&dispatch_traking_url=' . $dispatch_traking_url . '&task_type=' . $task_type]);
+         
+         
             $res = $client->get($url . '?dispatcher_status_option_id=' . $dispatcher_status_option_id . '&dispatch_traking_url=' . $dispatch_traking_url . '&task_type=' . $task_type);
             $response = json_decode($res->getBody(), true);
             if ($response) {
-                // Log::info($response);
+                \Log::info('response');
+                \Log::info([$response]);
             }
             return $dispatch_traking_url;
         } catch (\Exception $e) {
@@ -1384,9 +1394,9 @@ class TaskController extends BaseController
             // $settime = ($request->task_type == "schedule") ? $request->schedule_time : Carbon::now()->toDateTimeString();
             $notification_time = ($request->task_type == "schedule") ? $settime : Carbon::now()->toDateTimeString();
 
-            $agent_id          = $request->allocation_type === 'm' ? $request->agent : null;
-            $agent_id =  isset($request->driver_id) ? $request->driver_id : $agent_id ;
-            $rejectable_order   = isset($request->rejectable_order) ? $request->rejectable_order : 0;
+            $agent_id           =  $request->allocation_type === 'm' ? $request->agent : null;
+            $agent_id           =  isset($request->driver_id) ? $request->driver_id : $agent_id ;
+            $rejectable_order   =  isset($request->rejectable_order) ? $request->rejectable_order : 0;
             $refer_driver_id = null;
             if ($rejectable_order == 1 && checkColumnExists('orders', 'rejectable_order')) {
                 $agent_id         = null;
@@ -1808,6 +1818,9 @@ class TaskController extends BaseController
                     ], 200);
                 }
             }
+            //Commit Transaction befor send notification
+            DB::commit();
+
             //Commit Transaction befor send notification
             DB::commit();
 

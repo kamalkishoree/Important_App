@@ -109,7 +109,6 @@ class SendPushNotification
                 $client_preferences = DB::connection('db_'.$clientRecord->database_name)->table('client_preferences')->where('client_id', $item['client_code'])->first();
                 
                 if(isset($new)){
-                    
                     try{
                         $fcm_server_key = !empty($client_preferences->fcm_server_key)? $client_preferences->fcm_server_key : 'null';
                         $fcmObj = new Fcm($fcm_server_key);
