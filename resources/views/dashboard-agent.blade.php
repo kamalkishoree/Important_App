@@ -744,7 +744,7 @@ function loadOrders(is_load_html, is_show_loader)
                 }
                 initializeSortable();
 
-                if($("#newmarker_map_data").val()!=''){
+              /*  if($("#newmarker_map_data").val()!=''){
                     olddata  = JSON.parse($("#newmarker_map_data").val());
                 }
 
@@ -760,7 +760,7 @@ function loadOrders(is_load_html, is_show_loader)
                     defaultmaplocation = JSON.parse($("#agentslocations_map_data").val());
                     defaultlat = parseFloat(defaultmaplocation[0].lat);
                     defaultlong = parseFloat(defaultmaplocation[0].long);
-                }
+                }*/
             }else{
                 var data1 = JSON.parse(result);
                 if(data1['status'] == "success")
