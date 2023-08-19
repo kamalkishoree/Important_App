@@ -92,16 +92,14 @@ class RosterDelete implements ShouldQueue
     public function getData()
     {
         $schemaName       = 'royodelivery_db';
-        $date             =  Carbon::now()->toDateTimeString();
-        $get              =  DB::connection($schemaName)->table('rosters')
-        ->where(function ($query) use ( $date) {
-            $query->where('notification_time', '<=', $date)
-            ->orWhere('notification_befor_time', '<=', $date);
-        })->where('status',0)
+        
+        $get              =  DB::connection($schemaName)->table('rosters')->where('status',0)->where('order_id',$this->order_id)
         ->leftJoin('roster_details', 'rosters.detail_id', '=', 'roster_details.unique_id')
         ->select('rosters.*', 'roster_details.customer_name', 'roster_details.customer_phone_number',
-            'roster_details.short_name','roster_details.address','roster_details.lat','roster_details.long','roster_details.task_count')->get();
+            'roster_details.short_name','roster_details.address','roster_details.lat','roster_details.long','roster_details.task_count')->orderBy('id','asc')->limit(1)->get();
+        
         $getids           = $get->pluck('id');
+        
         //$qr           = $get->toSql();
         DB::connection($schemaName)->table('rosters')->where('status',10)->delete();
         if(count($get) > 0){

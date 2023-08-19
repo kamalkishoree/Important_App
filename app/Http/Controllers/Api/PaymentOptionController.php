@@ -19,9 +19,9 @@ class PaymentOptionController extends BaseController{
 
     public function getPaymentOptions(Request $request, $page = ''){
         if($page == 'wallet'){
-            $code = array('paypal', 'stripe', 'yoco', 'paylink','razorpay','simplify','square','vnpay','ccavenue', 'khalti','flutterwave');
+            $code = array('paypal', 'stripe', 'yoco', 'paylink','razorpay','simplify','square','vnpay','ccavenue', 'khalti','flutterwave','paystack');
         }else{
-            $code = array('cod', 'paypal', 'payfast', 'stripe', 'mobbex','yoco','paylink','razorpay','gcash','simplify','square','flutterwave');
+            $code = array('cod', 'paypal', 'payfast', 'stripe', 'mobbex','yoco','paylink','razorpay','gcash','simplify','square','flutterwave','paystack');
         }
         $payment_options = PaymentOption::whereIn('code', $code)->where('status', 1)->get(['id', 'code', 'title', 'credentials', 'off_site']);
         foreach($payment_options as $option){
@@ -39,6 +39,7 @@ class PaymentOptionController extends BaseController{
     }
 
     public function postPayment(Request $request, $gateway = ''){
+
         if(!empty($gateway)){
             $header = $request->header();
             $client = Client::where('database_name', $header['client'][0])->first();
@@ -112,6 +113,11 @@ class PaymentOptionController extends BaseController{
     public function postPaymentVia_obo(Request $request){
         $gateway = new OboPaymentController();
           return $gateway->mobilePay($request);
+    }
+
+    public function postPaymentVia_paystack(Request $request){
+        $gateway = new PaystackGatewayController();
+        return $gateway->paystackPurchase($request);
     }
     // public function postPaymentVia_simplify(Request $request){
     //     $gateway = new SimplifyGatewayController();
