@@ -59,7 +59,7 @@ use App\Model\ProductVariant;
 
 class TaskController extends BaseController
 {
-    
+
     use ApiResponser,GlobalFunction,DispatcherRouteAllocation;
     use TollFee,inventoryManagement;
     /**
@@ -322,6 +322,7 @@ class TaskController extends BaseController
 
     public function taskFilter(Request $request)
     {
+
         $warehouseManagerId = $request->warehouseManagerId;
         $searchWarehouse_id = $request->warehouseListingType;
         $user = Auth::user();
@@ -332,7 +333,7 @@ class TaskController extends BaseController
         })->pluck('tag_id');
 
         $orders = Order::with(['customer', 'task', 'location', 'taskFirst', 'agent', 'task.location', 'task.warehouse'])->orderBy('id', 'DESC'); //, 'task.manager'
-       
+
         if (@$request->warehouseManagerId && !empty($request->warehouseManagerId)) {
             $orders->whereHas('task.warehouse.manager', function($q) use($request){
                 $q->where('clients.id', $request->warehouseManagerId);
@@ -371,7 +372,7 @@ class TaskController extends BaseController
             $orders = $orders->where('customer_id', $request->customer_id);
         }
 
-        
+
 
         $orders = $orders->where('status', $request->routesListingType)->where('status', '!=', null)->orderBy('updated_at', 'desc');
         // dd($orders->get());
@@ -423,7 +424,7 @@ class TaskController extends BaseController
                     if(!empty($orders->order_time)):
                         $timeformat      = $preference->time_format == '24' ? 'H:i:s':'g:i a';
                         $order           = Carbon::createFromFormat('Y-m-d H:i:s', $orders->order_time, 'UTC');
-                        
+
                         $order->setTimezone($client_timezone);
                         $preference->date_format = $preference->date_format ?? 'm/d/Y';
                         $convertabledate = date(''.$preference->date_format.' '.$timeformat.'', strtotime($order));
@@ -432,7 +433,7 @@ class TaskController extends BaseController
                         return '';
                     endif;
                 })
-                
+
                 ->addColumn('short_name', function ($orders) use ($request, $getAdditionalPreference) {
                     $routes = array();
                     foreach($orders->task as $task){
@@ -462,7 +463,13 @@ class TaskController extends BaseController
                     }
                     return json_encode($routes, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE);
                 })
-                
+                ->addColumn('created_at', function ($orders) use ($request,$preference) {
+
+                    $timeformat      = $preference->time_format == '24' ? 'H:i:s':'g:i a';
+                    $preference->date_format = $preference->date_format ?? 'm/d/Y';
+                    return date(''.$preference->date_format.' '.$timeformat.'', strtotime($orders->created_at));
+                    // return date('m/d/Y H:i:s', strtotime($orders->created_at));
+                })
                 ->editColumn('updated_at', function ($orders) use ($request, $timezone, $preference) {
                     $tz              = new Timezone();
                     $client_timezone = $tz->timezone_name($timezone);
@@ -497,7 +504,7 @@ class TaskController extends BaseController
                 })
                 ->filter(function ($instance) use ($request) {
                     if (!empty($request->get('search'))) {
-                       
+
                         $search = $request->get('search');
                         $instance->where(function($query) use($search){
                             $query->where('order_number', 'Like', '%'.$search.'%')
@@ -638,7 +645,7 @@ class TaskController extends BaseController
     }
 
 
-   
+
     // function for saving new order
     public function newtasks(Request $request)
     {
@@ -676,7 +683,7 @@ class TaskController extends BaseController
             $tz = new Timezone();
             $auth->timezone = $tz->timezone_name(Auth::user()->timezone);
 
-           
+
             // save task images on s3 bucket
             if (isset($request->file) && count($request->file) > 0) {
                 $folder = str_pad(Auth::user()->id, 8, '0', STR_PAD_LEFT);
@@ -749,10 +756,9 @@ class TaskController extends BaseController
             $dep_id = null; // this is used as dependent task id
             $pickup_quantity = 0;
             $drop_quantity = 0;
-             
 
-         
-            
+
+
             foreach ($request->task_type_id as $key => $value) {
                 $taskcount ++;
                 if (isset($request->address[$key])) {
@@ -773,7 +779,7 @@ class TaskController extends BaseController
 
                     $loc_id = $Loction->id;
                     $send_loc_id = $loc_id;
-                } else { 
+                } else {
                     if ($key == 0) {
                         $loc_id = $request->old_address_id;
                         $send_loc_id = $loc_id;
@@ -820,7 +826,7 @@ class TaskController extends BaseController
                     );
                     $loc_id = $Loction->id;
                 }
-               
+
                 $task_appointment_duration = empty($request->appointment_date[$key]) ? '0' : $request->appointment_date[$key];
 
                 $array = [
@@ -890,12 +896,12 @@ class TaskController extends BaseController
                     }
                   }
                 }
-                
+
                 if(isset($product_data)){
                 $this->inventoryUpdate(json_encode($product_data));
                 }
 
-                
+
                 $dep_id = $task->id;
                 if(in_array(2,$request->task_type_id)){
 
@@ -909,7 +915,6 @@ class TaskController extends BaseController
                     }
  
                 }
-
 
                 // for net quantity
                 if ($value == 1) {
@@ -1381,15 +1386,24 @@ class TaskController extends BaseController
         ];
         // Send message to customer friend
         try {
+
+
+
             if (isset($order_details->type) && $order_details->type == 1 && strlen($order_details->friend_phone_number) > 8) {
                 // $friend_sms_body = 'Hi '.($order_details->friend_name).', '.($order_details->customer->name??'Our customer').' have booked a ride for you. '.getAgentNomenclature().' '.($oneagent->name??'').' in our '.($oneagent->make_model ?? '').' with license plate '.($oneagent->plate_number??'').' has been assgined.';
-
+                if ($auth->custom_domain && ! empty($auth->custom_domain)) {
+                    $client_url = "https://" . $auth->custom_domain;
+                } else {
+                    $client_url = "https://" . $auth->sub_domain . \env('SUBDOMAIN');
+                }
+                $dispatch_traking_url = $client_url.'/order/tracking/'.$auth->code.'/'.$order_details->unique_id;
                 $keyData = [
                     '{user-name}' => $order_details->friend_name,
                     '{customer-name}' => $order_details->customer->name ?? 'Our customer',
                     '{agent-name}' => $oneagent->name ?? '',
                     '{car-model}' => $oneagent->make_model ?? '',
-                    '{plate-no}' => $oneagent->plate_number ?? ''
+                    '{plate-no}' => $oneagent->plate_number ?? '',
+                    '{track-url}' => $dispatch_traking_url??''
                 ];
                 $friend_sms_body = sendSmsTemplate('friend-sms', $keyData);
 
@@ -1410,7 +1424,7 @@ class TaskController extends BaseController
     public function create(Request $request)
     {
         $product_ids = ! empty($request->product_id) ? $request->product_id : '';
-   
+
         if (! empty($product_ids)) {
             $vendor_ids = Product::whereIn('id', $product_ids)->select('vendor_id')
                 ->groupBy('vendor_id')
@@ -2021,7 +2035,7 @@ class TaskController extends BaseController
             // }])->orderBy('id', 'DESC')->get()->where("agent_cash_at_hand", '<', $cash_at_hand);
             $geoagents = $this->getGeoBasedAgentsData($geo, '0', '', $date, $cash_at_hand,$orders_id);
 
-    
+
 
             $totalcount = $geoagents->count();
             $orders = order::where('driver_id', '!=', null)->whereDate('created_at', $date)
@@ -2216,7 +2230,7 @@ class TaskController extends BaseController
                 $this->dispatch(new RosterCreate($data, $extraData));
             }
         } else {
-            
+
             // $geoagents_ids =  DriverGeo::where('geo_id', $geo)->pluck('driver_id');
             // $geoagents = Agent::whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
             //     $f->whereDate('order_time', $date)->with('task');
@@ -2878,7 +2892,7 @@ class TaskController extends BaseController
             $client = ClientPreference::first();
 
             $task_id = Order::find($id);
-          
+
             $validator = $this->validator($request->all())
                 ->validate();
             $loc_id = 0;
@@ -3287,7 +3301,7 @@ class TaskController extends BaseController
     public function search(Request $request, $domain = '')
     {
         $search = $request->search;
-      
+
         if (isset($search)) {
             if ($search == '') {
                 $employees = Customer::orderby('name', 'asc')->select('id', 'name')
@@ -3308,7 +3322,7 @@ class TaskController extends BaseController
                     "label" => $employee->name
                 );
             }
-           
+
             return response()->json($response);
         } else {
             $id = $request->id;
@@ -3410,7 +3424,7 @@ class TaskController extends BaseController
 
     public function getInventoryProducts(Request $request)
     {
-        
+
         if ($request->ajax()) {
             $category_id = $request->cat_id;
 
@@ -3419,7 +3433,7 @@ class TaskController extends BaseController
             } else {
                 $products = Product::with('variant')->where('category_id', $category_id)->whereNotNull('vendor_id')->get();
             }
-            
+
             $options = view("modals.inventory-products-ajax", compact('products'))->render();
             return $options;
         }
@@ -3463,8 +3477,8 @@ class TaskController extends BaseController
             $data['phone_no'] = $warehouse->phone_no;
             $data['address'] = $warehouse->address;
         }
-        
-        
+
+
         return $data;
     }
 
@@ -3555,7 +3569,7 @@ class TaskController extends BaseController
     public function createProductRoute(Request $request)
     {
 
-      
+
         $category = Category::where(['status' =>  1])->get();
 
         return view('create-product-route', compact('category'));
@@ -3598,7 +3612,7 @@ class TaskController extends BaseController
         }
     }
 
-   
-    
-    
+
+
+
 }

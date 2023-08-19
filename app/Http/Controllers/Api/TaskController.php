@@ -75,6 +75,9 @@ use JWT\Token;
 use App\Model\Users;
 use App\Models\OrderPanel;
 use App\Model\OrderPanelDetail;
+use App\OrderWaitTimeLog;
+// use Illuminate\Support\Facades\Log as FacadesLog;
+// use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Exp;
 
 class TaskController extends BaseController
 {
@@ -89,11 +92,13 @@ class TaskController extends BaseController
 
     public function updateTaskStatus(Request $request)
     {
+      
         $header = $request->header();
         $tasks = null;
         $client_details = Client::where('database_name', $header['client'][0])->first();
         $proof_image = '';
         $proof_face = '';
+        $multimedia= $request->multimedia ?? 0;
         $proof_signature = '';
         $note = '';
         if (isset($request->note)) {
@@ -110,8 +115,6 @@ class TaskController extends BaseController
         } else {
             $client_url = "https://" . $client_details->sub_domain . \env('SUBDOMAIN');
         }
-    
-        
         // set dynamic smtp for email send
         $this->setMailDetail($client_details);
         $waiting_time = $request->waiting_time ?? 0;
@@ -147,6 +150,7 @@ class TaskController extends BaseController
                 $codeVendor = $qrcode_web_hook;
             }
         }
+       
 
         $allCount = Count($orderAll);
         $inProgress = $orderAll->where('task_status', 2);
@@ -181,7 +185,6 @@ class TaskController extends BaseController
                 $sms_final_status = $sms_settings['notification_events'][0];
                 $sms_body = $sms_settings['notification_events'][0]['message'];
                 $link = $client_url . '/order/tracking/' . $client_details->code . '/' . $order_details->unique_id;
-
                 break;
             case 3:
                 $task_type = 'assigned';
@@ -239,6 +242,9 @@ class TaskController extends BaseController
                 $sms_body = $sms_settings['notification_events'][3]['message'];
                 $link = '';
                 break;
+
+            default:
+                $link = '';
         }
 
         $send_sms_status = isset($sms_final_status['client_notification']['request_recieved_sms']) ? $sms_final_status['client_notification']['request_recieved_sms'] : 0;
@@ -247,7 +253,7 @@ class TaskController extends BaseController
         // for recipient email and sms
         $send_recipient_sms_status = isset($sms_final_status['client_notification']['recipient_request_recieved_sms']) ? $sms_final_status['client_notification']['recipient_request_recieved_sms'] : 0;
         $send_recipient_email_status = isset($sms_final_status['client_notification']['recipient_request_received_email']) ? $sms_final_status['client_notification']['recipient_request_received_email'] : 0;
-
+       
         if ($waiting_time) {
             Task::where('id', $request->task_id)->update(['waiting_time' => $waiting_time]);
         }
@@ -265,11 +271,12 @@ class TaskController extends BaseController
 
 
                 if ($order_details && $order_details->call_back_url) {
-
                     // \Log::info(json_encode($waitingDetails));
                     // \Log::info(' total_waiting_time  - '.$waitingDetails->total_waiting_time??0);
                     // \Log::info(' total_waiting_price - '.$waitingDetails->total_waiting_price??0);
+                    if($multimedia!=1){
                     $call_web_hook = $this->updateStatusDataToOrder($order_details, 5, $orderId->task_type_id, $waitingDetails->total_waiting_price ?? 0, $waitingDetails->total_waiting_time ?? 0);  # call web hook when order completed
+                    }
                 }
                 if (isset($request->qr_code)) {
                     $codeVendor = $this->checkQrcodeStatusDataToOrderPanel($order_details, $request->qr_code, 5);
@@ -288,15 +295,14 @@ class TaskController extends BaseController
                     ->with(['location', 'tasktype', 'order.customer', 'order.customer.resources', 'order.task.location', 'order.additionData'])
                     ->orderBy("id", "ASC")
                     ->first();
-                
-             
             
             }else{
 
                 $tasks = Task::where('dependent_task_id', $orderId->id)->where('task_status', '!=', 4)->Where('task_status', '!=', 5)
-                ->with(['location', 'tasktype', 'order.customer', 'order.customer.resources', 'order.task.location', 'order.additionData'])->orderBy("order_id", "DESC")
+                ->with(['location', 'tasktype', 'order.customer', 'order.customer.resources', 'order.task.location', 'order.additionData','order.waitingTimeLogs'])->orderBy("order_id", "DESC")
                 ->orderBy("id", "ASC")
                 ->get();
+           
             
                 if (count($tasks) > 0) {
                     // sort according to task_order
@@ -315,26 +321,27 @@ class TaskController extends BaseController
                 $this->saveOrderFormAttribute($request, $orderId);
             }
         } elseif ($request->task_status == 5) {
+          
             //cancel complete order if driver cancel pickup task
             //if ($checkfailed == 1) {
-            
-            $Order  = Order::where('id', $orderId->order_id)->update(['status' => $task_type]);
-            $task = Task::where('order_id', $orderId->order_id)->update(['task_status' => $request->task_status, 'note' => $note]);
-            ////
-            if (checkColumnExists('orders', 'rejectable_order')) {
-                if ($order_details && isset($order_details->rejectable_order) && $order_details->rejectable_order == 1) {
-                    if ($order_details &&  $order_details->call_back_url) {
-                        $call_web_hook = $this->updateStatusDataToOrder($order_details, 6, 2);  # task rejected
-                    }
+                $Order  = Order::where('id', $orderId->order_id)->update(['status' => $task_type ]);
+                $task = Task::where('order_id', $orderId->order_id)->update(['task_status' => $request->task_status,'note' => $note ]);
+                ////
+                if(checkColumnExists('orders','rejectable_order')){
+                   // if($order_details && isset( $order_details->rejectable_order) && $order_details->rejectable_order ==1){
+                        if ($order_details &&  $order_details->call_back_url) {
+                            $call_web_hook = $this->updateStatusDataToOrder($order_details, 6,2);  # task rejected
+                        }
+                   // }
                 }
-            }
             //}
-        } else {   
-
-            $Order = Order::where('id', $orderId->order_id)->update([
-                'status' => $task_type,
-                'note' => $note
-            ]);
+        } else {
+            if(isset($task_type)){
+                $Order = Order::where('id', $orderId->order_id)->update([
+                    'status' => $task_type,
+                    'note' => $note
+                ]);
+            }
             
             if ($order_details && $order_details->call_back_url) {
                 if ($request->task_status == 2 || $request->task_status == 3)
@@ -342,16 +349,40 @@ class TaskController extends BaseController
                 else
                     $stat = $request->task_status;
 
-                $call_web_hook = $this->updateStatusDataToOrder($order_details, $stat, $orderId->task_type_id); # call web hook when order update
+                    if($multimedia!=1){
+                        $call_web_hook = $this->updateStatusDataToOrder($order_details, $stat, $orderId->task_type_id); # call web hook when order update   
+                    }
+
+                # call web hook when order update
             }
         }
 
         if (isset($request->wait_time)) {
 
-            $waiting_time = explode(":", $request->wait_time)[0];
+            $waiting_time = explode(":",$request->wait_time);
+
+            OrderWaitTimeLog::create([
+                'order_id' => $orderId->order_id,
+                'wait_time' => $request->wait_time,
+                'amount' => $orderId->order->duration_price * $waiting_time[0],
+            ]);
+
+            $time = (float)($orderId->order->actual_time ?? 0) + (float)$waiting_time[0] + ((float)$waiting_time[1]/100);
+            $timeArray = explode('.',$time);
+            if($timeArray[1] >= 60){
+                $increaseMin = 1;
+                $remainingSec = $timeArray[1] - 60;
+                if($remainingSec < 10){
+                    $remainingSec = (int)'0'.$remainingSec; 
+                }
+            }else{
+                $increaseMin = 0;
+                $remainingSec = $timeArray[1] ;
+            }
+
             $updateData = [
-                'base_waiting'    => $request->wait_time,
-                'waiting_price'   => $orderId->order->duration_price * $waiting_time,
+                'actual_time'   => (float)(($timeArray[0] + $increaseMin) .'.'.$remainingSec),
+                // 'cash_to_be_collected' => ($orderId->order->cash_to_be_collected ?? 0)
             ];
 
             Order::find($orderId->order_id)->update($updateData);
@@ -361,10 +392,12 @@ class TaskController extends BaseController
             $task = Task::where('id', $request->task_id)->update(['bag_qrcode' => $request->qr_code]);
         }
 
-        $task = Task::where('id', $request->task_id)->update([
-            'task_status' => $request->task_status,
-            'note' => $note
-        ]);
+        if(isset($request->task_status)){
+            $task = Task::where('id', $request->task_id)->update([
+                'task_status' => $request->task_status,
+                'note' => $note
+            ]);
+        }
 
         if (isset($request->image)) {
             if ($request->hasFile('image')) {
@@ -421,7 +454,7 @@ class TaskController extends BaseController
         }
         // dd($request->toArray());
 
-        $newDetails = Task::where('id', $request->task_id)->with(['location', 'tasktype', 'pricing', 'order.customer', 'order.additionData'])->first();
+        $newDetails = Task::where('id', $request->task_id)->with(['location', 'tasktype', 'pricing', 'order.customer', 'order.additionData','order.waitingTimeLogs'])->first();
 
         $sms_body = str_replace('"order_number"', $order_details->unique_id, $sms_body);
         $sms_body = str_replace('"driver_name"', $order_details->agent->name, $sms_body);
@@ -788,37 +821,33 @@ class TaskController extends BaseController
     /////////////////// **********************   update status in order panel also **********************************  ///////////////////////
     public function updateStatusDataToOrder($order_details, $dispatcher_status_option_id, $task_type, $total_waiting_price = 0, $total_waiting_time = 0)
     {
+
+        
         try {
             $auth = Client::with([
                 'getAllocation',
                 'getPreference'
             ])->first();
+
             if ($auth->custom_domain && !empty($auth->custom_domain)) {
                 $client_url = "https://" . $auth->custom_domain;
             } else {
                 $client_url = "https://" . $auth->sub_domain . \env('SUBDOMAIN');
             }
+
             $dispatch_traking_url = $client_url . '/order/tracking/' . $auth->code . '/' . $order_details->unique_id;
-
-            $client = new GClient(['content-type' => 'application/json']);
-            $url = $order_details->call_back_url;
-            $res = $client->get($url . '?dispatcher_status_option_id=' . $dispatcher_status_option_id . '&dispatch_traking_url=' . $dispatch_traking_url . '&task_type=' . $task_type . '&waiting_price=' . $total_waiting_price . '&waiting_time=' . $total_waiting_time);
-            $response = json_decode($res->getBody(), true);
-            if ($response) {
-                //    Log::info($response);
-            }
-
-
             $client = new GClient([
-                'content-type' => 'application/json'
+                'content-type' => 'application/json',
+                'User-Agent: Mozilla/5.0'
             ]);
             $url = $order_details->call_back_url;
             $res = $client->get($url . '?dispatcher_status_option_id=' . $dispatcher_status_option_id . '&dispatch_traking_url=' . $dispatch_traking_url . '&task_type=' . $task_type);
             $response = json_decode($res->getBody(), true);
             if ($response) {
-                // Log::info($response);
             }
+            return $dispatch_traking_url;
         } catch (\Exception $e) {
+            \Log::info($e->getMessage());
             return response()->json([
                 'status' => __('error'),
                 'message' => $e->getMessage()
@@ -901,9 +930,18 @@ class TaskController extends BaseController
         $percentage = 0;
         $agent_id =  $request->driver_id  ? $request->driver_id : null;
         $driver   = Agent::where('id', $agent_id)->first();
-
+        $call_web_hook = '';
         $orderdata = Order::where('id', $request->order_id)->first();
-        if ($driver->is_pooling_available == 1) {
+
+        if($orderdata->status == 'failed' || $orderdata->status == 'cancelled'){
+            return response()->json([
+            'message' => __('This task has already been cancelled by user.'),
+            'status'=>$orderdata->status
+            ], 400);
+        }
+
+
+        if (@$driver && $driver->is_pooling_available == 1) {
             $assigned_orders  = Order::where('driver_id', $driver->id)->where('is_cab_pooling', 1)->where('status', 'assigned')->orderBy('id', 'asc')->first();
             $available_seats  = (!empty($assigned_orders)) ? $assigned_orders->available_seats : 0;
             if ($available_seats > 0) {
@@ -940,14 +978,23 @@ class TaskController extends BaseController
         }
 
 
-        if (isset($check) && $check->driver_id != null) {
-            if ($check && $check->call_back_url) {
-                $call_web_hook = $this->updateStatusDataToOrder($check, 2, 1);  # task accepted
+        if (isset($orderdata) && $orderdata->driver_id != null) {
+            if ($orderdata && $orderdata->call_back_url) {
+                $call_web_hook = $this->updateStatusDataToOrder($orderdata, 2,1);  # task accepted
             }
             //Send SMS in case of friend's booking
-            if (isset($check->type) && $check->type == 1 && strlen($check->friend_phone_number) > 8) {
-                $friend_sms_body = 'Hi ' . ($check->friend_name) . ', ' . ($check->customer->name ?? 'Our customer') . ' has booked a ride for you.';
-                $send = $this->sendSms2($check->friend_phone_number, $friend_sms_body);
+            if(isset($orderdata->type) && $orderdata->type == 1 && strlen($orderdata->friend_phone_number) > 8)
+            {
+                $keyData = [
+                    '{user-name}' => $orderdata->friend_name,
+                    '{customer-name}' => $orderdata->customer->name ?? 'Our customer',
+                    '{agent-name}' => $driver->name ?? '',
+                    '{car-model}' => $driver->make_model ?? '',
+                    '{plate-no}' => $driver->plate_number ?? '',
+                    '{track-url}' => $call_web_hook??''
+                ];
+                $friend_sms_body = sendSmsTemplate('friend-sms', $keyData);   
+                $this->sendSmsNew($orderdata->friend_phone_number, $friend_sms_body);         
             }
             return response()->json([
                 'message' => __('Task Accecpted Successfully'),
@@ -1040,9 +1087,14 @@ class TaskController extends BaseController
                         'message' => __('This order has already been accepted.'),
                     ], 404);
                 }
-
+                $order = Order::find($request->order_id);
+                if($order->is_cab_pooling == 2){
+                    $type = 'PD';
+                }else{
+                    $type = 'O';
+                }
                 //For order api
-                $this->dispatchNow(new RosterDelete($request->order_id, 'O'));
+                $this->dispatchNow(new RosterDelete($request->order_id,$type));
                 $task_id = Order::where('id', $request->order_id)->first();
                 $pricingRule = PricingRule::where('id', 1)->first();
                 $agent_commission_fixed = $pricingRule->agent_commission_fixed;
@@ -1138,9 +1190,18 @@ class TaskController extends BaseController
 
 
             //Send SMS in case of friend's booking
-            if (isset($check->type) && $check->type == 1 && strlen($check->friend_phone_number) > 8) {
-                $friend_sms_body = 'Hi ' . ($check->friend_name) . ', ' . ($check->customer->name ?? 'Our customer') . ' has booked a ride for you.';
-                $send = $this->sendSms2($check->friend_phone_number, $friend_sms_body);
+            if(isset($check->type) && $check->type == 1 && strlen($check->friend_phone_number) > 8)
+            {                
+                $keyData = [
+                    '{user-name}' => $check->friend_name,
+                    '{customer-name}' => $check->customer->name ?? 'Our customer',
+                    '{agent-name}' => $driver->name ?? '',
+                    '{car-model}' => $driver->make_model ?? '',
+                    '{plate-no}' => $driver->plate_number ?? '',
+                    '{track-url}' => $call_web_hook??''
+                ];
+                $friend_sms_body = sendSmsTemplate('friend-sms', $keyData);
+                $send = $this->sendSmsNew($check->friend_phone_number, $friend_sms_body);                              
             }
             return response()->json([
                 'message' => __('Task Accecpted Successfully'),
@@ -1156,7 +1217,10 @@ class TaskController extends BaseController
                     $call_web_hook = $this->updateStatusDataToOrder($orderdata, 6, 2);  # task rejected
                 }
             } else {
-
+                if($unassignedorder_data->assign_logic == 'one_by_one'){
+                    //For order api
+                    $this->dispatchNow(new RosterDelete($request->order_id,'O',$agent_id));           
+                }
                 $data = [
                     'order_id'          => $request->order_id,
                     'driver_id'         => $request->driver_id,
@@ -1167,6 +1231,7 @@ class TaskController extends BaseController
                 TaskReject::create($data);
             }
 
+            Order::where('id', $orderdata->id)->update(['driver_id'=>null ,'status'=>'unassigned']);
 
             return response()->json([
                 'data' => __('Task Rejected Successfully'),
@@ -1175,6 +1240,77 @@ class TaskController extends BaseController
             ], 200);
         }
     }
+
+    public function callNotification(Request $request)
+    {
+        try {
+
+            $client = Client::first();
+            $header = $request->header();
+            if (isset($header['client'][0])) {
+            } else {
+                $header['client'][0] = $client->database_name;
+            }
+            $ordersId = Order::where('sync_order_id',$request->order_id)->value('id');
+
+            $this->addRosterNotification($ordersId,$header);
+
+        }catch(\Execption $e)
+        {
+            \Log::info(' callNotification function call'.$e->getMessage());
+        }
+
+    }
+
+    public function addRosterNotification($order_id,$header)
+    {
+        try{
+            $orders = Order::findOrFail($order_id);
+            $taskcount = $orders->task->count();
+            $send_loc_id = $orders->pickup_task_first->location_id;
+            $geo = null;
+            $agent_id = null;
+            $customer = Customer::where('id', $orders->customer_id)->first();
+
+            $finalLocation = Location::where('id', $send_loc_id)->first();
+            $pickup_location = $finalLocation;
+            $agent_tags = $orders->agent_tags??'';
+            $is_order_updated = 0;
+            if ($orders->allocation_type === 'a') {
+                $geo = $this->createRoster($send_loc_id); 
+            }
+            $notification_time = $orders->order_time;
+            $allocation = AllocationRule::where('id', 1)->first();
+            $is_one_push_booking = isset($orders->is_one_push_booking) ? $orders->is_one_push_booking : 0;
+
+
+            switch ($allocation->auto_assign_logic) {
+                case 'one_by_one':
+                    //this is called when allocation type is one by one
+                    $this->finalRoster($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, $agent_tags, $is_order_updated, $is_one_push_booking);
+                    break;
+                case 'send_to_all':
+                    //this is called when allocation type is send to all
+                    $this->SendToAll($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, $agent_tags, $is_order_updated, $is_one_push_booking);
+                    break;
+                case 'round_robin':
+                    //this is called when allocation type is round robin
+                    $this->roundRobin($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, $agent_tags, $is_order_updated, $is_one_push_booking);
+                    break;
+                default:
+                    //this is called when allocation type is batch wise
+                    $this->batchWise($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, $agent_tags, $is_order_updated, $is_one_push_booking);
+            }
+
+                
+            }catch(\Exception $e)
+            {
+                \Log::info(' addRosterNotification Notification call'.$e->getMessage());
+            }
+        return true;
+
+    }
+
 
 
     public function CreateTask(CreateTaskRequest $request)
@@ -1190,22 +1326,41 @@ class TaskController extends BaseController
             } else {
                 $header['client'][0] = $client->database_name;
             }
+
+            $inValidAgent = 0;
+            if($request->driver_unique_id)
+            {            
+                $agent = explode('_',base64_decode($request->driver_unique_id));
+                $agent = Agent::find($agent[1]??0);
+                if(!$agent){
+                    $inValidAgent = response()->json([
+                        'status' => 201,
+                        'message' => 'Agent not exist'
+                    ], 201);
+                }
+    
+                if($agent && $agent->is_available == 0){
+                    $inValidAgent = response()->json([
+                        'status' => 201,
+                        'message' => 'Agent is not availeble'
+                    ], 201);
+                }   
+            }
+            
             $client = ClientPreference::where('id', 1)->first();
+            $clientTimeZoneId = Client::where('id', 1)->value('timezone');
 
             if ($request->task_type == 'later')
                 $request->task_type = 'schedule';
 
             DB::beginTransaction();
-            
-            // $auth = Client::with(['getAllocation', 'getPreference'])->first();
             $tz = new Timezone();
-
             if (isset($request->order_time_zone) && !empty($request->order_time_zone))
                 $auth->timezone = $request->order_time_zone;
             else
                 $auth->timezone = $tz->timezone_name($auth->timezone);
 
-            $clienttimezone = $tz->timezone_name($client->timezone);
+            $clienttimezone = $tz->timezone_name($clientTimeZoneId??251);
 
             $loc_id = $cus_id = $send_loc_id = $newlat = $newlong = 0;
             $images = [];
@@ -1283,14 +1438,26 @@ class TaskController extends BaseController
                 }
             } else {
             }
+           $app_call = $request->app_call??0;
+            
+           $schedule_time = $request->schedule_time;
+            if($request->task_type == "schedule"){
+                $settime = $request->schedule_time;
+                //Check Api call from Mobile side = 1 or website = 0
+                if($app_call){
+                    $settime = $request->schedule_time ;
+                }
 
+            }else{
+                $settime = Carbon::now()->toDateTimeString();
+            }
             //here order save code is started
-            $settime = ($request->task_type == "schedule") ? $request->schedule_time : Carbon::now()->toDateTimeString();
+            // $settime = ($request->task_type == "schedule") ? $request->schedule_time : Carbon::now()->toDateTimeString();
             $notification_time = ($request->task_type == "schedule") ? $settime : Carbon::now()->toDateTimeString();
 
-            $agent_id          = $request->allocation_type === 'm' ? $request->agent : null;
-
-            $rejectable_order   = isset($request->rejectable_order) ? $request->rejectable_order : 0;
+            $agent_id           =  $request->allocation_type === 'm' ? $request->agent : null;
+            $agent_id           =  isset($request->driver_id) ? $request->driver_id : $agent_id ;
+            $rejectable_order   =  isset($request->rejectable_order) ? $request->rejectable_order : 0;
             $refer_driver_id = null;
             if ($rejectable_order == 1 && checkColumnExists('orders', 'rejectable_order')) {
                 $agent_id         = null;
@@ -1298,11 +1465,10 @@ class TaskController extends BaseController
                 $request->allocation_type = 'u';
             }
 
-
             $order = [
                 'order_number' => $request->order_number ?? null,
                 'customer_id' => $cus_id,
-                'scheduled_date_time' => ($request->task_type == "schedule") ? $notification_time : null,
+                'scheduled_date_time' => ($request->task_type == "schedule") ? $schedule_time : null,
                 'recipient_phone' => $request->recipient_phone,
                 'Recipient_email' => $request->recipient_email,
                 'task_description' => $request->task_description,
@@ -1327,7 +1493,6 @@ class TaskController extends BaseController
                 'available_seats' => isset($request->available_seats) ? $request->available_seats : 0,
                 'no_seats_for_pooling' => isset($request->no_seats_for_pooling) ? $request->no_seats_for_pooling : 0,
                 'is_cab_pooling' => isset($request->is_cab_pooling) ? $request->is_cab_pooling : 0,
-                'driver_id'     => $request->driver_id ?? null,
             ];
 
             if (checkColumnExists('orders', 'rejectable_order')) {
@@ -1357,7 +1522,7 @@ class TaskController extends BaseController
             if (checkColumnExists('order_addition_data', 'id')) {
                 $this->updateOrderAdditional($request, $orders->id);
             }
-            $agent_id =  $request->agent ?? null;
+         //   $agent_id =  $request->agent ?? null;
             /**
              * booking for appointment
              * task_type_id =3= appointment type
@@ -1391,6 +1556,7 @@ class TaskController extends BaseController
 
             $dep_id = null;
             $pickup_location = null;
+
 
             foreach ($request->task as $key => $value) {
                 $taskcount++;
@@ -1446,7 +1612,7 @@ class TaskController extends BaseController
                     'dependent_task_id' => $dep_id,
                     'task_status' => $agent_id != null ? 1 : 0,
                     'allocation_type' => $request->allocation_type,
-                    'assigned_time' => $notification_time,
+                    'assigned_time' => $schedule_time,
                     'barcode' => $value['barcode'] ?? null,
                     'vendor_id' => isset($vendor_id) ? $vendor_id->id : '',
                     'warehouse_id' => isset($vendor_id) ? $vendor_id->id : null
@@ -1538,7 +1704,8 @@ class TaskController extends BaseController
                 'actual_distance' => $getdata['distance'],
                 'order_cost' => $total + $toll_amount,
                 'toll_fee' => $toll_amount,
-                'driver_cost' => $percentage
+                'driver_cost' => $percentage,
+                'agent_tags' => $agent_tags
             ];
 
             if ($request->has('driverCost') && ($request->driverCost > 0)) {
@@ -1594,14 +1761,25 @@ class TaskController extends BaseController
                 }
                 $orders->drivertags()->sync($tag_id);
             }
-
             $geo = null;
             if ($request->allocation_type === 'a') {
+
                 $geo = $this->createRoster($send_loc_id);
 
                 $agent_id = null;
             }
 
+            $allocation = AllocationRule::where('id', 1)->first();
+
+            if($request->driver_unique_id){
+                $decode_id = base64_decode($request->driver_unique_id);
+                $agentId = explode('_',$decode_id)[1];
+                $agent = Agent::find($agentId);
+                $title = 'Scheduled New Order';
+                $body  = 'The schedule timing of order number #'.$request->order_number.' by the customer.';
+                // $this->sendPushNotificationtoDriver($title,$body,$auth,[$agent->device_token],$dispatch_traking_url);
+                $this->OneByOneUniqueDriver($geo, $settime, $agentId, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, $agent_tags, $is_order_updated, '',$request->notify_hour,$request->reminder_hour);
+            }
             // If batch allocation is on them return from there no job is created
 
             if (isset($client->getPreference)) {
@@ -1610,20 +1788,20 @@ class TaskController extends BaseController
                     if ($client->getPreference->create_batch_hours > 0) {
                         $dispatch_traking_url = $client_url . '/order/tracking/' . $auth->code . '/' . $orders->unique_id;
 
-                        DB::commit();
-                        $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')
-                            ->where('id', $orders->id)
-                            ->first();
-                        // event(new \App\Events\loadDashboardData($orderdata));
-                        return response()->json([
-                            'message' => __('Task Added Successfully'),
-                            'task_id' => $orders->id,
-                            'status' => $orders->status,
-                            'dispatch_traking_url' => $dispatch_traking_url ?? null
-                        ], 200);
-                    }
-                }
-            }
+                DB::commit();
+                $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')
+                    ->where('id', $orders->id)
+                    ->first();
+                // event(new \App\Events\loadDashboardData($orderdata));
+                return response()->json([
+                    'message' => __('Task Added Successfully'),
+                    'task_id' => $orders->id,
+                    'status' => $orders->status,
+                    'dispatch_traking_url' => $dispatch_traking_url ?? null,
+                    'invalid_agent' => $inValidAgent
+                ], 200);
+            }} 
+         }
 
             // task schdule code is hare
 
@@ -1657,7 +1835,8 @@ class TaskController extends BaseController
                         'message' => __('Task Added Successfully'),
                         'task_id' => $orders->id,
                         'status' => $orders->status,
-                        'dispatch_traking_url' => $dispatch_traking_url ?? null
+                        'dispatch_traking_url' => $dispatch_traking_url ?? null,
+                        'invalid_agent' => $inValidAgent
                     ], 200);
                 }
 
@@ -1672,8 +1851,8 @@ class TaskController extends BaseController
                         ->addMinutes($finaldelay)
                         ->format('Y-m-d H:i:s');
                     $schduledata['geo']               = $geo;
-                    $schduledata['notification_time'] = $time;
-                    $schduledata['notification_befor_time'] = $notification_time;
+                    $schduledata['notification_time'] = $settime??$time;
+                    $schduledata['notification_befor_time'] = $settime??$notification_time;
                     $schduledata['agent_id']          = $agent_id;
                     $schduledata['orders_id']         = $orders->id;
                     $schduledata['customer']          = $customer;
@@ -1689,6 +1868,7 @@ class TaskController extends BaseController
                     if ($rejectable_order == 1) {
                         //  Log::info('scheduleNotifi fire');
                         $schduledata['notification_time'] = Carbon::now()->format('Y-m-d H:i:s');
+                        Order::where('id', $orders->id)->update(['assign_logic' => $allocation->auto_assign_logic]);
                         scheduleNotification::dispatch($schduledata)->delay(now());
                     }
                     $schduledata['notification_time'] = $notification_time;
@@ -1704,12 +1884,13 @@ class TaskController extends BaseController
                         'message' => __('Task Added Successfully'),
                         'task_id' => $orders->id,
                         'status' => $orders->status,
-                        'dispatch_traking_url' => $dispatch_traking_url ?? null
+                        'dispatch_traking_url' => $dispatch_traking_url ?? null,
+                        'invalid_agent' => $inValidAgent
                     ], 200);
                 }
             }
-
-            // this is roster create accounding to the allocation methed
+            //Commit Transaction befor send notification
+            DB::commit();
 
             if ($request->allocation_type === 'a' || $request->allocation_type === 'm') {
                 $allocation = AllocationRule::where('id', 1)->first();
@@ -1717,7 +1898,7 @@ class TaskController extends BaseController
                 switch ($allocation->auto_assign_logic) {
                     case 'one_by_one':
                         //this is called when allocation type is one by one
-                        $this->finalRoster($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, $agent_tags, $is_order_updated, $is_one_push_booking);
+                        $this->OneByOne($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, $agent_tags, $is_order_updated, $is_one_push_booking);
                         break;
                     case 'send_to_all':
                         //this is called when allocation type is send to all
@@ -1733,17 +1914,14 @@ class TaskController extends BaseController
                 }
             }
             $dispatch_traking_url = $client_url . '/order/tracking/' . $auth->code . '/' . $orders->unique_id;
-
-            DB::commit();
-            // $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')->where('id', $orders->id)->first();
-            //event(new \App\Events\loadDashboardData($orderdata));
             return response()->json([
                 'message' => __('Task Added Successfully'),
                 'task_id' => $orders->id,
                 'status' => $orders->status,
-                'dispatch_traking_url' => $dispatch_traking_url ?? null
+                'dispatch_traking_url' => $dispatch_traking_url ?? null,
+                'invalid_agent' => $inValidAgent
             ], 200);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             DB::rollback();
             return response()->json([
                 'message' => $e->getMessage()
@@ -2149,8 +2327,6 @@ class TaskController extends BaseController
         $lat = $getletlong->latitude;
         $long = $getletlong->longitude;
 
-        // $allgeo = Geo::all();
-
         return $check = $this->findLocalityByLatLng($lat, $long);
     }
 
@@ -2403,7 +2579,6 @@ class TaskController extends BaseController
     {
         $allcation_type    = 'AR';
         $date              = \Carbon\Carbon::today();
-        Log::info("header client: " . $header['client'][0]);
         $auth              = Client::where('database_name', $header['client'][0])->with(['getAllocation', 'getPreference'])->first();
         $expriedate        = (int)$auth->getAllocation->request_expiry;
         $beforetime        = (int)$auth->getAllocation->start_before_task_time;
@@ -2443,7 +2618,8 @@ class TaskController extends BaseController
             'updated_at' => Carbon::now()->toDateTimeString()
         ];
 
-        if (!isset($geo)) {
+          
+        if (!isset($geo) && !empty($geo)) {
             $oneagent = Agent::where('id', $agent_id)->first();
             if (isset($oneagent) && !empty($oneagent->device_token) && $oneagent->is_available == 1) {
                 $allcation_type = 'ACK';
@@ -2463,8 +2639,9 @@ class TaskController extends BaseController
                 $this->dispatch(new RosterCreate($data, $extraData));
             }
         } else {
-            $geoagents = $this->getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag, $date, $cash_at_hand, $orders_id);
-            if (count($geoagents) > 0) {
+          
+            $geoagents = $this->getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag, $date, $cash_at_hand,$orders_id);     
+            if(count($geoagents) > 0){
                 for ($i = 1; $i <= $try; $i++) {
                     foreach ($geoagents as $key =>  $geoitem) {
                         if (!empty($geoitem->device_token) && !empty($geoitem->device_type)  && $geoitem->is_available == 1) {
@@ -2496,7 +2673,10 @@ class TaskController extends BaseController
                     }
                 }
             }
+
+            if(!empty($data))
             $this->dispatch(new RosterCreate($data, $extraData));
+            
         }
     }
 
@@ -2939,6 +3119,11 @@ class TaskController extends BaseController
         $pricingRule = $this->getPricingRuleData($geoid, $agent_tags, $order_datetime);
         $pricingRuleDistanceWise = $this->getPricingRuleDynamic($pricingRule, $getdata['distance']);
 
+
+        if(empty($pricingRule)){
+            $pricingRule = PricingRule::where('is_default', 1)->first();
+        }
+
         $paid_duration = $getdata['duration'] - $pricingRule->base_duration;
         $paid_distance = $getdata['distance'] - $pricingRule->base_distance;
         $paid_duration = $paid_duration < 0 ? 0 : $paid_duration;
@@ -3206,6 +3391,7 @@ class TaskController extends BaseController
     # notification data
     public function notificationTrackingDetail(Request $request, $id)
     {
+        // sleep(2);
         $order = Order::with('additionData')->where('id', $id)->first();
         $user_id = Auth::id();
         $client_prefrence = ClientPreference::where('id', '>', 0)->first();
@@ -3279,7 +3465,7 @@ class TaskController extends BaseController
                                 ->notification([
                                     'title' => 'Edit Order Status',
                                     'body' => 'Check Status of Edit Order Approval',
-                                    'sound' => 'notification.mp3',
+                                    'sound' => 'notification',
                                     'android_channel_id' => 'Royo-Delivery',
                                     'soundPlay' => true,
                                     'show_in_foreground' => true
@@ -3344,7 +3530,7 @@ class TaskController extends BaseController
                                 ->notification([
                                     'title' => 'Cancel Order Status',
                                     'body' => 'Check Status of Cancel Order Request',
-                                    'sound' => 'notification.mp3',
+                                    'sound' => 'notification',
                                     'android_channel_id' => 'Royo-Delivery',
                                     'soundPlay' => true,
                                     'show_in_foreground' => true
@@ -3785,7 +3971,7 @@ class TaskController extends BaseController
                     ], 200);
                 }
             }
-
+            DB::commit();
             // this is roster create accounding to the allocation methed
 
             if ($request->allocation_type === 'a' || $request->allocation_type === 'm') {
@@ -3796,7 +3982,7 @@ class TaskController extends BaseController
                 switch ($allocation->auto_assign_logic) {
                     case 'one_by_one':
                         //this is called when allocation type is one by one
-                        $this->finalRoster($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling, $agent_tag, $is_order_updated, $is_one_push_booking);
+                        $this->OneByOne($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling, $agent_tag, $is_order_updated, $is_one_push_booking);
                         break;
                     case 'send_to_all':
                         //this is called when allocation type is send to all
@@ -3813,7 +3999,6 @@ class TaskController extends BaseController
             }
             $dispatch_traking_url = $client_url . '/order/tracking/' . $auth->code . '/' . $orders->unique_id;
 
-            DB::commit();
             return response()->json([
                 'message' => __('Task Added Successfully'),
                 'task_id' => $orders->id,
@@ -4009,7 +4194,8 @@ class TaskController extends BaseController
                     'task_status' => $agent_id != null ? 1 : 0,
                     'allocation_type' => $request->allocation_type,
                     'assigned_time' => $settime,
-                    'barcode' => $value['barcode'] ?? null
+                    'barcode' => $value['barcode'] ?? null,
+                    'is_road_side' => 1
                 ];
                 $task = Task::create($data);
                 $dep_id = $task->id;
@@ -4046,7 +4232,7 @@ class TaskController extends BaseController
 
             $updateorder = [
                 'base_price' => $pricingRule->base_price,
-                'base_duration' => $pricingRule->base_duration,
+                'base_duration' => $paid_duration??$pricingRule->base_duration,
                 'base_distance' => $pricingRule->base_distance,
                 // 'base_waiting' => $pricingRule->base_waiting,
                 'duration_price' => $pricingRule->duration_price,
@@ -4067,7 +4253,7 @@ class TaskController extends BaseController
             Order::where('id', $orders->id)->update($updateorder);
 
             if (isset($request->customer_phone_number)) {
-                $this->sendSms2($request->customer_phone_number, $dispatch_traking_url);
+                // $this->sendSms2($request->customer_phone_number, $dispatch_traking_url);
             }
 
             DB::commit();
@@ -4510,9 +4696,10 @@ class TaskController extends BaseController
             $cash_at_hand      = $auth->getAllocation->maximum_cash_at_hand_per_person ?? 0;
 
             $geoagents = $this->getGeoBasedAgentsData($geoid, 0, $agent_tag, $date, $cash_at_hand);
+
             if (count($geoagents) > 0) {
                 foreach ($geoagents as $key =>  $geoitem) {
-                    if (empty($geoitem->device_token)) {
+                    if (!empty($geoitem->device_token)) {
                         $notificationdata = [
                             'driver_id'           => $geoitem->id,
                             'notification_time'   => Carbon::now()->addSeconds(2)->format('Y-m-d H:i:s'),
@@ -4597,4 +4784,339 @@ class TaskController extends BaseController
             ], 400);
         }
     }
+
+public function sendPushNotificationtoDriver($title, $body, $auth, $device_token, $call_back_url)
+{
+    $this->seperate_connection('db_'.$auth->database_name);   
+    $client_preferences = DB::connection('db_'.$auth->database_name)->table('client_preferences')->where('client_id', $auth->code)->first();
+    $fcm_server_key = !empty($client_preferences->fcm_server_key)? $client_preferences->fcm_server_key : config('laravel-fcm.server_key');
+    $headers = [
+            'Authorization: key=' . $fcm_server_key,
+            'Content-Type: application/json',
+    ];
+    $data = [
+        "registration_ids" => $device_token,
+        "notification" => [
+            'title' => $title,
+            'body'  => $body,
+            'sound' => "notification",
+            "icon" => '',
+            'click_action' => $call_back_url,
+            "android_channel_id" => "sound-channel-id"
+        ],
+        "data" => [
+            'title' => $title,
+            'body'  => $body,
+            'data'  => $body,
+            'type' => "order_modified"
+        ],
+        "priority" => "high"
+    ];
+    $dataString = $data;
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($dataString));
+    $result = curl_exec($ch);
+    curl_close($ch);
+    return true;
+}
+
+public function RejectOrder(Request $request)
+{
+    try {
+        DB::beginTransaction();
+        $client = Client::with([
+            'getAllocation',
+            'getPreference'
+        ])->first();
+        $header = $request->header();
+        if (isset($header['client'][0])) {} else {
+            $header['client'][0] = $client->database_name;
+        }
+
+        $order = Order::find($request->order_id);
+        $agent = Agent::find(auth()->id());
+        $customer = Customer::find($order->customer_id);
+        $agent_tags = (isset($order->order_agent_tag) && !empty($order->order_agent_tag)) ? $order->order_agent_tag : '';
+        $allocation = AllocationRule::where('id', 1)->first();
+        $taskcount = 0;
+
+        $tasks = Task::where('order_id', $order->id)->get();
+        foreach ($tasks as $key => $value) {
+            $taskcount ++;
+            $loc_id = null;
+            if (isset($value)) {
+                $post_code = isset($value['post_code']) ? $value['post_code'] : '';
+                $loc = [
+                    'latitude' => $value['latitude'] ?? 0.00,
+                    'longitude' => $value['longitude'] ?? 0.00,
+                    'address' => $value['address'] ?? null,
+                    'customer_id' => $order->customer_id
+                ];
+                $loc_update = [
+                    'short_name' => $value['short_name'] ?? null,
+                    'post_code' => $post_code,
+                    'flat_no' => $value['flat_no'] ?? null,
+                    'email' => $value['email'] ?? null,
+                    'phone_number' => $value['phone_number'] ?? null
+                ];
+
+                $Loction = Location::updateOrCreate($loc, $loc_update);
+                $loc_id = $Loction->id;
+            }
+
+            $finalLocation = Location::where('id', $loc_id)->first();
+            if ($key == 0) {
+                $send_loc_id = $loc_id;
+                $pickup_location = $finalLocation;
+            }
+
+            if (isset($finalLocation)) {
+                array_push($latitude, $finalLocation->latitude);
+                array_push($longitude, $finalLocation->longitude);
+            }
+
+            $task_appointment_duration = isset($value->appointment_duration) ? $value->appointment_duration : null;
+
+            $data = [
+                'order_id' => $order->id,
+                'task_type_id' => $value['task_type_id'],
+                'location_id' => $loc_id,
+                'appointment_duration' => $task_appointment_duration,
+                'dependent_task_id' => null,
+                'task_status' => $agent->id != null ? 1 : 0,
+                'allocation_type' => $request->allocation_type,
+                'assigned_time' => $order->scheduled_date_time,
+                'barcode' => $value['barcode'] ?? null
+            ];
+
+            Task::create($data);
+        }
+
+        $geo = $this->createRoster($send_loc_id);
+
+        $this->SendToAll($geo, $order->scheduled_date_time, $agent->id, $request->order_id, $customer, $pickup_location, $taskcount, $header, $allocation, $order->is_cab_pooling, $agent_tags, '', '');
+        DB::commit();
+
+        return response()->json(['status' => 200, 'message' => 'Order Rejected Successfull'],200);
+    } catch (\Throwable $th) {
+        DB::rollback();
+        return response()->json([
+            'message' => $th->getMessage()
+        ], 400);
+    }
+}
+
+public function OneByOne($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling, $agent_tag = '', $is_order_updated, $is_one_push_booking=0)
+{
+    $allcation_type    = 'AR';
+    $date              = \Carbon\Carbon::today();
+    $auth              = Client::where('database_name', $header['client'][0])->with(['getAllocation', 'getPreference'])->first();
+    $expriedate        = (int)$auth->getAllocation->request_expiry;
+    $beforetime        = (int)$auth->getAllocation->start_before_task_time;
+    $maxsize           = (int)$auth->getAllocation->maximum_batch_size;
+    $type              = $auth->getPreference->acknowledgement_type;
+    $unit              = $auth->getPreference->distance_unit;
+    $try               = $auth->getAllocation->number_of_retries;
+    $cash_at_hand      = $auth->getAllocation->maximum_cash_at_hand_per_person??0;
+    $max_redius        = $auth->getAllocation->maximum_radius;
+    $max_task          = $auth->getAllocation->maximum_batch_size;
+    $time              = $this->checkTimeDiffrence($notification_time, $beforetime);
+    $randem            = rand(11111111, 99999999);
+    $data = [];
+    
+    if ($type == 'acceptreject') {
+        $allcation_type = 'AR';
+    } elseif ($type == 'acknowledge') {
+        $allcation_type = 'ACK';
+    } else {
+        $allcation_type = 'N';
+    }
+    
+    $extraData = [
+        'customer_name'            => $customer->name,
+        'customer_phone_number'    => $customer->phone_number,
+        'short_name'               => $finalLocation->short_name,
+        'address'                  => $finalLocation->address,
+        'lat'                      => $finalLocation->latitude,
+        'long'                     => $finalLocation->longitude,
+        'task_count'               => $taskcount,
+        'unique_id'                => $randem,
+        'created_at'               => Carbon::now()->toDateTimeString(),
+        'updated_at'               => Carbon::now()->toDateTimeString(),
+    ];
+    
+    if (!isset($geo)) {
+        $oneagent = Agent::where('id', $agent_id)->first();
+        if(!empty($oneagent->device_token) && $oneagent->is_available == 1){
+            $data = [
+                'order_id'            => $orders_id,
+                'driver_id'           => $agent_id,
+                'notification_time'   => $time,
+                'type'                => $allcation_type,
+                'client_code'         => $auth->code,
+                'created_at'          => Carbon::now()->toDateTimeString(),
+                'updated_at'          => Carbon::now()->toDateTimeString(),
+                'device_type'         => $oneagent->device_type,
+                'device_token'        => $oneagent->device_token,
+                'detail_id'           => $randem,
+            ];
+            $this->dispatch(new RosterCreate($data, $extraData));
+        }
+    } else {
+        $geoagents_ids =  DriverGeo::where('geo_id', $geo)->pluck('driver_id');
+        $geoagents = Agent::whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
+            $f->whereDate('order_time', $date)->with('task');
+        }])->orderBy('id', 'DESC')->get()->where("agent_cash_at_hand", '<', $cash_at_hand);            
+        
+        // for ($i = 1; $i <= $try; $i++) {
+            foreach ($geoagents as $key =>  $geoitem) {
+                if (!empty($geoitem->device_token) && $geoitem->is_available == 1) {
+                    $datas = [
+                        'order_id'            => $orders_id,
+                        'driver_id'           => $geoitem->id,
+                        'notification_time'   => $time,
+                        'type'                => $allcation_type,
+                        'client_code'         => $auth->code,
+                        'created_at'          => Carbon::now()->toDateTimeString(),
+                        'updated_at'          => Carbon::now()->toDateTimeString(),
+                        'device_type'         => $geoitem->device_type,
+                        'device_token'        => $geoitem->device_token,
+                        'detail_id'           => $randem,
+                        
+                    ];
+                    array_push($data, $datas);
+                    if ($allcation_type == 'N' && 'ACK') {
+                        Order::where('id', $orders_id)->update(['driver_id'=>$geoitem->id]);
+                        break;
+                    }
+                }
+                $time = Carbon::parse($time)
+                ->addSeconds($expriedate + 10)
+                ->format('Y-m-d H:i:s');
+            }
+        // }
+        $this->dispatch(new RosterCreate($data, $extraData));
+    }
+}
+
+public function OneByOneUniqueDriver($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation,$is_cab_pooling, $agent_tags, $is_order_updated,$var,$notify_hour,$reminder_hour)
+{
+    $allcation_type    = 'AR';
+    $date              = \Carbon\Carbon::today();
+    $auth              = Client::where('database_name', $header['client'][0])->with(['getAllocation', 'getPreference'])->first();
+    $expriedate        = (int)$auth->getAllocation->request_expiry;
+    $beforetime        = (int)$auth->getAllocation->start_before_task_time;
+    $maxsize           = (int)$auth->getAllocation->maximum_batch_size;
+    $type              = $auth->getPreference->acknowledgement_type;
+    $unit              = $auth->getPreference->distance_unit;
+    $try               = $auth->getAllocation->number_of_retries;
+    $cash_at_hand      = $auth->getAllocation->maximum_cash_at_hand_per_person??0;
+    $max_redius        = $auth->getAllocation->maximum_radius;
+    $max_task          = $auth->getAllocation->maximum_batch_size;
+    $time              = $this->checkTimeDiffrence($notification_time, $beforetime);
+    $randem            = rand(11111111, 99999999);
+    $data = [];
+    
+    if ($type == 'acceptreject') {
+        $allcation_type = 'AR';
+    } elseif ($type == 'acknowledge') {
+        $allcation_type = 'ACK';
+    } else {
+        $allcation_type = 'N';
+    }
+    date_default_timezone_set('UTC');
+    $date  =  Carbon::now()->toDateTimeString();
+    
+    $extraData = [
+        'customer_name'            => $customer->name,
+        'customer_phone_number'    => $customer->phone_number,
+        'short_name'               => $finalLocation->short_name,
+        'address'                  => $finalLocation->address,
+        'lat'                      => $finalLocation->latitude,
+        'long'                     => $finalLocation->longitude,
+        'task_count'               => $taskcount,
+        'unique_id'                => $randem,
+        'created_at'               => Carbon::now()->toDateTimeString(),
+        'updated_at'               => Carbon::now()->toDateTimeString(),
+    ];
+    
+    $oneagent = Agent::where('id', $agent_id)->first();
+    $rosterData = [];
+    $data1 = [
+        'order_id'            => $orders_id,
+        'driver_id'           => $agent_id,
+        'notification_time'   => $date,
+        'type'                => $allcation_type,
+        'client_code'         => $auth->code,
+        'created_at'          => Carbon::now()->toDateTimeString(),
+        'updated_at'          => Carbon::now()->toDateTimeString(),
+        'device_type'         => $oneagent->device_type,
+        'device_token'        => $oneagent->device_token,
+        'detail_id'           => $randem,
+        'is_particular_driver' => 0
+    ];
+    
+    // Log::info($data1);
+    
+    $data2 = [
+        'order_id'            => $orders_id,
+        'driver_id'           => $agent_id,
+        'notification_time'   => Carbon::parse($notification_time)->subMinutes($notify_hour)->format('Y-m-d H:i:s'),
+        'type'                => $allcation_type,
+        'client_code'         => $auth->code,
+        'created_at'          => Carbon::now()->toDateTimeString(),
+        'updated_at'          => Carbon::now()->toDateTimeString(),
+        'device_type'         => $oneagent->device_type,
+        'device_token'        => $oneagent->device_token,
+        'detail_id'           => $randem,
+        'is_particular_driver' => 1
+    ];
+    // Log::info($data2);
+    $data3 = [
+        'order_id'            => $orders_id,
+        'driver_id'           => $agent_id,
+        'notification_time'   => Carbon::parse($notification_time)->subMinutes($reminder_hour)->format('Y-m-d H:i:s'),
+        'type'                => $allcation_type,
+        'client_code'         => $auth->code,
+        'created_at'          => Carbon::now()->toDateTimeString(),
+        'updated_at'          => Carbon::now()->toDateTimeString(),
+        'device_type'         => $oneagent->device_type,
+        'device_token'        => $oneagent->device_token,
+        'detail_id'           => $randem,
+        'is_particular_driver' => 2
+    ];
+    // Log::info($data3);
+    
+    array_push($rosterData, $data1);
+    array_push($rosterData, $data2);
+    array_push($rosterData, $data3);
+    
+    $this->dispatch(new RosterCreate($rosterData, $extraData));
+    
+} 
+
+
+public function seperate_connection($schemaName){
+    $default = [
+        'driver' => env('DB_CONNECTION', 'mysql'),
+        'host' => env('DB_HOST'),
+        'port' => env('DB_PORT'),
+        'database' => $schemaName,
+        'username' => env('DB_USERNAME'),
+        'password' => env('DB_PASSWORD'),
+        'charset' => 'utf8mb4',
+        'collation' => 'utf8mb4_unicode_ci',
+        'prefix' => '',
+        'prefix_indexes' => true,
+        'strict' => false,
+        'engine' => null
+    ];
+
+    Config::set("database.connections.$schemaName", $default);
+}
 }

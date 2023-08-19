@@ -9,7 +9,7 @@ class PaymentOptionSeeder extends Seeder
      *
      * @return void
      */
-    public function run(){ 
+    public function run(){
 
       $option_count = DB::table('payment_options')->count();
 
@@ -28,8 +28,10 @@ class PaymentOptionSeeder extends Seeder
         array('id' => '14', 'path' => 'tradesafe/omnipay-ozow', 'code' => 'ozow', 'title' => 'Ozow', 'off_site' => '1', 'status' => '0'),
         array('id' => '15', 'path' => 'vnpay', 'code' => 'vnpay', 'title' => 'VNPay', 'off_site' => '1', 'status' => '0'),
         array('id' => '16', 'path' => 'ccavenue', 'code' => 'ccavenue', 'title' => 'CCAvenue', 'off_site' => '1', 'status' => '0'),
-        array('id' => '17', 'path' => 'khalti/khalti', 'code' => 'khalti', 'title' => 'Khalti', 'off_site' => '1', 'status' => '0')
-      ); 
+        array('id' => '17', 'path' => 'khalti/khalti', 'code' => 'khalti', 'title' => 'Khalti', 'off_site' => '1', 'status' => '0'),
+        array('id' => '18', 'path' => '', 'code' => 'obo', 'title' => 'Obo', 'off_site' => '1', 'status' => '0'),
+
+      );
 
       if($option_count == 0)
       {
@@ -42,7 +44,7 @@ class PaymentOptionSeeder extends Seeder
       else{
           foreach ($payment_options as $option) {
               $payop = PaymentOption::where('code', $option['code'])->first();
- 
+
               if ($payop !== null) {
                   $payop->update(['title' => $option['title'],'off_site' => $option['off_site']]);
               } else {
@@ -56,8 +58,8 @@ class PaymentOptionSeeder extends Seeder
               }
           }
       }
-     
-     
-      
+
+
+
     }
 }

@@ -118,7 +118,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
         </div>
         <div class="row">
             <div class="col-12">
-                <div class="card widget-inline main-card-header">
+                <div class="card widget-inline main-card-header payout-switch">
                     <div class="card-body">
                         <div class="row">
                             <div class="col-sm-4 col-md-3 mb-3 mb-md-0">
@@ -178,7 +178,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-12 col-lg-12 tab-product pt-0">
+            <div class="col-sm-12 col-lg-12 tab-product pt-0 payout_req-tab">
                 <ul class="nav nav-tabs nav-material" id="top-tab" role="tablist">
                     <li class="nav-item">
                         <a class="nav-link active" id="pending-payouts" data-toggle="tab" href="#pending_payouts" role="tab" aria-selected="false" data-rel="pending_payouts_datatable" data-status="0">

@@ -20,6 +20,8 @@ class Kernel extends ConsoleKernel
         Commands\SendPushNotification::class,
         Commands\RunSingleSeederCommand::class,
         Commands\BulkUploadAllocationCron::class,
+        Commands\NotifyDriverBeforePickup::class,
+        Commands\SendPushNotification::class
     ];
 
     /**
@@ -31,13 +33,14 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
 
-           $schedule->command('create:batch')->everyFiveMinutes();
-           $schedule->command('BulkUploadAllocation:cron')->everyMinute();
-           $schedule->command('Thresholdforday:send')->dailyAt('00:01');
-           $schedule->command('Thresholdforweek:send')->weeklyOn(1, '00:01');
-           $schedule->command('Thresholdformonth:send')->lastDayOfMonth('00:01');
-        // $schedule->command('push:send')->everyMinute();
+        //   $schedule->command('create:batch')->everyFiveMinutes();
+        //   $schedule->command('BulkUploadAllocation:cron')->everyMinute();
+        //    $schedule->command('Thresholdforday:send')->dailyAt('00:01');
+        //    $schedule->command('Thresholdforweek:send')->weeklyOn(1, '00:01');
+        //    $schedule->command('Thresholdformonth:send')->lastDayOfMonth('00:01');
+           $schedule->command('push:send')->everyMinute();
        //  $schedule->command('queue:restart')->everyMinute()
+        //    $schedule->command('notify:pickup')->everyMinute();
     }
 
     /**

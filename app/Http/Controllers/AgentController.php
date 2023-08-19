@@ -68,7 +68,7 @@ class AgentController extends Controller
             ->notification([
             'title' => 'Pickup Request',
             'body' => 'Check All Details For This Request In App',
-            'sound' => 'notification.mp3',
+            'sound' => 'notification',
             'android_channel_id' => 'Royo-Delivery',
             'soundPlay' => true,
             'show_in_foreground' => true
@@ -437,7 +437,7 @@ class AgentController extends Controller
                 'min:6',
                 'max:15',
                 Rule::unique('agents')->where(function ($query) use ($full_number) {
-                    return $query->where('phone_number', $full_number);
+                    return $query->where(['phone_number'=> $full_number,'deleted_at' => NULL]);
                 })
             ],
             // 'color' => ['required'],
@@ -689,7 +689,7 @@ class AgentController extends Controller
                 'min:6',
                 'max:15',
                 Rule::unique('agents')->where(function ($query) use ($full_number, $id) {
-                    return $query->where('phone_number', $full_number)
+                    return $query->where(['phone_number'=> $full_number,'deleted_at' => NULL])
                         ->where('id', '!=', $id);
                 })
             ],
@@ -820,7 +820,8 @@ class AgentController extends Controller
             'phone_number' => $agent->phone_number . '_' . $agent->id . "_D",
             'device_token' => '',
             'device_type' => '',
-            'access_token' => ''
+            'access_token' => '',
+            'is_available' => 0
         ]);
         $agent->delete();
         Otp::where('phone', $agent->phone_number)->where('is_verified', 1)->delete();
@@ -935,6 +936,7 @@ class AgentController extends Controller
             $agent_approval = Agent::withTrashed()->find($request->id);
             $agent_approval->deleted_at = NULL;
             $agent_approval->is_approved = $request->status;
+            $agent_approval->is_available = isset($request->status) && $request->status == 1 ? $agent_approval->is_available : $request->status;
             $agent_approval->save();
 
             // Updtae log also
@@ -942,7 +944,6 @@ class AgentController extends Controller
             AgentLog::where('agent_id', $request->id)->update([
                 'is_active' => $is_active
             ]);
-
             $slug = ($request->status == 1) ? 'driver-accepted' : 'driver-rejected';
             // $sms_body = AgentSmsTemplate::where('slug', $slug)->first();
             $keyData = [];

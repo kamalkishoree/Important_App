@@ -17,9 +17,8 @@ class Timezone extends Model
             return "Asia/Kolkata";
         }
     }
-    
     public function timezone_gmt($timezone_id){
-        $timezonedetail = Timezone::where('id',$timezone_id)->orWhere('timezone',$timezone_id)->first('offset');
+        $timezonedetail = Timezone::where('id',$timezone_id)->orWhere('timezone',$timezone_id)->first('offset');       
         if($timezonedetail)
         {
             return $timezonedetail->offset;

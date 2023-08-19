@@ -30,7 +30,7 @@
                             <div class="form-group">
                                 <label for="field-1" class="control-label">{{__("Select")}} {{getAgentNomenclature()}}</label>
                                 <select name="driver_id" id="selectAgent" class="selectpicker" required>
-                                    <option hidden="true"></option>
+                                    <option value=''>Select Agent</option>
                                     @foreach ($agents as $item)
                                         @php
                                             $id = $item->id;

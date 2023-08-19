@@ -2,6 +2,7 @@
 
 namespace App\Model;
 
+use App\DriverRefferal;
 use Carbon\Carbon;
 use Bavix\Wallet\Traits\HasWallet;
 use Bavix\Wallet\Interfaces\Wallet;
@@ -27,7 +28,7 @@ class Agent extends Authenticatable implements  Wallet, WalletFloat
         'team_id', 'name', 'profile_picture', 'type', 'vehicle_type_id', 'make_model', 'plate_number', 'phone_number', 'color', 'is_activated', 'is_available','cash_at_hand','uid', 'is_approved','customer_type_id','razorpay_contact_json','razorpay_bank_json','warehouse_id', 'is_pooling_available','is_threshold'
     ];
 
-    protected $appends = ['image_url', 'agent_cash_at_hand','rating'];
+    protected $appends = ['image_url', 'agent_cash_at_hand','rating', 'refferal_code'];
 
     public function day(){
         $mytime = Carbon::now();
@@ -200,5 +201,15 @@ class Agent extends Authenticatable implements  Wallet, WalletFloat
                             });
                         });
         return $query;
+    }
+
+    public function driverRefferal()
+    {
+        return $this->hasOne(DriverRefferal::class,'driver_id','id');
+    }
+
+    public function getRefferalCodeAttribute()
+    {
+        return $this->driverRefferal->refferal_code??'';
     }
 }

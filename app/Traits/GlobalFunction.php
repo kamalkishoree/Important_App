@@ -65,7 +65,6 @@ trait GlobalFunction{
         try {
             $preference = ClientPreference::select('manage_fleet', 'is_cab_pooling_toggle', 'is_threshold','is_go_to_home','go_to_home_radians')->first();
             $geoagents_ids =  DriverGeo::where('geo_id', $geo);
-
             if($preference->is_cab_pooling_toggle == 1 && $is_cab_pooling == 1){
                 $geoagents_ids = $geoagents_ids->whereHas('agent', function($q) use ($geo, $is_cab_pooling){
                     $q->where('is_pooling_available', $is_cab_pooling);
@@ -76,6 +75,15 @@ trait GlobalFunction{
             {
                 $geoagents_ids = $geoagents_ids->whereHas('agent.tags', function($q) use ($agent_tag){
                     $q->where('name', '=', $agent_tag);
+                });
+            }
+
+            $order = Order::find($order_id);
+
+            if($order)
+            {
+                $geoagents_ids = $geoagents_ids->whereHas('agent', function($q) use ($order){
+                    $q->where('id', '!=', $order->driver_id);
                 });
             }
 
@@ -137,54 +145,64 @@ trait GlobalFunction{
         return  $data;
     }
 
-    //---------function to get pricing rule based on agent_tag/geo fence/timetable/day/time
-    public function getPricingRuleData($geoid, $agent_tag = '', $order_datetime = '')
-    {
-
-        try {
-
-            if($geoid!='' && $agent_tag!='' && $order_datetime != '')
-            {
-
-                $dayname = Carbon::parse($order_datetime)->format('l');
-                $time    = Carbon::parse($order_datetime)->format('H:i');
-
-                $pricingRule = PricingRule::orderBy('id', 'desc')->whereHas('priceRuleTags.tagsForAgent',function($q)use($agent_tag){
-                                    $q->where('name', $agent_tag);
-                                })->whereHas('priceRuleTags.geoFence',function($q)use($geoid){
-                                    $q->where('id', $geoid);
-                                })->where('apply_timetable', '=', 1)
-                                ->whereHas('priceRuleTimeframe', function($query) use ($dayname, $time){
-                                    $query->where('is_applicable', 1)
-                                        ->Where('day_name', '=', $dayname)
-                                        ->whereTime('start_time', '<=', $time)
-                                        ->whereTime('end_time', '>=', $time);
-                                })->first();
-
-                if(empty($pricingRule)){
-                    $pricingRule = PricingRule::orderBy('id', 'desc')->whereHas('priceRuleTags.tagsForAgent',function($q)use($agent_tag){
-                        $q->where('name', $agent_tag);
-                    })->whereHas('priceRuleTags.geoFence',function($q)use($geoid){
-                        $q->where('id', $geoid);
-                    })->where('apply_timetable', '!=', 1)->first();
-                }
-                
-            }
-
-            if(empty($pricingRule)){
-                $pricingRule = PricingRule::where('is_default', 1)->first();
-            }
-
-            return $pricingRule;
-
-        } catch (\Throwable $th) {
+      //---------function to get pricing rule based on agent_tag/geo fence/timetable/day/time
+      public function getPricingRuleData($geoid, $agent_tag = '', $order_datetime = '')
+      {
+  
+          try {
+              $pricingRule = '';
+              if(!empty($geoid))
+              {
+                  $pricingRule = PricingRule::whereHas('priceRuleTags.geoFence',function($q)use($geoid){
+                      $q->where('id', $geoid);
+                  });
+  
+                  if(!empty($agent_tag)){
+                      $pricingRule->whereHas('priceRuleTags.tagsForAgent',function($q)use($agent_tag){
+                      $q->where('name', $agent_tag);
+                  });
+                  }
+  
+                  if(!empty($order_datetime)){
+                      $dayname =Carbon::parse($order_datetime)->format('l')  ;
+                      $time =  Carbon::parse($order_datetime)->format('H:i');
+                      $pricingRule->whereHas('priceRuleTimeframe', function($query) use ($dayname, $time){
+                          $query->where('is_applicable', 1)
+                              ->Where('day_name', '=', $dayname)
+                              ->whereTime('start_time', '<=', $time)
+                              ->whereTime('end_time', '>=', $time);
+                      });
+                  }else{
+                      $pricingRule->where('apply_timetable', '!=', 1);
+                  }
+                  $pricingRule =   $pricingRule->orderBy('id', 'desc')->first();
+  
+                  if(empty($pricingRule)){
+                      $pricingRule = PricingRule::whereHas('priceRuleTags.geoFence',function($q)use($geoid){
+                          $q->where('id', $geoid);
+                      });
+      
+                      if(!empty($agent_tag)){
+                          $pricingRule->whereHas('priceRuleTags.tagsForAgent',function($q)use($agent_tag){
+                          $q->where('name', $agent_tag);
+                      });
+                      }
+                      $pricingRule =   $pricingRule->orderBy('id', 'desc')->first();
+                  }
+              }
             
-            // \Log::info('Eror '.$th->getMessage());
-
-            return [];
-        }
-    
-    }
+              if(empty($pricingRule)){
+                  $pricingRule = PricingRule::where('is_default', 1)->first();
+              }
+              return $pricingRule;
+  
+          } catch (\Throwable $th) {
+              
+              // \Log::info('Eror '.$th->getMessage());
+  
+              return [];
+          }
+      }
 
 // $numbers = ['10'=>7,'20'=>5,'50'=>2]; // array of numbers}
 // $distanceTotal = '55'; // array to store differences
@@ -243,8 +261,7 @@ trait GlobalFunction{
         try {
             // \Log::info('pricingRuleDistance nninn : '.$distance);
             $lastDistance = $distance - $pricingRule->base_distance??1;
-
-
+            $sum = 0;
             if($perKm)
             {
                     $distancePricing = [];
@@ -258,6 +275,7 @@ trait GlobalFunction{
                     {
                         return $sum??0;  
                     }
+                    
                     foreach($distancePricing as $key => $number)
                     {
                         $no = ($number->distance_fee - $last);
@@ -276,9 +294,7 @@ trait GlobalFunction{
                         $sum +=  $pr; 
                     }
                 }else{
-
                     $distancePricing = DistanceWisePricingRule::where('price_rule_id',$pricingRule->id)->where('distance_fee','>=',$lastDistance)->orderBy('distance_fee','asc')->first();
-                    
                     if(empty($distancePricing)  && count($distancePricing)==0)
                     {
                         return $sum??0;  

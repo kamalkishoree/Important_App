@@ -132,9 +132,10 @@ class TrackingController extends Controller
     }
 
 
-    public function OrderTrackingDetail($domain = '', $user, $id)
+    public function OrderTrackingDetail($domain = '', $user, $id, Request $request)
     {
         $respnse = $this->connection($user);
+        $timezone = $request->header('timezone') ??'Asia/Kolkata';
         $total_order_by_agent = 0;
         $avgrating = 0;
         $agent_ratings = [];
@@ -145,7 +146,7 @@ class TrackingController extends Controller
                 ->select('orders.*', 'agents.name','agents.vehicle_type_id','agents.color','agents.plate_number', 'agents.profile_picture', 'agents.phone_number')->first();
             if (isset($order->id)) {
                 $tasks = DB::connection($respnse['database'])->table('tasks')->where('order_id', $order->id)->leftJoin('locations', 'tasks.location_id', '=', 'locations.id')
-                    ->select('tasks.*', 'locations.latitude', 'locations.longitude', 'locations.short_name', 'locations.address')->orderBy('id')->get();
+                    ->select('tasks.*', 'locations.latitude', 'locations.longitude', 'locations.short_name', 'locations.address',DB::raw("CONVERT_TZ(tasks.assigned_time, 'UTC', '$timezone') as assigned_time"))->orderBy('task_order')->get();
                 $orderc = DB::connection($respnse['database'])->table('orders')->where('id', $order->id)->where('status','completed')->count();
                 
                 $driver_id = '';

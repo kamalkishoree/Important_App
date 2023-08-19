@@ -24,6 +24,7 @@ Route::post('otp_test', 'Api\TaskController@smstest')->middleware('ConnectDbFrom
 Route::post('check-dispatcher-keys', 'Api\TaskController@checkDispatcherKeys')->middleware('ConnectDbFromOrder');
 Route::post('get-delivery-fee', 'Api\TaskController@getDeliveryFee')->middleware('ConnectDbFromOrder');
 Route::post('task/create', 'Api\TaskController@CreateTask')->middleware('ConnectDbFromOrder');
+Route::any('task/callNotification', 'Api\TaskController@callNotification')->middleware('ConnectDbFromOrder');
 Route::post('task/update_order_prepration_time', 'Api\TaskController@addBufferTime')->middleware('ConnectDbFromOrder');
 
 Route::post('return-to-warehouse-task', 'Api\TaskController@returnToWarehouseTask')->middleware('ConnectDbFromOrder');
@@ -38,12 +39,13 @@ Route::get('get-all-teams', 'Api\TaskController@getAllTeams')->middleware('Conne
 Route::post('update-create-vendor-order', 'Api\AuthController@updateCreateVendorOrder')->middleware('ConnectDbFromOrder');
 Route::post('task/update', 'Api\TaskController@UpdateTask')->middleware('ConnectDbFromOrder');
 
+
 Route::post('task/addwaitingtime', 'Api\TaskController@addWaitingTime')->middleware('ConnectDbFromOrder');
 Route::post('task/update_order_prepration_time', 'Api\TaskController@addBufferTime')->middleware('ConnectDbFromOrder');
 
 
 Route::post('task/updateBidRide', 'Api\TaskController@updateBidRideOrder')->middleware('ConnectDbFromOrder');
-// 
+//
 Route::post('getProductPrice', 'Api\OrderPanelController@getProductPrice')->middleware('ConnectDbFromOrder');
 Route::post('getProductPriceByAgent', 'Api\OrderPanelController@getProductPriceByAgent')->middleware('ConnectDbFromOrder');
 
@@ -83,7 +85,7 @@ Route::post('cancel-order-request-status/driver/notify', 'Api\TaskController@can
 Route::group(['middleware' => ['dbCheck', 'apiLocalization']], function() {
     Route::get('client/preferences', 'Api\ActivityController@clientPreferences');
     Route::get('cmscontent','Api\ActivityController@cmsData');
-    
+
 });
 
 
@@ -92,6 +94,8 @@ Route::group(['prefix' => 'auth'], function () {
 	Route::group(['middleware' => [
                     'dbCheck', 'AppAuth', 'apiLocalization']], function() {
         Route::get('logout', 'Api\AuthController@logout');
+        Route::post('send/referralcode', 'Api\ActivityController@postSendReffralCode');
+
     });
 
     Route::group(['middleware' => ['dbCheck','apiLocalization']], function() {
@@ -101,6 +105,7 @@ Route::group(['prefix' => 'auth'], function () {
         Route::post('signup', 'Api\AuthController@signup');
         Route::post('signup/sendOtp', 'Api\DriverRegistrationController@sendOtp');
         Route::post('signup/verifyOtp', 'Api\DriverRegistrationController@verifyOtp');
+        Route::post('get-driver-refferal', 'Api\AuthController@driverRefferal')->middleware('ConnectDbFromOrder');
         //Route::get('cmscontent','Api\ActivityController@cmsData');
 
         // driver with product pricing  agent/category_with_product
@@ -109,9 +114,9 @@ Route::group(['prefix' => 'auth'], function () {
             Route::post('save_product_variant_price', 'Api\SalerController@saveProductVariantPrice');
             Route::get('general_slot', 'Api\SalerController@getGerenalSlot');
             Route::post('saveSlot', 'Api\AgentSlotController@saveAgentSlot');
-           
+
         });
-      
+
     });
 
 });
@@ -124,7 +129,7 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
 
     Route::get('user', 'Api\AuthController@user');
     Route::post('agent/delete', 'Api\AuthController@deleteAgent');
-
+    Route::post('agent/add_delete_block_slot', 'Api\AgentSlotController@AddDeleteBlockSlot');
     Route::get('taskList', 'Api\ActivityController@tasks');                    // api for task list
     Route::get('updateStatus', 'Api\ActivityController@updateDriverStatus');   // api for chnage driver status active ,in-active
     Route::post('updateCabPoolingStatus', 'Api\ActivityController@updateDriverCabPoolingStatus');  // api for change status of drivers pooling availability
@@ -132,7 +137,8 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
     Route::post('checkOTPRequried', 'Api\TaskController@checkOTPRequried');    // api for chnage task status like start,cpmplate, faild
     Route::post('task/accecpt/reject', 'Api\TaskController@TaskUpdateReject'); // api for accecpt task reject task
     Route::get('refer_task', 'Api\ActivityController@getReferOrder');                    // api for task list
-   
+
+    Route::post('task/reject', 'Api\TaskController@RejectOrder');
 
     Route::get('get/profile','Api\ActivityController@profile');                // api for get agent profile
     Route::post('update/profile','Api\ActivityController@updateProfile');       // api for updateprofile
@@ -150,7 +156,7 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
     Route::post('chat/sendNotification',      'Api\ChatController@sendNotificationToUser');
 
     Route::get('agent/poolingTaskSuggession', 'Api\ActivityController@poolingTasksSuggessions');                    // api for task list suggession for cab pooling
-    
+
     // bid and ride api
     Route::get('bidRide/requests','Api\ActivityController@getBidRideRequests');                  // api to get bid requests placed from order side
     Route::post('accept/decline/bidRide/requests','Api\ActivityController@getAcceptDeclinedBidRideRequests');  // api to decline/accept bid requests placed from order side
@@ -158,8 +164,8 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
     //Route::post('chat/userAgentChatRoom',      'Api\ChatController@startChat');
     //Route::get('agent/go-to-home-address', 'Api\AgentController@getAgentgotoHomeAddress'); // api for get status go to home address
     Route::post('agent/update-go-to-home-address-status', 'Api\AgentController@addAgentgotoHomeAddress'); // api for add go to home address enabled/disabled
-    Route::post('agent/add-home-address', 'Api\AgentController@addagentAddress'); // api for add enable/disbale go to home address  
-    Route::get('agent/home-address', 'Api\AgentController@allHomeAddress');        // api for get go to home address 
+    Route::post('agent/add-home-address', 'Api\AgentController@addagentAddress'); // api for add enable/disbale go to home address
+    Route::get('agent/home-address', 'Api\AgentController@allHomeAddress');        // api for get go to home address
     Route::post('agent/home-address-status', 'Api\AgentController@HomeAddressStatus'); // api for change status address go to home
 
     // Order routes
@@ -170,7 +176,7 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
     Route::post('agent/outAttendence', 'Api\AgentAttendenceController@update'); // api for out attendence agent
     Route::post('agent/getAttendence', 'Api\AgentAttendenceController@getTodayAttendance'); // api for out attendence agent
     Route::get('agent/getAttendenceHistory', 'Api\AgentAttendenceController@getAttendanceHistory'); // api for creating order cancel request by driver
-    
+
     //Agent Out of plateform upload pop
 
     Route::post('agent/outofplatform/upload-pop', 'Api\AgentPayoutController@AgentUploadPop')->name('agent.outofplateform.upload');
@@ -191,7 +197,8 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
 
     // All Payment gateways
     Route::get('payment/{gateway}', 'Api\PaymentOptionController@postPayment');
-
+    Route::post('before-payment/obo','Api\OboPaymentController@beforePayment')->name('obo.pay');
+    Route::get('after-payment/obo','Api\OboPaymentController@afterPayment')->name('after.obo.payment');
 
     // driver with product pricing  agent/category_with_product
     Route::group(['prefix' => 'agent'], function () {
@@ -200,18 +207,17 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
         Route::post('delete_slot', 'Api\AgentSlotController@deleteSlot');
     });
 
-    Route::post('userRating', 'Api\ActivityController@userRating');  
+    Route::post('userRating', 'Api\ActivityController@userRating');
     Route::get('task/pending_payment_order','Api\ActivityController@pendingPaymentOrder');            // api for get task history
     Route::post('product_sku/bydb','Api\SalerController@getProductSkeParticulerDB');            // api for get task history
 });
+        
+Route::group(['prefix' => 'v1', 'middleware' => ['apiLocalization']], function () {
 
-        
-    Route::group(['prefix' => 'v1', 'middleware' => ['apiLocalization']], function () {
-        
-        Route::post('check-order-keys', 'Api\BaseController@checkOrderPanelKeys')->middleware('ConnectDbFromDispatcher');
-        Route::post('get-order-panel-detail', 'Api\BaseController@getPanelDetail')->middleware('ConnectDbFromDispatcher');
-        
-    });
+    Route::post('check-order-keys', 'Api\BaseController@checkOrderPanelKeys')->middleware('ConnectDbFromDispatcher');
+    Route::post('get-order-panel-detail', 'Api\BaseController@getPanelDetail')->middleware('ConnectDbFromDispatcher');
+
+});
 Route::group(['middleware' => 'dbCheck','prefix' => 'public'], function() {
 
     Route::post('task/create', 'Api\TaskController@CreateTask');
