@@ -111,8 +111,6 @@ class TaskController extends BaseController
         } else {
             $client_url = "https://" . $client_details->sub_domain . \env('SUBDOMAIN');
         }
-        \Log::info('request data one basket');
-        \Log::info([$request->all()]);
         // set dynamic smtp for email send
         $this->setMailDetail($client_details);
         $waiting_time = $request->waiting_time ?? 0;
@@ -179,8 +177,6 @@ class TaskController extends BaseController
                 $sms_final_status = $sms_settings['notification_events'][0];
                 $sms_body = $sms_settings['notification_events'][0]['message'];
                 $link = $client_url . '/order/tracking/' . $client_details->code . '/' . $order_details->unique_id;
-                \Log::info('link url');
-                \Log::info([$link]);
                 break;
             case 3:
                 $task_type = 'assigned';
