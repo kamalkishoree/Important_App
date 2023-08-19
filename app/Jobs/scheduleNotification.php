@@ -452,10 +452,6 @@ class scheduleNotification implements ShouldQueue
         $allcation_type    = 'AR';
         $date = \Carbon\Carbon::today()->toDateString();
         //$auth              = Client::where('code', $dataget['database']['code'])->with(['getAllocation', 'getPreference'])->first();
-
-      //  Log::info($date);
-
-
         $expriedate        = (int)$dataget['database']['getAllocation']['request_expiry'];
         $beforetime        = (int)$dataget['database']['getAllocation']['start_before_task_time'];
         $maxsize           = (int)$dataget['database']['getAllocation']['maximum_batch_size'];
