@@ -26,7 +26,6 @@ class PaystackGatewayController extends BaseController
         $this->gateway->setSecretKey($secret_key);
         $this->gateway->setPublicKey($public_key);
         $this->gateway->setTestMode($testmode); //set it to 'false' when go live
-        // dd($this->gateway);
         $primaryCurrency = ClientPreference::with('currency')->select('currency_id')
         ->where('id', 1)
         ->first();

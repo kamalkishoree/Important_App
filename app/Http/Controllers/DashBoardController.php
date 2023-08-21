@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Model\Countries;
 use App\Traits\googleMapApiFunctions;
 use Log;
+use File;
 class DashBoardController extends Controller
 {
     use googleMapApiFunctions;
@@ -1069,6 +1070,11 @@ class DashBoardController extends Controller
         }else{
             return json_encode($data);
         }
+    }
+
+    public function api_documentation(){
+     
+        return File::get(public_path() . '/assets/api_documentation/index.html');
     }
 
 }

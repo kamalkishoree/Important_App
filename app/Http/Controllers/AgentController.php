@@ -68,7 +68,7 @@ class AgentController extends Controller
             ->notification([
             'title' => 'Pickup Request',
             'body' => 'Check All Details For This Request In App',
-            'sound' => 'notification.mp3',
+            'sound' => 'notification',
             'android_channel_id' => 'Royo-Delivery',
             'soundPlay' => true,
             'show_in_foreground' => true
