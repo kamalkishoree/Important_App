@@ -75,6 +75,7 @@ Route::post('edit-order/driver/notify', 'Api\TaskController@editOrderNotificatio
 
 // bid ride request notifications
 Route::post('bidriderequest/notifications', 'Api\TaskController@bidRideRequestNotification')->middleware('ConnectDbFromOrder');
+Route::post('bidRide/notification','Api\TaskController@sendBidAcceptRejectNotification')->middleware('ConnectDbFromOrder');                 // api to get bid requests placed from order side
 
 //route for reschedule order
 Route::post('order/reschedule', 'Api\OrderController@rescheduleOrder')->middleware('ConnectDbFromOrder');
@@ -156,7 +157,7 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
     Route::post('chat/sendNotification',      'Api\ChatController@sendNotificationToUser');
 
     Route::get('agent/poolingTaskSuggession', 'Api\ActivityController@poolingTasksSuggessions');                    // api for task list suggession for cab pooling
-
+    
     // bid and ride api
     Route::get('bidRide/requests','Api\ActivityController@getBidRideRequests');                  // api to get bid requests placed from order side
     Route::post('accept/decline/bidRide/requests','Api\ActivityController@getAcceptDeclinedBidRideRequests');  // api to decline/accept bid requests placed from order side

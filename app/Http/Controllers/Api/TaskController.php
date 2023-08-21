@@ -1231,7 +1231,6 @@ class TaskController extends BaseController
 
     public function CreateTask(CreateTaskRequest $request)
     {
-
         try {
             $auth = $client = Client::with([
                 'getAllocation',
@@ -1711,6 +1710,10 @@ class TaskController extends BaseController
             }} 
          }
 
+         if(isset($request->bid_task_type)){
+             $this->sendBidRideNotification($agent_id,1);
+         }
+         
             // task schdule code is hare
 
             $allocation = AllocationRule::where('id', 1)->first();
@@ -4615,7 +4618,7 @@ class TaskController extends BaseController
                 'message' => __('Bid Request Created Successfully.'),
                 'status'  => "success",
             ], 200);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             DB::rollback();
             return response()->json([
                 'message' => $e->getMessage()
@@ -4669,7 +4672,7 @@ class TaskController extends BaseController
                 'message' => __('Time Added SuccessFully.'),
                 'status'  => "success",
             ], 200);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
             return response()->json([
                 'message' => $e->getMessage()
@@ -4894,6 +4897,43 @@ public function OneByOne($geo, $notification_time, $agent_id, $orders_id, $custo
         // }
         $this->dispatch(new RosterCreate($data, $extraData));
     }
+}
+
+
+public function sendBidAcceptRejectNotification(Request $request)
+{
+    try {
+        $this->sendBidRideNotification($request->driver_id,$request->status);
+        return response()->json([
+            'message' => __('Notification sent SuccessFully.'),
+            'status'  => "success",
+        ], 200);
+    } catch (\Exception $e) {
+        
+        return response()->json([
+            'message' => $e->getMessage()
+        ], 400);
+    }
+}
+
+public function sendBidRideNotification($driver_id,$status)
+{
+    $user = Agent::find($driver_id);
+    if (!empty($user)) {
+        $client_prefrerence = ClientPreference::first(['fcm_server_key']);
+        if (isset($user) && !empty($user->device_token) && $user->is_available == 1) {
+            $data = [
+                'notificationType'    => 'bid',
+                'created_at'          => Carbon::now()->toDateTimeString(),
+                'updated_at'          => Carbon::now()->toDateTimeString(),
+                'device_type'         => $user->device_type ?? '',
+                'device_token'        => $user->device_token,
+                'title'               => ($status == 1)?'Bid Accepted':'Bid Rejected',
+                'body'                => ($status == 1)?'Your bid for pickup request is accepted':'Your bid for pickup request is rejected',
+            ];
+            $this->sendBidNotification($data, $client_prefrerence);
+        }
+    } 
 }
 
 public function OneByOneUniqueDriver($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation,$is_cab_pooling, $agent_tags, $is_order_updated,$var,$notify_hour,$reminder_hour)
