@@ -28,6 +28,10 @@ class Order extends Model
         return $this->hasMany('App\Model\Task', 'order_id', 'id')->orderBy('task_order')->orderBy('id');
     }
 
+    public function pickup_task_first(){
+        return $this->hasOne('App\Model\Task')->where('task_type_id', 1);
+    }
+
     public function pickup_task(){
         return $this->hasMany('App\Model\Task', 'order_id', 'id')->where('task_type_id', 1);
     }

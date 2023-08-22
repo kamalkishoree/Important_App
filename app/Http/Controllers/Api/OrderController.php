@@ -150,7 +150,7 @@ class OrderController extends BaseController
             "notification" => [
                 'title' => $title,
                 'body'  => $body,
-                'sound' => "notification.wav",
+                'sound' => "notification",
                 "icon" => (!empty($client_preferences->favicon)) ? $client_preferences->favicon['proxy_url'] . '200/200' . $client_preferences->favicon['image_path'] : '',
                 'click_action' => $call_back_url,
                 "android_channel_id" => "sound-channel-id"

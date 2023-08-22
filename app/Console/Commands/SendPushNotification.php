@@ -51,7 +51,6 @@ class SendPushNotification extends Command
     {
         $clients = Client::where('status', 1)->get('database_name');
         foreach($clients as $client){
-           
             dispatch(new SP($client->database_name));
         }
         

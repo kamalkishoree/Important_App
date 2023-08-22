@@ -42,6 +42,8 @@
     .dt-buttons.btn-group.flex-wrap {
         float: right;
         margin: 5px 0 10px 15px;
+        position: relative;
+    z-index: 9999;
     }
 
     div#agent-listing_filter {
@@ -93,10 +95,11 @@
 /* agent page css here */
 .edit-icon-div {
     position: relative;
+    display:block;
 }
 .edit-icon-div:hover .child-icon.editIcon {
     display: block !important;
-    right: -5px;
+    right: 0px;
     position: absolute;
     top: 0;
     border-radius: 2px;

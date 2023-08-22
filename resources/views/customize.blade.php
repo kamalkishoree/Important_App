@@ -21,7 +21,7 @@ getAdditionalPreference(['pickup_type',
 	</div>
 	@endif
 	<!-- start Section title -->
-	<div class="row">
+	<div class="row nomencla_rwd">
 		<div class="col-12">
 			<div class="page-title-box">
 				<h4 class="page-title">{{__("Nomenclature & Localisation")}}</h4>
@@ -373,7 +373,7 @@ getAdditionalPreference(['pickup_type',
 		</div>
 		--}}
 	</div>
-    <div class="col-6">
+    <div class="col-6 mobile-attribute-rwd">
             <div class="">
                 <div class="influencer-form-list">
                     <div class="">

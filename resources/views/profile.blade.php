@@ -32,8 +32,8 @@
 
     <!-- start page title -->
     <div class="row">
-        <div class="col-8 mx-auto">
-            <div class="page-title-box">
+        <div class="col-8">
+            <div class="col page-title-box">
                 <h4 class="page-title">{{__("Profile")}}</h4>
             </div>
         </div>

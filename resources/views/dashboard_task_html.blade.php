@@ -46,7 +46,7 @@ $agentslocations[] = $defaultmaplocation;
             <div class="card-body">
                 <div id="accordion-0">
                     <div class="card no-border-radius">
-                        <div class="card-header ml-2" id="by0">
+                        <div class="card-header" id="by0">
                             <?php
                             if(isset($distance_matrix[0]))
                             {
@@ -212,7 +212,7 @@ $agentslocations[] = $defaultmaplocation;
 
                         <div id="accordion-{{ $agent['id'] }}">
                             <div class="card no-border-radius">
-                                <div class="card-header ml-2" id="by{{ $agent['id'] }}">
+                                <div class="card-header" id="by{{ $agent['id'] }}">
                                     <a class="profile-block collapsed pro-block" role="button"
                                         data-toggle="collapse" href="#collapse{{ $agent['id'] }}"
                                         aria-expanded="false"
