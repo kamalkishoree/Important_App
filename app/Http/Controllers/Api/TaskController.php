@@ -2587,7 +2587,8 @@ class TaskController extends BaseController
                     }
                 }
             }
-
+            \Log::info("data");
+            \Log::info($data);
             if(!empty($data))
             $this->dispatch(new RosterCreate($data, $extraData));
             
