@@ -73,7 +73,6 @@ trait GlobalFunction{
 
             if($agent_tag !='')
             {
-                \Log::info("tag".$agent_tag);
                 $geoagents_ids = $geoagents_ids->whereHas('agent.tags', function($q) use ($agent_tag){
                     $q->where('name', '=', $agent_tag);
                 });
@@ -86,12 +85,8 @@ trait GlobalFunction{
                 $geoagents_ids = $geoagents_ids->whereHas('agent', function($q) use ($order){
                     $q->where('id', '!=', $order->driver_id);
                 });
-            }
-            \Log::info("agent ids");
-            
+            }            
             $geoagents_ids =  $geoagents_ids->pluck('driver_id');
-
-            \Log::info($geoagents_ids);
 
             $geoagents = Agent::whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
                 $f->whereDate('order_time', $date)->with('task');
