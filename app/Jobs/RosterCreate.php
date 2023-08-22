@@ -36,7 +36,7 @@ class RosterCreate implements ShouldQueue
      * Execute the job.
      *
      * @return void
-     */
+     **/
     public function handle()
     {
         try {
@@ -76,8 +76,8 @@ class RosterCreate implements ShouldQueue
             ]);
             $date   =  Carbon::now()->toDateTimeString();
          
-        } catch (Exception $ex) {
-            Log::info($exception->getMessage());
+        } catch (\Exception $ex) {
+            \Log::info($ex->getMessage());
            return $ex->getMessage();
         }
 
