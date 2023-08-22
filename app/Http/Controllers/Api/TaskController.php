@@ -2553,8 +2553,6 @@ class TaskController extends BaseController
         } else {
           
             $geoagents = $this->getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag, $date, $cash_at_hand,$orders_id);  
-            \Log::info("agents");   
-            \Log::info($geoagents );
             if(count($geoagents) > 0){
                 for ($i = 1; $i <= $try; $i++) {
                     foreach ($geoagents as $key =>  $geoitem) {
@@ -2587,11 +2585,8 @@ class TaskController extends BaseController
                     }
                 }
             }
-            \Log::info("data");
-            \Log::info($data);
             if(!empty($data))
-            $this->dispatch(new RosterCreate($data, $extraData));
-            
+            $this->dispatch(new RosterCreate($data, $extraData));        
         }
     }
 
