@@ -24,6 +24,7 @@ Route::post('otp_test', 'Api\TaskController@smstest')->middleware('ConnectDbFrom
 Route::post('check-dispatcher-keys', 'Api\TaskController@checkDispatcherKeys')->middleware('ConnectDbFromOrder');
 Route::post('get-delivery-fee', 'Api\TaskController@getDeliveryFee')->middleware('ConnectDbFromOrder');
 Route::post('task/create', 'Api\TaskController@CreateTask')->middleware('ConnectDbFromOrder');
+Route::any('task/callNotification', 'Api\TaskController@callNotification')->middleware('ConnectDbFromOrder');
 Route::post('task/update_order_prepration_time', 'Api\TaskController@addBufferTime')->middleware('ConnectDbFromOrder');
 
 Route::post('return-to-warehouse-task', 'Api\TaskController@returnToWarehouseTask')->middleware('ConnectDbFromOrder');
@@ -74,6 +75,7 @@ Route::post('edit-order/driver/notify', 'Api\TaskController@editOrderNotificatio
 
 // bid ride request notifications
 Route::post('bidriderequest/notifications', 'Api\TaskController@bidRideRequestNotification')->middleware('ConnectDbFromOrder');
+Route::post('bidRide/notification','Api\TaskController@sendBidAcceptRejectNotification')->middleware('ConnectDbFromOrder');                 // api to get bid requests placed from order side
 
 //route for reschedule order
 Route::post('order/reschedule', 'Api\OrderController@rescheduleOrder')->middleware('ConnectDbFromOrder');
@@ -155,7 +157,7 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
     Route::post('chat/sendNotification',      'Api\ChatController@sendNotificationToUser');
 
     Route::get('agent/poolingTaskSuggession', 'Api\ActivityController@poolingTasksSuggessions');                    // api for task list suggession for cab pooling
-
+    
     // bid and ride api
     Route::get('bidRide/requests','Api\ActivityController@getBidRideRequests');                  // api to get bid requests placed from order side
     Route::post('accept/decline/bidRide/requests','Api\ActivityController@getAcceptDeclinedBidRideRequests');  // api to decline/accept bid requests placed from order side
@@ -210,14 +212,13 @@ Route::group(['middleware' => ['dbCheck', 'AppAuth','apiLocalization']], functio
     Route::get('task/pending_payment_order','Api\ActivityController@pendingPaymentOrder');            // api for get task history
     Route::post('product_sku/bydb','Api\SalerController@getProductSkeParticulerDB');            // api for get task history
 });
+        
+Route::group(['prefix' => 'v1', 'middleware' => ['apiLocalization']], function () {
 
+    Route::post('check-order-keys', 'Api\BaseController@checkOrderPanelKeys')->middleware('ConnectDbFromDispatcher');
+    Route::post('get-order-panel-detail', 'Api\BaseController@getPanelDetail')->middleware('ConnectDbFromDispatcher');
 
-    Route::group(['prefix' => 'v1', 'middleware' => ['apiLocalization']], function () {
-
-        Route::post('check-order-keys', 'Api\BaseController@checkOrderPanelKeys')->middleware('ConnectDbFromDispatcher');
-        Route::post('get-order-panel-detail', 'Api\BaseController@getPanelDetail')->middleware('ConnectDbFromDispatcher');
-
-    });
+});
 Route::group(['middleware' => 'dbCheck','prefix' => 'public'], function() {
 
     Route::post('task/create', 'Api\TaskController@CreateTask');

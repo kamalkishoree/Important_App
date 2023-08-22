@@ -21,6 +21,7 @@ class Kernel extends ConsoleKernel
         Commands\RunSingleSeederCommand::class,
         Commands\BulkUploadAllocationCron::class,
         Commands\NotifyDriverBeforePickup::class,
+        Commands\SendPushNotification::class
     ];
 
     /**
