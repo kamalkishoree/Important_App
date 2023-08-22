@@ -144,6 +144,8 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::get('payment/webview/khalti', 'KhaltiGatewayController@webView')->name('payment.khalti.webView');
 			Route::get('payment/paystack/completePurchase/app', 'PaystackGatewayController@paystackCompletePurchaseApp')->name('payment.paystackCompletePurchaseApp');
 			Route::get('payment/paystack/cancelPurchase/app', 'PaystackGatewayController@paystackCancelPurchaseApp')->name('payment.paystackCancelPurchaseApp');
+			Route::any('payment/livees/api', 'LiveePaymentController@payFormWeb')->name('livees.webview');
+			Route::any('livee/success','LiveePaymentController@afterPayment')->name('livee.payment');
 
 		});
 		Route::any('payment/ccavenue/success', 'CcavenueController@successForm')->name('ccavenue.success');
