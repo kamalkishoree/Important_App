@@ -106,6 +106,10 @@ class TaskController extends BaseController
         } else {
             $note = '';
         }
+        $is_drop_off_task_completed = $request->is_drop_off_task_completed ?? 0 ;
+        $preference = ClientPreference::where('id', 1)->first([
+            'is_dispatcher_allocation'
+        ]);
         if ($client_details->custom_domain && !empty($client_details->custom_domain)) {
             $client_url = "https://" . $client_details->custom_domain;
         } else {
@@ -117,6 +121,10 @@ class TaskController extends BaseController
         $orderId = Task::where('id', $request->task_id)->with([
             'tasktype'
         ])->first();
+
+
+      
+      
         $user = Auth::user();
 
         $orderAll = Task::where('order_id', $orderId->order_id)->get();
@@ -249,9 +257,9 @@ class TaskController extends BaseController
         if ($waiting_time) {
             Task::where('id', $request->task_id)->update(['waiting_time' => $waiting_time]);
         }
-
         if ($request->task_status == 4) {
-
+            
+           
             if ($check == 1) {
                 Order::where('id', $orderId->order_id)->update(['status' => $task_type]);
 
@@ -278,20 +286,37 @@ class TaskController extends BaseController
                     ->first();
                 // event(new \App\Events\loadDashboardData($orderdata));
             }
+
             //Send Next Dependent task details
-            $tasks = Task::where('dependent_task_id', $orderId->id)->where('task_status', '!=', 4)->Where('task_status', '!=', 5)
+            if(($preference->is_dispatcher_allocation == 1) && ($orderId->tasktype->id == 2))
+            {
+                
+                    $tasks = Task::where('order_id', $order_details->id)->whereNull('dependent_task_id')->where('task_status', '!=', 4)->Where('task_status', '!=', 5)
+                    ->with(['location', 'tasktype', 'order.customer', 'order.customer.resources', 'order.task.location', 'order.additionData'])
+                    ->orderBy("id", "ASC")
+                    ->first();
+            
+            }else{
+
+                $tasks = Task::where('dependent_task_id', $orderId->id)->where('task_status', '!=', 4)->Where('task_status', '!=', 5)
                 ->with(['location', 'tasktype', 'order.customer', 'order.customer.resources', 'order.task.location', 'order.additionData','order.waitingTimeLogs'])->orderBy("order_id", "DESC")
                 ->orderBy("id", "ASC")
                 ->get();
-            if (count($tasks) > 0) {
-                // sort according to task_order
-                $tasks = $tasks->toArray();
-                if ($tasks[0]['task_order'] != 0) {
-                    usort($tasks, function ($a, $b) {
-                        return $a['task_order'] <=> $b['task_order'];
-                    });
+           
+            
+                if (count($tasks) > 0) {
+                    // sort according to task_order
+                    $tasks = $tasks->toArray();
+                    if ($tasks[0]['task_order'] != 0) {
+                        usort($tasks, function ($a, $b) {
+                            return $a['task_order'] <=> $b['task_order'];
+                        });
+                    }
                 }
             }
+           
+            
+           
             if (@$request->attribute_data) {
                 $this->saveOrderFormAttribute($request, $orderId);
             }
@@ -582,13 +607,44 @@ class TaskController extends BaseController
 
 
 
-
         // ------------------------------------------------------------------------------------------------//
         $newDetails['otpEnabled'] = $otpEnabled;
         $newDetails['otpRequired'] = $otpRequired;
         $newDetails['qrCodeVendor'] = $codeVendor ?? null;
-        $newDetails['nextTask'] = $tasks ?? null;
 
+        if(is_object($tasks))
+        {
+            $newDetails['nextTask'] =  null;
+
+        }else{
+            $newDetails['nextTask'] = $tasks ?? null;
+
+        }
+    
+         if($preference->is_dispatcher_allocation == 1 && (is_object($tasks)))
+         {
+            if(!empty($tasks)&& ($request->task_status == 4) &&($tasks->task_type_id == 1) )
+            {
+                
+                 if(isset($request->is_drop_off_task_completed) && ($request->is_drop_off_task_completed == 1 ))
+                 {
+                  $geo = null;
+                  $geo = $this->createRoster($tasks->location_id);    
+                  $agent_id = null;
+                  $notification_time = Carbon::now()->toDateTimeString();
+                  $customer = Customer::find($order_details->customer_id);
+                  
+                  $finalLocation = Location::where('id', $tasks->location_id)->first();
+                  $allocation = AllocationRule::where('id', 1)->first();
+                  $is_one_push_booking = isset($order_details->is_one_push_booking) ? $order_details->is_one_push_booking : 0;
+                 if(!empty($finalLocation))
+                 {
+                     $this->SendToAll($geo, $notification_time, $agent_id, $order_details->id, $customer, $finalLocation, 1, $header, $allocation,  $order_details->is_cab_pooling, null, 1, $is_one_push_booking);
+                 }
+                }
+              
+            }
+        }
         return response()->json([
             'data' => $newDetails,
             'status' => 200,
@@ -865,8 +921,12 @@ class TaskController extends BaseController
 
     public function TaskUpdateReject(Request $request)
     {
+        
         $header = $request->header();
         $client_details = Client::where('database_name', $header['client'][0])->first();
+        $preference = ClientPreference::where('id', 1)->first([
+            'is_dispatcher_allocation',
+        ]);
         $percentage = 0;
         $agent_id =  $request->driver_id  ? $request->driver_id : null;
         $driver   = Agent::where('id', $agent_id)->first();
@@ -1010,8 +1070,11 @@ class TaskController extends BaseController
                         'freelancer_commission_percentage' => $freelancer_commission_percentage
                     ]);
 
-                    Task::where('order_id', $batch->order_id)->update(['task_status' => 1]);
-                    $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')->where('id', $batch->order_id)->first();
+
+                        Task::where('order_id', $batch->order_id)->update(['task_status' => 1]);
+                        $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')->where('id', $batch->order_id)->first();
+                    
+                   
                     // event(new \App\Events\loadDashboardData($orderdata));
                 }
                 if ($check && $check->call_back_url) {
@@ -1098,7 +1161,28 @@ class TaskController extends BaseController
                         $bookingResponse =  $this->SlotBooking($data);
                     }
                 }
-                Task::where('order_id', $request->order_id)->update(['task_status' => 1]);
+
+                    if($preference->is_dispatcher_allocation == 1)
+                    {
+                        $task = Task::where(['order_id' => $request->order_id,'task_type_id' => 1,'task_status' => 0])
+                        ->first();
+
+                        if ($task) {
+                            $task->task_status = 1;
+                            $task->driver_id = $agent_id;
+                            $task->assigned_time = date('Y-m-d H:i:s');
+                            $task->save();
+                        
+                        $dependent_task = Task::where(['dependent_task_id' => $task->id])->update([
+                            'task_status' => 1,
+                            'driver_id' => $agent_id,
+                            
+                        ]);
+                    }
+                 
+                    }else{
+                           Task::where('order_id', $request->order_id)->update(['task_status' => 1]);
+                    }
                 if ($check && $check->call_back_url) {
                     $call_web_hook = $this->updateStatusDataToOrder($check, 2, 1);  # task accepted
                 }
@@ -1231,7 +1315,6 @@ class TaskController extends BaseController
 
     public function CreateTask(CreateTaskRequest $request)
     {
-
         try {
             $auth = $client = Client::with([
                 'getAllocation',
@@ -1271,7 +1354,6 @@ class TaskController extends BaseController
                 $request->task_type = 'schedule';
 
             DB::beginTransaction();
-
             $tz = new Timezone();
             if (isset($request->order_time_zone) && !empty($request->order_time_zone))
                 $auth->timezone = $request->order_time_zone;
@@ -1512,7 +1594,16 @@ class TaskController extends BaseController
 
                 $task_appointment_duration = isset($value->appointment_duration) ? $value->appointment_duration : null;
 
-
+                if ($client->is_dispatcher_allocation == 1) {   
+                    if ($value['task_type_id'] == 2) {
+                        $lastTask = Task::where('order_id', $orders->id)
+                        ->where('task_type_id', 1)
+                        ->orderBy('id', 'desc')
+            
+                        ->first();
+                        $dep_id = $lastTask->id;
+                 }
+                 }
                 $data = [
                     'order_id' => $orders->id,
                     'task_type_id' => $value['task_type_id'],
@@ -1527,6 +1618,7 @@ class TaskController extends BaseController
                     'warehouse_id' => isset($vendor_id) ? $vendor_id->id : null
                 ];
 
+              
                 $task = Task::create($data);
                 
                 $dep_id = $task->id;
@@ -1711,6 +1803,10 @@ class TaskController extends BaseController
             }} 
          }
 
+         if(isset($request->bid_task_type)){
+             $this->sendBidRideNotification($agent_id,1);
+         }
+         
             // task schdule code is hare
 
             $allocation = AllocationRule::where('id', 1)->first();
@@ -3302,14 +3398,29 @@ class TaskController extends BaseController
     {
         // sleep(2);
         $order = Order::with('additionData')->where('id', $id)->first();
+        $user_id = Auth::id();
+        $client_prefrence = ClientPreference::where('id', '>', 0)->first();
         if (isset($order->id)) {
+
+           
             $customer = DB::table('customers')->where('id', $order->customer_id)->first();
             $order->order_cost = $order->cash_to_be_collected ?? $order->order_cost;
-            $tasks = DB::table('tasks')->where('order_id', $order->id)->leftJoin('locations', 'tasks.location_id', '=', 'locations.id')
-                ->select('tasks.*', 'locations.latitude', 'locations.longitude', 'locations.short_name', 'locations.address')->orderBy('task_order')->get();
-            $db_name = client::select('database_name')->orderBy('id', 'asc')->first()->database_name;
-            return response()->json([
-                'message' => 'Successfully',
+          
+                if($client_prefrence->is_dispatcher_allocation == 1 )
+                {    
+                    $tasks = DB::table('tasks')->where('order_id', $order->id)->where('task_status',0)->leftJoin('locations', 'tasks.location_id', '=', 'locations.id')
+                    ->select('tasks.*', 'locations.latitude', 'locations.longitude', 'locations.short_name', 'locations.address')->orderBy('id')->limit(2)->get();
+               
+                }else{
+                     $tasks = DB::table('tasks')->where('order_id', $order->id)->leftJoin('locations', 'tasks.location_id', '=', 'locations.id')
+                    ->select('tasks.*', 'locations.latitude', 'locations.longitude', 'locations.short_name', 'locations.address')->orderBy('id')->get();
+               
+                    
+                } 
+                $db_name = client::select('database_name')->orderBy('id', 'asc')->first()->database_name;
+         
+                return response()->json([
+                'message' => 'Successfully', 
                 'tasks' => $tasks,
                 'order'  => $order,
                 'customer'  => $customer,
@@ -4168,6 +4279,8 @@ class TaskController extends BaseController
     // update dropoff task function
     public function updateTask(Request $request)
     {
+
+
         try {
             $auth = $client = Client::with([
                 'getAllocation',
@@ -4191,7 +4304,7 @@ class TaskController extends BaseController
             $pricingRule = '';
             $agent_id = null;
             $allocation_type = '';
-
+        
             $orders = Order::where('call_back_url', '=', $request->call_back_url)->first();
             if (!empty($orders)) {
                 Task::where('order_id', $orders->id)->whereIn('task_status', [
@@ -4615,7 +4728,7 @@ class TaskController extends BaseController
                 'message' => __('Bid Request Created Successfully.'),
                 'status'  => "success",
             ], 200);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             DB::rollback();
             return response()->json([
                 'message' => $e->getMessage()
@@ -4669,7 +4782,7 @@ class TaskController extends BaseController
                 'message' => __('Time Added SuccessFully.'),
                 'status'  => "success",
             ], 200);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
             return response()->json([
                 'message' => $e->getMessage()
@@ -4894,6 +5007,43 @@ public function OneByOne($geo, $notification_time, $agent_id, $orders_id, $custo
         // }
         $this->dispatch(new RosterCreate($data, $extraData));
     }
+}
+
+
+public function sendBidAcceptRejectNotification(Request $request)
+{
+    try {
+        $this->sendBidRideNotification($request->driver_id,$request->status);
+        return response()->json([
+            'message' => __('Notification sent SuccessFully.'),
+            'status'  => "success",
+        ], 200);
+    } catch (\Exception $e) {
+        
+        return response()->json([
+            'message' => $e->getMessage()
+        ], 400);
+    }
+}
+
+public function sendBidRideNotification($driver_id,$status)
+{
+    $user = Agent::find($driver_id);
+    if (!empty($user)) {
+        $client_prefrerence = ClientPreference::first(['fcm_server_key']);
+        if (isset($user) && !empty($user->device_token) && $user->is_available == 1) {
+            $data = [
+                'notificationType'    => 'bid',
+                'created_at'          => Carbon::now()->toDateTimeString(),
+                'updated_at'          => Carbon::now()->toDateTimeString(),
+                'device_type'         => $user->device_type ?? '',
+                'device_token'        => $user->device_token,
+                'title'               => ($status == 1)?'Bid Accepted':'Bid Rejected',
+                'body'                => ($status == 1)?'Your bid for pickup request is accepted':'Your bid for pickup request is rejected',
+            ];
+            $this->sendBidNotification($data, $client_prefrerence);
+        }
+    } 
 }
 
 public function OneByOneUniqueDriver($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation,$is_cab_pooling, $agent_tags, $is_order_updated,$var,$notify_hour,$reminder_hour)

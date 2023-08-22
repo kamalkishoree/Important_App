@@ -311,6 +311,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 
 			Route::resource('subclient', 'SubClientController');
 			Route::post('assign/agent', 'TaskController@assignAgent')->name('assign.agent');
+			Route::post('task_route', 'TaskController@getTaskRoute')->name('task.task_route');
 			Route::post('assign/date', 'TaskController@assignDate')->name('assign.date');
 			Route::get('/order/feedback/{clientcode}/{order_id}', 'TrackingController@OrderFeedback')->name('order.feedback');
 			Route::post('/feedback/save', 'TrackingController@SaveFeedback')->name('feedbackSave');
