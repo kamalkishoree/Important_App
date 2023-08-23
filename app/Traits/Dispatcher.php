@@ -519,7 +519,7 @@ trait Dispatcher
 
         if($is_load_html == 1)
         {
-            return view('agent_dashboard_task_html')->with($data)->render();
+            return view('agent_dashboard_task_html_sql')->with($data)->render();
         }else{
             return json_encode($data);
         }

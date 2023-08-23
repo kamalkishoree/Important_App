@@ -248,6 +248,11 @@ trait DispatcherOrders
         //         OR {$user->manager_type} != 3
         //     )";
 
+        $perPage = $limit; // Number of items per page
+        $page = $request->input('page', 1);
+        
+        $offset = ($page - 1) * $perPage;
+
         $sql = "SELECT 
             orders.*,
             agents.id AS agent_id,
@@ -289,7 +294,14 @@ trait DispatcherOrders
         if(!empty($agent_ids)){
             $sql .= " AND orders.driver_id IN (".implode(',', $agent_ids)."))";
         }
-        $sql .= " ORDER BY orders.id DESC LIMIT {$limit}";
+
+        $count = "$sql GROUP BY orders.id ORDER BY orders.id DESC";
+        $count = \DB::select($count);
+        $totalcount = count($count);
+
+        $lastPage =  ceil($totalcount / $perPage);
+        
+        $sql .= " GROUP BY orders.id ORDER BY orders.id DESC LIMIT $perPage OFFSET $offset";
         $un_order = \DB::select($sql);
 
         $uniquedrivers = [];
@@ -401,13 +413,14 @@ trait DispatcherOrders
             'client_timezone'=>$auth->timezone,
             'checkuserroutes' => $checkuserroutes,
             'agent_ids' => $agent_ids,
-            'tasks' => $tasks
+            'tasks' => $tasks,
+            'page' => $page,
+            'lastPage' => $lastPage
         ];
 
-        // $data = array('agents' => $agents);
         if($is_load_html == 1)
         {
-            return view('agent_dashboard_order_html_sql')->with($data)->render();
+            return view('agent_dashboard_order_html', compact('un_order'))->with($data)->render();
         }else{
             return json_encode($data);
         }

@@ -16,11 +16,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Model\Countries;
+use App\Traits\Dispatcher;
+use App\Traits\DispatcherOrders;
 use App\Traits\googleMapApiFunctions;
 use Log;
 class AgentDashBoardController extends Controller
 {
-    use googleMapApiFunctions;
+    use googleMapApiFunctions, Dispatcher, DispatcherOrders;
     /**
      * Display a listing of the resource.
      *
@@ -145,6 +147,7 @@ class AgentDashBoardController extends Controller
     //function to load latest order/route and agent data with or without html
     public function dashboardTeamData(Request $request)
     {
+        return $this->homePage($request);
         $userstatus = isset($request->userstatus)?$request->userstatus:2;
         $team_ids = isset($request->team_id)?$request->team_id:'';
         $is_load_html = isset($request->is_load_html)?$request->is_load_html:1;
@@ -612,6 +615,7 @@ class AgentDashBoardController extends Controller
 
     public function dashboardOrderData(Request $request)
     {
+        return $this->orderData($request);
         $userstatus = isset($request->userstatus)?$request->userstatus:2;
         $checkuserroutes = isset($request->checkuserroutes)?$request->checkuserroutes:'';
         $team_ids = isset($request->team_id)?$request->team_id:'';

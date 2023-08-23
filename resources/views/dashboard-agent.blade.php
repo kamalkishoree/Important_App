@@ -710,7 +710,7 @@ function loadTeams(is_load_html, is_show_loader)
 }
 
 // autoload dashbard
-function loadOrders(is_load_html, is_show_loader)
+function loadOrders(is_load_html, is_show_loader, url = '')
 {
     if(is_load_html == 1)
     {
@@ -722,9 +722,10 @@ function loadOrders(is_load_html, is_show_loader)
     }
     var checkuserroutes = $('input[name="user_routes"]:checked').val();
     var agent_id = $('#agent_id').val();
+    url = url ? url : "{{ route('dashboard.agent-orderdata')}}";
     $.ajax({
         type: 'POST',
-        url: "{{ route('dashboard.agent-orderdata')}}",
+        url: url,
         headers: {
             'X-CSRF-Token': '{{ csrf_token() }}',
         },
@@ -1035,6 +1036,34 @@ function ListenAgentLogChannel()
     });
 }
 
+
+$(document).on('click', '#load-more', function(e){
+    let url = $(this).data('url');
+    
+    closeAllAccordian();
+    spinnerJS.showSpinner();
+    
+    var checkuserroutes = $('input[name="user_routes"]:checked').val();
+    var agent_id = $('#agent_id').val();
+    $(this).remove();
+    $.ajax({
+        type: 'POST',
+        url: url,
+        headers: {
+            'X-CSRF-Token': '{{ csrf_token() }}',
+        },
+        data: {'agent_id':agent_id, 'checkuserroutes':checkuserroutes, 'is_load_html':1, 'routedate':$("#basic-datepicker").val()},
+        success: function(result) {
+            console.log(result)
+            $("#handle-dragula-left0").append(result);
+            spinnerJS.hideSpinner();
+        },
+        error: function(data) {
+            alert('There is some issue. Try again later');
+            spinnerJS.hideSpinner();
+        }
+    });
+})
 </script>
 
 <style>
