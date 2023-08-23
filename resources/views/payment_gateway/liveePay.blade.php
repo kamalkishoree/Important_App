@@ -9,7 +9,7 @@
 </head>
 <body>
         <div class="d-flex justify-content-center mt-5">
-            <form  action="https://www.livees.net/Checkout/api4" method="POST"  class="d-flex flex-column gap-3 liveesForm" id="liveesForm">
+            <form  action="{{ $apiUrl }}" method="POST"  class="d-flex flex-column gap-3 liveesForm" id="liveesForm">
 
                 <input type="hidden" name="_" value="{{ $trade_key }}" class="form-control">
                 <input type="hidden" name="__" value="{{ $resource_key }}" class="form-control">

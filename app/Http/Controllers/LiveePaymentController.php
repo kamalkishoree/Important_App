@@ -20,9 +20,6 @@ class LiveePaymentController extends Controller
     private $trade_key;
     private $resource_key;
     private $apiUrl;
-    // const trade_key = 'sa4b4km6c0l9eq7y6od88cnjp62efvr6ix59u5taz2ghw0193';
-    // const TOKEN_API           = "";
-    // const resource_key   = "bj65bih1kzo740snwbru2q9px3v5503fetfdaaegmc64yle58";
 
 
     public function __construct()
@@ -70,8 +67,8 @@ class LiveePaymentController extends Controller
 
             $trade_key = $this->trade_key;
             $resource_key = $this->resource_key;
-
-            return view('backend.payment.liveePay', compact('amount', 'postURL', 'user','trade_key','resource_key'));
+            $apiUrl = $this->apiUrl;
+            return view('backend.payment.liveePay', compact('amount', 'postURL', 'user','trade_key','resource_key','apiUrl'));
         } catch (\Exception $e) {
             return $e->getMessage();
         }
