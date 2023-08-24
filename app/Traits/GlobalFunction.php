@@ -60,7 +60,7 @@ trait GlobalFunction{
     }
 
 
-    public function getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag = '', $date, $cash_at_hand,$order_id='')
+    public function getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag = '', $date, $cash_at_hand,$order_id='',$particular_driver_id = '')
     {
         try {
             $preference = ClientPreference::select('manage_fleet', 'is_cab_pooling_toggle', 'is_threshold','is_go_to_home','go_to_home_radians')->first();
@@ -92,6 +92,9 @@ trait GlobalFunction{
                 $f->whereDate('order_time', $date)->with('task');
             }]);
 
+            if($particular_driver_id){
+                $geoagents = $geoagents->where('id','!=', $particular_driver_id);
+            }
             if(@$preference->is_threshold == 1){
                 $geoagents = $geoagents->where('is_threshold', 1);
             }

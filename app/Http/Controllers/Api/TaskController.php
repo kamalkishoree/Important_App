@@ -2297,7 +2297,7 @@ class TaskController extends BaseController
         return $c;
     }
 
-    public function finalRoster($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling, $agent_tag = '', $is_order_updated = 0, $is_one_push_booking = 0)
+    public function finalRoster($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling, $agent_tag = '', $is_order_updated = 0, $is_one_push_booking = 0,$particular_driver_id = 0)
     {
         $allcation_type = 'AR';
         $date = \Carbon\Carbon::today();
@@ -2365,7 +2365,7 @@ class TaskController extends BaseController
             $extra = [];
             $remening = [];
 
-            $geoagents = $this->getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag, $date, $cash_at_hand, $orders_id);
+            $geoagents = $this->getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag, $date, $cash_at_hand, $orders_id, $particular_driver_id);
 
             $totalcount = $geoagents->count();
             $orders = order::where('driver_id', '!=', null)->whereDate('created_at', $date)
@@ -2478,9 +2478,8 @@ class TaskController extends BaseController
         }
     }
 
-    public function SendToAll($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling, $agent_tag = '', $is_order_updated, $is_one_push_booking = 0)
+    public function SendToAll($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling, $agent_tag = '', $is_order_updated, $is_one_push_booking = 0,$particular_driver_id = 0)
     {
-        \Log::info("all");
         $allcation_type    = 'AR';
         $date              = \Carbon\Carbon::today();
         $auth              = Client::where('database_name', $header['client'][0])->with(['getAllocation', 'getPreference'])->first();
@@ -2542,13 +2541,8 @@ class TaskController extends BaseController
                 ];
                 $this->dispatch(new RosterCreate($data, $extraData));
             }
-        } else {
-            \Log::info("agents");
-            
-            $geoagents = $this->getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag, $date, $cash_at_hand,$orders_id); 
-            \Log::info("agents geo");
-            \Log::info($geoagents);
-            
+        } else {            
+            $geoagents = $this->getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag, $date, $cash_at_hand,$orders_id,$particular_driver_id);
             if(count($geoagents) > 0){
                 for ($i = 1; $i <= $try; $i++) {
                     foreach ($geoagents as $key =>  $geoitem) {
@@ -2588,7 +2582,7 @@ class TaskController extends BaseController
 
    
     
-    public function batchWise($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling, $agent_tag = '', $is_order_updated = 0, $is_one_push_booking = 0)
+    public function batchWise($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling, $agent_tag = '', $is_order_updated = 0, $is_one_push_booking = 0, $particular_driver_id = 0)
     {
         $allcation_type = 'AR';
         $date = \Carbon\Carbon::today();
@@ -2649,7 +2643,7 @@ class TaskController extends BaseController
                 $this->dispatch(new RosterCreate($data, $extraData));
             }
         } else {
-            $geoagents = $this->getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag, $date, $cash_at_hand, $orders_id);
+            $geoagents = $this->getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag, $date, $cash_at_hand, $orders_id, $particular_driver_id);
 
             $geoagents = $geoagents->toArray();
             // this function is give me nearest drivers list accourding to the the task location.
@@ -2702,7 +2696,7 @@ class TaskController extends BaseController
 
 
 
-    public function roundRobin($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling, $agent_tag = '', $is_order_updated = 0, $is_one_push_booking = 0)
+    public function roundRobin($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling, $agent_tag = '', $is_order_updated = 0, $is_one_push_booking = 0, $particular_driver_id = 0)
     {
         $allcation_type = 'AR';
         $date = \Carbon\Carbon::today();
@@ -2763,7 +2757,7 @@ class TaskController extends BaseController
                 $this->dispatch(new RosterCreate($data, $extraData));
             }
         } else {
-            $geoagents = $this->getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag, $date, $cash_at_hand, $orders_id);
+            $geoagents = $this->getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag, $date, $cash_at_hand, $orders_id, $particular_driver_id);
 
             $geoagents = $geoagents->toArray();
 
@@ -4800,7 +4794,7 @@ class TaskController extends BaseController
         }
     }
     
-    public function OneByOne($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling, $agent_tag = '', $is_order_updated, $is_one_push_booking=0)
+    public function OneByOne($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling, $agent_tag = '', $is_order_updated, $is_one_push_booking=0,$particular_driver_id = 0)
     {
         $allcation_type    = 'AR';
         $date              = \Carbon\Carbon::today();
@@ -5064,26 +5058,26 @@ class TaskController extends BaseController
         $send_loc_id= $location->id;
         $geo = $this->createRoster($send_loc_id);
         $agent_id = null;
-        
+        $particular_driver_id = $request->driver_id;
         $customer=Customer::where('id',$orders->customer_id)->first();
         $notification_time=Carbon::now()->toDateString();
       //  if ($orders->auto_alloction === 'a') {            
         switch ($allocation->auto_assign_logic) {
             case 'one_by_one':
                 //this is called when allocation type is one by one
-                $this->OneByOne($geo, $notification_time, $agent_id, $orders->id, $customer, $location, $taskcount,$header, $allocation, $orders->is_cab_pooling, $orders->agent_tags, 0, $orders->is_one_push_booking);
+                $this->OneByOne($geo, $notification_time, $agent_id, $orders->id, $customer, $location, $taskcount,$header, $allocation, $orders->is_cab_pooling, $orders->agent_tags, 0, $orders->is_one_push_booking,$particular_driver_id);
                 break;
             case 'send_to_all':
                 //this is called when allocation type is send to all
-                $this->SendToAll($geo, $notification_time, $agent_id, $orders->id, $customer, $location, $taskcount,$header, $allocation, $orders->is_cab_pooling, $orders->agent_tags, 0, $orders->is_one_push_booking);
+                $this->SendToAll($geo, $notification_time, $agent_id, $orders->id, $customer, $location, $taskcount,$header, $allocation, $orders->is_cab_pooling, $orders->agent_tags, 0, $orders->is_one_push_booking,$particular_driver_id);
                 break;
             case 'round_robin':
                 //this is called when allocation type is round robin
-                $this->roundRobin($geo, $notification_time, $agent_id, $orders->id, $customer, $location, $taskcount,$header, $allocation, $orders->is_cab_pooling, $orders->agent_tags, 0, $orders->is_one_push_booking);
+                $this->roundRobin($geo, $notification_time, $agent_id, $orders->id, $customer, $location, $taskcount,$header, $allocation, $orders->is_cab_pooling, $orders->agent_tags, 0, $orders->is_one_push_booking,$particular_driver_id);
                 break;
             default:
                 //this is called when allocation type is batch wise
-                $this->batchWise($geo, $notification_time, $agent_id, $orders->id, $customer, $location, $taskcount,$header, $allocation, $orders->is_cab_pooling, $orders->agent_tags, 0, $orders->is_one_push_booking);
+                $this->batchWise($geo, $notification_time, $agent_id, $orders->id, $customer, $location, $taskcount,$header, $allocation, $orders->is_cab_pooling, $orders->agent_tags, 0, $orders->is_one_push_booking,$particular_driver_id);
         }
         return true;
        // }
