@@ -30,10 +30,10 @@ class RosterCreate implements ShouldQueue
     {
         $this->data      = $data;
         $this->extraData = $extraData;
-  /*  }
+    }
 
     public function handle()
-    {*/
+    {
         try {
             $schemaName = 'royodelivery_db';
             $default = [
@@ -50,7 +50,6 @@ class RosterCreate implements ShouldQueue
                 'strict' => false,
                 'engine' => null
             ];
-
 
             Config::set("database.connections.$schemaName", $default);
         
