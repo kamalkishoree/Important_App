@@ -1388,7 +1388,7 @@ class TaskController extends BaseController
                 $request->allocation_type = 'u';
             }
             $order = [
-                'notify_all' => isset($request->notify_all) ?? null,
+                'notify_all' => isset($request->notify_all)?$request->notify_all:0,
                 'order_number' => $request->order_number ?? null,
                 'customer_id' => $cus_id,
                 'scheduled_date_time' => ($request->task_type == "schedule") ? $schedule_time : null,
