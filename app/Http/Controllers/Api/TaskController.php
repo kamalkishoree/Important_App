@@ -1387,7 +1387,6 @@ class TaskController extends BaseController
                 $refer_driver_id  = $request->agent ?? null;
                 $request->allocation_type = 'u';
             }
-            \Log::info("notify all ".$request->notify_all);
             $order = [
                 'notify_all' => isset($request->notify_all) ?? null,
                 'order_number' => $request->order_number ?? null,
