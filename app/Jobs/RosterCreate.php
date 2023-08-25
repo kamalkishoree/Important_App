@@ -30,7 +30,6 @@ class RosterCreate implements ShouldQueue
     {
         $this->data      = $data;
         $this->extraData = $extraData;
-        \Log::info("construct");
         try {
             $schemaName = 'royodelivery_db';
             $default = [
