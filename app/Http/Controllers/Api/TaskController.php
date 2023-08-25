@@ -1690,34 +1690,32 @@ class TaskController extends BaseController
             // If batch allocation is on them return from there no job is created
 
             if (isset($client->getPreference)) {
-
                 if (isset($client->getPreference->create_batch_hours)) {
                     if ($client->getPreference->create_batch_hours > 0) {
                         $dispatch_traking_url = $client_url . '/order/tracking/' . $auth->code . '/' . $orders->unique_id;
 
-                DB::commit();
-                $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')
-                    ->where('id', $orders->id)
-                    ->first();
-                // event(new \App\Events\loadDashboardData($orderdata));
-                return response()->json([
-                    'message' => __('Task Added Successfully'),
-                    'task_id' => $orders->id,
-                    'status' => $orders->status,
-                    'dispatch_traking_url' => $dispatch_traking_url ?? null,
-                    'invalid_agent' => $inValidAgent
-                ], 200);
-            }} 
-         }
-
-         if(isset($request->bid_task_type)){
-             $this->sendBidRideNotification($agent_id,1,$orders->id,$header);
-         }
-         
+                        DB::commit();
+                        $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')
+                            ->where('id', $orders->id)
+                            ->first();
+                        // event(new \App\Events\loadDashboardData($orderdata));
+                        return response()->json([
+                            'message' => __('Task Added Successfully'),
+                            'task_id' => $orders->id,
+                            'status' => $orders->status,
+                            'dispatch_traking_url' => $dispatch_traking_url ?? null,
+                            'invalid_agent' => $inValidAgent
+                        ], 200);
+                    }
+                } 
+            }
+            if(isset($request->bid_task_type)){
+                $this->sendBidRideNotification($agent_id,1,$orders->id,$header);
+            }         
             // task schdule code is hare
 
             $allocation = AllocationRule::where('id', 1)->first();
-
+            Order::where('id', $orders->id)->update(['assign_logic' => $allocation->auto_assign_logic]);           
             if (($request->task_type != 'now') || ($rejectable_order == 1)) {
                 // if(isset($header['client'][0]))
                 // $auth = Client::where('database_name', $header['client'][0])->with(['getAllocation', 'getPreference'])->first();
@@ -1779,7 +1777,6 @@ class TaskController extends BaseController
                     if ($rejectable_order == 1) {
                         //  Log::info('scheduleNotifi fire');
                         $schduledata['notification_time'] = Carbon::now()->format('Y-m-d H:i:s');
-                        Order::where('id', $orders->id)->update(['assign_logic' => $allocation->auto_assign_logic]);
                         scheduleNotification::dispatch($schduledata)->delay(now());
                     }
                     $schduledata['notification_time'] = $notification_time;
@@ -2552,6 +2549,8 @@ class TaskController extends BaseController
             }
         } else {            
             $geoagents = $this->getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag, $date, $cash_at_hand,$orders_id);  
+            \Log::info("Agents in geo");
+            \Log::info($geoagents);
             if(count($geoagents) > 0){
                 for ($i = 1; $i <= $try; $i++) {
                     foreach ($geoagents as $key =>  $geoitem) {

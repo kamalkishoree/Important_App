@@ -30,6 +30,7 @@ class RosterCreate implements ShouldQueue
     {
         $this->data      = $data;
         $this->extraData = $extraData;
+        \Log::info("construct");
     }
 
     public function handle()
@@ -57,7 +58,7 @@ class RosterCreate implements ShouldQueue
 
             DB::connection($schemaName)->table('rosters')->insert($this->data);
             
-         //   \Log::info('check roster entry');
+            \Log::info('check roster entry');
             // Log::info(DB::connection($schemaName)->table('rosters')->get());
 
             DB::connection($schemaName)->table('roster_details')->insert($this->extraData);
