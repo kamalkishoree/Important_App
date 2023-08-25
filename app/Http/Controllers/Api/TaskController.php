@@ -1241,12 +1241,12 @@ class TaskController extends BaseController
             } else {
                 $header['client'][0] = $client->database_name;
             }
-            $agent_id = null;
+            $unique_agent_id = null;
             $inValidAgent = 0;
             if($request->driver_unique_id)
             {            
                 $agent = explode('_',base64_decode($request->driver_unique_id));
-                $agent_id = $agent[1]??0;
+                $unique_agent_id = $agent[1]??0;
                 $agent = Agent::find($agent[1]??0);
                 if(!$agent){
                     $inValidAgent = response()->json([
@@ -1372,7 +1372,7 @@ class TaskController extends BaseController
             // $settime = ($request->task_type == "schedule") ? $request->schedule_time : Carbon::now()->toDateTimeString();
             $notification_time = ($request->task_type == "schedule") ? $settime : Carbon::now()->toDateTimeString();
 
-            $agent_id           =  $request->allocation_type === 'm' ? $request->agent : $agent_id;
+            $agent_id           =  $request->allocation_type === 'm' ? $request->agent : null;
             $agent_id           =  isset($request->driver_id) ? $request->driver_id : $agent_id ;
             $rejectable_order   =  isset($request->rejectable_order) ? $request->rejectable_order : 0;
             $refer_driver_id = null;
@@ -1439,7 +1439,7 @@ class TaskController extends BaseController
             if (checkColumnExists('order_addition_data', 'id')) {
                 $this->updateOrderAdditional($request, $orders->id);
             }
-          // $agent_id =  $request->agent ?? null;
+            $agent_id =  $unique_agent_id ?? null;
             /**
              * booking for appointment
              * task_type_id =3= appointment type
