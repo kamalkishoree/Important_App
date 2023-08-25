@@ -120,8 +120,8 @@ class SendPushNotification
                                             'show_in_foreground' => true,
                                         ])
                                 ->send();
-                               \Log::info( "fcm" );                            
-                               \Log::info( $fcm_store );
+                               //\Log::info( "fcm" );                            
+                               //\Log::info( $fcm_store );
                             }else{
                                 $fcm_store =   $fcmObj
                                 ->to([$item['device_token']])

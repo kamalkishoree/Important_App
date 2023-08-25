@@ -134,10 +134,9 @@ class RosterDelete implements ShouldQueue
                                     'show_in_foreground' => true,
                                 ])
                                 ->send();
-                                 \Log::info( "fcm" );
-                                \Log::info( $fcm_store );
+                               //  \Log::info( "fcm" );
+                               // \Log::info( $fcm_store );
                             }else{
-                                 \Log::info('check_remidner');
                                 $fcm_store =   $fcmObj
                                 ->to([$item['device_token']])
                                 ->priority('high')
