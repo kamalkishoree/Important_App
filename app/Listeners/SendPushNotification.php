@@ -136,9 +136,7 @@ class SendPushNotification
                                     'body' => 'Pickup your order #'.$item['order_id'],
                                 ])
                                 ->send();
-                                
                             }
-                            
                         }
                         catch(Exception $e){
                            \Log::info($e->getMessage());

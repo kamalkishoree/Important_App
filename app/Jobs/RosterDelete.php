@@ -33,14 +33,6 @@ class RosterDelete implements ShouldQueue
         $this->order_id      = $order_id;
         $this->type      = $type;
         $this->driver_id = $driver_id;
-    }
-    /**
-     * Execute the job.
-     *
-     * @return void
-     */
-    public function handle()
-    {
         try {
             $schemaName = 'royodelivery_db';
             $default = [
@@ -75,8 +67,17 @@ class RosterDelete implements ShouldQueue
             }
             DB::disconnect($schemaName);
         } catch (Exception $ex) {
-           return $ex->getMessage();
+            return $ex->getMessage();
         }
+    }
+    /**
+     * Execute the job.
+     *
+     * @return void
+     */
+    public function handle()
+    {
+
     }
 
     public function getData()
@@ -101,10 +102,10 @@ class RosterDelete implements ShouldQueue
     public function sendnotification($recipients)
     {
         try {
+            \Log::info('One By One');
             $array = json_decode(json_encode($recipients), true);          
             foreach($array as $item){                
                 if(isset($item['device_token']) && !empty($item['device_token'])){
-                    \Log::info('One By One');
                     $item['title']     = 'Pickup Request';
                     $item['body']      = 'Check All Details For This Request In App';
                     $new = [];
@@ -150,14 +151,11 @@ class RosterDelete implements ShouldQueue
                                     'body' => 'Pickup your order #'.$item['order_id'],
                                 ])
                                 ->send();
-                                
                             }
-                            
                         }
                         catch(Exception $e){
                             Log::info($e->getMessage());
                         }
-                        
                     }
                 }
             }
