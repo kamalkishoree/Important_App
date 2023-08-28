@@ -1710,6 +1710,7 @@ class TaskController extends BaseController
                 } 
             }
             if(isset($request->bid_task_type)){
+                \Log::info("bid n ride");
                 $this->sendBidRideNotification($agent_id,1,$orders->id,$header);
             }         
             // task schdule code is hare
@@ -4938,7 +4939,7 @@ class TaskController extends BaseController
                     ];
                     $this->sendBidNotification($data, $client_prefrerence);
                 }else{
-                    // Log::info('mass and edit notification');
+                     \Log::info('mass and edit notification');
                     $order_details = Order::where('id', $order_id)->with([
                         'customer',
                         'agent',
