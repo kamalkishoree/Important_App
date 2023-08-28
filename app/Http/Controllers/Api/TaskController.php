@@ -1439,7 +1439,7 @@ class TaskController extends BaseController
             if (checkColumnExists('order_addition_data', 'id')) {
                 $this->updateOrderAdditional($request, $orders->id);
             }
-            $agent_id =  $unique_agent_id ?? null;
+            $agent_id =  $unique_agent_id ?? $agent_id;
             /**
              * booking for appointment
              * task_type_id =3= appointment type
@@ -1710,7 +1710,6 @@ class TaskController extends BaseController
                 } 
             }
             if(isset($request->bid_task_type)){
-                \Log::info("bid n ride");
                 $this->sendBidRideNotification($agent_id,1,$orders->id,$header);
             }         
             // task schdule code is hare
@@ -4554,7 +4553,7 @@ class TaskController extends BaseController
                 }
                 $key++;
             }
-
+            DB::beginTransaction();
             //geoid based on first pickup geolocation
             $geoid = '';
             if (($pickup_location['latitude'] != '' || $pickup_location['latitude'] != '0.0000') && ($pickup_location['longitude'] != '' || $pickup_location['longitude'] != '0.0000')) :
@@ -4580,11 +4579,10 @@ class TaskController extends BaseController
             $UserBidRideRequest->expire_seconds          = $request->expire_seconds;
             $UserBidRideRequest->save();
 
-
             $date = \Carbon\Carbon::today();
 
             $cash_at_hand      = $auth->getAllocation->maximum_cash_at_hand_per_person ?? 0;
-            $geoagents = $this->getGeoBasedAgentsData($geoid, 0, $agent_tag, $date, $cash_at_hand);         
+            $geoagents = $this->getGeoBasedAgentsData($geoid, 0, $agent_tag, $date, $cash_at_hand);     
             if (count($geoagents) > 0) {
                 foreach ($geoagents as $key =>  $geoitem) {
                     if (!empty($geoitem->device_token)) {
@@ -4939,7 +4937,6 @@ class TaskController extends BaseController
                     ];
                     $this->sendBidNotification($data, $client_prefrerence);
                 }else{
-                     \Log::info('mass and edit notification');
                     $order_details = Order::where('id', $order_id)->with([
                         'customer',
                         'agent',
