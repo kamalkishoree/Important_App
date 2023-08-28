@@ -4585,7 +4585,9 @@ class TaskController extends BaseController
             $cash_at_hand      = $auth->getAllocation->maximum_cash_at_hand_per_person ?? 0;
 
             $geoagents = $this->getGeoBasedAgentsData($geoid, 0, $agent_tag, $date, $cash_at_hand);
-
+            \Log::info("agents");
+            
+            \Log::info($geoagents);
             if (count($geoagents) > 0) {
                 foreach ($geoagents as $key =>  $geoitem) {
                     if (!empty($geoitem->device_token)) {
