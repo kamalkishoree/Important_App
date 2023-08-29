@@ -17,4 +17,3 @@ npm-debug.log
 yarn-error.log
 composer.lock
 /config/laravel5-phumbor.php
-/storage
