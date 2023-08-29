@@ -16,7 +16,6 @@ use App\Model\Client;
 use Exception;
 use Kawankoding\Fcm\Fcm;
 
-
 class RosterDelete implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
@@ -34,16 +33,7 @@ class RosterDelete implements ShouldQueue
         $this->order_id      = $order_id;
         $this->type      = $type;
         $this->driver_id = $driver_id;
-    }
-        /**
-         * Execute the job.
-         *
-         * @return void
-         */
-    public function handle()
-    {
         try {
-           
             $schemaName = 'royodelivery_db';
             $default = [
                 'driver' => env('DB_CONNECTION', 'mysql'),
@@ -59,11 +49,6 @@ class RosterDelete implements ShouldQueue
                 'strict' => false,
                 'engine' => null
             ];
-
-            // config(["database.connections.mysql.database" => null]);
-
-        //    Log::info($this->order_id);
-
             Config::set("database.connections.$schemaName", $default);
             config(["database.connections.mysql.database" => $schemaName]);
             if($this->type=='B'){
@@ -82,31 +67,32 @@ class RosterDelete implements ShouldQueue
             }
             DB::disconnect($schemaName);
         } catch (Exception $ex) {
-           return $ex->getMessage();
+            return $ex->getMessage();
         }
     }
-    
+    /**
+     * Execute the job.
+     *
+     * @return void
+     */
+    public function handle()
+    {
 
-
+    }
 
     public function getData()
     {
         $schemaName       = 'royodelivery_db';
-        
         $get              =  DB::connection($schemaName)->table('rosters')->where('status',0)->where('order_id',$this->order_id)
         ->leftJoin('roster_details', 'rosters.detail_id', '=', 'roster_details.unique_id')
         ->select('rosters.*', 'roster_details.customer_name', 'roster_details.customer_phone_number',
             'roster_details.short_name','roster_details.address','roster_details.lat','roster_details.long','roster_details.task_count')->orderBy('id','asc')->limit(1)->get();
-        
-        $getids           = $get->pluck('id');
-        
-        //$qr           = $get->toSql();
+        $getids           = $get->pluck('id');     
         DB::connection($schemaName)->table('rosters')->where('status',10)->delete();
         if(count($get) > 0){
             //Log::info('getdata count inder'.count($get));
         DB::connection($schemaName)->table('rosters')->whereIn('id',$getids)->delete();
             // DB::connection($schemaName)->table('rosters')->whereIn('id',$newget)->update(['status'=>1]);
-            // Log::info('getdata count inder='.count($get));
             $this->sendnotification($get);
         }
         return;
@@ -116,40 +102,24 @@ class RosterDelete implements ShouldQueue
     public function sendnotification($recipients)
     {
         try {
-            
-            $array = json_decode(json_encode($recipients), true);
-            //  Log::info(json_encode($recipients));
-            
-            
-            foreach($array as $item){
-                \Log::info($item);
-                
+            \Log::info('One By One');
+            $array = json_decode(json_encode($recipients), true);          
+            foreach($array as $item){                
                 if(isset($item['device_token']) && !empty($item['device_token'])){
-                    //Log::info('Fcm Response 11');
-                    
                     $item['title']     = 'Pickup Request';
                     $item['body']      = 'Check All Details For This Request In App';
                     $new = [];
-                    // Log::info($item);
-                    // Log::info('token=');
-                    
                     $item['notificationType'] = $item['type'];
                     unset($item['type']); // done by Preet due to notification title is displaying like AR in iOS
                     
-                    array_push($new,$item['device_token']);
-                    // Log::info($new);
-                    
+                    array_push($new,$item['device_token']);                    
                     $clientRecord = Client::where('code', $item['client_code'])->first();
                     $this->seperate_connection('db_'.$clientRecord->database_name);
-                    $client_preferences = DB::connection('db_'.$clientRecord->database_name)->table('client_preferences')->where('client_id', $item['client_code'])->first();
-                    // Log::info('Fcm Response');
-                    
+                    $client_preferences = DB::connection('db_'.$clientRecord->database_name)->table('client_preferences')->where('client_id', $item['client_code'])->first();                    
                     if(isset($new)){
-                        
                         try{
                             $fcm_server_key = !empty($client_preferences->fcm_server_key)? $client_preferences->fcm_server_key : 'null';
                             $fcmObj = new Fcm($fcm_server_key);
-                            
                             if($item['is_particular_driver'] != 2 ){
                                 $fcm_store = $fcmObj->to($new) // $recipients must an array
                                 ->priority('high')
@@ -164,10 +134,9 @@ class RosterDelete implements ShouldQueue
                                     'show_in_foreground' => true,
                                 ])
                                 ->send();
-                            }
-                            else
-                            {
-                                 \Log::info('check_remidner');
+                               //  \Log::info( "fcm" );
+                               // \Log::info( $fcm_store );
+                            }else{
                                 $fcm_store =   $fcmObj
                                 ->to([$item['device_token']])
                                 ->priority('high')
@@ -181,25 +150,19 @@ class RosterDelete implements ShouldQueue
                                     'body' => 'Pickup your order #'.$item['order_id'],
                                 ])
                                 ->send();
-                                
                             }
-                            
                         }
                         catch(Exception $e){
                             Log::info($e->getMessage());
                         }
-                        
                     }
                 }
             }
-            
            // sleep(5);
           //  $this->getData();
         } catch (\Exception $ex) {
             \Log::info($ex->getMessage());
-            
         }
-        
     }
     
     public function seperate_connection($schemaName){
@@ -217,7 +180,6 @@ class RosterDelete implements ShouldQueue
             'strict' => false,
             'engine' => null
         ];
-        
         Config::set("database.connections.$schemaName", $default);
     }
 }

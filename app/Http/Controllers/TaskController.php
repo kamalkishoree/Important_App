@@ -1072,7 +1072,6 @@ class TaskController extends BaseController
                         break;
                     case 'send_to_all':
                         // this is called when allocation type is send to all
-                        Log::info('send_to_all taskController');
                         $this->SendToAll($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
                         break;
                     case 'round_robin':
@@ -2149,7 +2148,6 @@ class TaskController extends BaseController
         ];
 
         if (! isset($geo)) {
-            Log::info('innergeoty');
             $oneagent = Agent::where('id', $agent_id)->first();
             if (! empty($oneagent->device_token) && $oneagent->is_available == 1) {
                 $data = [
@@ -2166,7 +2164,6 @@ class TaskController extends BaseController
                     'detail_id' => $randem,
                     'cash_to_be_collected' => $order_details->cash_to_be_collected ?? null
                 ];
-                Log::info("if case RosterCreate send to all ");
                 $this->dispatch(new RosterCreate($data, $extraData));
             }
         } else {
@@ -2207,13 +2204,10 @@ class TaskController extends BaseController
                 $time = Carbon::parse($time)->addSeconds($expriedate + 10)->format('Y-m-d H:i:s');
                 $rostersbeforetime = Carbon::parse($rostersbeforetime)->addSeconds($expriedate + 10)->format('Y-m-d H:i:s');
                 if ($allcation_type == 'N' && 'ACK') {
-                    Log::info('break2');
                     break;
                 }
             }
-            Log::info("else case send to all ");
             $this->dispatch(new RosterCreate($data, $extraData));
-            Log::info("dispatch Done ");
         }
     }
 
