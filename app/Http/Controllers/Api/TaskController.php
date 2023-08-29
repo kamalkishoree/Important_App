@@ -2536,8 +2536,7 @@ class TaskController extends BaseController
             'created_at' => Carbon::now()->toDateTimeString(),
             'updated_at' => Carbon::now()->toDateTimeString()
         ];
-
-          
+      
         if (!isset($geo) && !empty($geo)) {            
             $oneagent = Agent::where('id', $agent_id)->first();
             if (isset($oneagent) && !empty($oneagent->device_token) && $oneagent->is_available == 1) {
