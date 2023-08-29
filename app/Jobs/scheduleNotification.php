@@ -98,6 +98,10 @@ class scheduleNotification implements ShouldQueue
 
 
     }
+    
+    public function handle(){
+        
+    }
 
 
     public function basicSetup($schemaName)
