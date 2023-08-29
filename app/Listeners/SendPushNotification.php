@@ -23,7 +23,37 @@ class SendPushNotification
      */
     public function __construct()
     {
-        //
+        
+        $date =  Carbon::now()->toDateTimeString();
+
+        try {
+
+                $schemaName = 'royodelivery_db';
+                $default = [
+                    'driver' => env('DB_CONNECTION', 'mysql'),
+                    'host' => env('DB_HOST'),
+                    'port' => env('DB_PORT'),
+                    'database' => $schemaName,
+                    'username' => env('DB_USERNAME'),
+                    'password' => env('DB_PASSWORD'),
+                    'charset' => 'utf8mb4',
+                    'collation' => 'utf8mb4_unicode_ci',
+                    'prefix' => '',
+                    'prefix_indexes' => true,
+                    'strict' => false,
+                    'engine' => null
+                ];
+
+                Config::set("database.connections.$schemaName", $default);
+                config(["database.connections.mysql.database" => $schemaName]);
+
+                $this->getData();
+
+
+                DB::disconnect($schemaName);
+        } catch (Exception $ex) {
+           return $ex->getMessage();
+        }
     }
     /**
      * Handle the event.
