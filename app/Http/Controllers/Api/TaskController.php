@@ -5215,7 +5215,7 @@ class TaskController extends BaseController
         $task=Task::where('order_id',$request->order_id)->get();
         $taskcount=$task->count();
         $allocation = AllocationRule::where('id', 1)->first();
-        $location=Location::where('customer_id',$orders->customer_id)->latest();
+        $location=Location::where('customer_id',$orders->customer_id)->orderBy('id','desc')->first();
         $send_loc_id= $location->id;
         \Log::info('send_loc_id');
         \Log::info($send_loc_id);
