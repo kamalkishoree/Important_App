@@ -5209,7 +5209,8 @@ class TaskController extends BaseController
     
     public function autoallocated($request){
         $header = $request->header();
-        
+        \Log::info([$request]);
+        \Log::info([$request->all()]);
         $orders=Order::where('id',$request->order_id)->first();        
         $task=Task::where('order_id',$request->order_id)->get();
         $taskcount=$task->count();
