@@ -93,6 +93,8 @@ trait GlobalFunction{
             }]);
 
             if($particular_driver_id){
+                \Log::info(' --- in in particular_driver_id ---');
+
                 $geoagents = $geoagents->where('id','!=', $particular_driver_id);
             }
             if(@$preference->is_threshold == 1){
@@ -117,6 +119,8 @@ trait GlobalFunction{
             $geoagents = $geoagents->get()->where("agent_cash_at_hand", '<', $cash_at_hand);
 
             \Log::info('particular_driver_id'.$particular_driver_id);
+            \Log::info([$geoagents]);
+
             return $geoagents;
 
         } catch (\Throwable $th) {
