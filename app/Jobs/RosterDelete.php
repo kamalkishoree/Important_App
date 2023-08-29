@@ -102,7 +102,6 @@ class RosterDelete implements ShouldQueue
     public function sendnotification($recipients)
     {
         try {
-            \Log::info('One By One');
             $array = json_decode(json_encode($recipients), true);          
             foreach($array as $item){                
                 if(isset($item['device_token']) && !empty($item['device_token'])){

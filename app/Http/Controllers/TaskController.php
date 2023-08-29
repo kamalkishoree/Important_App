@@ -2255,7 +2255,6 @@ class TaskController extends BaseController
 
                         array_push($data, $datas);
                         if ($allcation_type == 'N' && 'ACK') {
-                            Log::info('break');
                             Order::where('id', $orders_id)->update([
                                 'driver_id' => $geoitem->id
                             ]);
@@ -3194,7 +3193,6 @@ class TaskController extends BaseController
             ])
                 ->send();
 
-            Log::info('sendsilentnotification');
         }
     }
 

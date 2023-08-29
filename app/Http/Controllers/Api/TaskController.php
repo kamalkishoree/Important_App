@@ -1232,8 +1232,6 @@ class TaskController extends BaseController
                 ];
                 TaskReject::create($data);
             }
-
-            \Log::info('Check Unassigned -- '.$unassignedorder_data->notify_all);
             Order::where('id', $orderdata->id)->update(['driver_id'=>null ,'status'=>'unassigned']);
             if($unassignedorder_data->notify_all){
                 //For order api
@@ -1643,8 +1641,6 @@ class TaskController extends BaseController
             if (($pickup_location->latitude != '' || $pickup_location->latitude != '0.0000') && ($pickup_location->longitude != '' || $pickup_location->longitude != '0.0000')) :
                 $geoid = $this->findLocalityByLatLng($pickup_location->latitude, $pickup_location->longitude);
             endif;
-            \Log::info('first create time geoid');
-            \Log::info($geoid);
 
             // get duration and distance
             if ($auth->getPreference->toll_fee == 1) {
@@ -5209,19 +5205,13 @@ class TaskController extends BaseController
     
     public function autoallocated($request){
         $header = $request->header();
-        \Log::info([$request]);
-        \Log::info([$request->all()]);
         $orders=Order::where('id',$request->order_id)->first();        
         $task=Task::where('order_id',$request->order_id)->get();
         $taskcount=$task->count();
         $allocation = AllocationRule::where('id', 1)->first();
         $location=Location::where('customer_id',$orders->customer_id)->orderBy('id','desc')->first();
         $send_loc_id= $location->id;
-        \Log::info('send_loc_id');
-        \Log::info($send_loc_id);
         $geo = $this->createRoster($send_loc_id);
-        \Log::info('geo');
-        \Log::info($geo);
         $agent_id = null;
         $particular_driver_id = $request->driver_id;
         $customer=Customer::where('id',$orders->customer_id)->first();
@@ -5233,8 +5223,6 @@ class TaskController extends BaseController
                 $this->OneByOne($geo, $notification_time, $agent_id, $orders->id, $customer, $location, $taskcount,$header, $allocation, $orders->is_cab_pooling, $orders->agent_tags, 0, $orders->is_one_push_booking,$particular_driver_id);
                 break;
             case 'send_to_all':
-            \Log::info('particular_driver_id'.$particular_driver_id);
-
                 //this is called when allocation type is send to all
                 $this->SendToAll($geo, $notification_time, $agent_id, $orders->id, $customer, $location, $taskcount,$header, $allocation, $orders->is_cab_pooling, $orders->agent_tags, 0, $orders->is_one_push_booking,$particular_driver_id);
                 break;
