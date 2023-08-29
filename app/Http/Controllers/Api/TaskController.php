@@ -1349,7 +1349,7 @@ class TaskController extends BaseController
                 if($agent && $agent->is_available == 0){
                    return $inValidAgent = response()->json([
                         'status' => 201,
-                        'message' => 'Agent is not availeble'
+                        'message' => 'Agent is not available'
                     ], 201);
                 }   
             }
@@ -1359,7 +1359,7 @@ class TaskController extends BaseController
 
             if ($request->task_type == 'later')
                 $request->task_type = 'schedule';
-                
+
 
             DB::beginTransaction();
             $tz = new Timezone();
