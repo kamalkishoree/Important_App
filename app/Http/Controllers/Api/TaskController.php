@@ -1445,7 +1445,7 @@ class TaskController extends BaseController
             if (checkColumnExists('order_addition_data', 'id')) {
                 $this->updateOrderAdditional($request, $orders->id);
             }
-            $agent_id =  $unique_agent_id ?? null;
+            $agent_id =  $unique_agent_id ?? $agent_id;
             /**
              * booking for appointment
              * task_type_id =3= appointment type
