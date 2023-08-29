@@ -115,6 +115,8 @@ trait GlobalFunction{
           
             $geoagents = $geoagents->orderBy('id', 'DESC');
             $geoagents = $geoagents->get()->where("agent_cash_at_hand", '<', $cash_at_hand);
+
+            \Log::info('particular_driver_id'.$particular_driver_id);
             return $geoagents;
 
         } catch (\Throwable $th) {

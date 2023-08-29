@@ -5227,7 +5227,7 @@ class TaskController extends BaseController
                 $this->OneByOne($geo, $notification_time, $agent_id, $orders->id, $customer, $location, $taskcount,$header, $allocation, $orders->is_cab_pooling, $orders->agent_tags, 0, $orders->is_one_push_booking,$particular_driver_id);
                 break;
             case 'send_to_all':
-            \Log::info('send to all');
+            \Log::info('particular_driver_id'.$particular_driver_id);
 
                 //this is called when allocation type is send to all
                 $this->SendToAll($geo, $notification_time, $agent_id, $orders->id, $customer, $location, $taskcount,$header, $allocation, $orders->is_cab_pooling, $orders->agent_tags, 0, $orders->is_one_push_booking,$particular_driver_id);
