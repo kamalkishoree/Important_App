@@ -2687,12 +2687,6 @@ class TaskController extends BaseController
         }
     }
 
-
-
-
-
-
-
     public function roundRobin($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling, $agent_tag = '', $is_order_updated = 0, $is_one_push_booking = 0, $particular_driver_id = 0)
     {
         $allcation_type = 'AR';
@@ -5035,8 +5029,7 @@ class TaskController extends BaseController
             $schemaName = 'royodelivery_db';
             $this->seperate_connection($schemaName);
             config(["database.connections.mysql.database" =>$schemaName]);
-            \Log::info("log new");
-            \DB::connection($schemaName)->table('rosters')->where('order_id',$order_id)->whereIn('is_particular_driver',[1,2])->update(['driver_id' => 2]);           
+            \DB::connection($schemaName)->table('rosters')->where('order_id',$order_id)->whereIn('is_particular_driver',[1,2])->update(['driver_id' => $agent_id]);           
             \DB::disconnect($schemaName);
     }
     
