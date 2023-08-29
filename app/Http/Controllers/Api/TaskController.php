@@ -932,7 +932,9 @@ class TaskController extends BaseController
         $driver   = Agent::where('id', $agent_id)->first();
         $call_web_hook = '';
         $orderdata = Order::where('id', $request->order_id)->first();
-
+        \Log::info('TaskUpdateReject');
+        \Log::info([$request->all()]);
+        \Log::info([$orderdata]);
         if($orderdata->status == 'failed' || $orderdata->status == 'cancelled'){
             return response()->json([
             'message' => __('This task has already been cancelled by user.'),
