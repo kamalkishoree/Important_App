@@ -4960,46 +4960,6 @@ class TaskController extends BaseController
         
     } 
     
-    public function sendPushNotificationtoDriver($title, $body, $auth, $device_token, $call_back_url)
-    {
-        $this->seperate_connection('db_'.$auth->database_name);   
-        $client_preferences = DB::connection('db_'.$auth->database_name)->table('client_preferences')->where('client_id', $auth->code)->first();
-        $fcm_server_key = !empty($client_preferences->fcm_server_key)? $client_preferences->fcm_server_key : config('laravel-fcm.server_key');
-        $headers = [
-                'Authorization: key=' . $fcm_server_key,
-                'Content-Type: application/json',
-        ];
-        $data = [
-            "registration_ids" => $device_token,
-            "notification" => [
-                'title' => $title,
-                'body'  => $body,
-                'sound' => "notification",
-                "icon" => '',
-                'click_action' => $call_back_url,
-                "android_channel_id" => "sound-channel-id"
-            ],
-            "data" => [
-                'title' => $title,
-                'body'  => $body,
-                'data'  => $body,
-                'type' => "order_modified"
-            ],
-            "priority" => "high"
-        ];
-        $dataString = $data;
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($dataString));
-        $result = curl_exec($ch);
-        curl_close($ch);
-        return true;
-    }
-    
     public function OneByOne($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling, $agent_tag = '', $is_order_updated, $is_one_push_booking=0,$particular_driver_id = 0)
     {
         $allcation_type    = 'AR';
@@ -5057,11 +5017,7 @@ class TaskController extends BaseController
                 $this->dispatch(new RosterCreate($data, $extraData));
             }
         } else {
-            $geoagents_ids =  DriverGeo::where('geo_id', $geo)->pluck('driver_id');
-            $geoagents = Agent::whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
-                $f->whereDate('order_time', $date)->with('task');
-            }])->orderBy('id', 'DESC')->get()->where("agent_cash_at_hand", '<', $cash_at_hand);            
-            
+            $geoagents = $this->getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag, $date, $cash_at_hand,$orders_id,$particular_driver_id);                    
             // for ($i = 1; $i <= $try; $i++) {
                 foreach ($geoagents as $key =>  $geoitem) {
                     if (!empty($geoitem->device_token) && $geoitem->is_available == 1) {
