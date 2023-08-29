@@ -932,9 +932,6 @@ class TaskController extends BaseController
         $driver   = Agent::where('id', $agent_id)->first();
         $call_web_hook = '';
         $orderdata = Order::where('id', $request->order_id)->first();
-        \Log::info('TaskUpdateReject');
-        \Log::info([$request->all()]);
-        \Log::info([$orderdata]);
         if($orderdata->status == 'failed' || $orderdata->status == 'cancelled'){
             return response()->json([
             'message' => __('This task has already been cancelled by user.'),
@@ -1646,6 +1643,8 @@ class TaskController extends BaseController
             if (($pickup_location->latitude != '' || $pickup_location->latitude != '0.0000') && ($pickup_location->longitude != '' || $pickup_location->longitude != '0.0000')) :
                 $geoid = $this->findLocalityByLatLng($pickup_location->latitude, $pickup_location->longitude);
             endif;
+            \Log::info('first create time geoid');
+            \Log::info($geoid);
 
             // get duration and distance
             if ($auth->getPreference->toll_fee == 1) {
@@ -5217,7 +5216,11 @@ class TaskController extends BaseController
         $allocation = AllocationRule::where('id', 1)->first();
         $location=Location::where('customer_id',$orders->customer_id)->latest();
         $send_loc_id= $location->id;
+        \Log::info('send_loc_id');
+        \Log::info($send_loc_id);
         $geo = $this->createRoster($send_loc_id);
+        \Log::info('geo');
+        \Log::info($geo);
         $agent_id = null;
         $particular_driver_id = $request->driver_id;
         $customer=Customer::where('id',$orders->customer_id)->first();
