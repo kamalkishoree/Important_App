@@ -1340,14 +1340,14 @@ class TaskController extends BaseController
                 $unique_agent_id = $agent[1]??0;
                 $agent = Agent::find($agent[1]??0);
                 if(!$agent){
-                    $inValidAgent = response()->json([
+                   return $inValidAgent = response()->json([
                         'status' => 201,
                         'message' => 'Agent not exist'
                     ], 201);
                 }
     
                 if($agent && $agent->is_available == 0){
-                    $inValidAgent = response()->json([
+                   return $inValidAgent = response()->json([
                         'status' => 201,
                         'message' => 'Agent is not availeble'
                     ], 201);
@@ -1359,6 +1359,7 @@ class TaskController extends BaseController
 
             if ($request->task_type == 'later')
                 $request->task_type = 'schedule';
+                
 
             DB::beginTransaction();
             $tz = new Timezone();
