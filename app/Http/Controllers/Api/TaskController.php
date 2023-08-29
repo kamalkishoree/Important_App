@@ -1377,14 +1377,8 @@ class TaskController extends BaseController
             }
             //here order save code is started
             // $settime = ($request->task_type == "schedule") ? $request->schedule_time : Carbon::now()->toDateTimeString();
-<<<<<<< HEAD
             $notification_time = ($request->task_type == "schedule") ? $settime : Carbon::now()->toDateTimeString();            
             $agent_id           =  $request->allocation_type === 'm' ? $request->agent:null;
-=======
-            $notification_time = ($request->task_type == "schedule") ? $settime : Carbon::now()->toDateTimeString();
-
-            $agent_id           =  $request->allocation_type === 'm' ? $request->agent : null;
->>>>>>> a7a2e2f9d7e154e1856985d3983115d9c00f08aa
             $agent_id           =  isset($request->driver_id) ? $request->driver_id : $agent_id ;
             $rejectable_order   =  isset($request->rejectable_order) ? $request->rejectable_order : 0;
             $refer_driver_id = null;
