@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\WalletController;
 use App\Http\Controllers\Controller;
 use App\Model\Agent;
+use App\Model\ClientPreference;
 use App\Model\Order;
 use App\Model\PaymentOption;
 use App\Model\Payment;
@@ -33,15 +34,17 @@ class LiveePaymentController extends Controller
         $this->resource_key = $credentials->livee_resource_key;
         $this->apiUrl = "https://www.livees.net/Checkout/api4";
 
-        $this->currency =  'USD';
+        $clientPreference = ClientPreference::select('id','currency_id')->first();
+        $this->currency =  $clientPreference->currency->iso_code ?? 'USD';
     }
 
 
     public function index(Request $request, $amt)
     {
         try {
-            $orderNumber = $this->orderNumber($request);
-            $users = $this->createUserToken();
+            // $orderNumber = $this->orderNumber($request);
+            $orderNumber = time();
+            // $users = $this->createUserToken();
             $user = Auth::user();
             $urlParams = '';
             $amount = $request->amt;
@@ -50,18 +53,9 @@ class LiveePaymentController extends Controller
             $lastname = substr(strstr(auth()->user()->name, " "), 1);
             $email = auth()->user()->email;
             $phone = auth()->user()->phone_number;
-            $users = $this->createUserToken();
-            if ($request->payment_from == 'cart') {
-                $urlParams   = "transactionid=$orderNumber&paymentfrom=cart&success=true";
-            } elseif ($request->payment_from == 'wallet') {
+            // $users = $this->createUserToken();
+            if ($request->payment_from == 'wallet') {
                 $urlParams   = "transactionid=$orderNumber&paymentfrom=wallet&success=true";
-            } elseif ($request->payment_from == 'subscription') {
-                $urlParams   = "transactionid=$orderNumber&subscription_id=$request->subscription_id&amount=$request->amt&success=true";
-            } elseif ($request->payment_from == 'pickup_delivery') {
-                $urlParams   = "transactionid=$orderNumber&paymentfrom=pickup_delivery&reload_route=$request->reload_route&amount=$request->amt&success=true";
-            } elseif ($request->payment_from == 'tip') {
-
-                $urlParams   = "transactionid=$orderNumber&order_number=$request->order_number&paymentfrom=tip&amount=$request->amt&success=true";
             }
             $postURL = url('/livee/success' . '?' . $urlParams);
 
@@ -97,24 +91,19 @@ class LiveePaymentController extends Controller
     public function afterPayment(Request $request)
     {
         try {
-            $transactionId = $request->transactionid;
-            $payment = Payment::where('transaction_id', $transactionId)->first();
-            if ($payment) {
 
-                // $payment->viva_order_id = $transactionId;
-                $payment->payment_option_id = 19;
-                $payment->save();
-            }
+            // $transactionId = $request->transactionid;
+            // $payment = Payment::where('transaction_id', $transactionId)->first();
+            // if ($payment) {
+
+            //     // $payment->viva_order_id = $transactionId;
+            //     $payment->payment_option_id = 19;
+            //     $payment->save();
+            // }
             if ($request->paymentfrom == 'wallet') {
-                \Log::info('wallet web');
-
-                // $user = Agent::findOrFail($payment->driver_id);
-                // Auth::login($user);
+                // \Log::info('wallet web');
                 $returnUrl = route('payment.gateway.return.response') . '/?gateway=livees' . '&status=200&transaction_id=' . $request->transactionid . '&action=wallet';
-               
-                // $wallet  = $user->wallet;
-                // $wallet->depositFloat($payment->balance_transaction, ['Wallet has been <b>credited</b> for order number <b>' . $payment->transaction_id . '</b>']);
-                $request->request->add(['transaction_id' => $request->transactionid,'auth_token' => $request->auth_token]);
+                $request->request->add(['transaction_id' => $request->transactionid,'auth_token' => $request->auth_token,'payment_option_id' => 19]);
 
                 $walletController = new WalletController();
                 $res= $walletController->creditAgentWallet($request);
@@ -130,7 +119,6 @@ class LiveePaymentController extends Controller
     {
         try {
 
-
             if (isset($request->user_id)) {
                 $user = Agent::where('id', $request->user_id)->first();
                 Auth::login($user);
@@ -140,7 +128,8 @@ class LiveePaymentController extends Controller
             $request->request->add(['payment_from' => isset($request->paymentfrom) ? $request->paymentfrom : $request->payment_from]);
             $request->request->add(['amount' => isset($request->amt) ? $request->amt : $request->amount]);
 
-            $orderNumber = $this->orderNumber($request);
+            // $orderNumber = $this->orderNumber($request);
+            $orderNumber = time();
             $urlParams = '';
             $amount = $request->amt;
             $nameString = "name";
@@ -149,11 +138,8 @@ class LiveePaymentController extends Controller
             $email = auth()->user()->email;
             $phone = auth()->user()->phone_number;
 
-
-            if ($request->payment_from == 'cart') {
-                $urlParams   = "transactionid=$orderNumber&paymentfrom=cart&success=true";
-            } elseif ($request->payment_from == 'wallet') {
-                $urlParams   = "transactionid=$orderNumber&paymentfrom=wallet&success=true&come_from=app&amount=$request->amount&success=true&auth_token=".auth()->user()->auth_token;
+            if ($request->payment_from == 'wallet') {
+                $urlParams   = "transactionid=$orderNumber&paymentfrom=wallet&success=true&come_from=app&amount=$request->amount&success=true&auth_token=$user->access_token";
             } 
             $postURL = url('/livee/success' . '?' . $urlParams);
             // \Log::info('add url '.$postURL);
@@ -161,8 +147,9 @@ class LiveePaymentController extends Controller
 
             $trade_key = $this->trade_key;
             $resource_key = $this->resource_key;
+            $apiUrl = $this->apiUrl;
 
-            return view('payment_gateway.liveePay', compact('amount', 'postURL', 'user', 'trade_key','resource_key'));
+            return view('payment_gateway.liveePay', compact('amount', 'postURL', 'user', 'trade_key','resource_key','apiUrl'));
         } catch (\Exception $e) {
             return $e->getMessage();
         }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Model\Agent;
+use App\Model\ClientPreference;
 use App\Model\Order;
 use App\Model\PaymentOption;
 use App\Model\Payment;
@@ -31,15 +32,17 @@ class LiveePaymentController extends Controller
         $this->resource_key = $credentials->livee_resource_key;
         $this->apiUrl = "https://www.livees.net/Checkout/api4";
 
-        $this->currency =  'USD';
+        $clientPreference = ClientPreference::select('id','currency_id')->with('currency')->first();
+        $this->currency =  $clientPreference->currency->iso_code ?? 'USD';
     }
 
 
     public function index(Request $request, $amt)
     {
         try {
-            $orderNumber = $this->orderNumber($request);
-            $users = $this->createUserToken();
+            // $orderNumber = $this->orderNumber($request);
+            $orderNumber = time();
+            // $users = $this->createUserToken();
             $user = Auth::user();
             $urlParams = '';
             $amount = $request->amt;
@@ -48,18 +51,9 @@ class LiveePaymentController extends Controller
             $lastname = substr(strstr(auth()->user()->name, " "), 1);
             $email = auth()->user()->email;
             $phone = auth()->user()->phone_number;
-            $users = $this->createUserToken();
-            if ($request->payment_from == 'cart') {
-                $urlParams   = "transactionid=$orderNumber&paymentfrom=cart&success=true";
-            } elseif ($request->payment_from == 'wallet') {
+            // $users = $this->createUserToken();
+            if ($request->payment_from == 'wallet') {
                 $urlParams   = "transactionid=$orderNumber&paymentfrom=wallet&success=true";
-            } elseif ($request->payment_from == 'subscription') {
-                $urlParams   = "transactionid=$orderNumber&subscription_id=$request->subscription_id&amount=$request->amt&success=true";
-            } elseif ($request->payment_from == 'pickup_delivery') {
-                $urlParams   = "transactionid=$orderNumber&paymentfrom=pickup_delivery&reload_route=$request->reload_route&amount=$request->amt&success=true";
-            } elseif ($request->payment_from == 'tip') {
-
-                $urlParams   = "transactionid=$orderNumber&order_number=$request->order_number&paymentfrom=tip&amount=$request->amt&success=true";
             }
             $postURL = url('/livee/success' . '?' . $urlParams);
 
@@ -98,16 +92,16 @@ class LiveePaymentController extends Controller
             $user_id = auth()->id();
             $amount  = $request->amt;
            if ($request->payment_from == 'wallet') {
-                Payment::create([
-                    'amount' => $amount,
-                    'transaction_id' => $time,
-                    'balance_transaction' => $amount,
-                    'cr' => $amount,
-                    'type' => 'wallet',
-                    'date' => date('Y-m-d'),
-                    'driver_id' => $user_id,
-                    'payment_from' => $request->come_from ?? 'web',
-                ]);
+                // Payment::create([
+                //     'amount' => $amount,
+                //     'transaction_id' => $time,
+                //     'balance_transaction' => $amount,
+                //     'cr' => $amount,
+                //     'type' => 'wallet',
+                //     'date' => date('Y-m-d'),
+                //     'driver_id' => $user_id,
+                //     'payment_from' => $request->come_from ?? 'web',
+                // ]);
             }
             return $time;
         } catch (\Exception $e) {
