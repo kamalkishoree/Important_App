@@ -1768,7 +1768,7 @@ class TaskController extends BaseController
                 $title = 'Scheduled New Order';
                 $body  = 'The schedule timing of order number #'.$request->order_number.' by the customer.';
                 // $this->sendPushNotificationtoDriver($title,$body,$auth,[$agent->device_token],$dispatch_traking_url);
-                $this->OneByOneUniqueDriver($geo, $settime, $agentId, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, $agent_tags, $is_order_updated, '',$request->notify_hour,$request->reminder_hour);
+                $this->OneByOneUniqueDriver($geo, $settime, $agentId, $orders, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, $agent_tags, $is_order_updated, '',$request->notify_hour,$request->reminder_hour);
             }
             // If batch allocation is on them return from there no job is created
 
@@ -4974,7 +4974,7 @@ class TaskController extends BaseController
         } 
     }
 
-    public function OneByOneUniqueDriver($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation,$is_cab_pooling, $agent_tags, $is_order_updated,$var,$notify_hour,$reminder_hour)
+    public function OneByOneUniqueDriver($geo, $notification_time, $agent_id, $orders, $customer, $finalLocation, $taskcount, $header, $allocation,$is_cab_pooling, $agent_tags, $is_order_updated,$var,$notify_hour,$reminder_hour)
     {
         $allcation_type    = 'AR';
         $date              = \Carbon\Carbon::today();
@@ -5018,7 +5018,7 @@ class TaskController extends BaseController
         $oneagent = Agent::where('id', $agent_id)->first();
         $rosterData = [];
         $data1 = [
-            'order_id'            => $orders_id,
+            'order_id'            => $orders->id,
             'driver_id'           => $agent_id,
             'notification_time'   => $date,
             'type'                => $allcation_type,
@@ -5030,41 +5030,44 @@ class TaskController extends BaseController
             'detail_id'           => $randem,
             'is_particular_driver' => 0
         ];
-        
-        // Log::info($data1);
-        
-        $data2 = [
-            'order_id'            => $orders_id,
-            'driver_id'           => $agent_id,
-            'notification_time'   => Carbon::parse($notification_time)->subMinutes($notify_hour)->format('Y-m-d H:i:s'),
-            'type'                => $allcation_type,
-            'client_code'         => $auth->code,
-            'created_at'          => Carbon::now()->toDateTimeString(),
-            'updated_at'          => Carbon::now()->toDateTimeString(),
-            'device_type'         => $oneagent->device_type,
-            'device_token'        => $oneagent->device_token,
-            'detail_id'           => $randem,
-            'is_particular_driver' => 1
-        ];
-        // Log::info($data2);
-        $data3 = [
-            'order_id'            => $orders_id,
-            'driver_id'           => $agent_id,
-            'notification_time'   => Carbon::parse($notification_time)->subMinutes($reminder_hour)->format('Y-m-d H:i:s'),
-            'type'                => $allcation_type,
-            'client_code'         => $auth->code,
-            'created_at'          => Carbon::now()->toDateTimeString(),
-            'updated_at'          => Carbon::now()->toDateTimeString(),
-            'device_type'         => $oneagent->device_type,
-            'device_token'        => $oneagent->device_token,
-            'detail_id'           => $randem,
-            'is_particular_driver' => 2
-        ];
-        // Log::info($data3);
-        
         array_push($rosterData, $data1);
-        array_push($rosterData, $data2);
-        array_push($rosterData, $data3);
+        
+        if(@$notify_hour && $orders->order_type =='schedule')
+        {
+                $data2 = [
+                    'order_id'            => $orders->id,
+                    'driver_id'           => $agent_id,
+                    'notification_time'   => Carbon::parse($notification_time)->subMinutes($notify_hour)->format('Y-m-d H:i:s'),
+                    'type'                => $allcation_type,
+                    'client_code'         => $auth->code,
+                    'created_at'          => Carbon::now()->toDateTimeString(),
+                    'updated_at'          => Carbon::now()->toDateTimeString(),
+                    'device_type'         => $oneagent->device_type,
+                    'device_token'        => $oneagent->device_token,
+                    'detail_id'           => $randem,
+                    'is_particular_driver' => 1
+                ];
+
+                array_push($rosterData, $data2);
+        }
+        
+        if(@$reminder_hour  && $orders->order_type =='schedule')
+        {
+            $data3 = [
+                'order_id'            => $orders->id,
+                'driver_id'           => $agent_id,
+                'notification_time'   => Carbon::parse($notification_time)->subMinutes($reminder_hour)->format('Y-m-d H:i:s'),
+                'type'                => $allcation_type,
+                'client_code'         => $auth->code,
+                'created_at'          => Carbon::now()->toDateTimeString(),
+                'updated_at'          => Carbon::now()->toDateTimeString(),
+                'device_type'         => $oneagent->device_type,
+                'device_token'        => $oneagent->device_token,
+                'detail_id'           => $randem,
+                'is_particular_driver' => 2
+            ];
+            array_push($rosterData, $data3);
+        }
         
         $this->dispatch(new RosterCreate($rosterData, $extraData));
         
