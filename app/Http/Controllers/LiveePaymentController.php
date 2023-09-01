@@ -91,17 +91,7 @@ class LiveePaymentController extends Controller
     public function afterPayment(Request $request)
     {
         try {
-
-            // $transactionId = $request->transactionid;
-            // $payment = Payment::where('transaction_id', $transactionId)->first();
-            // if ($payment) {
-
-            //     // $payment->viva_order_id = $transactionId;
-            //     $payment->payment_option_id = 19;
-            //     $payment->save();
-            // }
             if ($request->paymentfrom == 'wallet') {
-                // \Log::info('wallet web');
                 $returnUrl = route('payment.gateway.return.response') . '/?gateway=livees' . '&status=200&transaction_id=' . $request->transactionid . '&action=wallet';
                 $request->request->add(['transaction_id' => $request->transactionid,'auth_token' => $request->auth_token,'payment_option_id' => 19]);
 
@@ -142,8 +132,6 @@ class LiveePaymentController extends Controller
                 $urlParams   = "transactionid=$orderNumber&paymentfrom=wallet&success=true&come_from=app&amount=$request->amount&success=true&auth_token=$user->access_token";
             } 
             $postURL = url('/livee/success' . '?' . $urlParams);
-            // \Log::info('add url '.$postURL);
-            // \Log::info($postURL);
 
             $trade_key = $this->trade_key;
             $resource_key = $this->resource_key;
@@ -162,16 +150,16 @@ class LiveePaymentController extends Controller
             $user_id = auth()->id();
             $amount  = $request->amt;
             if ($request->payment_from == 'wallet') {
-                Payment::create([
-                    'amount' => $amount,
-                    'transaction_id' => $time,
-                    'balance_transaction' => $amount,
-                    'cr' => $amount,
-                    'type' => 'wallet',
-                    'date' => date('Y-m-d'),
-                    'driver_id' => $user_id,
-                    'payment_from' => $request->come_from ?? 'web',
-                ]);
+                // Payment::create([
+                //     'amount' => $amount,
+                //     'transaction_id' => $time,
+                //     'balance_transaction' => $amount,
+                //     'cr' => $amount,
+                //     'type' => 'wallet',
+                //     'date' => date('Y-m-d'),
+                //     'driver_id' => $user_id,
+                //     'payment_from' => $request->come_from ?? 'web',
+                // ]);
             }
             return $time;
         } catch (\Exception $e) {
