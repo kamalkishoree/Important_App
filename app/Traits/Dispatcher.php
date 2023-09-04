@@ -35,7 +35,7 @@ trait Dispatcher
         $startdate = date("Y-m-d 00:00:00", strtotime($date));
         $enddate = date("Y-m-d 23:59:59", strtotime($date));
 
-
+        
         $startdate = Carbon::parse($startdate . @$auth->timezone ?? 'UTC')->tz('UTC');
         $enddate = Carbon::parse($enddate . @$auth->timezone ?? 'UTC')->tz('UTC');
         

@@ -27,7 +27,6 @@
 @endif
         @foreach($unassigned_orders as $orders)
             <?php
-            
             ?>
             <div class="row pt-2">
                 <div class="col-md-3 col-3">
@@ -105,7 +104,9 @@
 
                                         {{-- </div> --}}
                                 </div>
-
+                                <div class="col-12 mb-4 justify-content-between">
+                                 <button class="view_route-btn float-left  mb-2 btn btn-primary" data-id="{{$orders['id']}}">{{__("view route")}}</button>
+                                </div>
                             </div>
                         </div>
                     </div>

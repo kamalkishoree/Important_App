@@ -11,6 +11,7 @@ if(!empty($agents)){
         if((array_filter($singleagent['agentlog'])) && ($singleagent['agentlog']['lat']!=0) && ($singleagent['agentlog']['long']!=0))
         {
             $agentslocations[] = $singleagent['agentlog'];
+            
         }
     }
 }
@@ -18,7 +19,10 @@ if(!empty($agents)){
 $defaultmaplocation['lat'] = $defaultCountryLatitude;
 $defaultmaplocation['long'] = $defaultCountryLongitude;
 $agentslocations[] = $defaultmaplocation;
+
+
 @endphp
+
 <input type="hidden" id="newmarker_map_data" value="{{json_encode($newmarker)}}"/>
 <input type="hidden" id="agents_map_data" value="{{json_encode($agents)}}"/>
 <input type="hidden" id="agentslocations_map_data" value="{{json_encode($agentslocations)}}"/>

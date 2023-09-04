@@ -231,10 +231,26 @@
             
             //new code for route
             var color = ["blue", "green", "red", "purple", "skyblue", "yellow", "orange"];
+            // const haightAshbury = {
+            //     lat: allagent.length != 0 && allagent[0].agentlog && allagent[0].agentlog['lat']  != "0.00000000" ? parseFloat(allagent[0].agentlog['lat']):defaultlat,
+            //     lng: allagent.length != 0 && allagent[0].agentlog && allagent[0].agentlog['long'] != "0.00000000" ? parseFloat(allagent[0].agentlog['long']):defaultlong
+            // };
             const haightAshbury = {
-                lat: allagent.length != 0 && allagent[0].agentlog && allagent[0].agentlog['lat']  != "0.00000000" ? parseFloat(allagent[0].agentlog['lat']):defaultlat,
-                lng: allagent.length != 0 && allagent[0].agentlog && allagent[0].agentlog['long'] != "0.00000000" ? parseFloat(allagent[0].agentlog['long']):defaultlong
-            };
+                lat: allagent.length !== 0 &&
+                    allagent[0].agentlog &&
+                    allagent[0].agentlog['lat'] !== "0.00000000" &&
+                    allagent[0].agentlog['lat'] !== null
+                    ? parseFloat(allagent[0].agentlog['lat'])
+                    : defaultlat,
+                lng: allagent.length !== 0 &&
+                    allagent[0].agentlog &&
+                    allagent[0].agentlog['long'] !== "0.00000000" &&
+                    allagent[0].agentlog['long'] !== null
+                    ? parseFloat(allagent[0].agentlog['long'])
+                    : defaultlong,
+                };
+
+
             if(is_refresh==1)
             {
                 map = new google.maps.Map(document.getElementById("map_canvas"), {
@@ -299,14 +315,16 @@
                 var agent_locatn = allroutes[i].driver_detail;
                 calculateAndDisplayRoute(directionsService, directionsRenderer, map, al_task, agent_locatn);
             });
-    
+           
+            
             //agents markers
             for (let i = 0; i < allagent.length; i++) {
                 displayagent = allagent[i];
-                if(displayagent.agentlog != null && displayagent.agentlog['lat'] != "0.00000000" && displayagent.agentlog['long'] != "0.00000000" ){
+                if(displayagent.agentlog != null && displayagent.agentlog['lat'] != "0.00000000" && displayagent.agentlog['lat'] != null && displayagent.agentlog['long'] != "0.00000000"  && displayagent.agentlog['long'] != null){
                     if (displayagent['is_available'] == 1) {
                         images = url+'/demo/images/location.png';
                     }else {
+                       
                         images = url+'/demo/images/location_grey.png';
                     }
                     var image = {
@@ -317,7 +335,7 @@
                     };
                     send = null;
                     type = 2;
-            
+                  
                     addMarker({lat: parseFloat(displayagent.agentlog['lat']),
                     lng:  parseFloat(displayagent.agentlog['long'])
                 }, send, image,displayagent, type);
@@ -388,6 +406,8 @@ function clearRoutes() {
 
 // Adds a marker to the map and push to the array.
 function addMarker(location, lables, images, data, type) {
+
+    
     var contentString = '';
     if(type == 1){
         contentString =
@@ -407,7 +427,7 @@ function addMarker(location, lables, images, data, type) {
         contentString =
         '<div class="row no-gutters align-items-center">'+
             '<div class="col-sm-4">'+
-                '<div class="img_box mb-sm-0 mb-2"> <img src="https://imgproxy.royodispatch.com/insecure/fit/200/200/sm/0/plain/'+data["image_url"]+'"/></div> </div>'+
+                '<div class="img_box mb-sm-0 mb-2"> <img src="'+data["image_url"]+'"/></div> </div>'+
             '<div class="col-sm-8 pl-2 user_info">'+
                 '<div class="user_name mb-2 11"><label class="d-block m-0">'+data["name"]+'</label><span> <i class="fas fa-phone-alt"></i>'+data["phone_number"]+'</span></div>'+
                 '<div><b class="d-block mb-2"><i class="far fa-clock"></i> <span> '+jQuery.timeago(new Date(data['agentlog']['created_at']))+
@@ -426,6 +446,7 @@ function addMarker(location, lables, images, data, type) {
         minheight: 250,
     });
 
+
     const marker = new google.maps.Marker({
         position: location,
         label: lables,
@@ -433,13 +454,14 @@ function addMarker(location, lables, images, data, type) {
         map: map,
         //animation: google.maps.Animation.DROP,
     });
-    
+
+ 
     if (type == 2) {
         driverMarkers.push(marker)
     }
 
     markers.push(marker);
-
+  
     marker.addListener("click", () => {
     infowindow.open(map, marker);
     });
@@ -1036,6 +1058,65 @@ function ListenAgentLogChannel()
     });
 }
 
+$(document).on('click', '.view_route-btn', function (e) {
+    var id = $(this).data('id');
+
+    $.ajax({
+        type: 'POST',
+        url: "{{ route('get-route-detail')}}",
+        headers: {
+            'X-CSRF-Token': '{{ csrf_token() }}',
+        },
+        data: { 'id': id },
+        success: function (data) {
+            var map = new google.maps.Map(document.getElementById("map_canvas"), {
+                zoom: 12,
+                center: { lat: data.pickup_location.lat, lng: data.pickup_location.lng },
+                mapTypeId: "roadmap",
+                styles: themeType,
+            });
+
+            const directionsService = new google.maps.DirectionsService();
+            const directionsRenderer = new google.maps.DirectionsRenderer({ suppressMarkers: true });
+
+            directionsRenderer.setMap(map);
+
+            var pickupLocation = new google.maps.LatLng(data.pickup_location.lat, data.pickup_location.lng);
+            var dropoffLocation = new google.maps.LatLng(data.dropoff_location.lat, data.dropoff_location.lng);
+
+            var request = {
+                origin: pickupLocation,
+                destination: dropoffLocation,
+                travelMode: google.maps.TravelMode.DRIVING,
+            };
+
+            directionsService.route(request, function (response, status) {
+                if (status === 'OK') {
+                    directionsRenderer.setDirections(response);
+
+                    var pickupMarker = new google.maps.Marker({
+                        position: pickupLocation,
+                        map: map,
+                        title: 'Pickup Location',
+                    });
+
+                    var dropoffMarker = new google.maps.Marker({
+                        position: dropoffLocation,
+                        map: map,
+                        title: 'Dropoff Location',
+                    });
+                } else {
+                    alert('Directions request failed: ' + status);
+                }
+            });
+        },
+        error: function (data) {
+            alert('There is some issue. Try again later');
+            spinnerJS.hideSpinner();
+        }
+    });
+});
+
 
 $(document).on('click', '#load-more', function(e){
     let url = $(this).data('url');
@@ -1054,7 +1135,6 @@ $(document).on('click', '#load-more', function(e){
         },
         data: {'agent_id':agent_id, 'checkuserroutes':checkuserroutes, 'is_load_html':1, 'routedate':$("#basic-datepicker").val()},
         success: function(result) {
-            console.log(result)
             $("#handle-dragula-left0").append(result);
             spinnerJS.hideSpinner();
         },

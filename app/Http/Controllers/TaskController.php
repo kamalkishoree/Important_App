@@ -3551,6 +3551,50 @@ class TaskController extends BaseController
     }
 
 
-
+    function getRouteDetail(Request $request)
+    {
+        if (!$request->has('id')) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => 'Order Not Found'
+            ]);
+        }
+    
+        $orderId = $request->input('id');
+    
+        $pickup_task = Task::where(['order_id' => $orderId, 'task_type_id' => 1])->first();
+        $dropoff_task = Task::where(['order_id' => $orderId, 'task_type_id' => 2])->first();
+    
+        if (!$pickup_task || !$dropoff_task) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => 'Tasks not found for the given order'
+            ]);
+        }
+    
+        $pickupLocation = Location::find($pickup_task->location_id);
+        $dropoffLocation = Location::find($dropoff_task->location_id);
+    
+        if (!$pickupLocation || !$dropoffLocation) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => 'Locations not found for the given tasks'
+            ]);
+        }
+    
+        $response = [
+            'status' => 'Success',
+            'pickup_location' => [
+                'lat' => (float)$pickupLocation->latitude,
+                'lng' => (float)$pickupLocation->longitude,
+            ],
+            'dropoff_location' => [
+                'lat' => (float)$dropoffLocation->latitude,
+                'lng' => (float)$dropoffLocation->longitude,
+            ],
+        ];
+    
+        return response()->json($response);
+    }
 
 }

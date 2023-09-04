@@ -262,6 +262,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::get('get-inventory-products', 'TaskController@getInventoryProducts')->name('getInventoryProducts');
 			
 			Route::get('get-product-detail', 'TaskController@getProductDetail')->name('get-product-detail');
+			Route::post('get-route-detail', 'TaskController@getRouteDetail')->name('get-route-detail');
 			
 			
 
