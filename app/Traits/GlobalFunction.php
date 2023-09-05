@@ -93,7 +93,7 @@ trait GlobalFunction{
             }]);
 
             if($particular_driver_id){
-                $geoagents = $geoagents->where('id', '!=',$particular_driver_id);
+                $geoagents = $geoagents->where('id','!=',$particular_driver_id);
             }
             if(@$preference->is_threshold == 1){
                 $geoagents = $geoagents->where('is_threshold', 1);
