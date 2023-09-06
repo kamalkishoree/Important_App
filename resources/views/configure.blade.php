@@ -1391,7 +1391,31 @@ $sms_crendential = json_decode($preference->sms_credentials);
                     </div>
                 </form>
             </div>
-
+            <div class="col-md-4 mb-3 d-none">
+                <form method="POST" class="h-100" action="{{ route('preference', Auth::user()->code) }}">
+                @csrf
+                    <input type="hidden" name="route_optimize" value="1">
+                    <div class="card-box h-100">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <h4 class="header-title text-uppercase mb-0">{{__("Route Optimization")}}</h4>
+                            <button class="btn btn-outline-info d-block" type="submit"> {{__('Save')}} </button>
+                        </div>
+                        <div class="row align-items-start">
+                            <div class="col-md-12">
+                                <div class="form-group d-flex justify-content-between mb-3">
+                                    <label for="route_optimization" class="mr-2 mb-0">{{__("Enable")}} </label>
+                                    <div class="d-flex align-items-center justify-content-between mb-2">
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input " id="route_optimization" name="route_optimization" {{ (!empty($preference->route_optimization) && $preference->route_optimization > 0) ? 'checked' :'' }}>
+                                            <label class="custom-control-label" for="route_optimization"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div> 
         </div>
 
 

@@ -166,8 +166,36 @@ class ClientController extends Controller
         }
 
     }
-      
         
+           // Enable Route Optimization
+            if($request->has('route_optimize')){
+                
+                if (!empty($request->route_optimization)) {
+                    
+                    if ($request->route_optimization == 'on') {
+                        $data = [
+                            'route_optimization' => ($request->route_optimization == 'on') ? 1 : 0
+                        ];
+                    } else {
+                        $data = [
+                            'route_optimization' => 0,
+                        ];
+                    }
+                   
+                    ClientPreference::where('client_id', $id)->update($data);
+                    return redirect()->back()->with('success', 'Preference updated successfully!');
+                }else{
+
+                    $data = [
+                            'route_optimization' => 0,
+                        ];
+                        ClientPreference::where('client_id', $id)->update($data);
+                        return redirect()->back()->with('success', 'Preference updated successfully!');
+                }
+
+            }
+      
+            pr($request->all());
        
         if(!empty($request->fcm_server_key)){
             $data = ['fcm_server_key'=>$request->fcm_server_key];

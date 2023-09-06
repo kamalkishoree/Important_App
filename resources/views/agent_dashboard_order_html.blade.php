@@ -23,16 +23,16 @@
 
 @if($page == 1)
 <div id="accordion" class="overflow-hidden">
-    <div id="handle-dragula-left0" class="dragable_tasks customui_card" agentid="0"  params="{{ $params0 }}" date="{{ $date }}">
+    <!-- dragable_tasks -->
+    <div id="handle-dragula-left0" class=" " agentid="0"  params="{{ $params0 }}" date="{{ $date }}">
 @endif
         @foreach($unassigned_orders as $orders)
-            <?php
-            ?>
-            <div class="row pt-2">
-                <div class="col-md-3 col-3">
-                    <img class="profile-circle" src="https://p.kindpng.com/picc/s/252-2524695_dummy-profile-image-jpg-hd-png-download.png">
+            
+            <div class="card_item p-1 customui_card">
+                <div class="image pr-2">
+                    <img class="profile-circle p-0" src="https://p.kindpng.com/picc/s/252-2524695_dummy-profile-image-jpg-hd-png-download.png">
                 </div>
-                <div class="col-md-9 col-9">
+                <div class="text">
                     <h6 class="mb-0 header-title scnd">
                         {{$orders['customer'][0]['name'] ?? ''}}
                     </h6>
@@ -40,6 +40,7 @@
                     <p class="mb-0"><span> ETA {{ date("i",strtotime($orders['base_duration'])) ?? ''}}</span></p>
                 </div>
             </div>
+            <div class="item mb-2">
             @foreach($tasks[$orders['id']] as $task)
                 <div class="card-body" task_id ="{{ $task['id'] }}">
                     <div class=" assigned-block">
@@ -112,6 +113,7 @@
                     </div>
                 </div>
             @endforeach
+            </div>
         @endforeach
         @if($lastPage != $page && $unassigned_orders)
             <button class="form-control" id="load-more" data-page="{{$page + 1}}" data-url="{{ route('dashboard.agent-orderdata', ['page' => $page + 1])}}">Load More</button>
