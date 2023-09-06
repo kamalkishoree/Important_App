@@ -24,45 +24,7 @@ class SendPushNotification
     public function __construct()
     {
         
-        $date =  Carbon::now()->toDateTimeString();
-
-        try {
-
-                $schemaName = 'royodelivery_db';
-                $default = [
-                    'driver' => env('DB_CONNECTION', 'mysql'),
-                    'host' => env('DB_HOST'),
-                    'port' => env('DB_PORT'),
-                    'database' => $schemaName,
-                    'username' => env('DB_USERNAME'),
-                    'password' => env('DB_PASSWORD'),
-                    'charset' => 'utf8mb4',
-                    'collation' => 'utf8mb4_unicode_ci',
-                    'prefix' => '',
-                    'prefix_indexes' => true,
-                    'strict' => false,
-                    'engine' => null
-                ];
-
-                Config::set("database.connections.$schemaName", $default);
-                config(["database.connections.mysql.database" => $schemaName]);
-
-                $this->getData();
-
-
-                DB::disconnect($schemaName);
-        } catch (Exception $ex) {
-           return $ex->getMessage();
-        }
-    }
-    /**
-     * Handle the event.
-     *
-     * @param  PushNotification  $event
-     * @return void
-     */
-    public function handle(PushNotification $event)
-    {
+        \Log::info('in send push listener construct');
         $date =  Carbon::now()->toDateTimeString();
 
         try {
@@ -89,9 +51,24 @@ class SendPushNotification
            return $ex->getMessage();
         }
     }
+    /**
+     * Handle the event.
+     *
+     * @param  PushNotification  $event
+     * @return void
+     */
+    public function handle(PushNotification $event)
+    {
+    
+         
+
+    }
 
     public function getData()
     {
+
+        \Log::info('in get data function ');
+        
         $schemaName       = 'royodelivery_db';
         $date             =  Carbon::now()->toDateTimeString();
         $get              =  DB::connection($schemaName)->table('rosters')
@@ -103,8 +80,13 @@ class SendPushNotification
                                     ->select('rosters.*', 'roster_details.customer_name', 'roster_details.customer_phone_number',
         'roster_details.short_name','roster_details.address','roster_details.lat','roster_details.long','roster_details.task_count');
         $getids           = $get->pluck('id')->toArray();
+
+        \Log::info('getids');
+        \Log::info([$getids]);
         $get              = $get->get();
         DB::connection($schemaName)->table('rosters')->where('status',10)->delete();
+
+
         if(count($getids) > 0){
             // DB::connection($schemaName)->table('rosters')->whereIn('id',$getids)->update(['status'=>1]);
             DB::connection($schemaName)->table('rosters')->whereIn('id',$getids)->delete();
@@ -117,6 +99,8 @@ class SendPushNotification
 
     public function sendnotification($recipients)
     { 
+
+        \Log::info('in send notifications');
         try {        
             $array = json_decode(json_encode($recipients), true);
             foreach($array as $item){            
@@ -175,7 +159,7 @@ class SendPushNotification
                 }
             }
             sleep(5);
-            $this->getData();
+            // $this->getData();
         } catch (Exception $ex) {
             \Log::info($ex->getMessage());
         }

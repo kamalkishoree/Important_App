@@ -28,6 +28,9 @@ class RosterCreate implements ShouldQueue
      */
     public function __construct($data,$extraData)
     {
+
+        \Log::info('in roster create construct');
+        
         $this->data      = $data;
         $this->extraData = $extraData;
         try {
@@ -47,6 +50,8 @@ class RosterCreate implements ShouldQueue
                 'engine' => null
             ];
             
+            \Log::info('extra data');
+            \Log::info([$extraData]);
             Config::set("database.connections.$schemaName", $default);
             
             config(["database.connections.mysql.database" => $schemaName]);
