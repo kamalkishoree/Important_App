@@ -23,8 +23,6 @@ class SendPushNotification
      */
     public function __construct()
     {
-        
-        \Log::info('in send push listener construct');
         $date =  Carbon::now()->toDateTimeString();
 
         try {
@@ -65,10 +63,7 @@ class SendPushNotification
     }
 
     public function getData()
-    {
-
-        \Log::info('in get data function ');
-        
+    {        
         $schemaName       = 'royodelivery_db';
         $date             =  Carbon::now()->toDateTimeString();
         $get              =  DB::connection($schemaName)->table('rosters')
@@ -81,13 +76,16 @@ class SendPushNotification
         'roster_details.short_name','roster_details.address','roster_details.lat','roster_details.long','roster_details.task_count');
         $getids           = $get->pluck('id')->toArray();
 
-        \Log::info('getids');
-        \Log::info([$getids]);
         $get              = $get->get();
         DB::connection($schemaName)->table('rosters')->where('status',10)->delete();
 
-
+        Log::info(" <<<<< getids >>>>>>>> "); 
+        Log::info(count($getids));                                   
         if(count($getids) > 0){
+            Log::info(" <<<<< get >>>>>>>> ");
+            Log::info($get);
+             
+            Log::info(" <<<<< sendnotification >>>>>>>> "); 
             // DB::connection($schemaName)->table('rosters')->whereIn('id',$getids)->update(['status'=>1]);
             DB::connection($schemaName)->table('rosters')->whereIn('id',$getids)->delete();
             $this->sendnotification($get);

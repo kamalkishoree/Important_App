@@ -1142,10 +1142,6 @@ class TaskController extends BaseController
     public function assignAgent(Request $request)
     {
 
-
-        \Log::info('assign agent request data');
-        \Log::info([$request->all()]);
-
         try {
             if ($request->type != 'B') {
                 $agent_id = $request->has('agent_id') ? $request->agent_id : null;
@@ -1340,10 +1336,6 @@ class TaskController extends BaseController
             'getAllocation',
             'getPreference'
         ])->first();
-
-
-        \Log::info('in mass and edit notification order details');
-        \Log::info([$order_details]);
        
         $notification_time = $batchTime ?? $order_details->order_time;
         $expriedate = (int) $auth->getAllocation->request_expiry;
@@ -1356,9 +1348,6 @@ class TaskController extends BaseController
         $randem = rand(11111111, 99999999);
         
          $allcation_type = 'ACK';
-     
-         \Log::info('notification_time');
-         \Log::info([$notification_time]);
 
         foreach ($order_details->task as $key => $value) {
             $taskcount = count($order_details->task);
@@ -1392,11 +1381,6 @@ class TaskController extends BaseController
             'device_token' => $oneagent->device_token,
             'detail_id' => $randem
         ];
-
-
-        \Log::info('notification data');
-        \Log::info([$data]);
-
 
         // Send message to customer friend
         try {
