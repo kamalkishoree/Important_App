@@ -27,23 +27,10 @@
     <div id="handle-dragula-left0" class=" " agentid="0"  params="{{ $params0 }}" date="{{ $date }}">
 @endif
         @foreach($unassigned_orders as $orders)
-            
-            <div class="card_item p-1 customui_card">
-                <div class="image pr-2">
-                    <img class="profile-circle p-0" src="https://p.kindpng.com/picc/s/252-2524695_dummy-profile-image-jpg-hd-png-download.png">
-                </div>
-                <div class="text">
-                    <h6 class="mb-0 header-title scnd">
-                        {{$orders['customer'][0]['name'] ?? ''}}
-                    </h6>
-
-                    <p class="mb-0"><span> ETA {{ date("i",strtotime($orders['base_duration'])) ?? ''}}</span></p>
-                </div>
-            </div>
-            <div class="item mb-2">
+           
             @foreach($tasks[$orders['id']] as $task)
                 <div class="card-body" task_id ="{{ $task['id'] }}">
-                    <div class=" assigned-block">
+                    <div class="p-2 assigned-block">
                         @php
                             $st = ucfirst($orders['status']);
                             
@@ -98,7 +85,7 @@
                                     </h5>
                                     <div class="second_list_pick w-100 d-flex align-items-center justify-content-between">
                                          <h6 class="d-inline"><img class="vt-top" src="{{ asset('demo/images/ic_location_blue_1.png') }}"> {{ $orders['address'] ?? $orders['address']}} <span class="d-block">{{ $orders['short_name'] ?? $orders['short_name'] }}</span></h6>
-                                         {{-- <button class="assigned-btn float-left  mb-2 {{$pickup_class}}">{{__($tasktype)}}</button> --}}
+                                          <button class="assigned-btn float-left  mb-2 {{$pickup_class}}">{{__($tasktype)}}</button>  
                                     </div>
                                         {{-- <div> --}}
 
@@ -113,7 +100,7 @@
                     </div>
                 </div>
             @endforeach
-            </div>
+            
         @endforeach
         @if($lastPage != $page && $unassigned_orders)
             <button class="form-control" id="load-more" data-page="{{$page + 1}}" data-url="{{ route('dashboard.agent-orderdata', ['page' => $page + 1])}}">Load More</button>
