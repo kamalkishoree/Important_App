@@ -422,7 +422,9 @@ trait Dispatcher
         $clientPreference = $clientPreference[0];
         
 
-        $sql = "SELECT *
+        $sql = "SELECT orders.*,
+        tasks.id AS task_id,
+        tasks.task_order AS task_order
         FROM orders
         LEFT JOIN customers ON orders.customer_id = customers.id
         LEFT JOIN tasks ON orders.id = tasks.order_id
@@ -437,8 +439,38 @@ trait Dispatcher
 //         )        
         $un_order = \DB::select($sql);
         
+       
+        $result = [];
+
+        foreach ($un_order as $row) {
+            $orderId = $row->id;
+        
+            // Create an array for the task information
+            $task = [
+                'id' => $row->task_id,
+                'task_order' => $row->task_order,
+            ];
+        
+            // Remove task-specific columns from the main row
+            unset($row->task_id, $row->task_order);
+        
+            // If the order hasn't been added to the result yet, add it with an empty 'task' array
+            if (!isset($result[$orderId])) {
+                $result[$orderId] = (array)$row; // Convert the row to an array
+                $result[$orderId]['tasks'] = [];
+            }
+        
+            // Add the task information to the 'tasks' array for the order
+            $result[$orderId]['tasks'][] = $task;
+        }
+        
+        // Convert the associative array to a simple array of order objects
+        $un_order = array_values($result);
+
+        
         if (count($un_order)>=1) {
             $unassigned_orders = $this->splitOrder($un_order);
+
             if (count($unassigned_orders)>1) {
                 $unassigned_distance_mat = array();
                 $unassigned_points = [];

@@ -110,7 +110,12 @@ class AgentDashBoardController extends Controller
         $new_order = [];
         if (is_array($orders) && count($orders)>0 && !empty($orders)) {
             $counter = 0;
+            
+            
             foreach ($orders as $order) {
+
+                
+                if(isset($order['task'] )){
                 foreach ($order['task'] as $task) {
                     $new_order[] = $order;
                     $new_order[$counter]['task_order'] = $task['task_order'];
@@ -118,6 +123,7 @@ class AgentDashBoardController extends Controller
                     $new_order[$counter]['task'][] = $task;
                     $counter++;
                 }
+             }
             }
 
             //sort array
