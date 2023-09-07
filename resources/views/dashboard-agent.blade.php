@@ -12,6 +12,7 @@
     </style>
 @endsection
 @php
+
     use Carbon\Carbon;
     $color = ['one','two','three','four','five','six','seven','eight'];
     $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain/';
@@ -115,11 +116,13 @@
                     <div class="select_bar">
                         <div class="form-group mb-0 ml-1">
                             <select name="agent_id[]" id="agent_id" multiple="multiple" class="form-control">
-                                @foreach ($agents as $agent)
+                              
+                            @foreach ($agents as $agent)
                                 @php
-                                    $checkAgentActive = ($agent->is_available == 1) ? ' ('.__('Online').')' : ' ('.__('Offline').')';
+                                
+                                    $checkAgentActive = ($agent['is_available'] == 1) ? ' ('.__('Online').')' : ' ('.__('Offline').')';
                                 @endphp
-                                    <option value="{{$agent->id}}">{{ ucfirst($agent->name). $checkAgentActive }}</option>
+                                    <option value="{{$agent['id']}}">{{ ucfirst($agent['name']). $checkAgentActive }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -1120,7 +1123,10 @@ $(document).on('click', '.view_route-btn', function (e) {
                         title: 'Dropoff Location',
                     });
                 } else {
-                    alert('Directions request failed: ' + status);
+                    Swal.fire({
+                    icon: 'error',
+                    title:  'Directions request failed: ' + status,
+                });
                 }
             });
         },

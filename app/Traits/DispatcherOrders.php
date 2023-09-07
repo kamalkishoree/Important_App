@@ -292,13 +292,15 @@ trait DispatcherOrders
             $sql .= " AND orders.status = '{$checkuserroutes}'";
         }
         if(!empty($agent_ids)){
-            $sql .= " AND orders.driver_id IN (".implode(',', $agent_ids)."))";
+            $sql .= " AND orders.driver_id IN (".implode(',', $agent_ids).")";
         }
 
-        $count = "$sql GROUP BY orders.id ORDER BY orders.id DESC";
+        $count = "{$sql} GROUP BY orders.id ORDER BY orders.id DESC";
+        
         $count = \DB::select($count);
+        
         $totalcount = count($count);
-
+      
         $lastPage =  ceil($totalcount / $perPage);
         
         $sql .= " GROUP BY orders.id ORDER BY orders.id DESC LIMIT $perPage OFFSET $offset";

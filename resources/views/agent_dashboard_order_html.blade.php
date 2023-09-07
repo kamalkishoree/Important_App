@@ -19,6 +19,8 @@
 @php
     $date = date('Y-m-d');
     use Carbon\Carbon;
+
+   
 @endphp
 
 @if($page == 1)

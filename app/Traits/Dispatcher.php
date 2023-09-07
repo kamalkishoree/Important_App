@@ -63,11 +63,15 @@ trait Dispatcher
             locations.longitude
         FROM teams";
 
+
         if($userstatus != 2){
+           
             $sql .= "
             LEFT JOIN agents AS ag ON ag.team_id = teams.id AND ag.deleted_at IS NULL AND ag.is_available = {$userstatus}
             LEFT JOIN agents ON agents.team_id = teams.id AND agents.deleted_at IS NULL AND agents.is_available = {$userstatus}
             LEFT JOIN agent_logs ON agent_logs.agent_id = agents.id";
+
+           
         }else{
             $sql .= "
             LEFT JOIN agents AS ag ON ag.team_id = teams.id AND ag.deleted_at IS NULL
@@ -79,7 +83,7 @@ trait Dispatcher
         LEFT JOIN tasks ON tasks.order_id = orders.id
         LEFT JOIN locations ON tasks.location_id = locations.id";
         
-
+      
         if ($user && $user->manager_type == 3 && $user->manual_allocation == 1 && $user->all_team_access != 1) {
             $teamsIdsQuery = "
                 SELECT DISTINCT team_id
@@ -114,7 +118,7 @@ trait Dispatcher
         }
 
         $sql .= "{$searchNameSql} {$teamsIdSql}  GROUP BY agent_id having `total_agents` > 0";
-        
+      
         $teams = \DB::select($sql);
         
        //--------------------------------------------------
@@ -354,6 +358,7 @@ trait Dispatcher
         $sql .= " GROUP BY agents.id";
         $agents = \DB::select($sql);
         
+     
         $j = 0;
         $routeoptimization = array();
         $taskarray = array();
@@ -466,7 +471,8 @@ trait Dispatcher
         
         // Convert the associative array to a simple array of order objects
         $un_order = array_values($result);
-
+         
+       
         
         if (count($un_order)>=1) {
             $unassigned_orders = $this->splitOrder($un_order);
@@ -534,7 +540,7 @@ trait Dispatcher
         $getAdminCurrentCountry = Countries::where('id', '=', $user->country_id)->get()->first();
         $defaultCountryLatitude  = $getAdminCurrentCountry->latitude ?? '';
         $defaultCountryLongitude  = $getAdminCurrentCountry->longitude ?? '';
-
+       
         $data = [
             'status' =>"success",
             'client_code' => $user->code,

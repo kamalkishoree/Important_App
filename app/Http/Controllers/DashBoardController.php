@@ -57,8 +57,14 @@ class DashBoardController extends Controller
         if($show_dashboard_by_agent_wise == 1){
             $teams  = Team::get();
             // $agents  = Agent::with('agentlog')->where('is_approved',1)->get();
-            $agents = 'select * from agents left join agent_logs on agent_logs.agent_id = agents.id where agents.is_approved = 1';
-            $agents = \DB::raw($agents);
+            $agents = 'select agents.* from agents left join agent_logs on agent_logs.agent_id = agents.id where agents.is_approved = 1';
+            $agents = \DB::select($agents);
+        $agents = array_map(function ($agent) {
+            return (array) $agent;
+        }, $agents);
+        
+  
+            
             return view('dashboard-agent')->with(['client_code' => Auth::user()->code, 'date' => $date, 'defaultCountryLongitude' => $defaultCountryLongitude, 'defaultCountryLatitude' => $defaultCountryLatitude,'map_key'=>$googleapikey,'client_timezone'=>$auth->timezone, 'teams' => $teams, 'agents' => $agents]);    
         }
 
