@@ -154,7 +154,7 @@
     <script>
         // var marker;
         var show = [0];
-        let map;
+        let map,directionsRenderer;
         let markers = [];
         let driverMarkers = [];
         let privesRoute = [];
@@ -1069,6 +1069,18 @@ function ListenAgentLogChannel()
 $(document).on('click', '.view_route-btn', function (e) {
     var id = $(this).data('id');
 
+    // Remove old route and markers
+    if (typeof directionsRenderer !== 'undefined') {
+        directionsRenderer.setDirections({ routes: [] });
+    }
+    
+    if (typeof markers !== 'undefined') {
+        for (var i = 0; i < markers.length; i++) {
+            markers[i].setMap(null);
+        }
+        markers = [];
+    }
+
     $.ajax({
         type: 'POST',
         url: "{{ route('get-route-detail')}}",
@@ -1077,20 +1089,13 @@ $(document).on('click', '.view_route-btn', function (e) {
         },
         data: { 'id': id },
         success: function (data) {
-            var map = new google.maps.Map(document.getElementById("map_canvas"), {
-                zoom: 12,
-                center: { lat: data.pickup_location.lat, lng: data.pickup_location.lng },
-                mapTypeId: "roadmap",
-                styles: themeType,
-            });
+            var pickup_lat = data.pickup_location.lat;
+            var pickup_lng = data.pickup_location.lng;
+            var dest_lat = data.dropoff_location.lat;
+            var dest_lng = data.dropoff_location.lng;
 
-            const directionsService = new google.maps.DirectionsService();
-            const directionsRenderer = new google.maps.DirectionsRenderer({ suppressMarkers: true });
-
-            directionsRenderer.setMap(map);
-
-            var pickupLocation = new google.maps.LatLng(data.pickup_location.lat, data.pickup_location.lng);
-            var dropoffLocation = new google.maps.LatLng(data.dropoff_location.lat, data.dropoff_location.lng);
+            var pickupLocation = new google.maps.LatLng(pickup_lat, pickup_lng);
+            var dropoffLocation = new google.maps.LatLng(dest_lat, dest_lng);
 
             var request = {
                 origin: pickupLocation,
@@ -1098,6 +1103,25 @@ $(document).on('click', '.view_route-btn', function (e) {
                 travelMode: google.maps.TravelMode.DRIVING,
             };
 
+            if (typeof directionsRenderer === 'undefined') {
+                directionsRenderer = new google.maps.DirectionsRenderer({ suppressMarkers: true });
+                directionsRenderer.setMap(map);
+            }
+
+            // Assuming you have a global variable 'map'
+            if (typeof map !== 'undefined') {
+                map.setCenter(new google.maps.LatLng(pickup_lat, pickup_lng));
+                map.setZoom(10);
+            } else {
+                map = new google.maps.Map(document.getElementById("map_canvas"), {
+                    zoom: 15,
+                    center: new google.maps.LatLng(pickup_lat, pickup_lng),
+                    mapTypeId: "roadmap",
+                    styles: themeType,
+                });
+            }
+
+            var directionsService = new google.maps.DirectionsService();
             directionsService.route(request, function (response, status) {
                 if (status === 'OK') {
                     directionsRenderer.setDirections(response);
@@ -1113,20 +1137,23 @@ $(document).on('click', '.view_route-btn', function (e) {
                         map: map,
                         title: 'Dropoff Location',
                     });
+
+                    markers.push(pickupMarker);
+                    markers.push(dropoffMarker);
                 } else {
                     Swal.fire({
-                    icon: 'error',
-                    title:  'Directions request failed: ' + status,
-                });
+                        icon: 'error',
+                        title: 'Directions request failed: ' + status,
+                    });
                 }
             });
         },
         error: function (data) {
             Swal.fire({
-                    icon: 'error',
-                    title: 'Oops',
-                    text: 'There is some issue. Try again later',
-                });
+                icon: 'error',
+                title: 'Oops',
+                text: 'There is some issue. Try again later',
+            });
             spinnerJS.hideSpinner();
         }
     });

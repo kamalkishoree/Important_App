@@ -57,10 +57,10 @@ class DashBoardController extends Controller
         if($show_dashboard_by_agent_wise == 1){
             $teams  = Team::get();
             // $agents  = Agent::with('agentlog')->where('is_approved',1)->get();
-            $agents = 'select agents.* from agents left join agent_logs on agent_logs.agent_id = agents.id where agents.is_approved = 1';
+            $agents = 'select agents.* from agents  where agents.is_approved = 1';
             $agents = \DB::select($agents);
-        $agents = array_map(function ($agent) {
-            return (array) $agent;
+              $agents = array_map(function ($agent) {
+              return (array) $agent;
         }, $agents);
         
   
