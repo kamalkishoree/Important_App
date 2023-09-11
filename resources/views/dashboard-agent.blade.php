@@ -733,7 +733,7 @@ function loadTeams(is_load_html, is_show_loader)
 
 // autoload dashbard
 function loadOrders(is_load_html, is_show_loader, url = '')
-{
+{ 
     if(is_load_html == 1)
     {
         closeAllAccordian();
@@ -754,6 +754,7 @@ function loadOrders(is_load_html, is_show_loader, url = '')
         data: {'agent_id':agent_id, 'checkuserroutes':checkuserroutes, 'is_load_html':is_load_html, 'routedate':$("#basic-datepicker").val()},
         success: function(result) {
             olddata = allagent = defaultmaplocation = [];
+            
             //if Html is required to load or not, for agent's log it is not required
 
             if(is_load_html == 1)
@@ -1087,6 +1088,7 @@ $(document).on('click', '.view_route-btn', function (e) {
         headers: {
             'X-CSRF-Token': '{{ csrf_token() }}',
         },
+
         data: { 'id': id },
         success: function (data) {
             var pickup_lat = data.pickup_location.lat;
@@ -1187,6 +1189,39 @@ $(document).on('click', '#load-more', function(e){
                     text: 'There is some issue. Try again later',
                 });
             spinnerJS.hideSpinner();
+        }
+    });
+})
+$(document).on('click', '#load-more-teams', function(e){
+    let url = $(this).data('url');
+  
+    $('#load-more-teams').remove();
+    spinnerJS.showSpinner();
+    var checkuserstatus = $('input[name="user_status"]:checked').val();
+    $.ajax({
+        type: 'POST',
+        url: url,
+        headers: {
+            'X-CSRF-Token': '{{ csrf_token() }}',
+        },
+        data: {'userstatus':checkuserstatus,'is_load_html':1, 'routedate':$("#basic-datepicker").val()},
+        success: function(result) {
+            //if Html is required to load or not, for agent's log it is not required
+
+            $("#teams_container .teams-data:last").after(result);
+
+                spinnerJS.hideSpinner();
+
+        },
+        error: function(data) {
+            Swal.fire({
+                    icon: 'error',
+                    title: 'Oops',
+                    text: 'There is some issue. Try again later',
+                });
+           
+                spinnerJS.hideSpinner();
+            
         }
     });
 })

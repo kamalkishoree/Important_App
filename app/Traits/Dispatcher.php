@@ -119,8 +119,16 @@ trait Dispatcher
 
         $sql .= "{$searchNameSql} {$teamsIdSql}  GROUP BY agent_id having `total_agents` > 0";
       
-        $teams = \DB::select($sql);
+        $total_count  = count(\DB::select($sql));
+        $perPage = $limit; // Number of items per page
+        $page = $request->input('page', 1);
         
+        $offset = ($page - 1) * $perPage;
+
+        $sql .= " LIMIT $perPage OFFSET $offset";
+        $teams = \DB::select($sql);
+        $lastPage =  ceil($total_count / $perPage);
+
        //--------------------------------------------------
         // GET ALL TASKS
         //--------------------------------------------------
@@ -552,7 +560,9 @@ trait Dispatcher
             'defaultCountryLatitude' => $defaultCountryLatitude,
             'newmarker' => $newmarker??[],
             'distance_matrix' => $distancematrix,
-            'sql' => $request->sql
+            'sql' => $request->sql,
+            'page' => $page,
+            'lastPage' => $lastPage
         ];
 
         if($is_load_html == 1)

@@ -64,7 +64,7 @@ $agentslocations[] = $defaultmaplocation;
             }
         }
     ?>
-    <div id="accordion-1" class="mb-2">
+    <div id="accordion-1" class="mb-2 teams-data">
         <div class="card no-border-radius">
             <div class="card-header ml-2" id="by1">
                 <div class="row p-2">
@@ -106,3 +106,7 @@ $agentslocations[] = $defaultmaplocation;
     </div>
 @endforeach
 
+
+@if($lastPage != $page && $teams )
+  <button class="form-control" id="load-more-teams" data-page="{{$page + 1}}" data-url="{{ route('dashboard.agent-teamsdata', ['page' => $page + 1])}}">Load More</button>
+@endif

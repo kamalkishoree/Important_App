@@ -65,7 +65,7 @@ class DashBoardController extends Controller
         
   
             
-            return view('dashboard-agent')->with(['client_code' => Auth::user()->code, 'date' => $date, 'defaultCountryLongitude' => $defaultCountryLongitude, 'defaultCountryLatitude' => $defaultCountryLatitude,'map_key'=>$googleapikey,'client_timezone'=>$auth->timezone, 'teams' => $teams, 'agents' => []]);    
+            return view('dashboard-agent')->with(['client_code' => Auth::user()->code, 'date' => $date, 'defaultCountryLongitude' => $defaultCountryLongitude, 'defaultCountryLatitude' => $defaultCountryLatitude,'map_key'=>$googleapikey,'client_timezone'=>$auth->timezone, 'teams' => $teams, 'agents' => $agents]);    
         }
 
         
