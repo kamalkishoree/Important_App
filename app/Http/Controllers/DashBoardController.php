@@ -57,15 +57,28 @@ class DashBoardController extends Controller
         if($show_dashboard_by_agent_wise == 1){
             $teams  = Team::get();
             // $agents  = Agent::with('agentlog')->where('is_approved',1)->get();
-            $agents = 'select agents.* from agents  where agents.is_approved = 1';
-            $agents = \DB::select($agents);
-              $agents = array_map(function ($agent) {
-              return (array) $agent;
-        }, $agents);
+         
+            $agentsData = \DB::table('agents')
+            ->select('agents.*', 'latest_log.lat', 'latest_log.long')
+            ->leftJoin('agent_logs as latest_log', function ($join) {
+                $join->on('agents.id', '=', 'latest_log.agent_id')
+                     ->whereRaw('latest_log.id = (SELECT MAX(id) FROM agent_logs WHERE agent_id = agents.id)');
+            })
+            ->where('agents.is_approved', 1)
+            ->get();
         
-  
+            $agents = $agentsData->map(function ($agent) {
+                $agent->agentlog = [
+                    'lat' => $agent->lat ?? 0,
+                    'long' => $agent->long ?? 0,
+                ];
+                unset($agent->lat, $agent->long);
+                return (array)$agent;
+            });
+        
             
-            return view('dashboard-agent')->with(['client_code' => Auth::user()->code, 'date' => $date, 'defaultCountryLongitude' => $defaultCountryLongitude, 'defaultCountryLatitude' => $defaultCountryLatitude,'map_key'=>$googleapikey,'client_timezone'=>$auth->timezone, 'teams' => $teams, 'agents' => $agents]);    
+        
+        return view('dashboard-agent')->with(['client_code' => Auth::user()->code, 'date' => $date, 'defaultCountryLongitude' => $defaultCountryLongitude, 'defaultCountryLatitude' => $defaultCountryLatitude,'map_key'=>$googleapikey,'client_timezone'=>$auth->timezone, 'teams' => $teams, 'agents' => $agents]);    
         }
 
         

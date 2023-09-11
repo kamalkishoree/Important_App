@@ -7,7 +7,7 @@ use Carbon\Carbon;
 $agentslocations = array();
 if(!empty($agents)){
     foreach ($agents as $singleagent) {
-        $singleagent = (array) $singleagent;
+        $singleagent = $singleagent;
         if((array_filter($singleagent['agentlog'])) && ($singleagent['agentlog']['lat']!=0) && ($singleagent['agentlog']['long']!=0))
         {
             $agentslocations[] = $singleagent['agentlog'];
