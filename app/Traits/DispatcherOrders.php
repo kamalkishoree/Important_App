@@ -17,7 +17,7 @@ trait DispatcherOrders
         WHERE id = 1
         LIMIT 1";
         $clientPreference = \DB::select($sql);
-        $limit = 1;
+        $limit = 10;
         $userstatus = isset($request->userstatus) ? $request->userstatus : 2;
         $checkuserroutes = isset($request->checkuserroutes) ? $request->checkuserroutes : '';
         $team_ids = isset($request->team_id) ? $request->team_id : '';
