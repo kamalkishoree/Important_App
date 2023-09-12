@@ -200,7 +200,9 @@ class ClientController extends Controller
                     
                     if ($request->is_lumen_enabled == 'on') {
                         $data = [
-                            'is_lumen_enabled' => ($request->is_lumen_enabled == 'on') ? 1 : 0
+                            'is_lumen_enabled' => ($request->is_lumen_enabled == 'on') ? 1 : 0,
+                            'lumen_access_token' => $request->lumen_access_token,
+                            'lumen_domain_url' => $request->lumen_domain_url
                         ];
                     } else {
                         $data = [

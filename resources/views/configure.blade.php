@@ -1437,7 +1437,47 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                     </div>
                                 </div>
                             </div>
+                            </div>
+                            <div class="row lumen-field" style="display: {{ (!empty($preference->is_lumen_enabled) && $preference->is_lumen_enabled > 0) ? 'block' :'none' }}">
+                    <div class="col-12 ">
+                        <div class="form-group mb-3">
+                            <div class="domain-outer border-0 d-flex align-items-center justify-content-between">
+                                <label for="lumen_domain_url">{{ __('LUMEN DOMAIN URL') }}</label>
+
+                            </div>
+                            <input type="text" name="lumen_domain_url" id="lumen_domain_url"
+                                placeholder="" class="form-control"
+                                value="{{ old('lumen_domain_url', $preference->lumen_domain_url ?? '') }}">
+                            @if ($errors->has('lumen_domain_url'))
+                                <span class="text-danger" role="alert">
+                                    <strong>{{ $errors->first('lumen_domain_url') }}</strong>
+                                </span>
+                            @endif
                         </div>
+                    </div>
+                            </div>
+                            <div class="row lumen-field" style="display: {{ (!empty($preference->is_lumen_enabled) && $preference->is_lumen_enabled > 0) ? 'block' :'none' }}"">
+
+                    <div class="col-12">
+                        <div class="form-group mb-3">
+                            <div class="domain-outer border-0 d-flex align-items-center justify-content-between">
+                                <label for="lumen_access_token">{{ __('LUMEN ACCESS TOKEN') }}</label>
+                                <span class="text-right col-6 col-md-6"><a
+                                        href="javascript: generateLumenToken();">{{ __('Generate Key') }}</a></span>
+
+                            </div>
+                            <input type="text" name="lumen_access_token" id="lumen_access_token"
+                                placeholder="kjadsasd66asdas" class="form-control"
+                                value="{{ old('lumen_access_token', $preference->lumen_access_token ?? '') }}">
+                            @if ($errors->has('lumen_access_token'))
+                                <span class="text-danger" role="alert">
+                                    <strong>{{ $errors->first('lumen_access_token') }}</strong>
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+                    </div>
+           
                     </div>
                 </form>
             </div> 
@@ -1800,6 +1840,11 @@ $sms_crendential = json_decode($preference->sms_credentials);
             $('#personal_access_token_v1').val(key);
             $('#personal_access_token_v2').val(token);
         }
+        function generateLumenToken() {
+            var token = generateRandomString(30);
+
+            $('#lumen_access_token').val(token);
+        }
 
         $(document).ready(function() {
             smsChange();
@@ -1824,6 +1869,14 @@ $sms_crendential = json_decode($preference->sms_credentials);
                 $('.batch-allocation').show();
             }else{
                 $('.batch-allocation').hide();
+            }
+        });
+        $('#is_lumen_enabled').on('change',function(){
+
+            if ($(this).is(":checked")) {
+                $('.lumen-field').show();
+            }else{
+                $('.lumen-field').hide();
             }
         });
 
