@@ -1063,6 +1063,14 @@ class TaskController extends BaseController
                 }
             }
 
+
+            if($client->is_lumen_enabled)
+            {
+
+                lumenDispatchToQueue($geo,$orders);
+
+            }else{
+
             // this is roster create accounding to the allocation methed
             if ($request->allocation_type === 'a' || $request->allocation_type === 'm') {
                 switch ($allocation->auto_assign_logic) {
@@ -1083,6 +1091,7 @@ class TaskController extends BaseController
                         // this is called when allocation type is batch wise
                         $this->batchWise($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
                 }
+            }
             }
             DB::commit();
             $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')

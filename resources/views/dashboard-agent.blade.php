@@ -390,7 +390,7 @@
             }
         }
     );
-}
+  }
 
 function clearRoutes() {
     if (directionsArray.length <1 ) {

@@ -1416,6 +1416,31 @@ $sms_crendential = json_decode($preference->sms_credentials);
                     </div>
                 </form>
             </div> 
+            <div class="col-md-4 mb-3">
+                <form method="POST" class="h-100" action="{{ route('preference', Auth::user()->code) }}">
+                @csrf
+                    <input type="hidden" name="is_lumen" value="1">
+                    <div class="card-box h-100">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <h4 class="header-title text-uppercase mb-0">{{__("Lumen")}}</h4>
+                            <button class="btn btn-outline-info d-block" type="submit"> {{__('Save')}} </button>
+                        </div>
+                        <div class="row align-items-start">
+                            <div class="col-md-12">
+                                <div class="form-group d-flex justify-content-between mb-3">
+                                    <label for="lumen" class="mr-2 mb-0">{{__("Enable")}} </label>
+                                    <div class="d-flex align-items-center justify-content-between mb-2">
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input " id="is_lumen_enabled" name="is_lumen_enabled" {{ (!empty($preference->is_lumen_enabled) && $preference->is_lumen_enabled > 0) ? 'checked' :'' }}>
+                                            <label class="custom-control-label" for="is_lumen_enabled"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div> 
         </div>
 
 

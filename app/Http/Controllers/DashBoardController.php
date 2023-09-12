@@ -59,7 +59,7 @@ class DashBoardController extends Controller
             // $agents  = Agent::with('agentlog')->where('is_approved',1)->get();
          
             $agentsData = \DB::table('agents')
-            ->select('agents.*', 'latest_log.lat', 'latest_log.long')
+            ->select('agents.*', 'latest_log.lat', 'latest_log.long', 'latest_log.device_type', 'latest_log.battery_level','latest_log.created_at')
             ->leftJoin('agent_logs as latest_log', function ($join) {
                 $join->on('agents.id', '=', 'latest_log.agent_id')
                      ->whereRaw('latest_log.id = (SELECT MAX(id) FROM agent_logs WHERE agent_id = agents.id)');
@@ -71,12 +71,15 @@ class DashBoardController extends Controller
                 $agent->agentlog = [
                     'lat' => $agent->lat ?? 0,
                     'long' => $agent->long ?? 0,
+                    'device_type' => $agent->device_type ?? '',
+                    'battery_level' => $agent->battery_level ?? '',
+                    'created_at' => $agent->created_at ?? ''
                 ];
                 unset($agent->lat, $agent->long);
                 return (array)$agent;
             });
         
-            
+            // pr($agents);
         
         return view('dashboard-agent')->with(['client_code' => Auth::user()->code, 'date' => $date, 'defaultCountryLongitude' => $defaultCountryLongitude, 'defaultCountryLatitude' => $defaultCountryLatitude,'map_key'=>$googleapikey,'client_timezone'=>$auth->timezone, 'teams' => $teams, 'agents' => $agents]);    
         }

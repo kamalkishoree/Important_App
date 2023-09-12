@@ -194,9 +194,33 @@ class ClientController extends Controller
                 }
 
             }
-      
-            pr($request->all());
-       
+            if($request->has('is_lumen')){
+                
+                if (!empty($request->is_lumen_enabled)) {
+                    
+                    if ($request->is_lumen_enabled == 'on') {
+                        $data = [
+                            'is_lumen_enabled' => ($request->is_lumen_enabled == 'on') ? 1 : 0
+                        ];
+                    } else {
+                        $data = [
+                            'is_lumen_enabled' => 0,
+                        ];
+                    }
+                   
+                    ClientPreference::where('client_id', $id)->update($data);
+                    return redirect()->back()->with('success', 'Preference updated successfully!');
+                }else{
+
+                    $data = [
+                            'is_lumen_enabled' => 0,
+                        ];
+                        ClientPreference::where('client_id', $id)->update($data);
+                        return redirect()->back()->with('success', 'Preference updated successfully!');
+                }
+
+            }
+             
         if(!empty($request->fcm_server_key)){
             $data = ['fcm_server_key'=>$request->fcm_server_key];
             ClientPreference::where('client_id', $id)->update($data);
