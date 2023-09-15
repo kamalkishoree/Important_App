@@ -93,7 +93,7 @@ class LiveePaymentController extends Controller
         try {
             if ($request->paymentfrom == 'wallet') {
                 $returnUrl = route('payment.gateway.return.response') . '/?gateway=livees' . '&status=200&transaction_id=' . $request->transactionid . '&action=wallet';
-                $request->request->add(['transaction_id' => $request->transactionid,'auth_token' => $request->auth_token,'payment_option_id' => 19]);
+                $request->request->add(['transaction_id' => $request->transactionid,'auth_token' => substr($request->auth_token,0,-8),'payment_option_id' => 19]);
 
                 $walletController = new WalletController();
                 $res= $walletController->creditAgentWallet($request);
