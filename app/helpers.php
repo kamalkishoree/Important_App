@@ -161,7 +161,7 @@ if (!function_exists('lumenDispatchToQueue')) {
             $url = $preference->lumen_domain_url.'/autoAllocateNew';
             $postdata =  ['order_id' => $order_detail->id ?? null,'geo_id' => $geo_id ?? null];
 
-            $client = new Client(['content-type' => 'application/json']);
+            $client = new Client(['content-type' => 'application/json','X-API-Key' => '12345']);
 
             $res = $client->post(
                 $url,
