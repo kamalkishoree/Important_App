@@ -27,7 +27,7 @@ class RosterCreate implements ShouldQueue
      * @return void
      */
     public function __construct($data,$extraData)
-    {
+    {        
         $this->data      = $data;
         $this->extraData = $extraData;
         try {

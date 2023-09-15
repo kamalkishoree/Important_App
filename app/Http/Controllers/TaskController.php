@@ -1142,8 +1142,6 @@ class TaskController extends BaseController
     public function assignAgent(Request $request)
     {
 
-
-
         try {
             if ($request->type != 'B') {
                 $agent_id = $request->has('agent_id') ? $request->agent_id : null;
@@ -1338,7 +1336,7 @@ class TaskController extends BaseController
             'getAllocation',
             'getPreference'
         ])->first();
-
+       
         $notification_time = $batchTime ?? $order_details->order_time;
         $expriedate = (int) $auth->getAllocation->request_expiry;
         $beforetime = (int) $auth->getAllocation->start_before_task_time;
@@ -1383,6 +1381,7 @@ class TaskController extends BaseController
             'device_token' => $oneagent->device_token,
             'detail_id' => $randem
         ];
+
         // Send message to customer friend
         try {
 
