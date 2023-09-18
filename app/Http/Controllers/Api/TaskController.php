@@ -1244,7 +1244,7 @@ class TaskController extends BaseController
     public function CreateTask(CreateTaskRequest $request)
     {
 
-        \Log::info($request->all);
+        \Log::info($request->all());
 
         try {
             $auth = $client = Client::with([
