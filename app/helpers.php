@@ -160,11 +160,14 @@ if (!function_exists('lumenDispatchToQueue')) {
 
             $url = $preference->lumen_domain_url.'/autoAllocateNew';    
             $postdata =  ['order_id' => $order_detail->id ?? null,'geo_id' => $geo_id ?? null];
-             $header = [
-                'X-API-Key' => $preference->lumen_access_token,
-                'code' => $code->code
-             ];
-            $client = new Client(['content-type' => 'application/json']);
+            $header = [
+            'X-API-Key' => $preference->lumen_access_token,
+            'code' => $code->code
+            ];
+
+            \Log::info('header');
+            \Log::info($header);
+            $client = new Client(['content-type' => 'application/json','headers' => $header]);
 
             $res = $client->post(
                 $url,
