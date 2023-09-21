@@ -1062,38 +1062,34 @@ class TaskController extends BaseController
                     ]);
                 }
             }
-
-
+            DB::commit();
+            
             if($client->is_lumen_enabled)
             {
-
                 lumenDispatchToQueue($geo,$orders);
-
             }else{
-
             // this is roster create accounding to the allocation methed
-            if ($request->allocation_type === 'a' || $request->allocation_type === 'm') {
-                switch ($allocation->auto_assign_logic) {
-                    case 'one_by_one':
-                        // this is called when allocation type is one by one
-                        $this->finalRoster($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
-                        break;
-                    case 'send_to_all':
-                        // this is called when allocation type is send to all
-                        Log::info('send_to_all taskController');
-                        $this->SendToAll($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
-                        break;
-                    case 'round_robin':
-                        // this is called when allocation type is round robin
-                        $this->roundRobin($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
-                        break;
-                    default:
-                        // this is called when allocation type is batch wise
-                        $this->batchWise($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
+                if ($request->allocation_type === 'a' || $request->allocation_type === 'm') {
+                    switch ($allocation->auto_assign_logic) {
+                        case 'one_by_one':
+                            // this is called when allocation type is one by one
+                            $this->finalRoster($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
+                            break;
+                        case 'send_to_all':
+                            // this is called when allocation type is send to all
+                            Log::info('send_to_all taskController');
+                            $this->SendToAll($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
+                            break;
+                        case 'round_robin':
+                            // this is called when allocation type is round robin
+                            $this->roundRobin($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
+                            break;
+                        default:
+                            // this is called when allocation type is batch wise
+                            $this->batchWise($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
+                    }
                 }
             }
-            }
-            DB::commit();
             $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')
                 ->where('id', $orders->id)
                 ->first();
@@ -1102,7 +1098,7 @@ class TaskController extends BaseController
                 'status' => "Success",
                 'message' => 'Route created Successfully'
             ]);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             DB::rollback();
             return response()->json([
                 'status' => "failure",
