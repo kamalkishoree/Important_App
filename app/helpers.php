@@ -158,9 +158,12 @@ if (!function_exists('lumenDispatchToQueue')) {
             $code = ClientData::select('id', 'code')->first();
             $preference = getClientPreferenceDetail();
 
-            $url = $preference->lumen_domain_url.'/autoAllocateNew';
+            $url = $preference->lumen_domain_url.'/autoAllocateNew';    
             $postdata =  ['order_id' => $order_detail->id ?? null,'geo_id' => $geo_id ?? null];
-
+             $header = [
+                'X-API-Key' => $preference->lumen_access_token,
+                'code' => $code->code
+             ];
             $client = new Client(['content-type' => 'application/json']);
 
             $res = $client->post(
