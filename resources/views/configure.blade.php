@@ -1371,7 +1371,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                 </form>
             </div> 
 
-            <div class="col-md-4 mb-3">
+            <div class="col-md-4 mb-3 d-none">
                 <form method="POST" class="h-100" action="{{ route('preference', Auth::user()->code) }}">
                     @csrf
                     <input type="hidden" name="send_to" id="send_to" value="customize">
