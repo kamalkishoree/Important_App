@@ -29,6 +29,9 @@ trait sendCustomNotification{
                                 'show_in_foreground' => true,
                             ])
                             ->send();
+                            \Log::info("notify");
+
+                            \Log::info($fcm_store);
         }
     }
     
