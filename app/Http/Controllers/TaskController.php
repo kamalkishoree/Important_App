@@ -1063,7 +1063,8 @@ class TaskController extends BaseController
                     ]);
                 }
             }
-
+            DB::commit();
+            
             // this is roster create accounding to the allocation methed
             if ($request->allocation_type === 'a' || $request->allocation_type === 'm') {
                 switch ($allocation->auto_assign_logic) {
@@ -1084,7 +1085,6 @@ class TaskController extends BaseController
                         $this->batchWise($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
                 }
             }
-            DB::commit();
             $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')
                 ->where('id', $orders->id)
                 ->first();
@@ -2191,6 +2191,7 @@ class TaskController extends BaseController
                 ->format('Y-m-d H:i:s');
             }
             // }
+            \Log::info(['data' => $data]);
             $this->dispatch(new RosterCreate($data, $extraData));
         }
     }
@@ -2229,7 +2230,6 @@ class TaskController extends BaseController
         } else {
             $allcation_type = 'ACK';
         }
-        // Log::info($allcation_type);
         $extraData = [
             'customer_name' => $customer->name,
             'customer_phone_number' => $customer->phone_number,
