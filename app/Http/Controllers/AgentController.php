@@ -820,7 +820,8 @@ class AgentController extends Controller
             'phone_number' => $agent->phone_number . '_' . $agent->id . "_D",
             'device_token' => '',
             'device_type' => '',
-            'access_token' => ''
+            'access_token' => '',
+            'is_available' => 0
         ]);
         $agent->delete();
         Otp::where('phone', $agent->phone_number)->where('is_verified', 1)->delete();
@@ -935,6 +936,7 @@ class AgentController extends Controller
             $agent_approval = Agent::withTrashed()->find($request->id);
             $agent_approval->deleted_at = NULL;
             $agent_approval->is_approved = $request->status;
+            $agent_approval->is_available = isset($request->status) && $request->status == 1 ? $agent_approval->is_available : $request->status;
             $agent_approval->save();
 
             // Updtae log also
@@ -942,7 +944,6 @@ class AgentController extends Controller
             AgentLog::where('agent_id', $request->id)->update([
                 'is_active' => $is_active
             ]);
-
             $slug = ($request->status == 1) ? 'driver-accepted' : 'driver-rejected';
             // $sms_body = AgentSmsTemplate::where('slug', $slug)->first();
             $keyData = [];

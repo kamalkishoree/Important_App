@@ -915,7 +915,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                         <div class="row">
                             <div class="col-12">
                                 <div class="d-flex align-items-center justify-content-between mb-2">
-                                <h4 class="header-title mb-0">{{ __('Refer And Earn') }}</h4>
+                                <h4 class="header-title mb-0">{{ __('Refer And Earn(Driver To Customer)') }}</h4>
                                     <button class="btn btn-outline-info d-block" type="submit"> {{__('Save')}} </button>
                                 </div>
                                 <div class="row">
@@ -1377,7 +1377,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                     <input type="hidden" name="send_to" id="send_to" value="customize">
                     <div class="card-box mb-0 pb-1 h-100">
                         <div class="d-flex align-items-center justify-content-between">
-                        <h4 class="header-title">{{ __("Refer and Earn") }}</h4>
+                        <h4 class="header-title">{{ __("Refer and Earn(Driver To Driver)") }}</h4>
                         <button class="btn btn-outline-info d-block" type="submit"> {{ __("Save") }} </button>
                         </div>
                         <div class="col-xl-12 my-2" id="addCur-160">

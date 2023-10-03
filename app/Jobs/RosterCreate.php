@@ -27,18 +27,9 @@ class RosterCreate implements ShouldQueue
      * @return void
      */
     public function __construct($data,$extraData)
-    {
+    {        
         $this->data      = $data;
         $this->extraData = $extraData;
-    }
-
-    /**
-     * Execute the job.
-     *
-     * @return void
-     */
-    public function handle()
-    {
         try {
             $schemaName = 'royodelivery_db';
             $default = [
@@ -55,31 +46,35 @@ class RosterCreate implements ShouldQueue
                 'strict' => false,
                 'engine' => null
             ];
-
-
+            
             Config::set("database.connections.$schemaName", $default);
-        
+            
             config(["database.connections.mysql.database" => $schemaName]);
-
+            
             DB::connection($schemaName)->table('rosters')->insert($this->data);
             
-            // Log::info('check roster entry');
+            //\Log::info('check roster entry');
             // Log::info(DB::connection($schemaName)->table('rosters')->get());
-
+            
             DB::connection($schemaName)->table('roster_details')->insert($this->extraData);
-       
+            
             DB::disconnect($schemaName);
-           
+            
             Roster::create([
                 'type'  => 'extra',
                 'status'=> 10
             ]);
             $date   =  Carbon::now()->toDateTimeString();
-         
-        } catch (Exception $ex) {
-            Log::info($exception->getMessage());
-           return $ex->getMessage();
+            
+        } catch (\Exception $ex) {
+            \Log::info($ex->getMessage());
+            return $ex->getMessage();
         }
+    }
+
+    public function handle()
+    {
+
 
     }
 
