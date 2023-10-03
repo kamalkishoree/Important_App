@@ -1093,7 +1093,7 @@ class TaskController extends BaseController
                 'status' => "Success",
                 'message' => 'Route created Successfully'
             ]);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             DB::rollback();
             return response()->json([
                 'status' => "failure",
@@ -2191,7 +2191,6 @@ class TaskController extends BaseController
                 ->format('Y-m-d H:i:s');
             }
             // }
-            \Log::info(['data' => $data]);
             $this->dispatch(new RosterCreate($data, $extraData));
         }
     }
@@ -2230,6 +2229,7 @@ class TaskController extends BaseController
         } else {
             $allcation_type = 'ACK';
         }
+        // Log::info($allcation_type);
         $extraData = [
             'customer_name' => $customer->name,
             'customer_phone_number' => $customer->phone_number,
