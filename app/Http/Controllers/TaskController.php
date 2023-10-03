@@ -2162,33 +2162,32 @@ class TaskController extends BaseController
                 $this->dispatch(new RosterCreate($data, $extraData));
             }
         } else {
-            $geoagents = $this->getGeoBasedAgentsData($geo, '0', '', $date, $cash_at_hand,$orders_id);
-            
+            $geoagents = $this->getGeoBasedAgentsData($geo, '0', '', $date, $cash_at_hand,$orders_id);         
             // for ($i = 1; $i <= $try; $i++) {
             foreach ($geoagents as $key =>  $geoitem) {
-                // if (!empty($geoitem->device_token) && $geoitem->is_available == 1) {
-                $datas = [
-                    'order_id'            => $orders_id,
-                    'driver_id'           => $geoitem->id,
-                    'notification_time'   => $time,
-                    'type'                => $allcation_type,
-                    'client_code'         => $auth->code,
-                    'created_at'          => Carbon::now()->toDateTimeString(),
-                    'updated_at'          => Carbon::now()->toDateTimeString(),
-                    'device_type'         => $geoitem->device_type,
-                    'device_token'        => $geoitem->device_token,
-                    'detail_id'           => $randem,
-                    
-                ];
-                array_push($data, $datas);
-                if ($allcation_type == 'N' && 'ACK') {
-                    Order::where('id', $orders_id)->update(['driver_id'=>$geoitem->id]);
-                    break;
+                if (!empty($geoitem->device_token) && $geoitem->is_available == 1) {
+                    $datas = [
+                        'order_id'            => $orders_id,
+                        'driver_id'           => $geoitem->id,
+                        'notification_time'   => $time,
+                        'type'                => $allcation_type,
+                        'client_code'         => $auth->code,
+                        'created_at'          => Carbon::now()->toDateTimeString(),
+                        'updated_at'          => Carbon::now()->toDateTimeString(),
+                        'device_type'         => $geoitem->device_type,
+                        'device_token'        => $geoitem->device_token,
+                        'detail_id'           => $randem,
+                        
+                    ];
+                    array_push($data, $datas);
+                    if ($allcation_type == 'N' && 'ACK') {
+                        Order::where('id', $orders_id)->update(['driver_id'=>$geoitem->id]);
+                        break;
+                    }
+                    $time = Carbon::parse($time)
+                    ->addSeconds($expriedate + 10)
+                    ->format('Y-m-d H:i:s');
                 }
-                // }
-                $time = Carbon::parse($time)
-                ->addSeconds($expriedate + 10)
-                ->format('Y-m-d H:i:s');
             }
             // }
             $this->dispatch(new RosterCreate($data, $extraData));
