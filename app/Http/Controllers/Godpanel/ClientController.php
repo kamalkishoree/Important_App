@@ -459,11 +459,13 @@ class ClientController extends Controller
     ];
 
     
-   
+   \Log::info('data');
+   \Log::info($data);
     if (isset($api_domain)) {
      
         $response = Http::withHeaders($headers)->post($api_domain->lumen_domain_url . '/api/v1/createLumenClient', $data);
-
+        \Log::info('response');
+        \Log::info($response);
         if ($response->status() === 200) {
             $responseData = $response->json();
             
