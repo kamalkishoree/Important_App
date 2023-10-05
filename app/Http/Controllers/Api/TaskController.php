@@ -1143,7 +1143,7 @@ class TaskController extends BaseController
                     'freelancer_commission_fixed' => $freelancer_commission_fixed,
                     'freelancer_commission_percentage' => $freelancer_commission_percentage
                 ]);
-                if($order->notify_all){
+                if($order->auto_alloction == 'notify'){
                     $this->newNotifiedDriverSave($order->id,$agent_id);
                 }
                 if (checkColumnExists('orders', 'rejectable_order')) {
@@ -1222,7 +1222,6 @@ class TaskController extends BaseController
                     $this->dispatchNow(new RosterDelete($request->order_id,'O',$agent_id));
                 }
 
-
                 $data = [
                     'order_id'          => $request->order_id,
                     'driver_id'         => $request->driver_id,
@@ -1235,7 +1234,7 @@ class TaskController extends BaseController
             Order::where('id', $orderdata->id)->update(['driver_id'=>null ,'status'=>'unassigned']);
             if($unassignedorder_data->notify_all){
                 //For order api
-
+                Order::where('id', $orderdata->id)->update(['notify_all'=>0]);
                 $this->dispatchNow(new RosterDelete($request->order_id,'O'));
                 $this->autoallocated($request);
             }
