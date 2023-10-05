@@ -454,8 +454,12 @@ class ClientController extends Controller
 
     $headers = [
         'Content-Type' => 'application/json',
+        'X-API-Key' => $client->lumen_access_token ?? '12345abcd',
+        'code' => $client->code
     ];
 
+    
+   
     if (isset($api_domain)) {
      
         $response = Http::withHeaders($headers)->post($api_domain->lumen_domain_url . '/api/v1/createLumenClient', $data);
