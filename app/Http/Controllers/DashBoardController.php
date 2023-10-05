@@ -761,7 +761,6 @@ class DashBoardController extends Controller
                 'sound' =>  'default',
             ])
             ->send();
-            Log::info('sendsilentnotification');
         }
     }
 
