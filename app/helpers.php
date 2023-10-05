@@ -155,13 +155,13 @@ if (!function_exists('lumenDispatchToQueue')) {
     function lumenDispatchToQueue($geo_id, $order_detail)
     {
         try {
-            $code = ClientData::select('id', 'code')->first();
+            $code = ClientData::select('id', 'code','lumen_access_token')->first();
             $preference = getClientPreferenceDetail();
 
             $url = $preference->lumen_domain_url.'/autoAllocateNew';    
             $postdata =  ['order_id' => $order_detail->id ?? null,'geo_id' => $geo_id ?? null];
             $header = [
-            'X-API-Key' => $preference->lumen_access_token,
+            'X-API-Key' => $code->lumen_access_token,
             'code' => $code->code
             ];
 
