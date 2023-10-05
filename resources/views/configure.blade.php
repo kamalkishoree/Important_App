@@ -1431,7 +1431,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                     <label for="lumen" class="mr-2 mb-0">{{__("Enable")}} </label>
                                     <div class="d-flex align-items-center justify-content-between mb-2">
                                         <div class="custom-control custom-switch">
-                                            <input type="checkbox" class="custom-control-input " id="is_lumen_enabled" name="is_lumen_enabled" {{ (!empty($preference->is_lumen_enabled) && $preference->is_lumen_enabled > 0) ? 'checked' :'' }}>
+                                            <input type="checkbox" class="custom-control-input " id="is_lumen_enabled" name="is_lumen_enabled">
                                             <label class="custom-control-label" for="is_lumen_enabled"></label>
                                         </div>
                                     </div>

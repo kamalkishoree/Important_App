@@ -29,6 +29,7 @@ use Carbon\Carbon;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use App\Traits\GlobalFunction;
+use Illuminate\Support\Facades\Http;
 use Log;
 
 class ClientController extends Controller
@@ -430,6 +431,57 @@ class ClientController extends Controller
             return redirect()->route('client.index')->with('error', $e->getMessage());
         }
             
-            
+        
+        
     }
+
+    public function enableLumenService(Request $request)
+{
+    $api_domain = ClientPreference::first();
+    $client = Client::find($request->client_id);
+
+    $data = [
+        'client_id' => $request->client_id,
+        'is_lumen_enabled' => $request->is_lumen,
+        'code' => $client->code,
+        'custom_domain' => $client->custom_domain,
+        'database_name' => $client->database_name,
+        'name' => $client->name,
+        'email' => $client->email,
+        'password' => rand(11111111, 9999999)
+    ];
+
+
+    $headers = [
+        'Content-Type' => 'application/json',
+    ];
+
+    if (isset($api_domain)) {
+     
+        $response = Http::withHeaders($headers)->post($api_domain->lumen_domain_url . '/api/v1/createLumenClient', $data);
+
+        if ($response->status() === 200) {
+            $responseData = $response->json();
+            
+            // Extract the API key from the response and save it in the database
+            if (isset($responseData['api_key'])) {
+                $client->lumen_access_token = $responseData['api_key'];
+                $client->is_lumen_enabled = $request->is_lumen;
+                $client->save();
+            }
+        } else {
+            $responseData = null;
+        }
+    } else {
+        $responseData = null;
+    }
+
+
+
+    return response()->json([
+        'message' => 'Order created successfully',
+        'data' => $data ?? '',
+        'api_response' => $responseData ?? '',
+    ], 200);
+}
 }
