@@ -105,7 +105,7 @@
                                                 <label for="lumen" class="mr-2 mb-0">{{__("Enable")}} </label>
                                                 <div class="d-flex align-items-center justify-content-between mb-2">
                                                     <div class="custom-control custom-switch">
-                                                        <input type="checkbox" class="custom-control-input is_lumen" id="is_lumen_enabled{{$client->id}}" name="is_lumen_enabled" data-id = "{{$client->id}}">
+                                                        <input type="checkbox" class="custom-control-input is_lumen" id="is_lumen_enabled{{$client->id}}" name="is_lumen_enabled" data-id = "{{$client->id}}" @if($client->is_lumen_enabled == 1) checked  @endif>
                                                         <label class="custom-control-label" for="is_lumen_enabled{{$client->id}}"></label>
                                                     </div>
                                                 </div>

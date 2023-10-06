@@ -102,6 +102,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::post('chatsocket/upDateSocketStatus/{id}', 'Godpanel\chatSocketController@upDateSocketStatus')->name('chatsocket.upDateSocketStatus');
 			Route::get('chatsocket/deleteSocketUrl/{id}', 'Godpanel\chatSocketController@deleteSocketUrl')->name('chatsocket.delete');
 			Route::post('/enable-lumen-service','Godpanel\ClientController@enableLumenService')->name('enable-lumen-service');
+			Route::post('/enable-notification-service','Godpanel\ClientController@enableNotificationService')->name('enable-notification-service');
 
 		});
 	});
