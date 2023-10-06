@@ -493,7 +493,7 @@ class ClientController extends Controller
 
 public function enableNotificationService(Request $request)
 {
-    $api_domain = ClientPreference::where('key_name', 'lumen_domain_url')->first();
+    $api_domain = ClientPreference::first();
     $client = Client::find($request->client_id);
 
     $data = [
@@ -515,14 +515,14 @@ public function enableNotificationService(Request $request)
         \Log::info('api domain');
         \Log::info($api_domain->key_value);
 
-        $response = Http::withHeaders($headers)->post($api_domain->key_value . '/api/v1/createLumenClient', $data);
+        $response = Http::withHeaders($headers)->post($api_domain->lumen_domain_url . '/api/v1/createLumenClient', $data);
 
         if ($response->status() === 200) {
             $responseData = $response->json();
             
             // Extract the API key from the response and save it in the database
             
-                $client->campaign_service = $request->campaign_service;
+                $client->notification_service = $request->notification_service;
                 $client->save();
             
         } else {
