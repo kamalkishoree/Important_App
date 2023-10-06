@@ -342,6 +342,15 @@
 <script src="{{asset('assets/libs/mohithg-switchery/mohithg-switchery.min.js')}}"></script>
 
 <script type="text/javascript">
+
+$(document).ready(function() {
+        $.ajaxSetup({
+            headers: {'X-CSRF-TOKEN': $('input[name="_token"]').val()}
+        });
+
+    });
+
+    
 $(document).ready(function(){
     var update_status_chat = "{{route('client.socketUpdateAction', ':id')}}";
 
