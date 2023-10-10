@@ -310,7 +310,7 @@
                 <div class="col-4">
 
                     <div class="card">
-                        <div class="card-body"><h3>{{__('Notification Microservice')}}</h3>
+                        <div class="card-body"><h3>{{__('Auto Allocation Microservice')}}</h3>
                     <div class="form-group d-flex justify-content-between mb-3">
                         <label for="notification_service" class="mr-2 mb-0">{{__("Enable")}} </label>
                         <div class="d-flex align-items-center justify-content-between mb-2">
