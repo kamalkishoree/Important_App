@@ -14,6 +14,6 @@ class DriverRegistrationDocument extends Model
     }
 
     public function driver_option(){
-        return $this->hasMany('App\DriverRegistrationOption','driver_registration_document_id','id'); 
+        return $this->hasMany('App\Model\DriverRegistrationOption','driver_registration_document_id','id'); 
     }
 }

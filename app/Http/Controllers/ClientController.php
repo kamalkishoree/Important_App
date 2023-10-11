@@ -32,7 +32,7 @@ use Crypt;
 use Carbon\Carbon;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
-use App\DriverRegistrationOption;
+use App\Model\DriverRegistrationOption;
 class ClientController extends Controller
 {
     use \App\Traits\ClientPreferenceManager;
