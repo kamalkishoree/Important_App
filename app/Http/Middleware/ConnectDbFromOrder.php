@@ -79,7 +79,7 @@ class ConnectDbFromOrder
             DB::setDefaultConnection($database_name);
             DB::purge($database_name);
             //DB::reconnect($database_name);
-            $dbname = DB::getDatabaseName();
+            $dbname = DB::connection()->getDatabaseName();
             \Log::info($dbname);
             \Log::info($personaltoken);
             if (isset($personaltoken) && !empty($personaltoken)) {
