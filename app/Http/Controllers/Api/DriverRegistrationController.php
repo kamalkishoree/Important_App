@@ -143,16 +143,27 @@ class DriverRegistrationController extends BaseController
         if (isset($data['country_code']) && !empty($data['country_code']) && isset($data['phone_number']) && !empty($data['phone_number']))
             $full_number = '+' . $data['country_code'] . $data['phone_number'];
 
-        $data['phone_number'] = '+' . $data['country_code'] . $data['phone_number'];
+        if($data['country_code'] == 91) {
+            return Validator::make($data, [
+                'phone_number' =>  ['required', 'min:10', 'max:10', Rule::unique('agents')->where(function ($query) use ($full_number) {
+                    return $query->where('phone_number', $full_number);
+                })],
+            ]);
+        } else {
+            $data['phone_number'] = '+' . $data['country_code'] . $data['phone_number'];
+            return Validator::make($data, [
+                'phone_number' =>  ['required', 'min:6', 'max:15', Rule::unique('agents')->where(function ($query) use ($full_number) {
+                    return $query->where('phone_number', $full_number);
+                })],
+            ]);
+        }
+
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
             'type' => ['required'],
            // 'vehicle_type_id' => ['required'],
             //'make_model' => ['required'],
             //'plate_number' => ['required'],
-            'phone_number' =>  ['required', 'min:6', 'max:15', Rule::unique('agents')->where(function ($query) use ($full_number) {
-                return $query->where('phone_number', $full_number);
-            })],
             //'color' => ['required'],
             'upload_photo' => ['mimes:jpeg,png,jpg,gif,svg|max:2048'],
         ]);
