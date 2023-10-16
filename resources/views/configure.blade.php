@@ -915,7 +915,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                         <div class="row">
                             <div class="col-12">
                                 <div class="d-flex align-items-center justify-content-between mb-2">
-                                <h4 class="header-title mb-0">{{ __('Refer And Earn') }}</h4>
+                                <h4 class="header-title mb-0">{{ __('Refer And Earn(Driver To Customer)') }}</h4>
                                     <button class="btn btn-outline-info d-block" type="submit"> {{__('Save')}} </button>
                                 </div>
                                 <div class="row">
@@ -1377,7 +1377,7 @@ $sms_crendential = json_decode($preference->sms_credentials);
                     <input type="hidden" name="send_to" id="send_to" value="customize">
                     <div class="card-box mb-0 pb-1 h-100">
                         <div class="d-flex align-items-center justify-content-between">
-                        <h4 class="header-title">{{ __("Refer and Earn") }}</h4>
+                        <h4 class="header-title">{{ __("Refer and Earn(Driver To Driver)") }}</h4>
                         <button class="btn btn-outline-info d-block" type="submit"> {{ __("Save") }} </button>
                         </div>
                         <div class="col-xl-12 my-2" id="addCur-160">
@@ -1572,11 +1572,12 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                         <div class="form-group position-relative">
                                             <label for="">Type</label>
                                             <div class="input-group mb-2">
-                                                <select class="form-control" name="file_type">
+                                                <select class="form-control" name="file_type" id="file_type_select">
                                                     <option value="Image">Image</option>
                                                     <option value="Pdf">PDF</option>
                                                     <option value="Text">Text</option>
                                                     <option value="Date">Date</option>
+                                                    <option value="selector">selector</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -1589,6 +1590,42 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                                     <label for="">{{ __('Name') }}</label>
                                                     <input class="form-control" name="name" type="text"
                                                         id="driver_registration_document_name">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="selector_div" class="col-md-12 d-none">
+                                        <div class="card">
+                                            <div class="card-box mb-0 ">
+                                                <div class="d-flex align-items-center justify-content-between">
+                                                    <h4 class="header-title text-uppercase">{{ __('Options') }}</h4>
+                                                </div>
+                                                <div id="option_div">
+
+                                                    <div class="">
+                                                        <div class="col-lg-12">
+                                                            <div id="opt_val_div">
+                                                                <div id="row" class="edit_option">
+                                                                    <div class="input-group m-3">
+                                                                        <div class="input-group-prepend">
+                                                                            <button class="btn btn-danger" id="DeleteRow"
+                                                                                type="button">
+                                                                                <i class="bi bi-trash"></i>
+                                                                                Delete
+                                                                            </button>
+                                                                        </div>
+                                                                        <input type="text" name="option_name[]" class="form-control m-input">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div id="newinput"></div>
+                                                            <button id="rowAdder" type="button"
+                                                                class="btn btn-dark">
+                                                                <span class="bi bi-plus-square-dotted">
+                                                                </span> ADD
+                                                            </button>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -1666,6 +1703,49 @@ $sms_crendential = json_decode($preference->sms_credentials);
                 });
             }
         });
+        $(document).on("change", "#file_type_select", function() {
+            var file_type = $(this).val();
+            if (file_type == 'selector') {
+                $("#selector_div").removeClass("d-none");
+                var classoption_section = $('#option_div').find('.option_section');
+                if (classoption_section.length == 0) {
+                    //addoptionTemplate(0);
+                }
+            } else {
+                $("#selector_div").addClass("d-none");
+            }
+        });
+
+        function addoptionTemplate(section_id) {
+            section_id = parseInt(section_id);
+            section_id = section_id + 1;
+            var data = '';
+
+            var price_section_temp = $('#vendorSelectorTemp').html();
+            var modified_temp = _.template(price_section_temp);
+            var result_html = modified_temp({
+                id: section_id,
+                data: data
+            });
+            $("#vendor-selector-datatable #table_body").append(result_html);
+            $('.add_more_button').hide();
+            $('#vendor-selector-datatable #add_button_' + section_id).show();
+        }
+        var i=0;
+        $("#rowAdder").click(function() {
+            var c=i++;
+            newRowAdd =
+                '<div id="row"> <div class="input-group m-3">' +
+                '<div class="input-group-prepend">' +
+                '<button class="btn btn-danger" id="DeleteRow" type="button">' +
+                '<i class="bi bi-trash"></i> Delete</button> </div>' +
+                '<input type="text" name="option_name[]" class="form-control m-input_'+c+'"> </div> </div>';
+
+            $('#newinput').append(newRowAdd);
+        });
+        $("body").on("click", "#DeleteRow", function() {
+            $(this).parents("#row").remove();
+        })
         $(document).on('click', '.submitSaveDriverRegistrationDocument', function(e) {
             var driver_registration_document_id = $(
                 "#add_driver_registration_document_modal input[name=driver_registration_document_id]").val();
@@ -1711,6 +1791,8 @@ $sms_crendential = json_decode($preference->sms_credentials);
                 },
                 url: "{{ route('driver.registration.document.edit') }}",
                 success: function(response) {
+                    console.log(response.data.driver_option);
+                    var dynamicOption = '';
                     if (response.status = 'Success') {
                         $("#add_driver_registration_document_modal select[name=file_type]").val(response
                             .data.file_type).change();
@@ -1723,6 +1805,17 @@ $sms_crendential = json_decode($preference->sms_credentials);
                             $("#add_driver_registration_document_modal input[name=is_required]").prop(
                                 "checked", false);
                         }
+
+                        if(response.data.file_type=='selector'){
+                            $('#selector_div').removeClass('d-none');
+                            $.each(response.data.driver_option, function(i, option){
+                                dynamicOption +=  "<div id='row"+option.id+"'><div class='input-group m-3'><div class='input-group-prepend'><button class='btn btn-danger' id='DeleteRow"+option.id+"' type='button'><i class='bi bi-trash'></i>Delete</button></div><input type='text' name='option_name[]' value='"+option.driver_registartion_option_name+"' class='form-control m-input'></div></div>";
+                                $('body').on('click', '#DeleteRow'+option.id, function() {
+                                    $(this).parents('#row'+option.id).remove(); 
+                                });
+                            });
+                        }
+                        $('#opt_val_div').html(dynamicOption);
                         $('#add_driver_registration_document_modal #standard-modalLabel').html(
                             'Update {{getAgentNomenclature()}} Registration Document');
                         $('#add_driver_registration_document_modal').modal('show');

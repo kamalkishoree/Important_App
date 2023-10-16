@@ -376,8 +376,8 @@ class TaskController extends BaseController
 
         $orders = $orders->where('status', $request->routesListingType)->where('status', '!=', null)->orderBy('updated_at', 'desc');
         // dd($orders->get());
-        $preference = ClientPreference::where('id', 1)->first(['theme','date_format','time_format']);
-        $getAdditionalPreference = getAdditionalPreference(['pickup_type', 'drop_type']);
+        $preference = ClientPreference::where('id', 1)->first(['theme','date_format','time_format','is_dispatcher_allocation']);
+        $getAdditionalPreference = getAdditionalPreference(['pickup_type', 'drop_type']); 
         return Datatables::of($orders)
                 ->addColumn('customer_id', function ($orders) use ($request) {
                     $customerID = !empty($orders->customer->id)? $orders->customer->id : '';
@@ -401,6 +401,14 @@ class TaskController extends BaseController
                         $type = 'Return';
                     }
                     return $type;
+                })
+                ->addColumn('is_dispatcher_allocation', function ($orders) use ($preference) {
+                    
+                    if($preference->is_dispatcher_allocation == 1)
+                    {
+                        return 1;
+                    }
+                    return 0;
                 })
                 ->addColumn('agent_name', function ($orders) use ($request) {
                     $checkActive = (!empty($orders->agent->name) && $orders->agent->is_available == 1) ? ' '.__('Active') : ' '. __('InActive');
@@ -515,6 +523,17 @@ class TaskController extends BaseController
     }
 
 
+    public function getTaskRoute(Request $request )
+    {
+           
+
+        $order = Order::with('task')->where('id',$request->order_id)->first();
+        $agents = Agent::all();
+        $returnHTML = view('tasks.route-modal')->with(['order' => $order,'agents' =>$agents])->render();
+        return response()->json(array('success' => true, 'html'=>$returnHTML));
+     
+        
+    }
     public function tasksExport(Request $request)
     {
         $header = [
@@ -819,6 +838,17 @@ class TaskController extends BaseController
 
                     $vendor_ids = array_merge($array, array_unique(array_column($product_data, 'vendor_id')));
                 }
+
+                if ($client->is_dispatcher_allocation == 1) {
+                    if ($value == 2) {
+                        $lastTask = Task::where('order_id', $orders->id)
+                        ->where('task_type_id', 1)
+                        ->orderBy('id', 'desc')
+            
+                        ->first();
+                        $dep_id = $lastTask->id;
+                 }
+                 }
                 $data = [
                     'order_id' => $orders->id,
                     'task_type_id' => $value,
@@ -833,6 +863,8 @@ class TaskController extends BaseController
                     'quantity' => $request->quantity[$key] ?? '',
                     'alcoholic_item' => ! empty($request->alcoholic_item[$key]) ? $request->alcoholic_item[$key] : ''
                 ];
+
+                
                 if (checkColumnExists('tasks', 'warehouse_id')) {
                     $data['warehouse_id'] = $request->warehouse_id[$key];
                 }
@@ -877,8 +909,11 @@ class TaskController extends BaseController
                         if ($value == 1) {
                         $this->createWarehouseTasks($client,$value,$request,$orders,$dep_id,$Loction,$cus_id);
                      }
-                    }
 
+                     
+
+                    }
+ 
                 }
 
                 // for net quantity
@@ -1063,6 +1098,8 @@ class TaskController extends BaseController
                 }
             }
 
+           
+
             // this is roster create accounding to the allocation methed
             if ($request->allocation_type === 'a' || $request->allocation_type === 'm') {
                 switch ($allocation->auto_assign_logic) {
@@ -1072,7 +1109,6 @@ class TaskController extends BaseController
                         break;
                     case 'send_to_all':
                         // this is called when allocation type is send to all
-                        Log::info('send_to_all taskController');
                         $this->SendToAll($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
                         break;
                     case 'round_robin':
@@ -1105,6 +1141,7 @@ class TaskController extends BaseController
     // function for assigning driver to unassigned orders
     public function assignAgent(Request $request)
     {
+
         try {
             if ($request->type != 'B') {
                 $agent_id = $request->has('agent_id') ? $request->agent_id : null;
@@ -1155,10 +1192,27 @@ class TaskController extends BaseController
                             'freelancer_commission_fixed' => $freelancer_commission_fixed,
                             'freelancer_commission_percentage' => $freelancer_commission_percentage
                         ]);
+                        
 
-                        $task = Task::where('order_id', $order->id)->update([
-                            'task_status' => 1
-                        ]);
+                        if($request->has('task_id'))
+                        {
+                            $task = Task::where(['order_id' => $order->id,'id' => $request->task_id])->update([
+                                'task_status' => 1,
+                                'driver_id' => $agent_id
+                            ]);
+                            $dependent_task = Task::where(['dependent_task_id' => $request->task_id])->update([
+                                'task_status' => 1,
+                                'driver_id' => $agent_id
+                            ]);
+                        }else
+                        {
+                            $task = Task::where('order_id', $order->id)->update([
+                                'task_status' => 1
+                            ]);
+
+                        }
+                        
+                      
 
                         $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')
                             ->where('id', $order->id)
@@ -1282,6 +1336,7 @@ class TaskController extends BaseController
             'getAllocation',
             'getPreference'
         ])->first();
+       
         $notification_time = $batchTime ?? $order_details->order_time;
         $expriedate = (int) $auth->getAllocation->request_expiry;
         $beforetime = (int) $auth->getAllocation->start_before_task_time;
@@ -1291,8 +1346,8 @@ class TaskController extends BaseController
         $time = $this->checkTimeDiffrence($notification_time, $beforetime); // this function is check the time diffrence and give the notification time
         $rostersbeforetime = $this->checkBeforeTimeDiffrence($notification_time, $beforetime);
         $randem = rand(11111111, 99999999);
-
-        $allcation_type = 'ACK';
+        
+         $allcation_type = 'ACK';
 
         foreach ($order_details->task as $key => $value) {
             $taskcount = count($order_details->task);
@@ -1326,6 +1381,7 @@ class TaskController extends BaseController
             'device_token' => $oneagent->device_token,
             'detail_id' => $randem
         ];
+
         // Send message to customer friend
         try {
 
@@ -2148,8 +2204,9 @@ class TaskController extends BaseController
             'updated_at' => Carbon::now()->toDateTimeString()
         ];
 
+
+       
         if (! isset($geo)) {
-            Log::info('innergeoty');
             $oneagent = Agent::where('id', $agent_id)->first();
             if (! empty($oneagent->device_token) && $oneagent->is_available == 1) {
                 $data = [
@@ -2166,7 +2223,6 @@ class TaskController extends BaseController
                     'detail_id' => $randem,
                     'cash_to_be_collected' => $order_details->cash_to_be_collected ?? null
                 ];
-                Log::info("if case RosterCreate send to all ");
                 $this->dispatch(new RosterCreate($data, $extraData));
             }
         } else {
@@ -2176,7 +2232,8 @@ class TaskController extends BaseController
             //     $f->whereDate('order_time', $date)->with('task');
             // }])->orderBy('id', 'DESC')->get()->where("agent_cash_at_hand", '<', $cash_at_hand);
             $geoagents = $this->getGeoBasedAgentsData($geo, '0', '', $date, $cash_at_hand,$orders_id);
-
+ 
+           
             for ($i = 0; $i <= $try-1; $i++) {
                 foreach ($geoagents as $key =>  $geoitem) {
                     if (!empty($geoitem->device_token) && $geoitem->is_available == 1) {
@@ -2194,9 +2251,9 @@ class TaskController extends BaseController
                             'detail_id' => $randem,
                             'cash_to_be_collected' => $order_details->cash_to_be_collected ?? null
                         ];
+
                         array_push($data, $datas);
                         if ($allcation_type == 'N' && 'ACK') {
-                            Log::info('break');
                             Order::where('id', $orders_id)->update([
                                 'driver_id' => $geoitem->id
                             ]);
@@ -2207,13 +2264,10 @@ class TaskController extends BaseController
                 $time = Carbon::parse($time)->addSeconds($expriedate + 10)->format('Y-m-d H:i:s');
                 $rostersbeforetime = Carbon::parse($rostersbeforetime)->addSeconds($expriedate + 10)->format('Y-m-d H:i:s');
                 if ($allcation_type == 'N' && 'ACK') {
-                    Log::info('break2');
                     break;
                 }
             }
-            Log::info("else case send to all ");
             $this->dispatch(new RosterCreate($data, $extraData));
-            Log::info("dispatch Done ");
         }
     }
 
@@ -3138,7 +3192,6 @@ class TaskController extends BaseController
             ])
                 ->send();
 
-            Log::info('sendsilentnotification');
         }
     }
 

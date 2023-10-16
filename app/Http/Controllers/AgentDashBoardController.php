@@ -138,7 +138,6 @@ class AgentDashBoardController extends Controller
                 'sound' =>  'default',
             ])
             ->send();
-            Log::info('sendsilentnotification');
         }
     }
 
