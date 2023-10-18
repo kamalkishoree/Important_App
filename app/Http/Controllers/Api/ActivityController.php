@@ -674,6 +674,7 @@ class ActivityController extends BaseController
     public function getBidRideRequests(Request $request)
     {
         $id        = Auth::user()->id;
+        \Log::info($id);
         $geo_ids   =  DriverGeo::where('driver_id', $id)->pluck('geo_id');
         $agenttags =  Agent::with('tags')->where('id', $id)->first();
         $tags = array();
