@@ -1045,6 +1045,7 @@ class TaskController extends BaseController
             // task schdule code is hare
 
             $allocation = AllocationRule::where('id', 1)->first();
+            
             if ($request->task_type != 'now') {
 
                 $auth = Client::where('code', Auth::user()->code)->with([
@@ -2232,8 +2233,6 @@ class TaskController extends BaseController
             //     $f->whereDate('order_time', $date)->with('task');
             // }])->orderBy('id', 'DESC')->get()->where("agent_cash_at_hand", '<', $cash_at_hand);
             $geoagents = $this->getGeoBasedAgentsData($geo, '0', '', $date, $cash_at_hand,$orders_id);
- 
-           
             for ($i = 0; $i <= $try-1; $i++) {
                 foreach ($geoagents as $key =>  $geoitem) {
                     if (!empty($geoitem->device_token) && $geoitem->is_available == 1) {
@@ -2344,9 +2343,7 @@ class TaskController extends BaseController
             //     $f->whereDate('order_time', $date)->with('task');
             // }])->orderBy('id', 'DESC')->get()->where("agent_cash_at_hand", '<', $cash_at_hand)->toArray();
             $geoagents = $this->getGeoBasedAgentsData($geo, '0', '', $date, $cash_at_hand,$orders_id);
-
             // this function is give me nearest drivers list accourding to the the task location.
-
             $distenseResult = $this->haversineGreatCircleDistance($geoagents, $finalLocation, $unit, $max_redius, $max_task);
 
             if (! empty($distenseResult)) {
@@ -2369,13 +2366,12 @@ class TaskController extends BaseController
                                 'cash_to_be_collected' => $order_details->cash_to_be_collected ?? null
                             ];
                             array_push($data, $datas);
-                        }
-                        $counter ++;
-                        if ($counter == $maxsize) {
-                            $time = Carbon::parse($time)->addSeconds($expriedate)->format('Y-m-d H:i:s');
-                            $rostersbeforetime = Carbon::parse($rostersbeforetime)->addSeconds($expriedate)->format('Y-m-d H:i:s');
-
-                            $counter = 0;
+                            $counter ++;
+                            if ($counter == $maxsize) {
+                                $time = Carbon::parse($time)->addSeconds($expriedate)->format('Y-m-d H:i:s');
+                                $rostersbeforetime = Carbon::parse($rostersbeforetime)->addSeconds($expriedate)->format('Y-m-d H:i:s');                              
+                                $counter = 0;
+                            }
                         }
                         if ($allcation_type == 'N' && 'ACK') {
                             break;
@@ -2467,11 +2463,8 @@ class TaskController extends BaseController
             //     $f->whereDate('order_time', $date)->with('task');
             // }])->orderBy('id', 'DESC')->get()->where("agent_cash_at_hand", '<', $cash_at_hand)->toArray();
             $geoagents = $this->getGeoBasedAgentsData($geo, '0', '', $date, $cash_at_hand,$orders_id);
-
             // this function give me the driver list accourding to who have liest task for the current date
-
             $distenseResult = $this->roundCalculation($geoagents, $finalLocation, $unit, $max_redius, $max_task);
-
             if (! empty($distenseResult)) {
                 for ($i = 1; $i <= $try; $i ++) {
                     foreach ($distenseResult as $key => $geoitem) {
@@ -2493,7 +2486,6 @@ class TaskController extends BaseController
 
                             $time = Carbon::parse($time)->addSeconds($expriedate)->format('Y-m-d H:i:s');
                             $rostersbeforetime = Carbon::parse($rostersbeforetime)->addSeconds($expriedate)->format('Y-m-d H:i:s');
-
                             array_push($data, $datas);
                         }
 
@@ -2501,15 +2493,12 @@ class TaskController extends BaseController
                             break;
                         }
                     }
-
                     $time = Carbon::parse($time)->addSeconds($expriedate + 10)->format('Y-m-d H:i:s');
                     $rostersbeforetime = Carbon::parse($rostersbeforetime)->addSeconds($expriedate + 10)->format('Y-m-d H:i:s');
-
                     if ($allcation_type == 'N' && 'ACK') {
                         break;
                     }
                 }
-
                 $this->dispatch(new RosterCreate($data, $extraData)); // job for insert data in roster table for send notification
             }
         }
