@@ -677,15 +677,14 @@ class ActivityController extends BaseController
         \Log::info($id);
         $geo_ids   =  DriverGeo::where('driver_id', $id)->pluck('geo_id');
         \Log::info($geo_ids);
-        $agenttags =  Agent::with('tags')->where('id', $id)->first();
-        \Log::info($agenttags);
-        $tags = array();
-        foreach($agenttags->tags as $agenttags)
-        {
-            $tags[] = $agenttags->name;
-        }
+        // $agenttags =  Agent::with('tags')->where('id', $id)->first();
+        // $tags = array();
+        // foreach($agenttags->tags as $agenttags)
+        // {
+        //     $tags[] = $agenttags->name;
+        // }
 
-        if(count($tags) > 0 || count($geo_ids) > 0){
+        if( count($geo_ids) > 0){
             $currenttime = Carbon::now()->format('Y-m-d H:i:s');
             $requestdata = UserBidRideRequest::whereIn('geo_id', $geo_ids)->where('expired_at', '>', $currenttime)
                            ->whereDoesntHave('declinedbyAgent', function($q) use ($id){
