@@ -694,7 +694,8 @@ class ActivityController extends BaseController
         }else{
             $requestdata = [];
         }
-
+           \Log::info('request data');
+           \Log::info($requestdata);
         return response()->json([
             'data' => array('requestdata' =>$requestdata),
             'status' => 200,
