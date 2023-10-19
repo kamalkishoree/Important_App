@@ -2728,10 +2728,8 @@ class TaskController extends BaseController
             }
         } else {
             $geoagents = $this->getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag, $date, $cash_at_hand, $orders_id, $particular_driver_id);
-
             $geoagents = $geoagents->toArray();
             // this function is give me nearest drivers list accourding to the the task location.
-
             $distenseResult = $this->haversineGreatCircleDistance($geoagents, $finalLocation, $unit, $max_redius, $max_task);
 
             if (count($distenseResult) > 0) {
@@ -2751,20 +2749,18 @@ class TaskController extends BaseController
                                 'device_token' => $geoitem['device_token'],
                                 'detail_id' => $randem
                             ];
-
                             array_push($data, $datas);
-                        }
-                        $counter++;
-                        if ($counter == $maxsize) {
-                            $time = Carbon::parse($time)->addSeconds($expriedate)->format('Y-m-d H:i:s');
-                            $counter = 0;
-                        }
-                        if ($allcation_type == 'N' && 'ACK') {
-                            break;
+                            $counter++;
+                            if ($counter == $maxsize) {
+                                $time = Carbon::parse($time)->addSeconds($expriedate)->format('Y-m-d H:i:s');
+                                $counter = 0;
+                            }
+                            if ($allcation_type == 'N' && 'ACK') {
+                                break;
+                            }
                         }
                     }
                     $time = Carbon::parse($time)->addSeconds($expriedate + 10)->format('Y-m-d H:i:s');
-
                     if ($allcation_type == 'N' && 'ACK') {
                         break;
                     }
@@ -2838,11 +2834,8 @@ class TaskController extends BaseController
             $geoagents = $this->getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag, $date, $cash_at_hand, $orders_id, $particular_driver_id);
 
             $geoagents = $geoagents->toArray();
-
             // this function give me the driver list accourding to who have liest task for the current date
-
             $distenseResult = $this->roundCalculation($geoagents, $finalLocation, $unit, $max_redius, $max_task);
-
             if (count($distenseResult) > 0) {
                 for ($i = 1; $i <= $try; $i++) {
                     foreach ($distenseResult as $key => $geoitem) {
@@ -2869,14 +2862,11 @@ class TaskController extends BaseController
                             break;
                         }
                     }
-
                     $time = Carbon::parse($time)->addSeconds($expriedate + 10)->format('Y-m-d H:i:s');
-
                     if ($allcation_type == 'N' && 'ACK') {
                         break;
                     }
                 }
-
                 $this->dispatch(new RosterCreate($data, $extraData)); // job for insert data in roster table for send notification
             }
         }
@@ -5151,10 +5141,10 @@ class TaskController extends BaseController
                             Order::where('id', $orders_id)->update(['driver_id'=>$geoitem->id]);
                             break;
                         }
+                        $time = Carbon::parse($time)
+                        ->addSeconds($expriedate + 10)
+                        ->format('Y-m-d H:i:s');
                     }
-                    $time = Carbon::parse($time)
-                    ->addSeconds($expriedate + 10)
-                    ->format('Y-m-d H:i:s');
                 }
             // }
             $this->dispatch(new RosterCreate($data, $extraData));
