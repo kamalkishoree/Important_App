@@ -3151,6 +3151,69 @@ class TaskController extends BaseController
             'message' => __('success')
         ], 200);
     }
+    public function getDeliveryFeeRental(Request $request)
+    {
+        $latitude = [];
+        $longitude = [];
+        $pricingRule = '';
+        $lat = $long = '';
+
+        $auth = Client::with([
+            'getAllocation',
+            'getPreference',
+            'getTimezone'
+        ])->first();
+        $client_timezone = $auth->getTimezone ? $auth->getTimezone->timezone : 251;
+        $tz = new Timezone();
+
+        $timezone = $tz->timezone_name($client_timezone);
+
+        
+        // get geoid based on customer location
+
+       
+        $agent_tags = (isset($request->agent_tag) && !empty($request->agent_tag)) ? $request->agent_tag : '';
+
+
+        $pricingRule = PricingRule::where('is_default', 1)->first();
+        
+
+        $paid_duration = $pricingRule->base_duration;
+        $paid_distance = $pricingRule->base_distance;
+        $paid_duration = $paid_duration < 0 ? 0 : $paid_duration;
+        $paid_distance = $paid_distance < 0 ? 0 : $paid_distance;
+
+
+         $total         = $pricingRule->base_price + ($paid_distance * $pricingRule->distance_fee) + ($paid_duration * $pricingRule->duration_price);
+        
+
+
+
+        //-------------------for bid and ride---------------------
+        if (isset($pricingRule->base_price_minimum)) {
+            $total_minimum = $pricingRule->base_price_minimum + ($paid_distance * $pricingRule->distance_fee_minimum) + ($paid_duration * $pricingRule->duration_price_minimum);
+            $total_maximum = $pricingRule->base_price_maximum + ($paid_distance * $pricingRule->distance_fee_maximum) + ($paid_duration * $pricingRule->duration_price_maximum);
+        } else {
+            $total_minimum = 0;
+            $total_maximum = 0;
+        }
+
+        $client = ClientPreference::take(1)->with('currency')->first();
+        $currency = $client->currency ?? '';
+
+        return response()->json([
+            'total' => $total,
+            'total_duration' => 0,
+            'total_distance' => 0,
+            'currency' => $currency,
+            'paid_distance' => $paid_distance,
+            'paid_duration' => $paid_duration,
+            'total_minimum' => $total_minimum,
+            'total_maximum' => $total_maximum,
+            'toll_fee' => 0,
+            'message' => __('success')
+        ], 200);
+    }
 
     /**
      * **************** ---- get agents tags ----- *****************
