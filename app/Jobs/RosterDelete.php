@@ -33,6 +33,14 @@ class RosterDelete implements ShouldQueue
         $this->order_id      = $order_id;
         $this->type      = $type;
         $this->driver_id = $driver_id;
+    }
+    /**
+     * Execute the job.
+     *
+     * @return void
+     */
+    public function handle()
+    {
         try {
             $schemaName = 'royodelivery_db';
             $default = [
@@ -69,15 +77,6 @@ class RosterDelete implements ShouldQueue
         } catch (Exception $ex) {
             return $ex->getMessage();
         }
-    }
-    /**
-     * Execute the job.
-     *
-     * @return void
-     */
-    public function handle()
-    {
-
     }
 
     public function getData()

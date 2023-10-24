@@ -74,11 +74,11 @@ class scheduleNotification implements ShouldQueue
             Log::info($ex->getMessage());
           // return $ex->getMessage();
         }
-
-    //    Log::info('database:'.$schemaName);
-
+    }
+    
+    public function handle(){
         $databaseName = 'db_'.$this->data['database']['database_name'];
-          switch ($this->data['allocation']['auto_assign_logic']) {
+        switch ($this->data['allocation']['auto_assign_logic']) {
             case 'one_by_one':
                 //this is called when allocation type is one by one
                 $this->OneByOneNew($this->data,$databaseName);
@@ -95,22 +95,14 @@ class scheduleNotification implements ShouldQueue
                 //this is called when allocation type is batch wise
                 $this->batchWise($this->data,$databaseName);
         }
-
-
-    }
-    
-    public function handle(){
         
     }
-
 
     public function basicSetup($schemaName)
     {
 
         // DB::connection($schemaName)->table('clients')->where('database',$this->data['database']['database_name'])
         // ->with(['getAllocation', 'getPreference'])->first();
-
-
     }
 
     public function OneByOneNew($dataget,$databaseName)
