@@ -1101,24 +1101,30 @@ class TaskController extends BaseController
             }
             DB::commit();
             
+            if($client->is_lumen_enabled)
+            {
+                lumenDispatchToQueue($geo,$orders);
+            }else{
             // this is roster create accounding to the allocation methed
-            if ($request->allocation_type === 'a' || $request->allocation_type === 'm') {
-                switch ($allocation->auto_assign_logic) {
-                    case 'one_by_one':
-                        // this is called when allocation type is one by one
-                        $this->OneByOne($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
-                        break;
-                    case 'send_to_all':
-                        // this is called when allocation type is send to all
-                        $this->SendToAll($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
-                        break;
-                    case 'round_robin':
-                        // this is called when allocation type is round robin
-                        $this->roundRobin($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
-                        break;
-                    default:
-                        // this is called when allocation type is batch wise
-                        $this->batchWise($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
+                if ($request->allocation_type === 'a' || $request->allocation_type === 'm') {
+                    switch ($allocation->auto_assign_logic) {
+                        case 'one_by_one':
+                            // this is called when allocation type is one by one
+                            $this->finalRoster($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
+                            break;
+                        case 'send_to_all':
+                            // this is called when allocation type is send to all
+                            Log::info('send_to_all taskController');
+                            $this->SendToAll($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
+                            break;
+                        case 'round_robin':
+                            // this is called when allocation type is round robin
+                            $this->roundRobin($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
+                            break;
+                        default:
+                            // this is called when allocation type is batch wise
+                            $this->batchWise($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
+                    }
                 }
             }
             $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')
@@ -1129,7 +1135,7 @@ class TaskController extends BaseController
                 'status' => "Success",
                 'message' => 'Route created Successfully'
             ]);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             DB::rollback();
             return response()->json([
                 'status' => "failure",
@@ -3687,6 +3693,50 @@ class TaskController extends BaseController
     }
 
 
-
+    function getRouteDetail(Request $request)
+    {
+        if (!$request->has('id')) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => 'Order Not Found'
+            ]);
+        }
+    
+        $orderId = $request->input('id');
+    
+        $pickup_task = Task::where(['order_id' => $orderId, 'task_type_id' => 1])->first();
+        $dropoff_task = Task::where(['order_id' => $orderId, 'task_type_id' => 2])->first();
+    
+        if (!$pickup_task || !$dropoff_task) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => 'Tasks not found for the given order'
+            ]);
+        }
+    
+        $pickupLocation = Location::find($pickup_task->location_id);
+        $dropoffLocation = Location::find($dropoff_task->location_id);
+    
+        if (!$pickupLocation || !$dropoffLocation) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => 'Locations not found for the given tasks'
+            ]);
+        }
+    
+        $response = [
+            'status' => 'Success',
+            'pickup_location' => [
+                'lat' => (float)$pickupLocation->latitude,
+                'lng' => (float)$pickupLocation->longitude,
+            ],
+            'dropoff_location' => [
+                'lat' => (float)$dropoffLocation->latitude,
+                'lng' => (float)$dropoffLocation->longitude,
+            ],
+        ];
+    
+        return response()->json($response);
+    }
 
 }

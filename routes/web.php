@@ -101,6 +101,9 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::post('chatsocket/upDateSocket/{id}', 'Godpanel\chatSocketController@upDateSocket')->name('chatsocket.upDateSocket');
 			Route::post('chatsocket/upDateSocketStatus/{id}', 'Godpanel\chatSocketController@upDateSocketStatus')->name('chatsocket.upDateSocketStatus');
 			Route::get('chatsocket/deleteSocketUrl/{id}', 'Godpanel\chatSocketController@deleteSocketUrl')->name('chatsocket.delete');
+			Route::post('/enable-lumen-service','Godpanel\ClientController@enableLumenService')->name('enable-lumen-service');
+			Route::post('/enable-notification-service','Godpanel\ClientController@enableNotificationService')->name('enable-notification-service');
+
 		});
 	});
 
@@ -266,6 +269,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::get('get-inventory-products', 'TaskController@getInventoryProducts')->name('getInventoryProducts');
 			
 			Route::get('get-product-detail', 'TaskController@getProductDetail')->name('get-product-detail');
+			Route::post('get-route-detail', 'TaskController@getRouteDetail')->name('get-route-detail');
 			
 			
 

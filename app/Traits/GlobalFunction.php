@@ -15,8 +15,8 @@ trait GlobalFunction{
 
     public static function socketDropDown()
     {
-        $chatSocket= ChatSocket::where('status', 1)->get();
-        return $chatSocket;
+        // $chatSocket= ChatSocket::where('status', 1)->get();
+        // return $chatSocket;
     }
 
     public static function checkDbStat($id)
