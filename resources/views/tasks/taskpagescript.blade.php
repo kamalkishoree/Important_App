@@ -1,6 +1,9 @@
 <script>
 
     $(document).ready(function() {
+
+
+        
         var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
         hash = hashes[0].split('=');
         if(hash[0] == 'status'){
@@ -85,6 +88,11 @@
                     {data: 'phone_number', name: 'phone_number', orderable: true, searchable: false},
                     {data: 'type', name: 'type', orderable: true, searchable: false},
                     {data: 'agent_name', name: 'agent_name', orderable: true, searchable: false, "mRender": function ( data, type, full ) {
+                        if(full.is_dispatcher_allocation == 1)
+                        {
+                            var anchorTag = '<a  href="#" data-toggle="modal" onclick="getRouteModal(' + full.id + ')" data-id="' + full.id + '">Assign Agent Modal</a>';
+                            return anchorTag;
+                        }else{
                         if(full.status=='unassigned')
                         {
                             var selectbox= '<select name="agent_name_id" id="agent_name_id" data-id="'+full.id+'" class="form-control select_agent">';
@@ -101,6 +109,7 @@
                         }else{
                             return full.order_number;
                         }
+                    }
                     }},
                     {data: 'order_time', name: 'order_time', orderable: true, searchable: false, "mRender": function ( data, type, full ) {
 
@@ -130,7 +139,20 @@
                     {data: 'customer_name', name: 'customer_name', orderable: true, searchable: false},
                     {data: 'phone_number', name: 'phone_number', orderable: true, searchable: false},
                     {data: 'type', name: 'type', orderable: true, searchable: false},
-                    {data: 'agent_name', name: 'agent_name', orderable: true, searchable: false},
+                    {data: 'agent_name', name: 'agent_name', orderable: true, searchable: false, "mRender": function ( data, type, full )
+                    
+                    {
+                        if(full.is_dispatcher_allocation == 1)
+                        {
+                            var anchorTag = '<a  href="#" data-toggle="modal" onclick="getRouteModal(' + full.id + ')" data-id="' + full.id + '">Assign Agent Modal</a>';
+                            return anchorTag;
+                        }else{
+                            return full.agent_name;
+                        }
+                    }},
+
+
+                     
                     {data: 'order_time', name: 'order_time', orderable: true, searchable: false},
                     {data: 'short_name', name: 'short_name', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                         var shortName = JSON.parse(full.short_name.replace(/&quot;/g,'"'));
@@ -152,8 +174,28 @@
         }
 
 
-    });
 
+        
+    });
+    function getRouteModal(id)
+
+{
+        $.ajax({
+            type: "POST",
+            url: '{{route("task.task_route")}}',
+            data: {_token: CSRF_TOKEN, order_id: id},
+            success: function(response) {
+        
+              $('#taskRouteModal').modal();
+              $('#taskModalContent').html(response.html)
+            },
+            error: function(errors){
+           
+            }
+        });
+    
+
+}
     function handleClick(myRadio) {
         $('#getTask').submit();
     }
@@ -162,10 +204,12 @@
         if($(this).val()!='')
         {
             var order_id = Array($(this).attr('data-id'));
+            var task_id = $(this).attr('task-id');
+
             $.ajax({
                 type: "POST",
                 url: '{{route("assign.agent")}}',
-                data: {_token: CSRF_TOKEN, orders_id: order_id, agent_id: $(this).val()},
+                data: {_token: CSRF_TOKEN, orders_id: order_id, agent_id: $(this).val(),task_id:task_id},
                 success: function( msg ) {
                     $.toast({
                     heading:"Success!",
@@ -179,7 +223,7 @@
                     textAlign : 'left',
                     position : 'top-right'
                     });
-                    location.reload();
+                  location.reload();
                 },
                 error: function(errors){
                     $.toast({
