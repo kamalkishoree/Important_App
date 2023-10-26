@@ -1224,6 +1224,11 @@ class TaskController extends BaseController
                             ->where('id', $order->id)
                             ->first();
                         // event(new \App\Events\loadDashboardData($orderdata));
+                        if (isset($orderdata) && $orderdata->driver_id != null) {
+                            if ($orderdata && $orderdata->call_back_url) {
+                                $call_web_hook = $this->updateStatusDataToOrder($orderdata, 2,1);  # task accepted
+                            }
+                        }
                         $this->MassAndEditNotification($order->id, $agent_id);
                     }
                     Session::put('success', __(getAgentNomenclature() . ' assigned successfully'));
