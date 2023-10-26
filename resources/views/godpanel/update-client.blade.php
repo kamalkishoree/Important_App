@@ -315,7 +315,7 @@
                         <label for="notification_service" class="mr-2 mb-0">{{__("Enable")}} </label>
                         <div class="d-flex align-items-center justify-content-between mb-2">
                             <div class="custom-control custom-switch">
-                                <input type="checkbox" class="custom-control-input" id="notification_service" name="notification_service" data-id = "{{$client->id}}" @if($client->notification_service == 1) checked  @endif>
+                                <input type="checkbox" class="custom-control-input" id="notification_service" name="notification_service" data-id = "{{@$client->id}}" @if(@$client->notification_service == 1) checked  @endif>
                                 <label class="custom-control-label" for="notification_service"></label>
                             </div>
                         </div>
