@@ -1325,7 +1325,7 @@ class TaskController extends BaseController
 
     public function CreateTask(CreateTaskRequest $request)
     {
-        // try {
+        try {
             $auth = $client = Client::with([
                 'getAllocation',
                 'getPreference'
@@ -1888,7 +1888,7 @@ class TaskController extends BaseController
             if(@$client->is_lumen_enabled)
             {
 
-                // lumenDispatchToQueue($geoid,$orders);
+                lumenDispatchToQueue($geoid,$orders);
 
             }elseif($request->call_notification !=1 ){
             if ($request->allocation_type === 'a' || $request->allocation_type === 'm') {
@@ -1921,13 +1921,13 @@ class TaskController extends BaseController
                 'dispatch_traking_url' => $dispatch_traking_url ?? null,
                 'invalid_agent' => $inValidAgent
             ], 200);
-    //    } catch (\Exception $e) {
-    //         DB::rollback();
-    //         \Log::info("dispatch error ". $e->getMessage());
-    //         return response()->json([
-    //             'message' => $e->getMessage()
-    //         ], 400);
-    //     }
+       } catch (\Exception $e) {
+            DB::rollback();
+            \Log::info("dispatch error ". $e->getMessage());
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 400);
+        }
     }
 
     public function CreateLimsTask(CreateTaskRequest $request)
