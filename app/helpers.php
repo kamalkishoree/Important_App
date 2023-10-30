@@ -164,9 +164,6 @@ if (!function_exists('lumenDispatchToQueue')) {
                 'X-API-Key' => $code->lumen_access_token,
                 'code' => $code->code
             ];
-
-            \Log::info('header');
-            \Log::info($header);
             $client = new Client(['content-type' => 'application/json', 'headers' => $header]);
 
             $res = $client->post(
@@ -174,8 +171,6 @@ if (!function_exists('lumenDispatchToQueue')) {
                 ['form_params' => ($postdata)]
             );
             $response = json_decode($res->getBody(), true);
-            \Log::info('lumen response');
-            \Log::info($response);
             return true;
         } catch (\Exception $e) {
             \Log::info('lumen error');
