@@ -1888,7 +1888,7 @@ class TaskController extends BaseController
             if(@$client->is_lumen_enabled)
             {
 
-                lumenDispatchToQueue($geoid,$orders);
+                // lumenDispatchToQueue($geoid,$orders);
 
             }elseif($request->call_notification !=1 ){
             if ($request->allocation_type === 'a' || $request->allocation_type === 'm') {
