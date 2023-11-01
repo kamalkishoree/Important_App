@@ -49,7 +49,8 @@
                         'X-CSRF-Token': '{{ csrf_token() }}',
                     },
                     data: function (d) {
-                        d.search = $('input[type="search"]').val();
+                        // d.search = $('input[type="search"]').val();
+                        d.search = $('.agents-datatable').DataTable().search()
                         d.routesListingType = $('#routes-listing-status').val();
                         d.warehouseListingType = $('#search_warehouse').val();
                         d.warehouseManagerId = $('#warehouse_manager').val();

@@ -372,16 +372,16 @@ $('#team_access').on('change', function() {
             }
         }
     });
-    
     phoneInput();
     function phoneInput() {
         var input = document.querySelector(".xyz");
         var mobile_number_input = document.querySelector(".xyz");
         mobile_number = window.intlTelInput(mobile_number_input, {
-            separateDialCode: true,
+             separateDialCode: true,
+            preferredCountries: ["{{getCountryCode()}}"],
+            initialCountry: "{{getCountryCode()}}",
             hiddenInput: "full_number",
-            initialCountry: '{{$selectedCountryCode}}',
-            utilsScript: "{{ asset('telinput/js/utils.js') }}",
+            utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.3/js/utils.js"
         });        
     }
 
