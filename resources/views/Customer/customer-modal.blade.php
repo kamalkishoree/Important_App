@@ -95,7 +95,8 @@
 
                                         <div class="col-lg-4 col-md-3 mb-lg-0 mb-3">
                                             <div class="form-group">
-                                                <input type="text" id="add1-phone_number" name="address_phone_number[]" class="form-control" placeholder={{__("Phone Number")}}>
+                                                <input type="text" id="add1-phone_number" name="address_phone_number[]" class="form-control phone_number" placeholder={{__("Phone Number")}}>
+                                                <input type="hidden" name="dialCode" id="dialCode" value="{{getCountryPhoneCode()}}">
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong></strong>
                                                 </span>
