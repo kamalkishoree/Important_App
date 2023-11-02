@@ -15,8 +15,8 @@ trait GlobalFunction{
 
     public static function socketDropDown()
     {
-        $chatSocket= ChatSocket::where('status', 1)->get();
-        return $chatSocket;
+        // $chatSocket= ChatSocket::where('status', 1)->get();
+        // return $chatSocket;
     }
 
     public static function checkDbStat($id)
@@ -60,7 +60,7 @@ trait GlobalFunction{
     }
 
 
-    public function getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag = '', $date, $cash_at_hand,$order_id='')
+    public function getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag = '', $date, $cash_at_hand,$order_id='',$particular_driver_id = '')
     {
         try {
             $preference = ClientPreference::select('manage_fleet', 'is_cab_pooling_toggle', 'is_threshold','is_go_to_home','go_to_home_radians')->first();
@@ -92,6 +92,9 @@ trait GlobalFunction{
                 $f->whereDate('order_time', $date)->with('task');
             }]);
 
+            if($particular_driver_id){
+                $geoagents = $geoagents->where('id','!=',$particular_driver_id);
+            }
             if(@$preference->is_threshold == 1){
                 $geoagents = $geoagents->where('is_threshold', 1);
             }
@@ -112,6 +115,7 @@ trait GlobalFunction{
           
             $geoagents = $geoagents->orderBy('id', 'DESC');
             $geoagents = $geoagents->get()->where("agent_cash_at_hand", '<', $cash_at_hand);
+
             return $geoagents;
 
         } catch (\Throwable $th) {
@@ -219,11 +223,9 @@ trait GlobalFunction{
 
     public function setPricingRuleDynamic($id,$time)
     {
-        try {         
-            // \Log::info('first time '.$time);   
+        try {           
             $order  = Order::where('id', $id)->first();
-            $timeTotal = Task::where('order_id',$order->id)->sum('waiting_time');
-            // \Log::info('total time '.$timeTotal);   
+            $timeTotal = Task::where('order_id',$order->id)->sum('waiting_time');   
             $time = $timeTotal??$time;
 
             if(isset($order)) {
@@ -256,7 +258,6 @@ trait GlobalFunction{
     public function getPricingRuleDynamic($pricingRule,$distance,$perKm=0)
     {
         // \Log::info('dynamic in');
-        return 0; 
         try {
             // \Log::info('pricingRuleDistance nninn : '.$distance);
             $lastDistance = $distance - $pricingRule->base_distance??1;
