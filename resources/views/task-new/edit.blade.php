@@ -30,7 +30,7 @@
         <div class="form-group" id="phone_numberInputEdit">
             {!! Form::label('title', 'Phone Number',['class' => 'control-label']) !!}
             {!! Form::text('phone_number', $customer->phone_number, ['class' => 'form-control phone_number']) !!}
-            <input type="hidden" name="dialCode" id="dialCode" value="{{getCountryPhoneCode()}}">
+<!--             <input type="hidden" name="dialCode" id="dialCode" value="{{getCountryPhoneCode()}}"> -->
             <span class="invalid-feedback" role="alert">
                 <strong></strong>
             </span>

@@ -39,7 +39,7 @@
                                 <label for="phone_number" class="control-label">{{__("CONTACT NUMBER")}}</label>
                                 <div class="input-group">
                                     <input type="tel" name="phone_number" class="form-control xyz phone_number" id="phone_number" placeholder="9876543210" maxlength="14">
-                                    <input type="hidden" id="dialCode" name="dialCode" value="{{$customer->dial_code ?? ''}}">
+<!--                                     <input type="hidden" id="dialCode" name="dialCode" value="{{$customer->dial_code ?? ''}}"> -->
                                 </div>
                                 <span class="invalid-feedback" role="alert">
                                     <strong></strong>

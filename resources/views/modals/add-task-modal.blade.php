@@ -83,7 +83,7 @@
                             <div class="form-group" id="phone_numberInput">
                                 <div class="input-group">
                                     <input type="text" name="phone_number" class="form-control phone_number" id="phone_number" placeholder="{{__('Enter mobile number')}}" maxlength="14">
-                                     <input type="hidden" id="dialCode" name="dialCode" value="{{getCountryPhoneCode()}}">
+<!--                                      <input type="hidden" id="dialCode" name="dialCode" value="{{getCountryPhoneCode()}}"> -->
                                 </div>
                                 <span class="invalid-feedback" role="alert"> <strong></strong>
                                 </span>
@@ -308,7 +308,7 @@
                                                                             'form-control address phone_number
                                                                             address_phone_number','placeholder' => __('Phone
                                                                             Number'),'id'=>'addHeader1-address_phone_number ']) !!}
-                                                                            <input type="hidden" name="dialCode" id="dialCode" value="{{getCountryPhoneCode()}}">
+<!--                                                                             <input type="hidden" name="dialCode" id="dialCode" value="{{getCountryPhoneCode()}}"> -->
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -459,7 +459,7 @@
                                                                             $vendor->phone_no, ['class' => 'form-control address
                                                                             address_phone_number phone_number','placeholder' => __('Phone
                                                                             Number'),'id'=>'addHeader1-address_phone_number']) !!}
-                                                                            <input type="hidden" name="dialCode" id="dialCode" value="{{getCountryPhoneCode()}}">
+<!--                                                                             <input type="hidden" name="dialCode" id="dialCode" value="{{getCountryPhoneCode()}}"> -->
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -596,7 +596,7 @@
                                                                             'form-control address phone_number
                                                                             address_phone_number','placeholder' => __('Phone
                                                                             Number'),'id'=>'addHeader1-address_phone_number ']) !!}
-                                                                            <input type="hidden" name="dialCode" id="dialCode" value="{{getCountryPhoneCode()}}">
+<!--                                                                             <input type="hidden" name="dialCode" id="dialCode" value="{{getCountryPhoneCode()}}"> -->
                                                                         </div>
                                                                     </div>
                                                                 </div>

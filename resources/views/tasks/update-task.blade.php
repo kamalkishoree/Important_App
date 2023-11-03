@@ -435,7 +435,7 @@ display:none;
                                                                             </div>
                                                                             <div class="form-group mb-1 col-12">
                                                                             {!! Form::text('address_phone_number[]', isset($item->vendor) ? $item->vendor->phone_no :'', ['class' => 'form-control address address_phone_number phone_number', 'placeholder' => __('Phone Number'), 'id' => 'add'.$newcount.'-address_phone_number', 'disabled' => (($item->task_type_id == 1 && count($item->orderVendorProducts) > 0) ? true : false)]) !!}
-                                                                            <input type="hidden" name="dialCode" id="dialCode" value="{{getCountryPhoneCode()}}">
+<!--                                                                             <input type="hidden" name="dialCode" id="dialCode" value="{{getCountryPhoneCode()}}"> -->
                                                                         </div>
                                                                         </div>
                                                                     </div>
