@@ -377,12 +377,11 @@ $('#team_access').on('change', function() {
         var input = document.querySelector(".xyz");
         var mobile_number_input = document.querySelector(".xyz");
         mobile_number = window.intlTelInput(mobile_number_input, {
-             separateDialCode: true,
-            preferredCountries: ["{{getCountryCode()}}"],
-            initialCountry: "{{getCountryCode()}}",
+            separateDialCode: true,
             hiddenInput: "full_number",
-            utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.3/js/utils.js"
-        });        
+            initialCountry: '{{$selectedCountryCode}}',
+            utilsScript: "{{ asset('telinput/js/utils.js') }}",        
+           });        
     }
 
     $(document).delegate('.iti__country', 'click', function() {

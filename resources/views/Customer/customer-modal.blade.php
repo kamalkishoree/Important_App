@@ -42,7 +42,7 @@
                                             {!! Form::label('title', __('Phone Number'),['class' => 'control-label']) !!}<br/>
                                             <div class="input-group">
                                                 {!! Form::text('phone_number', null, ['class' => 'form-control phone_number', 'id'=>'phone_number']) !!}
-                                                <input type="hidden" id="dialCode" name="dialCode" value="{{getCountryPhoneCode()}}">
+<!--                                                 <input type="hidden" id="dialCode" name="dialCode" value="{{getCountryPhoneCode()}}"> -->
                                             </div>
                                             <span class="invalid-feedback" role="alert">
                                                 <strong></strong>

@@ -397,11 +397,11 @@ session('preferences.map_key_1'):'kdsjhfkjsdhfsf'; $theme =
 	src="{{asset('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.js')}}"></script>
 <script src="{{asset('assets/libs/dropzone/dropzone.min.js')}}"></script>
 <script src="{{asset('assets/libs/dropify/dropify.min.js')}}"></script>
-<link
-rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.3/css/intlTelInput.css">
-<script
-src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.3/js/intlTelInput.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.3/js/utils.js"></script>
+<!-- <link -->
+<!-- rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.3/css/intlTelInput.css"> -->
+<!-- <script -->
+<!-- src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.3/js/intlTelInput.js"></script> -->
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.3/js/utils.js"></script> -->
 <!-- Page js-->
 
 <script>
@@ -525,7 +525,7 @@ src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.3/js/intlTelInpu
             }
         });
     });
-                 const phoneInputs = document.querySelectorAll(".phone_number");
+              /*   const phoneInputs = document.querySelectorAll(".phone_number");
                   phoneInputs.forEach(phoneInitializer);
                 function phoneInitializer(element)
                 {
@@ -554,8 +554,21 @@ src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.3/js/intlTelInpu
                         document.querySelector("#taskFormHeader .phone_number").addEventListener("countrychange", function() {
                             $("#taskFormHeader #dialCode").val(phone_number_intltel.getSelectedCountryData().dialCode);
                         });
-               }       
-         phoneInput();
+               }     */  
+    function phoneInput() {
+        //initialize intlTelInput
+        let phone_number_intltel = window.intlTelInput(document.querySelector("#taskFormHeader .phone_number"),{
+            separateDialCode: true,
+            preferredCountries:["{{getCountryCode()}}"],
+            initialCountry:"{{getCountryCode()}}",
+            hiddenInput: "full_number",
+            utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.3/js/utils.js"
+        });
+        document.querySelector("#taskFormHeader .phone_number").addEventListener("countrychange", function() {
+            $("#taskFormHeader #dialCode").val(phone_number_intltel.getSelectedCountryData().dialCode);
+        });
+    }
+   // phoneInput();
          
     var CSRF_TOKEN = $("input[name=_token]").val();
 

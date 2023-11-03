@@ -222,7 +222,7 @@
                                 <label for="phone_number" class="control-label">CONTACT NUMBER</label>
                                 <div class="input-group">
                                     <input type="text" name="phone_number" class="form-control phone_number"  id="phone_number" placeholder="Enter mobile number" maxlength="14">
-                                    <input type="hidden" name="dialCode" id="dialCode" value="{{getCountryPhoneCode()}}">
+<!--                                     <input type="hidden" name="dialCode" id="dialCode" value="{{getCountryPhoneCode()}}"> -->
                                 </div>
                                 <span class="invalid-feedback" role="alert">
                                     <strong></strong>

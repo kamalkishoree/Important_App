@@ -297,7 +297,7 @@
                                                                     </div>
                                                                     <div class="form-group mb-1 col-12">
                                                                         {!! Form::text('address_phone_number[]', null, ['class' => 'phone_number form-control address address_phone_number','placeholder' => __('Phone Number'),'id'=>'addHeader1-address_phone_number']) !!}
-                                                                        <input type="hidden" name="dialCode" id="dialCode" value="{{getCountryPhoneCode()}}">
+<!--                                                                         <input type="hidden" name="dialCode" id="dialCode" value="{{getCountryPhoneCode()}}"> -->
                                                                     </div>
                                                                 </div>
                                                             </div>
