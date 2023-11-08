@@ -1286,7 +1286,7 @@ class TaskController extends BaseController
             $pickup_location = $finalLocation;
             $agent_tags = $orders->agent_tags??'';
             $is_order_updated = 0;
-            if ($orders->allocation_type === 'a') {
+            if ($orders->auto_alloction == 'a') {
                 $geo = $this->createRoster($send_loc_id);
             }
             $notification_time = $orders->order_time;
