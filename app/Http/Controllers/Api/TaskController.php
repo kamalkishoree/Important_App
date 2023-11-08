@@ -1286,7 +1286,7 @@ class TaskController extends BaseController
             $pickup_location = $finalLocation;
             $agent_tags = $orders->agent_tags??'';
             $is_order_updated = 0;
-            if ($orders->allocation_type === 'a') {
+            if ($orders->auto_alloction == 'a') {
                 $geo = $this->createRoster($send_loc_id);
             }
             $notification_time = $orders->order_time;
@@ -1558,9 +1558,9 @@ class TaskController extends BaseController
             }
 
             if ($auth->custom_domain && !empty($auth->custom_domain)) {
-                $client_url = "https://" . $auth->custom_domain;
+                $client_url = "http://" . $auth->custom_domain;
             } else {
-                $client_url = "https://" . $auth->sub_domain . \env('SUBDOMAIN');
+                $client_url = "http://" . $auth->sub_domain . \env('SUBDOMAIN');
             }
             $dispatch_traking_url = $client_url . '/order/tracking/' . $auth->code . '/' . $orders->unique_id;
 
