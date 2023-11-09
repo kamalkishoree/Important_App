@@ -132,7 +132,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::get('/order-details/tracking/{clientcode}/{order_id}', 'TrackingController@OrderTrackingDetail')->name('order.tracking.detail');
 			Route::get('/order-cancel/tracking/{clientcode}/{order_id}', 'TrackingController@orderCancelFromOrder')->name('order.cancel.from_order');
 			Route::get('/order/driver-rating/{clientcode}/{order_id}', 'TrackingController@DriverRating')->name('order.driver.rating');
-			Route::get('/order/form-attribute/{clientcode}/{order_id}', 'TrackingController@OrderFormAttribute')->name('order.tracking');
+			Route::get('/order/form-attribute/{clientcode}/{order_id}', 'TrackingController@OrderFormAttribute');
 			Route::get('/order/driver_additional_rating/{clientcode}/{order_id}', 'TrackingController@OrderRatingform')->name('order.driverAdditional.rating');
 			Route::post('/order/submit_driver_additional_rating/{clientcode}/{order_id}', 'TrackingController@OrderRatingSubmit')->name('submit.driverAdditional.rating');
 			// Create agent connected account stripe

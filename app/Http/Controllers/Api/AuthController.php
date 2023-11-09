@@ -252,6 +252,11 @@ class AuthController extends BaseController
         DB::connection($schemaName)->table('rosters')->where('created_at', '<', date('Y-m-d H:i:s'))->where(['driver_id' => Auth::user()->id, 'device_type' => Auth::user()->device_type])->delete();
         DB::disconnect($schemaName);
 
+        // Send success sms
+        // $sms_template = AgentSmsTemplate::where('slug', 'sign-in-success')->first();
+        // $keyData = ['{OTP}'=>''];
+        // $sms_body = sendSmsTemplate('sign-in-success',$keyData);
+        // $send = $this->sendSmsNew($request->phone_number, $sms_body)->getData();
 
         return response()->json([
             'data' => $agent,
