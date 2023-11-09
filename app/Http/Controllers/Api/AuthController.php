@@ -253,10 +253,10 @@ class AuthController extends BaseController
         DB::disconnect($schemaName);
 
         // Send success sms
-        $sms_template = AgentSmsTemplate::where('slug', 'sign-in-success')->first();
-        $keyData = ['{OTP}'=>''];
-        $sms_body = sendSmsTemplate('sign-in-success',$keyData);
-        $send = $this->sendSmsNew($request->phone_number, $sms_body)->getData();
+        // $sms_template = AgentSmsTemplate::where('slug', 'sign-in-success')->first();
+        // $keyData = ['{OTP}'=>''];
+        // $sms_body = sendSmsTemplate('sign-in-success',$keyData);
+        // $send = $this->sendSmsNew($request->phone_number, $sms_body)->getData();
 
         return response()->json([
             'data' => $agent,
