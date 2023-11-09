@@ -1220,12 +1220,15 @@ class TaskController extends BaseController
                         
                       
 
-                        $orderdata = Order::select('id', 'order_time', 'status', 'driver_id')->with('agent')
+                        $orderdata = Order::select('id', 'order_time', 'status', 'driver_id','call_back_url','unique_id')->with('agent')
                             ->where('id', $order->id)
                             ->first();
+
+                           
                         // event(new \App\Events\loadDashboardData($orderdata));
                         if (isset($orderdata) && $orderdata->driver_id != null) {
                             if ($orderdata && $orderdata->call_back_url) {
+                               
                                 $call_web_hook = $this->updateStatusDataToOrder($orderdata, 2,1);  # task accepted
                             }
                         }
@@ -3253,11 +3256,15 @@ class TaskController extends BaseController
                 $code->code,
                 $order_details->unique_id
             ]);
+
             $client = new GClient([
                 'content-type' => 'application/json'
             ]);
+
             $url = $order_details->call_back_url;
             $dispatch_traking_url = $dispatch_traking_url ?? '';
+ 
+            
             $res = $client->get($url . '?dispatcher_status_option_id=' . $dispatcher_status_option_id . '&dispatch_traking_url=' . $dispatch_traking_url . '&type=' . $type);
             $response = json_decode($res->getBody(), true);
             if ($response) {
