@@ -1890,7 +1890,7 @@ class TaskController extends BaseController
 
                 lumenDispatchToQueue($geoid,$orders);
 
-            }elseif($request->call_notification !=1 ){
+            }elseif(1){
             if ($request->allocation_type === 'a' || $request->allocation_type === 'm') {
                 $allocation = AllocationRule::where('id', 1)->first();
                 $is_one_push_booking = isset($orders->is_one_push_booking) ? $orders->is_one_push_booking : 0;
