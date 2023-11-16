@@ -749,7 +749,7 @@ class TaskController extends BaseController
                 'call_back_url' => $request->call_back_url ?? null
             ];
 
-            \Log::info($order);
+        
 
             $orders = Order::create($order);
 
