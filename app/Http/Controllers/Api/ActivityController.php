@@ -806,46 +806,50 @@ class ActivityController extends BaseController
     {          
         $validator = Validator::make($request->all(), [
             'email' => 'required',
+            'refferal_code' => 'required',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['status' => 201, 'message' => $validator->errors()->first()], 201);
         }
 
-        // try {
+        try {
             $driver = Auth::user();
             $client = Client::first();
             
             $driver_refferal_detail = DriverRefferal::where('driver_id', $driver->id)->first();
             if ($driver_refferal_detail) {
                 $smtp = SmtpDetail::where('id', 1)->first();
-                if(!empty($smtp) && !empty($client->contact_email))
+                if(!empty($smtp))
                 {             
-                    $email_template_content = '';
+                    $email_template_content = 'Register yourself using {code} this referral code in {client_name} app';
                     $email_template_content = str_ireplace("{code}", $driver_refferal_detail->refferal_code, $email_template_content);
-                    $email_template_content = str_ireplace("{customer_name}", ucwords($driver->name), $email_template_content);
-                    
+                    $email_template_content = str_ireplace("{client_name}", ucwords($client->name), $email_template_content);
                     $sendto = $request->email;
                     $client_name = $client->name;
                     $mail_from = $smtp->from_address;
-                    $t = Mail::send('email.verify', [
+                    $t = Mail::send('email.refferal-user', [
                         'email' => $request->email,
+                        'customer_name' => $request->email,
                         'mail_from' => $smtp->from_address,
                         'client_name' => $client->name,
                         'code' => $request->refferal_code,
-                        'logo' => $client->logo['original'],
-                        'customer_name' => "Link from " . $driver->name,
-                        'code_text' => 'Register yourself using this referral code below to get bonus offer',
-                        'link' => url()."/user/register?refferal_code=" . $request->refferal_code,
-                        'email_template_content' => $email_template_content
+                        'client_logo' => $client->logo,
+                        'agent_name' => "Reffer from " . $driver->name,
+                        'agent_profile' => $driver->profile_picture,
+                        'link' => url("/signin?refferal_code=" . $request->refferal_code),
+                        'email_template_content' => $email_template_content,
                     ], function ($message) use ($sendto, $client_name, $mail_from) {
                         $message->from($mail_from, $client_name);
                         $message->to($sendto)->subject('Referral For Registration');
                     });
+
+                    return response()->json(['status' => 200,'message' => $t]);
+
                 }
             }
-        // } catch (Exception $e) {
-        //     return response()->json($e->getMessage());
-        // }
+        } catch (Exception $e) {
+            return response()->json(['status' => 500,'message' => $e->getMessage()],500);
+        }
     }
 }
