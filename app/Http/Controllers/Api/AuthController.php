@@ -699,6 +699,7 @@ class AuthController extends BaseController
             }
 
         }else{
+            return response()->json(['message' => 'referal code not exist','status' => 'error']);
         }
     }
 
