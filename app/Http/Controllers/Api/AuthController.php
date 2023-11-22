@@ -617,7 +617,7 @@ class AuthController extends BaseController
         }
 
         if (ClientPreference::value('refer_earn_driver_to_driver_toggle') == 1 && $request->refferal_code) {
-            $this->refferalToDriver($request);
+            $this->refferalToDriver($request,$agent->id);
         }
         
         if ($agent->wasRecentlyCreated ) {
@@ -681,7 +681,7 @@ class AuthController extends BaseController
         }
     }
 
-    public function refferalToDriver($request)
+    public function refferalToDriver($request,$agent_id)
     {
         $DriverRefferal = DriverRefferal::where('refferal_code', $request->refferal_code)->first();
         if($DriverRefferal){
@@ -689,12 +689,13 @@ class AuthController extends BaseController
             $client_preference_additional = ClientPreferenceAdditional::pluck('key_value','key_name');
             if ($client_preference_additional['refferel_by_agent_amount']) {
                 $agent_wallet = $agent->wallet;
-                $agent_wallet->deposit($client_preference_additional['refferel_by_agent_amount'], ['Referral code used by <b>' . $request->user_name . '</b>']);
+                $agent_wallet->deposit((float)($client_preference_additional['refferel_by_agent_amount']) * 100, ['Referral code used by <b>' . $request->user_name . '</b>']);
                 $agent_wallet->balance;
-            }elseif($client_preference_additional['refferel_to_agent_amount']){
-                $authAgent = Agent::where('id',Auth::id())->first();
+            }
+            if($client_preference_additional['refferel_to_agent_amount']){
+                $authAgent = Agent::where('id',$agent_id)->first();
                 $authAgent_wallet = $authAgent->wallet;
-                $authAgent_wallet->deposit($client_preference_additional['refferel_to_agent_amount'], ['Referral code used of <b>' . $agent->name . '</b>']);
+                $authAgent_wallet->deposit((float)($client_preference_additional['refferel_to_agent_amount']) * 100, ['Referral code used of <b>' . $agent->name . '</b>']);
                 $authAgent_wallet->balance;
             }
 

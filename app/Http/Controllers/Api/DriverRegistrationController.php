@@ -302,6 +302,7 @@ class DriverRegistrationController extends BaseController
             $data['all_teams'] = Team::OrderBy('id','desc')->get();
             $data['agent_tags'] = TagsForAgent::OrderBy('id','desc')->get();
             $data['vehicle_types'] = ((count($show_vehicle_type_icon)>0)?json_encode($show_vehicle_type_icon):json_encode(['1','2','3','4','5']));
+            $data['is_refferal_code_enable'] = ClientPreference::value('refer_earn_driver_to_driver_toggle');
             return response()->json([
                 'status' => 200,
                 'message' => 'Success!',

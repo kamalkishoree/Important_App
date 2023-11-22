@@ -428,6 +428,7 @@ class ActivityController extends BaseController
             $agents['unique_id'] = base64_encode('DId_'.$agent->id);
         }
         $agents['is_road_side_toggle']= $preferences->is_road_side_toggle;
+        $agents['is_refferal_code_enable'] = ClientPreference::value('refer_earn_driver_to_driver_toggle');
 
         $datas['user']                = $agents;
         $datas['tasks']               = $tasks;
