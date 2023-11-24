@@ -257,6 +257,7 @@ class AuthController extends BaseController
         // $keyData = ['{OTP}'=>''];
         // $sms_body = sendSmsTemplate('sign-in-success',$keyData);
         // $send = $this->sendSmsNew($request->phone_number, $sms_body)->getData();
+        $agent['is_refferal_code_enable'] = ClientPreference::value('refer_earn_driver_to_driver_toggle');
 
         return response()->json([
             'data' => $agent,
