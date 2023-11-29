@@ -33,6 +33,7 @@ class SendPushNotification
      */
     public function handle(PushNotification $event)
     {
+        Log::info('handle test');
         $date =  Carbon::now()->toDateTimeString();
         try {
             $schemaName = 'royodelivery_db';
