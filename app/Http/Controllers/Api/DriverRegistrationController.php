@@ -241,6 +241,7 @@ class DriverRegistrationController extends BaseController
                             'file_type' => $o->file_type,
                             'agent_id' => $agent->id,
                             'file_name' => $path,
+                            'document_id' => $o->id,
                             'label_name' => $o->filename1
                         ];
                     }
@@ -254,6 +255,7 @@ class DriverRegistrationController extends BaseController
                     'file_type' => $f->file_type,
                     'agent_id' => $agent->id,
                     'file_name' => json_encode($f->contents),
+                    'document_id' => $f->id,
                     'label_name' => $f->label_name
                 ];
                 $agent_docs = AgentDocs::create($files[$key]);
