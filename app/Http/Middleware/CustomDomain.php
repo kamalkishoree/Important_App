@@ -23,7 +23,7 @@ class CustomDomain
      */
     public function handle($request, Closure $next)
     {
-      die('pass');
+      
      // if(!Auth::user()){
       $domain = $request->getHost();
       $domain    = str_replace(array('http://', config('domainsetting.domain_set')), '', $domain);
