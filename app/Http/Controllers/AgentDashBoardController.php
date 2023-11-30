@@ -153,7 +153,7 @@ class AgentDashBoardController extends Controller
     //function to load latest order/route and agent data with or without html
     public function dashboardTeamData_old(Request $request)
     {
-        return $this->homePage($request);
+        return $this->teamData($request);
         $userstatus = isset($request->userstatus)?$request->userstatus:2;
         $team_ids = isset($request->team_id)?$request->team_id:'';
         $is_load_html = isset($request->is_load_html)?$request->is_load_html:1;

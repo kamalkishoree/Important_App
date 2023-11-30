@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 trait DispatcherOrders
 {
-    public function orderData($request)
+    public function orderData($request = null)
     {
         $sql = "SELECT *
         FROM client_preferences
@@ -21,10 +21,10 @@ trait DispatcherOrders
         $userstatus = isset($request->userstatus) ? $request->userstatus : 2;
         $checkuserroutes = isset($request->checkuserroutes) ? $request->checkuserroutes : '';
         $team_ids = isset($request->team_id) ? $request->team_id : '';
-        $is_load_html = isset($request->is_load_html) ? $request->is_load_html : 1;
+        $is_load_html = isset($request->is_load_html) ? $request->is_load_html : 0;
         $search_by_name = isset($request->search_by_name) ? $request->search_by_name : '';
         $agent_ids = isset($request->agent_id) ? $request->agent_id : '';
-        $branchId = $request->branchId;
+        $branchId = $request->branchId ?? '';
         $user = Auth::user();
         $auth = Client::where('code', $user->code)->with(['getAllocation', 'getPreference'])->first();
         
@@ -424,7 +424,7 @@ trait DispatcherOrders
         {
             return view('agent_dashboard_order_html', compact('un_order'))->with($data)->render();
         }else{
-            return json_encode($data);
+            return $data;
         }
 
     }

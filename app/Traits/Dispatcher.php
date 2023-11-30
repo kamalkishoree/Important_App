@@ -20,18 +20,18 @@ use Log;
 
 trait Dispatcher
 {
-    public function homePage($request)
+    public function teamData($request = null)
     {
         $userstatus = $request->userstatus ?? 2;
         $team_ids = $request->team_id ?? '';
-        $is_load_html = $request->is_load_html ?? 1;
+        $is_load_html = $request->is_load_html ?? 0;
         $search_by_name = $request->search_by_name ?? '';
         $user = Auth::user();
         $auth = Client::where('code', $user->code)->with(['getAllocation', 'getPreference'])->first();
         $tz = new Timezone();
         $auth->timezone = $tz->timezone_name($user->timezone);
 
-        $date = $request->routedate ? $date = Carbon::parse($request->routedate)->format('Y-m-d') : date('Y-m-d');
+        $date = isset($request->routedate) ? $date = Carbon::parse($request->routedate)->format('Y-m-d') : date('Y-m-d');
         $startdate = date("Y-m-d 00:00:00", strtotime($date));
         $enddate = date("Y-m-d 23:59:59", strtotime($date));
 
@@ -483,7 +483,7 @@ trait Dispatcher
        
         
         if (count($un_order)>=1) {
-            $unassigned_orders = $this->splitOrder($un_order);
+            $unassigned_orders = $this->splitOrderv2($un_order);
 
             if (count($unassigned_orders)>1) {
                 $unassigned_distance_mat = array();
@@ -501,6 +501,7 @@ trait Dispatcher
 
                     //for drawing route
                     $s_task = $singleua['task'][0];
+                    // pr($s_task);
                     switch($s_task['task_type_id']){
                         case 1:
                             $name = 'Pickup';
@@ -569,7 +570,7 @@ trait Dispatcher
         {
             return view('agent_dashboard_task_html_sql')->with($data)->render();
         }else{
-            return json_encode($data);
+            return $data;
         }
 
     }
