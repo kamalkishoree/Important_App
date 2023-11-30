@@ -507,6 +507,7 @@ class AgentController extends Controller
         }
 
         $driver_registration_documents = DriverRegistrationDocument::get();
+       
         foreach ($driver_registration_documents as $driver_registration_document) {
             $agent_docs = new AgentDocs();
             $name = str_replace(" ", "_", $driver_registration_document->name);
@@ -526,6 +527,7 @@ class AgentController extends Controller
             }
             $agent_docs->agent_id = $agent->id;
             $agent_docs->file_type = $driver_registration_document->file_type;
+            $agent_docs->document_id = $driver_registration_document->id;
             $agent_docs->label_name = $driver_registration_document->name;
             $agent_docs->save();
         }
@@ -781,6 +783,7 @@ class AgentController extends Controller
                     $agent_docs = AgentDocs::firstOrNew([
                         'agent_id' => $agent->id,
                         'label_name' => $driver_registration_document->name,
+                        'document_id' => $driver_registration_document->id,
                         'file_type' => $driver_registration_document->file_type
                     ]);
                     $agent_docs->file_name = $getFileName;
@@ -790,6 +793,7 @@ class AgentController extends Controller
                 $agent_docs = AgentDocs::firstOrNew([
                     'agent_id' => $agent->id,
                     'label_name' => $driver_registration_document->name,
+                    'document_id' => $driver_registration_document->id,
                     'file_type' => $driver_registration_document->file_type
                 ]);
                 $agent_docs->file_name = $request->$name;
