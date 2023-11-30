@@ -82,6 +82,7 @@ class DashBoardController extends Controller
         }
         $response = ['client_code' => Auth::user()->code, 'date' => $date, 'defaultCountryLongitude' => $defaultCountryLongitude, 'defaultCountryLatitude' => $defaultCountryLatitude,'map_key'=>$googleapikey,'client_timezone'=>$auth->timezone, 'searchTeams' => $teams, 'agentsData' => $agents , 'show_dashboard_by_agent_wise' =>$show_dashboard_by_agent_wise,'dashboard_theme'=>$dashboard_theme];
         $teamData = $this->teamData($request);
+        // pr($teamData);
         $response = array_merge($response, $teamData);
         $orderData = $this->orderData($request);
         $response = array_merge($response, $orderData);

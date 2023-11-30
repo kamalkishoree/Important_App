@@ -24,8 +24,13 @@
 
 
 
-
+@php
+    $teams = json_encode($teams, true);
+@endphp
 @section('script')
+    <script>
+        var teamData = `<?php echo $teams ?>`;
+        </script>
      @include("dashboard/parts/layout-$dashboard_theme/bottom")
 @endsection
 
