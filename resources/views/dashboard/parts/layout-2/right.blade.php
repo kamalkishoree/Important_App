@@ -73,7 +73,7 @@
             <div id="scrollbar" class="col-md-3 col-xl-3 left-sidebar pt-3">
                 <div class="side_head mb-2 py-2">
                     <div class="select_bar_date mb-2 d-flex align-items-center justify-content-center">
-                        <input type="date"  id="basic-datepicker" class="datetime form-control" value="{{date('Y-m-d', strtotime($date))}}" data-date-format="YY-mm-dd" onchange="handler();" style="width: 250px;">
+                        <input type="date"  id="basic-datepicker" class="datetime form-control" value="{{date('Y-m-d', strtotime($date))}}" data-date-format="YY-mm-dd" onchange="handler(this);" style="width: 250px;">
                         <div style="display:none">
                             <input class="newchecks filtercheck teamchecks" cla type="checkbox" value="-1" name="teamchecks[]" checked>
                             <input class="taskchecks filtercheck" type="checkbox" name="taskstatus[]" value="5" checked>
@@ -171,3 +171,81 @@
         $defaultmaplocation['long'] = $defaultCountryLongitude;
         $agentslocations[] = $defaultmaplocation;
     ?>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+    var channelname = "orderdata{{ $client_code }}{{ date('Y-m-d', time()) }}";
+    var logchannelname = "agentlog{{ $client_code }}{{ date('Y-m-d', time()) }}";
+    var imgproxyurl = {!! json_encode($imgproxyurl) !!};
+    var optimizeRouteUrl = "{{ url('/optimize-route') }}";
+    var optimizeArrangeRouteUrl = "{{ url('/optimize-arrange-route') }}";
+    var assignAgentUrl = "{{ route('assign.agent') }}";
+    var getRouteDetailUrl = "{{ route('get-route-detail') }}";
+    var X_CSRF_TOKEN = '{{ csrf_token() }}';
+    var iconsRoute = "{{ asset('assets/newicons/') }}";
+    var teamDataUrl = "{{ route('dashboard.teamsdata') }}";
+    var orderDataUrl = "{{ route('dashboard.orderdata') }}";
+    var channelName = "orderdata{{ $client_code }}";
+    var logChannelName = "agentlog{{ $client_code }}";
+    var dashboardTheme = "{{ $dashboard_theme }}";
+    var exportPathUrl = "{{ url('/export-path') }}";
+    var getTasks = "{{ url('/get-tasks') }}";
+    var arrangeRoute  = "{{ url('/arrange-route') }}";
+    var getAgentNomenclature = "{{ __(getAgentNomenclature()) }}";
+
+
+   
+    
+
+    // $(".datetime").on('change', function(){
+    //     loadTeams(1, 1);
+    //     loadOrders(1, 1);
+    //     old_channelname = channelname;
+    //     old_logchannelname = logchannelname;
+    //     channelname = "orderdata{{ $client_code }}"+$(this).val();
+    //     logchannelname = "agentlog{{ $client_code }}"+$(this).val();
+    //     if(old_channelname != channelname)
+    //     {
+    //         ListenDataChannel();
+    //         ListenAgentLogChannel();
+    //     }
+    // })
+
+    //function fot optimizing route
+    
+
+
+    
+
+
+
+    
+
+</script>

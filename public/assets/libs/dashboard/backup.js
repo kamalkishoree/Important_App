@@ -1,24 +1,24 @@
 
-    // var marker;
-    var show = [0];
-    let map, directionsRenderer;
-    let markers = [];
-    let driverMarkers = [];
-    let privesRoute = [];
-    let url = window.location.origin;
-    let olddata = [];
-    let allagent = [];
+    // // var marker;
+    // var show = [0];
+    // let map, directionsRenderer;
+    // let markers = [];
+    // let driverMarkers = [];
+    // let privesRoute = [];
+    // let url = window.location.origin;
+    // let olddata = [];
+    // let allagent = [];
 
-    // for getting default map location
-    let defaultmaplocation = [];
-    let defaultlat = 0.000;
-    let defaultlong = 0.000;
-    let allroutes = [];
-    let old_channelname = old_logchannelname = '';
-    let channelname = "orderdata{{ $client_code }}{{ date('Y-m-d', time()) }}";
-    let logchannelname = "agentlog{{ $client_code }}{{ date('Y-m-d', time()) }}";
-    let imgproxyurl = {!! json_encode($imgproxyurl) !!};
-    let directionsArray = [];
+    // // for getting default map location
+    // let defaultmaplocation = [];
+    // let defaultlat = 0.000;
+    // let defaultlong = 0.000;
+    // let allroutes = [];
+    // let old_channelname = old_logchannelname = '';
+    // let channelname = "orderdata{{ $client_code }}{{ date('Y-m-d', time()) }}";
+    // let logchannelname = "agentlog{{ $client_code }}{{ date('Y-m-d', time()) }}";
+    // let imgproxyurl = {!! json_encode($imgproxyurl) !!};
+    // let directionsArray = [];
 
     $(document).ready(function() {
         $('#wrapper').addClass('dshboard');
@@ -519,167 +519,167 @@
         $('#optimize-route-modal').modal('hide');
     }
 
-    // autoload dashbard
-    function loadTeams(is_load_html, is_show_loader) {
-        if (is_load_html == 1) {
-            closeAllAccordian();
-        }
-        if (is_show_loader == 1) {
-            spinnerJS.showSpinner();
-        }
-        var checkuserstatus = $('input[name="user_status"]:checked').val();
-        var team_id = $('#team_id').val();
-        var search_by_name = $('#search_by_name').val();
-        $.ajax({
-            type: 'POST',
-            url: "{{ route('dashboard.agent-teamsdata') }}",
-            headers: {
-                'X-CSRF-Token': '{{ csrf_token() }}',
-            },
-            data: {
-                'userstatus': checkuserstatus,
-                'team_id': team_id,
-                'search_by_name': search_by_name,
-                'is_load_html': is_load_html,
-                'routedate': $("#basic-datepicker").val()
-            },
-            success: function(result) {
-                olddata = allagent = defaultmaplocation = [];
-                //if Html is required to load or not, for agent's log it is not required
+    // // autoload dashbard
+    // function loadTeams(is_load_html, is_show_loader) {
+    //     if (is_load_html == 1) {
+    //         closeAllAccordian();
+    //     }
+    //     if (is_show_loader == 1) {
+    //         spinnerJS.showSpinner();
+    //     }
+    //     var checkuserstatus = $('input[name="user_status"]:checked').val();
+    //     var team_id = $('#team_id').val();
+    //     var search_by_name = $('#search_by_name').val();
+    //     $.ajax({
+    //         type: 'POST',
+    //         url: "{{ route('dashboard.agent-teamsdata') }}",
+    //         headers: {
+    //             'X-CSRF-Token': '{{ csrf_token() }}',
+    //         },
+    //         data: {
+    //             'userstatus': checkuserstatus,
+    //             'team_id': team_id,
+    //             'search_by_name': search_by_name,
+    //             'is_load_html': is_load_html,
+    //             'routedate': $("#basic-datepicker").val()
+    //         },
+    //         success: function(result) {
+    //             olddata = allagent = defaultmaplocation = [];
+    //             //if Html is required to load or not, for agent's log it is not required
 
-                if (is_load_html == 1) {
-                    $("#teams_container").empty();
-                    $("#teams_container").html(result);
+    //             if (is_load_html == 1) {
+    //                 $("#teams_container").empty();
+    //                 $("#teams_container").html(result);
 
-                    if (is_show_loader == 1) {
-                        spinnerJS.hideSpinner();
-                    }
-                    initializeSortable();
+    //                 if (is_show_loader == 1) {
+    //                     spinnerJS.hideSpinner();
+    //                 }
+    //                 initializeSortable();
 
-                    if ($("#newmarker_map_data").val() != '') {
-                        olddata = JSON.parse($("#newmarker_map_data").val());
-                    }
+    //                 if ($("#newmarker_map_data").val() != '') {
+    //                     olddata = JSON.parse($("#newmarker_map_data").val());
+    //                 }
 
-                    if ($("#agents_map_data").val() != '') {
-                        allagent = JSON.parse($("#agents_map_data").val());
-                    }
+    //                 if ($("#agents_map_data").val() != '') {
+    //                     allagent = JSON.parse($("#agents_map_data").val());
+    //                 }
 
-                    if ($("#uniquedrivers_map_data").val() != '') {
-                        allroutes = JSON.parse($("#uniquedrivers_map_data").val());
-                    }
+    //                 if ($("#uniquedrivers_map_data").val() != '') {
+    //                     allroutes = JSON.parse($("#uniquedrivers_map_data").val());
+    //                 }
 
-                    if ($("#agentslocations_map_data").val() != '') {
-                        defaultmaplocation = JSON.parse($("#agentslocations_map_data").val());
-                        defaultlat = parseFloat(defaultmaplocation[0].lat);
-                        defaultlong = parseFloat(defaultmaplocation[0].long);
-                    }
-                } else {
-                    var data1 = JSON.parse(result);
-                    if (data1['status'] ==
-                        "success") { // setting up required variables to refreshing the google map route
-                        olddata = data1['newmarker'];
-                        allagent = data1['agents'];
-                        allroutes = data1['routedata'];
-                        defaultlat = parseFloat(data1['defaultCountryLatitude']);
-                        defaultlong = parseFloat(data1['defaultCountryLongitude']);
-                    }
-                }
+    //                 if ($("#agentslocations_map_data").val() != '') {
+    //                     defaultmaplocation = JSON.parse($("#agentslocations_map_data").val());
+    //                     defaultlat = parseFloat(defaultmaplocation[0].lat);
+    //                     defaultlong = parseFloat(defaultmaplocation[0].long);
+    //                 }
+    //             } else {
+    //                 var data1 = JSON.parse(result);
+    //                 if (data1['status'] ==
+    //                     "success") { // setting up required variables to refreshing the google map route
+    //                     olddata = data1['newmarker'];
+    //                     allagent = data1['agents'];
+    //                     allroutes = data1['routedata'];
+    //                     defaultlat = parseFloat(data1['defaultCountryLatitude']);
+    //                     defaultlong = parseFloat(data1['defaultCountryLongitude']);
+    //                 }
+    //             }
 
-                initMap(is_load_html);
-            },
-            error: function(data) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops',
-                    text: 'There is some issue. Try again later',
-                });
-                if (is_load_html == 1) {
-                    spinnerJS.hideSpinner();
-                }
-            }
-        });
-    }
+    //             initMap(is_load_html);
+    //         },
+    //         error: function(data) {
+    //             Swal.fire({
+    //                 icon: 'error',
+    //                 title: 'Oops',
+    //                 text: 'There is some issue. Try again later',
+    //             });
+    //             if (is_load_html == 1) {
+    //                 spinnerJS.hideSpinner();
+    //             }
+    //         }
+    //     });
+    // }
 
-    // autoload dashbard
-    function loadOrders(is_load_html, is_show_loader, url = '') {
-        if (is_load_html == 1) {
-            closeAllAccordian();
-        }
-        if (is_show_loader == 1) {
-            spinnerJS.showSpinner();
-        }
-        var checkuserroutes = $('input[name="user_routes"]:checked').val();
-        var agent_id = $('#agent_id').val();
-        url = url ? url : "{{ route('dashboard.agent-orderdata') }}";
-        $.ajax({
-            type: 'POST',
-            url: url,
-            headers: {
-                'X-CSRF-Token': '{{ csrf_token() }}',
-            },
-            data: {
-                'agent_id': agent_id,
-                'checkuserroutes': checkuserroutes,
-                'is_load_html': is_load_html,
-                'routedate': $("#basic-datepicker").val()
-            },
-            success: function(result) {
-                olddata = allagent = defaultmaplocation = [];
+    // // autoload dashbard
+    // function loadOrders(is_load_html, is_show_loader, url = '') {
+    //     if (is_load_html == 1) {
+    //         closeAllAccordian();
+    //     }
+    //     if (is_show_loader == 1) {
+    //         spinnerJS.showSpinner();
+    //     }
+    //     var checkuserroutes = $('input[name="user_routes"]:checked').val();
+    //     var agent_id = $('#agent_id').val();
+    //     url = url ? url : "{{ route('dashboard.agent-orderdata') }}";
+    //     $.ajax({
+    //         type: 'POST',
+    //         url: url,
+    //         headers: {
+    //             'X-CSRF-Token': '{{ csrf_token() }}',
+    //         },
+    //         data: {
+    //             'agent_id': agent_id,
+    //             'checkuserroutes': checkuserroutes,
+    //             'is_load_html': is_load_html,
+    //             'routedate': $("#basic-datepicker").val()
+    //         },
+    //         success: function(result) {
+    //             olddata = allagent = defaultmaplocation = [];
 
-                //if Html is required to load or not, for agent's log it is not required
+    //             //if Html is required to load or not, for agent's log it is not required
 
-                if (is_load_html == 1) {
-                    $("#agent_route_container").empty();
-                    $("#agent_route_container").html(result);
+    //             if (is_load_html == 1) {
+    //                 $("#agent_route_container").empty();
+    //                 $("#agent_route_container").html(result);
 
-                    if (is_show_loader == 1) {
-                        spinnerJS.hideSpinner();
-                    }
-                    initializeSortable();
+    //                 if (is_show_loader == 1) {
+    //                     spinnerJS.hideSpinner();
+    //                 }
+    //                 initializeSortable();
 
-                    /*  if($("#newmarker_map_data").val()!=''){
-                          olddata  = JSON.parse($("#newmarker_map_data").val());
-                      }
+    //                 /*  if($("#newmarker_map_data").val()!=''){
+    //                       olddata  = JSON.parse($("#newmarker_map_data").val());
+    //                   }
 
-                      if($("#agents_map_data").val()!=''){
-                          allagent  = JSON.parse($("#agents_map_data").val());
-                      }
+    //                   if($("#agents_map_data").val()!=''){
+    //                       allagent  = JSON.parse($("#agents_map_data").val());
+    //                   }
 
-                      if($("#uniquedrivers_map_data").val()!=''){
-                          allroutes  = JSON.parse($("#uniquedrivers_map_data").val());
-                      }
+    //                   if($("#uniquedrivers_map_data").val()!=''){
+    //                       allroutes  = JSON.parse($("#uniquedrivers_map_data").val());
+    //                   }
 
-                      if($("#agentslocations_map_data").val()!=''){
-                          defaultmaplocation = JSON.parse($("#agentslocations_map_data").val());
-                          defaultlat = parseFloat(defaultmaplocation[0].lat);
-                          defaultlong = parseFloat(defaultmaplocation[0].long);
-                      }*/
-                } else {
-                    var data1 = JSON.parse(result);
-                    if (data1['status'] ==
-                        "success") { // setting up required variables to refreshing the google map route
-                        olddata = data1['newmarker'];
-                        allagent = data1['agents'];
-                        allroutes = data1['routedata'];
-                        defaultlat = parseFloat(data1['defaultCountryLatitude']);
-                        defaultlong = parseFloat(data1['defaultCountryLongitude']);
-                    }
-                }
+    //                   if($("#agentslocations_map_data").val()!=''){
+    //                       defaultmaplocation = JSON.parse($("#agentslocations_map_data").val());
+    //                       defaultlat = parseFloat(defaultmaplocation[0].lat);
+    //                       defaultlong = parseFloat(defaultmaplocation[0].long);
+    //                   }*/
+    //             } else {
+    //                 var data1 = JSON.parse(result);
+    //                 if (data1['status'] ==
+    //                     "success") { // setting up required variables to refreshing the google map route
+    //                     olddata = data1['newmarker'];
+    //                     allagent = data1['agents'];
+    //                     allroutes = data1['routedata'];
+    //                     defaultlat = parseFloat(data1['defaultCountryLatitude']);
+    //                     defaultlong = parseFloat(data1['defaultCountryLongitude']);
+    //                 }
+    //             }
 
-                initMap(is_load_html);
-            },
-            error: function(data) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops',
-                    text: 'There is some issue. Try again later',
-                });
-                if (is_load_html == 1) {
-                    spinnerJS.hideSpinner();
-                }
-            }
-        });
-    }
+    //             initMap(is_load_html);
+    //         },
+    //         error: function(data) {
+    //             Swal.fire({
+    //                 icon: 'error',
+    //                 title: 'Oops',
+    //                 text: 'There is some issue. Try again later',
+    //             });
+    //             if (is_load_html == 1) {
+    //                 spinnerJS.hideSpinner();
+    //             }
+    //         }
+    //     });
+    // }
 
 
     function initializeSortable() {

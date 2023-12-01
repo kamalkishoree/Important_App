@@ -1,134 +1,3 @@
-$(document).ready(function () {
-    var date = $("#birthdatepicker").val();
-    var value = $(this).attr("data-value");
-    //get_filter_details();
-    //ListenDataChannel();
-    ListenAgentLogChannel();
-    //    $(".timeago").timeago();
-    $(document).delegate(".checkuserstatus", "click", function () {
-        $("#agent-id").empty();
-        var value = $(this).attr("data-value");
-        loadTeams(0, 0, value, 0);
-    });
-    //order_details(val = "", date,start_time="",endtime="");
-    $(document).delegate(".checkOrderStatus", "click", function () {
-        var dates = $("#birthdatepicker").val();
-        var val = $(this).attr("data-value");
-        $(".current_task_status").val(val);
-        order_details(val, dates, (start_time = ""), (endtime = ""));
-    });
-
-    $(document).delegate(".applyBtn", "click", function () {
-        var date = $("#birthdatepicker").val();
-        order_details((val = ""), date, (start_time = ""), (endtime = ""));
-        var value = $(this).attr("data-value");
-        loadTeams(0, 0, value, 0);
-    });
-
-    $(document).delegate(".order_number", "click", function () {
-        var val = $(this).attr("data-orderNum");
-        $("#order_ids").text(val);
-        $("#order_num").val(val);
-    });
-
-    $(document).delegate(".order_number", "click", function () {
-        var val = $(this).attr("data-orderNum");
-        $.ajax({
-            type: "POST",
-            url: get_agent_distance,
-            headers: {
-                "X-CSRF-Token": X_CSRF_Token,
-            },
-            data: {
-                order_number: val,
-            },
-            success: function (response) {
-                $("#agentmenu").empty();
-                jQuery.each(response, function (index, element) {
-                    if (element.distance != null) {
-                        $("#agentmenu").append(
-                            "<option value=" +
-                                element.id +
-                                ">" +
-                                element.name +
-                                " <span>" +
-                                element.distance +
-                                "</span></option>"
-                        );
-                    } else {
-                        $("#agentmenu").append(
-                            "<option value=" +
-                                element.id +
-                                ">" +
-                                element.name +
-                                "</option>"
-                        );
-                    }
-                });
-            },
-        });
-    });
-
-    $(document).delegate("#show_path", "click", function () {
-        var order_details = $("#order_id").val();
-        $.ajax({
-            type: "POST",
-            url: order_detail,
-            headers: {
-                "X-CSRF-Token": X_CSRF_Token,
-            },
-            data: {
-                order_number: order_details,
-            },
-            success: function (response) {
-                pathlatlng = pathlatLong(response.order_details.task);
-                //console.log(pathlatlng);
-                agentlatlng = agentlatLong(response.agent_logs);
-                initMap(pathlatlng, agentlatlng, "ShowPath");
-            },
-        });
-    });
-
-    //check map is initialized
-    checkInitMap(1)
-
-
-
-    var data1 = JSON.parse(teamData);
- 
-    allteams = data1['teams'];
-    console.log(data1)
-    
-    const output = mapData(data1);
-
-    var cluster_filter = $('.dark_theme2').val();
-    // if(cluster_filter=='1'){
-    //     specificMap(pending_task); 
-    // }
-    const latlong = maplatLong(data1);
-    var agent_location = $('.dark_theme3').val();
-    // if(refresh ==0){
-      
-        map = checkInitMap(is_initMap);
-
-    // }
-    // if (agent_location == '1') {
-        AgentLocationMap(latlong)
-    // }
-     specificMap(output)
-});
-
-$(document).delegate(".dispatch", "click", function () {
-    $(".filter-dropdown").slideToggle();
-});
-
-$(document).delegate(".checking", "click", function () {
-    var agent_location = $(".dark_theme3").val();
-});
-
-// $(document).delegate("#birthdatepicker", "click", function () {
-//     $('.drp-calendar.left, .daterangepicker').hide();
-// });
 
 function agent_html(data) {
     return `<div id="agent_tab_${
@@ -154,39 +23,7 @@ function agent_html(data) {
     }"
     ></i></span> </div> </div> <hr class="my-2"> </div>`;
 }
-function loadTeams(
-    is_load_html,
-    is_show_loader,
-    value,
-    teamid,
-    dates,
-    refresh = 0
-) {
-    var teamid = teamid;
-    var checkuserstatus = value;
-    $.ajax({
-        type: "POST",
-        url: teamsdata,
-        headers: {
-            "X-CSRF-Token": X_CSRF_Token,
-        },
-        data: {
-            userstatus: checkuserstatus,
-            teamid: teamid,
-            is_load_html: is_load_html,
-            routedate: $("#basic-datepicker").val(),
-            dates: $("#birthdatepicker").val(),
-        },
-        success: handleTeamData,
-        error: function (data) {
-            console.log(data);
-            //alert('There is some issue. Try again later');
-            if (is_load_html == 1) {
-                spinnerJS.hideSpinner();
-            }
-        },
-    });
-}
+
 
 function order_details(val, date, start_time, end_time) {
     var checkorderstatus = val;
@@ -251,7 +88,7 @@ function order_details(val, date, start_time, end_time) {
         },
     });
 }
-$(document).delegate(".agent_detail", "click", function () {
+$(document).on(".agent_detail", "click", function () {
     var agent_id = $(this).attr("agent_value");
     var team_name = $(this).attr("agent_name");
 
@@ -328,20 +165,20 @@ function agent_details(agent_id) {
         },
     });
 }
-$(document).delegate(".cross", "click", function () {
+$(document).on(".cross", "click", function () {
     $("#completed_tab1").css("display", "none");
     var dates = $("#birthdatepicker").val();
     var val = $(".current_task_status").val();
     order_details(val, dates, (start_time = ""), (endtime = ""));
 });
-$(document).delegate(".team_detail", "click", function () {
+$(document).on(".team_detail", "click", function () {
     var team_details = $(this).attr("team_value");
     var team_name = $(this).text();
     $("#all_teams").text(team_name);
     var value = $(this).attr("data-value");
     loadTeams(0, 0, value, team_details);
 });
-$(document).delegate(".agent_detail_check", "click", function () {
+$(document).on(".agent_detail_check", "click", function () {
     var order_details = $(this).attr("data-values");
     var order_id = $(this).attr("data-id");
     var i = 0;
@@ -355,7 +192,7 @@ $(document).delegate(".agent_detail_check", "click", function () {
     i++;
 });
 
-$(document).delegate("#sub", "click", function () {
+$(document).on("#sub", "click", function () {
     var order_number = $("#order_num").val();
     var agent_id = $("#agentmenu").val();
     var order_status = $("#order_status").val();
@@ -389,7 +226,7 @@ $(document).delegate("#sub", "click", function () {
         },
     });
 });
-$(document).delegate(".check_task_btn", "click", function () {
+$(document).on(".check_task_btn", "click", function () {
     var orderid = $(this).data("orderid");
     get_task_lat_lng(orderid);
 });
@@ -537,7 +374,6 @@ function AgentLocationMap(result) {
                     infoWindow.open(marker.getMap(), marker);
                     markers.push(marker);
                 });
-                //  console.log(marks);
                 //     const markerCluster = new markerClusterer.MarkerClusterer({ map, marks});
                 return marker;
             }
@@ -557,7 +393,6 @@ function agentlatLong(agentLogs) {
 }
 
 function specificMap(result) {
-    console.log(result)
     var cluster_filter = $(".dark_theme2").val();
     if (cluster_filter == "1") {
         const infoWindow = new google.maps.InfoWindow({
@@ -784,7 +619,7 @@ function agenticon(is_available, is_busy) {
     };
     return image;
 }
-$(document).delegate(".filter_update", "click", function () {
+$(document).on(".filter_update", "click", function () {
     var filter_id = $(this).attr("filter-value");
     $.ajax({
         type: "POST",
@@ -829,7 +664,7 @@ $("#teammenus").change(function () {
     });
 });
 $(document).on("click", ".mdi-deletes", function (e) {
-    var r = confirm("{{__('Are you sure?')}}");
+    var r = confirm("Are you sure?");
     if (r == true) {
         var taskid = $(this).attr("data_orderids");
         e.preventDefault();
@@ -850,76 +685,21 @@ $(document).on("click", ".mdi-deletes", function (e) {
     }
 });
 
-$("#fencemenus").change(function () {
-    var fence_id = $("#fencemenus").val();
-    $.ajax({
-        type: "POST",
-        url: get_geo_fence_agents,
-        headers: {
-            "X-CSRF-Token": X_CSRF_Token,
-        },
-        data: {
-            geo_id: fence_id,
-        },
-        success: function (response) {
-            $("#agentmenu").empty();
-            jQuery.each(response.agents, function (index, element) {
-                $("#agentmenu").append(
-                    "<option value=" +
-                        element.agent.id +
-                        ">" +
-                        element.agent.name +
-                        "</option>"
-                );
-            });
-        },
-    });
-});
+// function initMap(latlang, agentLogs = "", action = "") {
+//     var latlngArray = latlang;
+//     var patharray = [];
+//     for (var i = 0; i < latlngArray.length; i++) {
+//         if (latlngArray[i][0] != "t") {
+//             patharray.push(
+//                 new google.maps.LatLng(
+//                     latlngArray[i][0]["lat"],
+//                     latlngArray[i][0]["lng"]
+//                 )
+//             );
+//         }
+//     }
 
-$("#tagmenus").change(function () {
-    var tag_id = $("#tagmenus").val();
-    $.ajax({
-        type: "POST",
-        url: get_agents_tags,
-        headers: {
-            "X-CSRF-Token": X_CSRF_Token,
-        },
-        data: {
-            tag_id: tag_id,
-        },
-        success: function (response) {
-            console.log(response);
-            $("#agentmenu").empty();
-            if (response.agents != null) {
-                jQuery.each(response.agents, function (index, element) {
-                    $("#agentmenu").append(
-                        "<option value=" +
-                            element.agents.id +
-                            ">" +
-                            element.agents.name +
-                            "</option>"
-                    );
-                });
-            }
-        },
-    });
-});
-
-function initMap(latlang, agentLogs = "", action = "") {
-    var latlngArray = latlang;
-    var patharray = [];
-    for (var i = 0; i < latlngArray.length; i++) {
-        if (latlngArray[i][0] != "t") {
-            patharray.push(
-                new google.maps.LatLng(
-                    latlngArray[i][0]["lat"],
-                    latlngArray[i][0]["lng"]
-                )
-            );
-        }
-    }
-
-    var agentlatlngArray = agentLogs;
+//     var agentlatlngArray = agentLogs;
     // if(action == 'ShowPath') {
     //     if(agentlatlngArray.length > 0) {
     //         var end = parseInt(agentlatlngArray.length) - parseInt(1);
@@ -930,48 +710,49 @@ function initMap(latlang, agentLogs = "", action = "") {
     //         alert("This Agent is not start the ride");
     //     }
     // }
-    initMap1(patharray, agentLogs);
-}
+    // initMap1(patharray, agentLogs);
+// }
 
-function initMap1(patharray, agentLogs = "") {
-    infowindow = new google.maps.InfoWindow({
-        size: new google.maps.Size(150, 50),
-    });
-    // Instantiate a directions service.
-    directionsService = new google.maps.DirectionsService();
-    const directionsRenderer = new google.maps.DirectionsRenderer();
-    // Create a map and center it on Manhattan.
-    var myOptions = {
-        zoom: 3,
-        mapTypeId: google.maps.MapTypeId.ROADMAP,
-    };
-    map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+// function initMap1(patharray, agentLogs = "") {
+//     infowindow = new google.maps.InfoWindow({
+//         size: new google.maps.Size(150, 50),
+//     });
+//     // Instantiate a directions service.
+//     directionsService = new google.maps.DirectionsService();
+//     const directionsRenderer = new google.maps.DirectionsRenderer();
+//     // Create a map and center it on Manhattan.
+//     var myOptions = {
+//         zoom: 3,
+//         mapTypeId: google.maps.MapTypeId.ROADMAP,
+//     };
+//     map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 
-    // Create a renderer for directions and bind it to the map.
-    var rendererOptions = {
-        map: map,
-    };
-    directionsRenderer.setMap(map);
-    calculateAndDisplayRoute(
-        directionsService,
-        directionsRenderer,
-        patharray,
-        agentLogs
-    );
-    // Instantiate an info window to hold step text.
-    stepDisplay = new google.maps.InfoWindow();
+//     // Create a renderer for directions and bind it to the map.
+//     var rendererOptions = {
+//         map: map,
+//     };
+//     directionsRenderer.setMap(map);
+//     calculateAndDisplayRoute(
+//         directionsService,
+//         directionsRenderer,
+//         patharray,
+//         agentLogs
+//     );
+//     // Instantiate an info window to hold step text.
+//     stepDisplay = new google.maps.InfoWindow();
 
-    polyline = new google.maps.Polyline({
-        path: [],
-        strokeColor: "#FF0000",
-        strokeWeight: 3,
-    });
-    poly2 = new google.maps.Polyline({
-        path: [],
-        strokeColor: "#FF0000",
-        strokeWeight: 3,
-    });
-}
+//     polyline = new google.maps.Polyline({
+//         path: [],
+//         strokeColor: "#FF0000",
+//         strokeWeight: 3,
+//     });
+//     poly2 = new google.maps.Polyline({
+//         path: [],
+//         strokeColor: "#FF0000",
+//         strokeWeight: 3,
+//     });
+// }
+
 async function calculateAndDisplayRoute(
     directionsService,
     directionsRenderer,
@@ -1000,7 +781,6 @@ async function calculateAndDisplayRoute(
     }
     const start = patharray[0];
     const end = patharray[1];
-    console.log(patharray);
     directionsService
         .route({
             origin: start,
@@ -1008,7 +788,6 @@ async function calculateAndDisplayRoute(
             travelMode: google.maps.TravelMode.DRIVING,
         })
         .then((response) => {
-            console.log(response);
             directionsRenderer.setDirections(response);
             var bounds = new google.maps.LatLngBounds();
             var route = response.routes[0];
@@ -1358,7 +1137,7 @@ function get_details(order_details, order_number) {
         },
     });
 }
-$(document).delegate(".attachment", "click", function () {
+$(document).on(".attachment", "click", function () {
     var attachemt_id = $("#attachment_id").val();
     $("#proofmodal").modal("show");
     $.ajax({
@@ -1418,6 +1197,7 @@ async function get_filter_details() {
 function getUser(search) {
     return mark.find(({ id }) => +id === search) ?? "Not working";
 }
+
 function MoveAgentLocation(data) {
     //var data = data;
     image =
@@ -1449,6 +1229,59 @@ function MoveAgentLocation(data) {
 function moveBus(map, marker, data, image) {
     marker.setPosition(new google.maps.LatLng(data.lat, data.lng));
     marker.setIcon(image);
+}
+
+//function to listen different channels of event of different dates and different agent status
+function ListenDataChannel() {
+    //leave/not listen previous channel in case filters have been changed
+    Echo.leave(old_channelname);
+
+    //listen route add/update/delete/assigned/completed event
+    Echo.channel(channelname)
+        .listen('loadDashboardData', (e) => {
+            var heading = "";
+            var message = "";
+            var toastcolor = "";
+            if (typeof(e.order_status) != "undefined") {
+                if (e.order_status == "unassigned") {
+                    heading = "Created";
+                    message = "Route Created/Updated.";
+                    toastcolor = "green";
+                } else if (e.order_status == "assigned") {
+                    heading = "Assigned";
+                    message = "Route Assigned to {{ __(getAgentNomenclature()) }}.";
+                    toastcolor = "orange";
+                } else if (e.order_status == "completed") {
+                    heading = "Completed";
+                    message = "Route Completed by {{ __(getAgentNomenclature()) }}.";
+                    toastcolor = "green";
+                } else {
+                    heading = "Deleted";
+                    message = "Route Deleted.";
+                    toastcolor = "red";
+                }
+            } else {
+                heading = "Deleted";
+                message = "Route Deleted.";
+                toastcolor = "red";
+            }
+
+            if (heading != '') {
+                loadTeams(1, 0);
+                $.toast({
+                    heading: heading,
+                    text: message,
+                    showHideTransition: 'slide',
+                    bgColor: toastcolor,
+                    textColor: '#eee',
+                    allowToastClose: true,
+                    hideAfter: 5000,
+                    stack: 5,
+                    textAlign: 'left',
+                    position: 'top-right'
+                });
+            }
+        });
 }
 
 function ListenAgentLogChannel() {
@@ -1496,5 +1329,238 @@ function AgentCreatedOrUpdate(data) {
         $("#incative").text(data.offline_agents);
         $("#all").text(data.agent_count);
         $("#freeagent").append(agent_html(data));
+    }
+}
+
+function cancleForm() {
+    $('#optimizerouteform').trigger("reset");
+    $('#optimize-route-modal').modal('hide');
+}
+
+
+function initializeSortable() {
+    $(".dragable_tasks").sortable({
+        update: function(event, ui) {
+            $('.routetext').text('Arranging Route');
+            spinnerJS.showSpinner();
+            var divid = $(this).attr('id');
+            var params = $(this).attr('params');
+            var agentid = $(this).attr('agentid');
+            var date = $(this).attr('date');
+
+            var taskorder = "";
+            jQuery("#" + divid + " .card-body.ui-sortable-handle").each(function(index, element) {
+                taskorder = taskorder + $(this).attr('task_id') + ",";
+            });
+            $('input[type=radio][name=driver_start_location]').prop('checked', false);
+            $.ajax({
+                type: 'POST',
+                url: arrangeRoute,
+                headers: {
+                    'X-CSRF-Token': X_CSRF_TOKEN,
+                },
+                data: {
+                    'taskids': taskorder,
+                    'agentid': agentid,
+                    'date': date
+                },
+
+                success: function(response) {
+                    var data = $.parseJSON(response);
+
+                    $('.totdis' + agentid).html(data.total_distance);
+                    var funperams =
+                        '<span class="optimize_btn" onclick="RouteOptimization(' + params +
+                        ')">Optimize</span>';
+                    $('.optimizebtn' + agentid).html(funperams);
+                    spinnerJS.hideSpinner();
+                    $('#routeTaskIds').val(taskorder);
+                    $('#routeMatrix').val('');
+                    $('#routeOptimize').val('');
+                    $('#routeAgentid').val(agentid);
+                    $('#routeDate').val(date);
+                    $('#optimizeType').val('dragdrop');
+                    $("input[name='driver_start_location'][value='current']").prop(
+                        "checked", true);
+                    $('#addressBlock').css('display', 'none');
+                    $('#addressTaskBlock').css('display', 'none');
+                    $('#selectedtasklocations').html('');
+                    $('.selecttask').css('display', 'none');
+
+                    if (data.current_location == 0) {
+                        $("input[type=radio][name=driver_start_location][value='current']")
+                            .remove();
+                        $("#radio-current-location-span").remove();
+                        $("input[type=radio][name=driver_start_location][value='select']")
+                            .click();
+                    }
+                    $('#optimize-route-modal').modal('show');
+                },
+                error: function(response) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops',
+                        text: 'There is some issue. Try again later',
+                    });
+                    spinnerJS.hideSpinner();
+                }
+            });
+        }
+    });
+}
+
+function reloadData() {
+    location.reload();
+}
+
+function openAllAccordian() {
+    $("#accordion").find(`[data-toggle="collapse"]`).removeClass('collapsed');
+    $("#accordion").find(`[data-toggle="collapse"]`).attr('aria-expanded', 'true');
+    $(".collapse").addClass('show');
+    $(".allAccordian").html('<span class="" onclick="closeAllAccordian()">Close All</span>');
+}
+
+function closeAllAccordian() {
+    $("#accordion").find(`[data-toggle="collapse"]`).addClass('collapsed');
+    $("#accordion").find(`[data-toggle="collapse"]`).attr('aria-expanded', 'false');
+    $(".collapse").removeClass('show');
+    $(".allAccordian").html('<span class="" onclick="openAllAccordian()">Open All</span>');
+}
+
+function NavigatePath(taskids, distancematrix, optimize, agentid, date) {
+    $('.routetext').text('Exporting Pdf');
+    spinnerJS.showSpinner()
+
+    $.ajax({
+        type: 'POST',
+        url: exportPathUrl,
+        headers: {
+            'X-CSRF-Token': X_CSRF_TOKEN,
+        },
+        data: {
+            'taskids': taskids,
+            'agentid': agentid,
+            'date': date
+        },
+
+        success: function(response) {
+            if (response != "Try again later") {
+                $('#pdfvalue').val(response);
+                $("#pdfgenerate").submit();
+                spinnerJS.hideSpinner()
+            } else {
+                alert(response);
+                spinnerJS.hideSpinner()
+            }
+        },
+        error: function(response) {
+
+        }
+    });
+}
+
+function RouteOptimization(taskids, distancematrix, optimize, agentid, date) {
+    $('#routeTaskIds').val(taskids);
+    $('#routeMatrix').val(distancematrix);
+    $('#routeOptimize').val(optimize);
+    $('#routeAgentid').val(agentid);
+    $('#routeDate').val(date);
+    $('#optimizeType').val('optimize');
+    $("input[name='driver_start_location'][value='current']").prop("checked", true);
+    $('#addressBlock').css('display', 'none');
+    $('#addressTaskBlock').css('display', 'none');
+    $('#selectedtasklocations').html('');
+    $('.selecttask').css('display', '');
+    $.ajax({
+        type: 'POST',
+        url: getTasks,
+        headers: {
+            'X-CSRF-Token': X_CSRF_TOKEN,
+        },
+        data: {
+            'taskids': taskids
+        },
+        success: function(response) {
+            var data = $.parseJSON(response);
+            for (var i = 0; i < data.length; i++) {
+                var object = data[i];
+                var task_id = object['id'];
+                var tasktypeid = object['task_type_id'];
+                var current_location = object['current_location'];
+                if (current_location == 0) {
+                    $('input[type=radio][name=driver_start_location]').prop('checked', false);
+                    $("input[type=radio][name=driver_start_location][value='current']").remove();
+                    $("#radio-current-location-span").remove();
+                    $("input[type=radio][name=driver_start_location][value='select']").click();
+                }
+
+                if (tasktypeid == 1) {
+                    tasktype = "Pickup";
+                } else if (tasktypeid == 2) {
+                    tasktype = "Dropoff";
+                } else {
+                    tasktype = "Appointment";
+                }
+
+                var location_address = object['location']['address'];
+                var shortname = object['location']['short_name'];
+
+                var option = '<option value="' + task_id + '">' + tasktype + ' - ' + shortname + ' - ' +
+                    location_address + '</option>';
+                $('#selectedtasklocations').append(option);
+            }
+        },
+        error: function(response) {
+
+        }
+    });
+    $('#optimize-route-modal').modal('show');
+}
+
+ // function for displaying route  on map
+ function calculateAndDisplayRoute(directionsService, directionsRenderer, map, alltask, agent_location) {
+    const waypts = [];
+    const checkboxArray = document.getElementById("waypoints");
+
+    for (let i = 0; i < alltask.length; i++) {
+        if (i != alltask.length - 1 && alltask[i].task_status != 4 && alltask[i].task_status != 5) {
+            waypts.push({
+                location: new google.maps.LatLng(parseFloat(alltask[i].latitude), parseFloat(alltask[i]
+                    .longitude)),
+                stopover: true,
+            });
+        }
+        var image = url + '/assets/newicons/' + alltask[i].task_type_id + '.png';
+    }
+
+    directionsService.route({
+            origin: new google.maps.LatLng(parseFloat(agent_location.lat), parseFloat(agent_location.long)),
+            destination: new google.maps.LatLng(parseFloat(alltask[alltask.length - 1].latitude),
+                parseFloat(alltask[alltask.length - 1].longitude)),
+            waypoints: waypts,
+            optimizeWaypoints: false,
+            travelMode: google.maps.TravelMode.DRIVING,
+        },
+        (response, status) => {
+            if (status === "OK" && response) {
+                directionsRenderer.setDirections(response);
+                directionsArray.push(directionsRenderer);
+            } else {
+                //window.alert("Directions request failed due to " + status);
+            }
+        }
+    );
+}
+
+function gm_authFailure() { 
+    $('.excetion_keys').append(
+        '<span><i class="mdi mdi-block-helper mr-2"></i> <strong>Google Map</strong> key is not valid</span><br/>'
+        );
+    $('.displaySettingsError').show();
+}
+
+function deleteAgentMarks() {
+    for (let i = 0; i < driverMarkers.length; i++) {
+        driverMarkers[i].setMap(null);
     }
 }

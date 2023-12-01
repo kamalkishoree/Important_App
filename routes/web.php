@@ -383,6 +383,10 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::post('general/slot/save', 'AgentSlotController@saveGeneralSlot')->name('general.slot.save');
 			Route::get('general/slot/destroy/{id}', 'AgentSlotController@destroyGeneralSlot')->name('vendor_city.destroy');
 
+			///
+			Route::post('dashboard/teamsData', 'DashBoardController@dashboardTeamData')->name('dashboard.teamsdata');
+			Route::post('dashboard/ordersData', 'DashBoardController@dashboardOrderData')->name('dashboard.orderdata');
+
 			Route::prefix('attribute')->group(function () {
                 Route::name('attribute.')->group(function () {
                     Route::get('create', 'FormAttributeController@create')->name('create');

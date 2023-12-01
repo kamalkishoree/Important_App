@@ -25,6 +25,7 @@ trait DispatcherOrders
         $search_by_name = isset($request->search_by_name) ? $request->search_by_name : '';
         $agent_ids = isset($request->agent_id) ? $request->agent_id : '';
         $branchId = $request->branchId ?? '';
+        $dashboard_theme = $request->dashboard_theme ?? 2;
         $user = Auth::user();
         $auth = Client::where('code', $user->code)->with(['getAllocation', 'getPreference'])->first();
         
@@ -422,7 +423,7 @@ trait DispatcherOrders
 
         if($is_load_html == 1)
         {
-            return view('agent_dashboard_order_html', compact('un_order'))->with($data)->render();
+            return view('dashboard.parts.layout-'.$dashboard_theme.'.ajax.order', compact('un_order'))->with($data)->render();
         }else{
             return $data;
         }

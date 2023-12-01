@@ -19,10 +19,11 @@ use App\Model\Countries;
 use App\Traits\Dispatcher;
 use App\Traits\DispatcherOrders;
 use App\Traits\googleMapApiFunctions;
+use App\Traits\GlobalFunction;
 use Log;
 class AgentDashBoardController extends Controller
 {
-    use googleMapApiFunctions, Dispatcher, DispatcherOrders;
+    use googleMapApiFunctions, Dispatcher, DispatcherOrders, GlobalFunction;
     
     /**
      * Display a listing of the resource.
@@ -621,7 +622,7 @@ class AgentDashBoardController extends Controller
 
     public function dashboardTeamData(Request $request)
     {
-    return $this->homePage($request);
+    return $this->teamData($request);
     }
     public function dashboardOrderData(Request $request)
     {
