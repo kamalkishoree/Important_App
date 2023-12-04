@@ -20,9 +20,8 @@ use Log;
 
 trait Dispatcher
 {
-    public function teamData($request = null)
+    public function teamData($request = null, &$response = null)
     {
-
         // Set default values if not provided in the request
         $userstatus = $request->userstatus ?? 2;
         $team_ids = $request->team_id ?? '';
@@ -82,15 +81,16 @@ trait Dispatcher
 
             $sql .= "
             LEFT JOIN agents AS ag ON ag.team_id = teams.id AND ag.deleted_at IS NULL AND ag.is_available = {$userstatus}
-            LEFT JOIN agents ON agents.team_id = teams.id AND agents.deleted_at IS NULL AND agents.is_available = {$userstatus}
-            LEFT JOIN agent_logs ON agent_logs.agent_id = agents.id";
+            LEFT JOIN agents ON agents.team_id = teams.id AND agents.deleted_at IS NULL AND agents.is_available = {$userstatus}";
+            // LEFT JOIN agent_logs ON agent_logs.agent_id = agents.id";
         } else {
             $sql .= "
             LEFT JOIN agents AS ag ON ag.team_id = teams.id AND ag.deleted_at IS NULL
             LEFT JOIN agents ON agents.team_id = teams.id AND agents.deleted_at IS NULL";
         }
 
-        $sql .= " LEFT JOIN orders ON orders.driver_id = agents.id AND orders.order_time >= '{$startdate}' AND orders.order_time <= '{$enddate}'
+        $sql .= " 
+        LEFT JOIN orders ON orders.driver_id = agents.id AND orders.order_time >= '{$startdate}' AND orders.order_time <= '{$enddate}'
         LEFT JOIN tasks ON tasks.order_id = orders.id
         LEFT JOIN locations ON tasks.location_id = locations.id";
 
@@ -130,16 +130,20 @@ trait Dispatcher
 
         $sql .= "{$searchNameSql} {$teamsIdSql}  GROUP BY agent_id having `total_agents` > 0";
 
-        $teams = \DB::select($sql);
-        $total_count  = count($teams);
-        $perPage = $limit; // Number of items per page
+        $lastPage = 0;
         $page = $request->input('page', 1);
-
-        $offset = ($page - 1) * $perPage;
-
-        $sql .= " LIMIT $perPage OFFSET $offset";
-
-        $lastPage =  ceil($total_count / $perPage);
+        if($dashboard_theme != 1){
+            pr($dashboard_theme);
+            $total_count  = count(\DB::select($sql));
+            $perPage = $limit; // Number of items per page
+            
+            $offset = ($page - 1) * $perPage;
+    
+            $sql .= " LIMIT $perPage OFFSET $offset";
+            $lastPage =  ceil($total_count / $perPage);
+        }
+        
+        $teams = \DB::select($sql);
 
         //--------------------------------------------------
         // GET ALL TASKS
@@ -388,7 +392,7 @@ trait Dispatcher
         $uniquedrivers = [];
         $unassigned_orders = [];
         $distancematrix = [];
-        $un_total_distance = 0;
+        $un_total_distance = 0.00;
         foreach ($agents as $key => $singleagent) {
             $agents[$key] = $singleagent = (array) $singleagent;
             $singleagent['agentlog']['id'] = $singleagent['agentlog_id'] ?? null;
@@ -493,7 +497,7 @@ trait Dispatcher
         $un_order = array_values($result);
 
 
-
+        $unassigned_orders = [];
         if (count($un_order) >= 1) {
             $unassigned_orders = $this->splitOrderv2($un_order);
 
@@ -562,26 +566,31 @@ trait Dispatcher
         $defaultCountryLatitude  = $getAdminCurrentCountry->latitude ?? '';
         $defaultCountryLongitude  = $getAdminCurrentCountry->longitude ?? '';
 
-        $data = [
-            'status' => "success",
-            'client_code' => $user->code,
-            'userstatus' => $userstatus,
-            'agents' => $agents,
-            'routedata' => $uniquedrivers,
-            'teams' => $teams,
-            'defaultCountryLongitude' => $defaultCountryLongitude,
-            'defaultCountryLatitude' => $defaultCountryLatitude,
-            'newmarker' => $newmarker ?? [],
-            'distance_matrix' => $distancematrix,
-            'sql' => $request->sql,
-            'page' => $page,
-            'lastPage' => $lastPage
-        ];
+
+        if(is_null($response)){
+            $response = [];
+        }
+        $response['status'] = "success";
+        $response['client_code'] = $user->code;
+        $response['userstatus'] = $userstatus;
+        $response['agents'] = $agents;
+        $response['routedata'] = $uniquedrivers;
+        $response['teams'] = $teams;
+        $response['defaultCountryLongitude'] = $defaultCountryLongitude;
+        $response['defaultCountryLatitude'] = $defaultCountryLatitude;
+        $response['newmarker'] = $newmarker ?? [];
+        $response['distance_matrix'] = $distancematrix;
+        $response['sql'] = $request->sql;
+        $response['page'] = $page;
+        $response['lastPage'] = $lastPage;
+        $response['unassigned_orders'] = $unassigned_orders;
+        $response['unassigned_distance'] = $un_total_distance;
+
 
         if ($is_load_html == 1) {
-            return view('dashboard.parts.layout-' . $dashboard_theme . '.ajax.agent')->with($data)->render();
+            return view('dashboard.parts.layout-' . $dashboard_theme . '.ajax.agent')->with($response)->render();
         } else {
-            return $data;
+            return $response;
         }
     }
 }

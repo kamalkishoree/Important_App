@@ -2,6 +2,7 @@
 @section('content')
     <!-- Bannar Section -->
     {{-- <section class="bannar header-setting"> --}}
+        
     <div class="container-fluid p-0">
         <div class="row coolcheck no-gutters">
             {{-- <div class="pageloader" style="display: none;">
@@ -30,7 +31,7 @@
                     <span class="allAccordian"><span class="" onclick="openAllAccordian()">{{__("Open All")}}</span></span>
                 </div>
                 <div  id="teams_container">
-                    
+                    @include('dashboard.parts.layout-'.$dashboard_theme.'.ajax.agent')
                 </div>
                 <form id="pdfgenerate" method="post" enctype="multipart/form-data" action="{{ route('download.pdf') }}">
                     @csrf

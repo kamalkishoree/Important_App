@@ -126,12 +126,19 @@ class ClientController extends Controller
         }
 
         if($request->has('dashboard_mode')){
-
+            
             $dashboardMode['show_dashboard_by_agent_wise'] = $request->dashboard_mode['show_dashboard_by_agent_wise'];
-
             $data = [];
+            if($request->dashboard_mode['show_dashboard_by_agent_wise'] == 1){
+                $dashboardTheme = 2;
+            }
+
+            if($request->dashboard_mode['show_dashboard_by_agent_wise'] == 0){
+                $dashboardTheme = 1;
+            }
+            $data['dashboard_theme'] = $dashboardTheme;
             if(checkColumnExists('client_preferences', 'dashboard_mode')){
-                $data = ['dashboard_mode'=>json_encode($dashboardMode)];
+                $data['dashboard_mode'] = json_encode($dashboardMode);
             }
 
             ClientPreference::where('client_id', $id)->update($data);

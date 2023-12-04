@@ -52,8 +52,8 @@ class DashBoardController extends Controller
         }
 
 
+        $teams  = Team::get();
         if ($show_dashboard_by_agent_wise == 1) {
-            $teams  = Team::get();
             // $agents  = Agent::with('agentlog')->where('is_approved',1)->get();
 
             $agentsData = \DB::table('agents')
@@ -77,15 +77,14 @@ class DashBoardController extends Controller
                 return (array)$agent;
             });
 
-            // pr($agents);
-
 
         }
         $response = ['client_code' => Auth::user()->code, 'date' => $date, 'defaultCountryLongitude' => $defaultCountryLongitude, 'defaultCountryLatitude' => $defaultCountryLatitude, 'map_key' => $googleapikey, 'client_timezone' => $auth->timezone, 'searchTeams' => $teams, 'agentsData' => $agents, 'show_dashboard_by_agent_wise' => $show_dashboard_by_agent_wise, 'dashboard_theme' => $dashboard_theme];
-        $teamData = $this->teamData($request);
-        $response = array_merge($response, $teamData);
-        $orderData = $this->orderData($request);
-        $response = array_merge($response, $orderData);
+        $request->merge(['dashboard_theme' => $dashboard_theme]);
+        $this->teamData($request, $response);
+        if($dashboard_theme != 1){
+            $this->orderData($request, $response);
+        }
 
         return view('dashboard.index')->with($response);
     }
