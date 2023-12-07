@@ -133,7 +133,6 @@ trait Dispatcher
         $lastPage = 0;
         $page = $request->input('page', 1);
         if($dashboard_theme != 1){
-            pr($dashboard_theme);
             $total_count  = count(\DB::select($sql));
             $perPage = $limit; // Number of items per page
             

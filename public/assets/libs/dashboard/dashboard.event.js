@@ -1,4 +1,4 @@
-$(function(){
+$(function(){ 
     $('#wrapper').addClass('dshboard');
     $(".timeago").timeago();
 

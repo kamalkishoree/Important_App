@@ -341,6 +341,7 @@ function addMarker(location, lables, images, data, type) {
     }
 
     markers.push(marker);
+    mark.push({id:data.id, data:marker})
 
     marker.addListener("click", () => {
         infowindow.open(map, marker);

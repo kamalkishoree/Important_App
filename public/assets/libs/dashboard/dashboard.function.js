@@ -1200,10 +1200,11 @@ function getUser(search) {
 
 function MoveAgentLocation(data) {
     //var data = data;
-    image =
-        data.event_type == "task_log"
-            ? mapIcon(data.task_type, data.task_status)
-            : agenticon(data.is_available, data.is_busy);
+    image = '';
+    // image =
+    //     data.event_type == "task_log"
+    //         ? mapIcon(data.task_type, data.task_status)
+    //         : agenticon(data.is_available, data.is_busy);
     if (data.event_type == "task_log" || data.event_type == "agent_create") {
         const infoWindow = new google.maps.InfoWindow();
         // const infoWindow = new google.maps.InfoWindow();
@@ -1223,6 +1224,7 @@ function MoveAgentLocation(data) {
         marker = dataAgent.data;
         //marker.setMap( map );
     }
+    console.log(dataAgent, 'adfkadbkfjb')
     marker != undefined ? moveBus(map, marker, data, image) : "";
 }
 
