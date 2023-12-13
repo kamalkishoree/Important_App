@@ -1144,7 +1144,7 @@ class TaskController extends BaseController
                     'freelancer_commission_percentage' => $freelancer_commission_percentage
                 ]);
                 if($order->auto_alloction == 'notify'){
-                    $this->newNotifiedDriverSave($order->id,$agent_id);
+                    $this->newNotifiedDriverSave($order->id,$agent_id,$agent_details->device_token);
                 }
                 if (checkColumnExists('orders', 'rejectable_order')) {
 
@@ -5263,11 +5263,11 @@ class TaskController extends BaseController
         Config::set("database.connections.$schemaName", $default);
     }
 
-    public function newNotifiedDriverSave($order_id,$agent_id){
+    public function newNotifiedDriverSave($order_id,$agent_id,$device_token){
             $schemaName = 'royodelivery_db';
             $this->seperate_connection($schemaName);
             config(["database.connections.mysql.database" =>$schemaName]);
-            \DB::connection($schemaName)->table('rosters')->where('order_id',$order_id)->whereIn('is_particular_driver',[1,2])->update(['driver_id' => $agent_id]);
+            \DB::connection($schemaName)->table('rosters')->where('order_id',$order_id)->whereIn('is_particular_driver',[1,2])->update(['driver_id' => $agent_id,'device_token'=>$device_token]);
             \DB::disconnect($schemaName);
     }
 
