@@ -1144,7 +1144,7 @@ class TaskController extends BaseController
                     'freelancer_commission_percentage' => $freelancer_commission_percentage
                 ]);
                 if($order->auto_alloction == 'notify'){
-                    $this->newNotifiedDriverSave($order->id,$agent_id,$agent_details->device_token);
+                    $this->newNotifiedDriverSave($order->id,$agent_id,$driver->device_token);
                 }
                 if (checkColumnExists('orders', 'rejectable_order')) {
 
