@@ -1207,7 +1207,7 @@ class TaskController extends BaseController
                 'message' => __('Task Accecpted Successfully'),
             ], 200);
         } else {
-            if (checkColumnExists('orders', 'rejectable_order') && ((isset($orderdata)  && $orderdata->rejectable_order == 1))) {
+            if (checkColumnExists('orders', 'rejectable_order')) {
                 $task_type         = 'failed';
 
                 $Order  = Order::where('id', $orderdata->id)->update(['status' => $task_type, 'driver_id' => $agent_id]);
