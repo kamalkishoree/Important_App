@@ -209,6 +209,12 @@
                                 <input type="file" data-plugins="dropify" name="{{$driver_registration_document->name}}" accept="image/*" {{ (!empty($driver_registration_document->is_required))?'required':''}} />
                                 @elseif(strtolower($driver_registration_document->file_type) == 'pdf')
                                 <input type="file" data-plugins="dropify" name="{{$driver_registration_document->name}}" accept=".pdf" {{ (!empty($driver_registration_document->is_required))?'required':''}} />
+                                @elseif(strtolower($driver_registration_document->file_type) == 'selector')
+                                <select class="form-control" data-style="btn-light" name="{{$driver_registration_document->name}}">
+                                  @foreach($driver_registration_document->driver_option as $options)
+                                    <option value="{{$options->driver_registartion_option_name}}">{{$options->driver_registartion_option_name}}</option>
+                                    @endforeach
+                                </select>
                                 @endif
                                 <span class="invalid-feedback" role="alert">
                                     <strong></strong>
