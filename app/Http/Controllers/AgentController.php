@@ -138,7 +138,7 @@ class AgentController extends Controller
         $agentNotApproved = count($agents->where('is_approved', 0));
         $agentRejected = count($agents->where('is_approved', 2));
         $agentRejected += count($deletedAgents);
-        $driver_registration_documents = DriverRegistrationDocument::get();
+        $driver_registration_documents = DriverRegistrationDocument::with('driver_option')->get();
 
         $warehouses = Warehouse::get();
         $managerWarehouses = Client::with('warehouse')->where('id', $user->id)->first();
@@ -148,7 +148,7 @@ class AgentController extends Controller
         }
 
         // $agents = Agent::orderBy('id', 'DESC');
-
+            
         return view('agent.index')->with([
             'agents' => $agents,
             'geos' => $geos,
@@ -511,7 +511,7 @@ class AgentController extends Controller
         foreach ($driver_registration_documents as $driver_registration_document) {
             $agent_docs = new AgentDocs();
             $name = str_replace(" ", "_", $driver_registration_document->name);
-            if ($driver_registration_document->file_type != "Text") {
+            if ($driver_registration_document->file_type != "Text" && $driver_registration_document->file_type != "selector" && $driver_registration_document->file_type != "Date") {
                 if ($request->hasFile($name)) {
                     $folder = str_pad(Auth::user()->code, 8, '0', STR_PAD_LEFT);
                     $folder = 'client_' . $folder;
@@ -585,7 +585,7 @@ class AgentController extends Controller
             }
             $agents_docs = AgentDocs::where('agent_id', $id)->get();
             $driver_registration_documents = DriverRegistrationDocument::get();
-
+            
             $returnHTML = view('agent.form-show')->with([
                 'agent' => $agent,
                 'driver_registration_documents' => $driver_registration_documents,
@@ -642,7 +642,7 @@ class AgentController extends Controller
         }
 
         $agents_docs = AgentDocs::where('agent_id', $id)->get();
-        $driver_registration_documents = DriverRegistrationDocument::get();
+        $driver_registration_documents = DriverRegistrationDocument::with('driver_option')->get();
 
         $warehouses = Warehouse::all();
 
@@ -771,7 +771,7 @@ class AgentController extends Controller
         $driver_registration_documents = DriverRegistrationDocument::get();
         foreach ($driver_registration_documents as $driver_registration_document) {
             $name = str_replace(" ", "_", $driver_registration_document->name);
-            if ($driver_registration_document->file_type != "Text") {
+            if ($driver_registration_document->file_type != "Text" && $driver_registration_document->file_type != "selector" && $driver_registration_document->file_type != "Date") {
                 if ($request->hasFile($name)) {
                     $folder = str_pad(Auth::user()->code, 8, '0', STR_PAD_LEFT);
                     $folder = 'client_' . $folder;
