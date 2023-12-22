@@ -31,6 +31,7 @@ Route::post('task/update_order_prepration_time', 'Api\TaskController@addBufferTi
 Route::post('return-to-warehouse-task', 'Api\TaskController@returnToWarehouseTask')->middleware('ConnectDbFromOrder');
 Route::post('get/agents', 'Api\AgentController@getAgents')->middleware('ConnectDbFromOrder');
 Route::get('get/agent_detail/{id?}', 'Api\AgentController@getAgentDetails')->middleware('ConnectDbFromOrder');
+Route::get('get/all_agent_detail', 'Api\AgentController@getAllAgentDetails')->middleware('ConnectDbFromOrder');
 Route::post('agent/check_slot', 'Api\AgentSlotController@getAgentsSlotByTags')->middleware('ConnectDbFromOrder');
 Route::post('task/lims/create', 'Api\TaskController@CreateLimsTask')->middleware('ConnectDbFromOrder');
 Route::post('agent/create', 'Api\DriverRegistrationController@storeAgent')->middleware('ConnectDbFromOrder');
