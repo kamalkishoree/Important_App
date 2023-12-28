@@ -306,8 +306,6 @@ class DriverRegistrationController extends BaseController
             $data['vehicle_types'] = ((count($show_vehicle_type_icon)>0)?json_encode($show_vehicle_type_icon):json_encode(['1','2','3','4','5']));
             $data['is_refferal_code_enable'] = ClientPreference::value('refer_earn_driver_to_driver_toggle');
 
-            \Log::info("data");
-            \Log::info($data);
             return response()->json([
                 'status' => 200,
                 'message' => 'Success!',
@@ -316,7 +314,7 @@ class DriverRegistrationController extends BaseController
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 400,
-                'message' => $e->getMessage().'->>>>>>>>>>>>>>'.$e->getLine(),
+                'message' => $e->getMessage(),
             ]);
         }
     }
