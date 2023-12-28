@@ -284,26 +284,20 @@ class DriverRegistrationController extends BaseController
             $types = json_decode($type);
             $manage_fleet = ClientPreference::OrderBy('id','desc')->value('manage_fleet')??0;
 
-            \Log::info("documents");
-            \Log::info([$types]);
             if(isset($types->show_vehicle_type_icon))
             $show_vehicle_type_icon = explode(',',$types->show_vehicle_type_icon);
             $p = 0;
             $documents = DriverRegistrationDocument::with('driver_option')->orderBy('file_type', 'DESC')->select('name','file_type','id','is_required')->get()->toArray();
-            \Log::info("documents");
-            \Log::info($documents);
+            
             if((isset($documents) && count($documents)>0) && $manage_fleet)
             {
-                \Log::info("documents 1");
              $p = sizeof($documents) - 1;
               $aa2 = $this->fleetArray($p);
                 $data['documents']  = array_merge($documents,$aa2);
             }elseif(count($documents)<=0 && $manage_fleet){
-                \Log::info("documents 2");
                 $aa2 = $this->fleetArray($p);
                 $data['documents'] = $aa2;
             }else{
-                \Log::info("documents 3");
                 $data['documents'] = $documents;
             }
 
@@ -311,6 +305,9 @@ class DriverRegistrationController extends BaseController
             $data['agent_tags'] = TagsForAgent::OrderBy('id','desc')->get();
             $data['vehicle_types'] = ((count($show_vehicle_type_icon)>0)?json_encode($show_vehicle_type_icon):json_encode(['1','2','3','4','5']));
             $data['is_refferal_code_enable'] = ClientPreference::value('refer_earn_driver_to_driver_toggle');
+
+            \Log::info("data");
+            \Log::info($data);
             return response()->json([
                 'status' => 200,
                 'message' => 'Success!',
