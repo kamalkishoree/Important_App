@@ -313,7 +313,7 @@ class DriverRegistrationController extends BaseController
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 400,
-                'message' => $e->getMessage(),
+                'message' => $e->getMessage().'->>>>>>>>>>>>>>'.$e->getLine(),
             ]);
         }
     }
