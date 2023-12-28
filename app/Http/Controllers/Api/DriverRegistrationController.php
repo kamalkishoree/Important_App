@@ -276,8 +276,10 @@ class DriverRegistrationController extends BaseController
         }
     }
 
-    public function sendDocuments()
+    public function sendDocuments(Request $request)
     {
+        \Log::info("request");
+        \Log::info($request->all());
         try {
             $show_vehicle_type_icon = [];
             $type = ClientPreference::OrderBy('id','desc')->value('custom_mode');
