@@ -23,10 +23,10 @@
 
             window.Echo.channel('check-socket').listen('.UserEvent', function(message) {
                 console.log(message)
-            })
+            });
         }
         catch(e){
-            console.error(e)
+            console.error(e);
         }
     })
 </script>

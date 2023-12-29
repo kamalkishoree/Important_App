@@ -1,13 +1,10 @@
 <?php
 
 namespace App\Console\Commands;
-
+use Ratchet\Client\Connector;
+use Ratchet\Client\WebSocket;
+use Ratchet\Http\HttpBridge;
 use Illuminate\Console\Command;
-// use React\EventLoop\Factory;
-// use React\Socket\ConnectionInterface;
-use React\Socket\Connector;
-use React\EventLoop\Factory;
-// use Clue\React\WebSocket\Connector;
 
 class SocketIOListener extends Command
 {
@@ -40,15 +37,26 @@ class SocketIOListener extends Command
      *
      * @return int
      */
+
     public function handle()
     {
-        
         $host = 'dev-rochat.netsolutionindia.com';
         $port = 443;
         $path = '/';
-        
-        $origin = 'http:localhost/';  // Replace with your actual origin
-        
+
+        $origin = 'http://localhost/';
+
+        $socket = stream_socket_client('tls://' . $host . ':' . $port, $errno, $errstr, 30, STREAM_CLIENT_CONNECT, stream_context_create([
+            'ssl' => [
+                'verify_peer' => false,
+                'verify_peer_name' => false,
+            ],
+        ]));
+
+        if (!$socket) {
+            die("Failed to connect: $errstr ($errno)\n");
+        }
+
         // Construct the WebSocket handshake request headers
         $headers = [
             'Host: ' . $host,
@@ -57,58 +65,36 @@ class SocketIOListener extends Command
             'Sec-WebSocket-Key: ' . base64_encode(random_bytes(16)),
             'Sec-WebSocket-Version: 13',
             'Origin: ' . $origin,
-            'Accept: */*'
         ];
-        
-        $context = stream_context_create([
-            'ssl' => [
-                'verify_peer' => false,
-                'verify_peer_name' => false,
-            ],
-        ]);
-        
-        // Open a connection to the WebSocket server
-        $socket = stream_socket_client('tls://' . $host . ':' . $port, $errno, $errstr, 30, STREAM_CLIENT_CONNECT, $context);
-        
-        if (!$socket) {
-            die("Failed to connect: $errstr ($errno)\n");
-        }
-        
+
         // Send the WebSocket handshake request
+        // $path = "/socket.io/1/?t=".time();
+
+        $path = "/socket.io/?EIO=3&transport=websocket";
+
         fwrite($socket, "GET $path HTTP/1.1\r\n" . implode("\r\n", $headers) . "\r\n\r\n");
-        
+
         // Read the WebSocket handshake response
-        $response = fread($socket, 1024);
+        $response = stream_get_line($socket, 8192, "\r\n\r\n");
         echo $response;
+
         // Check if the handshake was successful
-        if (strpos($response, ' 101 ') !== false || strpos($response, ' 200 ') !== false || strpos($response, ' 201 ') !== false) { 
+        if (strpos($response, ' 101 ') !== false) {
             echo "WebSocket handshake successful!\n";
-        
-            // Set stream to non-blocking mode
             stream_set_blocking($socket, 0);
 
-            // // Wait for a short moment to ensure the server has time to respond (adjust as needed)
-            usleep(500000);
-
             // Start listening for incoming messages
-            while (!feof($socket)) {
-                //read 8192 bytes of data at once
+            while (true) {
                 $data = fread($socket, 8192);
-                echo $data;
                 if ($data !== false && $data !== '') {
                     echo "Received data: $data\n";
-
                     // Handle the received data as needed
                 }
-
             }
             fclose($socket);
         } else {
             echo "WebSocket handshake failed.\n";
         }
-
-
-        // return false;
 
     }
 
@@ -133,72 +119,73 @@ class SocketIOListener extends Command
     //     });
     // }
 
-    public function test(){
-        // Replace this with the actual URL of your Socket.IO server
-        $socketIoServerUrl = 'https://dev-rochat.netsolutionindia.com';
+    // public function test()
+    // {
+    //     // Replace this with the actual URL of your Socket.IO server
+    //     $socketIoServerUrl = 'https://dev-rochat.netsolutionindia.com';
 
-        
-        // Parse the Socket.IO server URL
-        $urlParts = parse_url($socketIoServerUrl);
 
-        if ($urlParts === false || !isset($urlParts['scheme'])) {
-            echo "Invalid Socket.IO server URL\n";
-            exit(1);
-        }
+    //     // Parse the Socket.IO server URL
+    //     $urlParts = parse_url($socketIoServerUrl);
 
-        $scheme = $urlParts['scheme'];
-        $host = $urlParts['host'];
-        $port = isset($urlParts['port']) ? $urlParts['port'] : ($scheme === 'https' ? 443 : 80);
+    //     if ($urlParts === false || !isset($urlParts['scheme'])) {
+    //         echo "Invalid Socket.IO server URL\n";
+    //         exit(1);
+    //     }
 
-        $host = 'dev-rochat.netsolutionindia.com';
-        $port = 443;
-        $path = '/';
-        $origin = 'http://localhost';  // Replace with your actual origin
-        
-        // Construct the WebSocket handshake request headers
-        $headers = [
-                'Host: ' . $host,
-                'Upgrade: websocket',
-                'Connection: Upgrade',
-                'Sec-WebSocket-Key: ' . base64_encode(random_bytes(16)),
-                'Sec-WebSocket-Version: 13',
-                'Origin: ' . $origin,
-                'Accept: */*'
-            ];
-        
-        $loop = Factory::create();
-        $connector = new Connector($loop);
+    //     $scheme = $urlParts['scheme'];
+    //     $host = $urlParts['host'];
+    //     $port = isset($urlParts['port']) ? $urlParts['port'] : ($scheme === 'https' ? 443 : 80);
 
-        $connector->connect("tls://$host:$port")->then(function (\React\Socket\ConnectionInterface $connection) use ($headers, $path, $loop) {
-            echo "WebSocket connection established!\n";
-        
-            // Send the WebSocket handshake request
-            // $handshake = "GET $path HTTP/1.1\r\n" . implode("\r\n", $headers) . "\r\n\r\n";
-            // echo $handshake;
-            $connection->write("GET $path HTTP/1.1\r\n" . implode("\r\n", $headers) . "\r\n\r\n");
-        
-            // Listen for incoming messages
-            $connection->on('data', function ($data) {
-                echo "Received data: $data\n";
-        
-                // Handle the received data as needed
-            });
+    //     $host = 'dev-rochat.netsolutionindia.com';
+    //     $port = 443;
+    //     $path = '/';
+    //     $origin = 'http://localhost';  // Replace with your actual origin
 
-            // $webSocket = new WebSocket($connection, $loop);
+    //     // Construct the WebSocket handshake request headers
+    //     $headers = [
+    //         'Host: ' . $host,
+    //         'Upgrade: websocket',
+    //         'Connection: Upgrade',
+    //         'Sec-WebSocket-Key: ' . base64_encode(random_bytes(16)),
+    //         'Sec-WebSocket-Version: 13',
+    //         'Origin: ' . $origin,
+    //         'Accept: */*'
+    //     ];
 
-            // // Periodically send a ping to keep the connection alive
-            // $loop->addPeriodicTimer(30, function () use ($webSocket) {
-            //     $webSocket->send('ping');
-            // });
-        
-            // Close the connection after sending the message
-            $connection->on('close', function () {
-                echo "Connection closed.\n";
-            });
-        }, function (\Exception $e) {
-            echo "Failed to establish WebSocket connection. " . $e->getMessage() . "\n";
-        });
-        
-        $loop->run();
+    //     $loop = Factory::create();
+    //     $connector = new Connector($loop);
+
+    //     $connector->connect("tls://$host:$port")->then(function (\React\Socket\ConnectionInterface $connection) use ($headers, $path, $loop) {
+    //         echo "WebSocket connection established!\n";
+
+    //         // Send the WebSocket handshake request
+    //         // $handshake = "GET $path HTTP/1.1\r\n" . implode("\r\n", $headers) . "\r\n\r\n";
+    //         // echo $handshake;
+    //         $connection->write("GET $path HTTP/1.1\r\n" . implode("\r\n", $headers) . "\r\n\r\n");
+
+    //         // Listen for incoming messages
+    //         $connection->on('data', function ($data) {
+    //             echo "Received data: $data\n";
+
+    //             // Handle the received data as needed
+    //         });
+
+    //         // $webSocket = new WebSocket($connection, $loop);
+
+    //         // // Periodically send a ping to keep the connection alive
+    //         // $loop->addPeriodicTimer(30, function () use ($webSocket) {
+    //         //     $webSocket->send('ping');
+    //         // });
+
+    //         // Close the connection after sending the message
+    //         $connection->on('close', function () {
+    //             echo "Connection closed.\n";
+    //         });
+    //     }, function (\Exception $e) {
+    //         echo "Failed to establish WebSocket connection. " . $e->getMessage() . "\n";
+    //     });
+
+    //     $loop->run();
+    // }
     }
-}
