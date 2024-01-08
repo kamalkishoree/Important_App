@@ -1286,7 +1286,7 @@ class TaskController extends BaseController
             $pickup_location = $finalLocation;
             $agent_tags = $orders->agent_tags??'';
             $is_order_updated = 0;
-            if ($orders->allocation_type === 'a') {
+            if ($orders->auto_alloction == 'a') {
                 $geo = $this->createRoster($send_loc_id);
             }
             $notification_time = $orders->order_time;
@@ -1474,6 +1474,11 @@ class TaskController extends BaseController
                 $refer_driver_id  = $request->agent ?? null;
                 $request->allocation_type = 'u';
             }
+
+            if(isset($request->bid_task_type)){
+                $request->allocation_type = 'u' ;
+                 $agent_id = $request->agent ?? null ;
+            }
             $order = [
                 'notify_all' => isset($request->notify_all)?$request->notify_all:0,
                 'order_number' => $request->order_number ?? null,
@@ -1504,6 +1509,9 @@ class TaskController extends BaseController
                 'no_seats_for_pooling' => isset($request->no_seats_for_pooling) ? $request->no_seats_for_pooling : 0,
                 'is_cab_pooling' => isset($request->is_cab_pooling) ? $request->is_cab_pooling : 0,
             ];
+            \Log::info('data');
+             \Log::info($order);
+        
 
             if (checkColumnExists('orders', 'rejectable_order')) {
                 $order['rejectable_order'] = isset($request->rejectable_order) ? $request->rejectable_order : 0;
@@ -1890,7 +1898,7 @@ class TaskController extends BaseController
 
                 lumenDispatchToQueue($geoid,$orders);
 
-            }elseif(1){
+            }
             if ($request->allocation_type === 'a' || $request->allocation_type === 'm') {
                 $allocation = AllocationRule::where('id', 1)->first();
                 $is_one_push_booking = isset($orders->is_one_push_booking) ? $orders->is_one_push_booking : 0;
@@ -1912,7 +1920,7 @@ class TaskController extends BaseController
                         $this->batchWise($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, $agent_tags, $is_order_updated, $is_one_push_booking);
                 }
             }
-          }
+          
             $dispatch_traking_url = $client_url . '/order/tracking/' . $auth->code . '/' . $orders->unique_id;
             return response()->json([
                 'message' => __('Task Added Successfully'),
@@ -2578,6 +2586,7 @@ class TaskController extends BaseController
 
     public function SendToAll($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling, $agent_tag = '', $is_order_updated, $is_one_push_booking = 0,$particular_driver_id = 0)
     {
+        \Log::info($geo);
         $allcation_type    = 'AR';
         $date              = \Carbon\Carbon::today();
         $auth              = Client::where('database_name', $header['client'][0])->with(['getAllocation', 'getPreference'])->first();
