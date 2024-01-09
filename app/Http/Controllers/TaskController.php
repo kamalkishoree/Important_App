@@ -333,7 +333,6 @@ class TaskController extends BaseController
         })->pluck('tag_id');
 
         $orders = Order::with(['customer', 'task', 'location', 'taskFirst', 'agent', 'task.location', 'task.warehouse'])->orderBy('id', 'DESC'); //, 'task.manager'
-
         if (@$request->warehouseManagerId && !empty($request->warehouseManagerId)) {
             $orders->whereHas('task.warehouse.manager', function($q) use($request){
                 $q->where('clients.id', $request->warehouseManagerId);
@@ -379,7 +378,7 @@ class TaskController extends BaseController
         $preference = ClientPreference::where('id', 1)->first(['theme','date_format','time_format','is_dispatcher_allocation']);
         $getAdditionalPreference = getAdditionalPreference(['pickup_type', 'drop_type']); 
         return Datatables::of($orders)
-                ->addColumn('customer_id', function ($orders) use ($request) {
+                ->addColumn('', function ($orders) use ($request) {
                     $customerID = !empty($orders->customer->id)? $orders->customer->id : '';
                     $length = strlen($customerID);
                     if($length < 4){
@@ -525,14 +524,10 @@ class TaskController extends BaseController
 
     public function getTaskRoute(Request $request )
     {
-           
-
         $order = Order::with('task')->where('id',$request->order_id)->first();
         $agents = Agent::all();
         $returnHTML = view('tasks.route-modal')->with(['order' => $order,'agents' =>$agents])->render();
-        return response()->json(array('success' => true, 'html'=>$returnHTML));
-     
-        
+        return response()->json(array('success' => true, 'html'=>$returnHTML));   
     }
     public function tasksExport(Request $request)
     {

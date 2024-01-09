@@ -410,7 +410,7 @@ trait DispatcherOrders
         $response['defaultCountryLatitude'] = $defaultCountryLatitude;
         $response['date'] = $date;
         $response['preference'] = $clientPreference;
-        $response['routedata'] = $uniquedrivers;
+        $response['routedata'] = [] ;
         $response['distance_matrix'] = $distancematrix;
         $response['unassigned_orders'] = $unassigned_orders;
         $response['unassigned_distance'] = $un_total_distance;
