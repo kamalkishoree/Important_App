@@ -425,6 +425,7 @@ trait DispatcherOrders
 
         if($is_load_html == 1)
         {
+            
             return view('dashboard.parts.layout-'.$dashboard_theme.'.ajax.order', compact('un_order'))->with($response)->render();
         }else{
             return $response;
