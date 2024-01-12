@@ -19,19 +19,26 @@
         </tr>
     </thead>
     <tbody style="height: 8%; overflow: auto !important;">
-        @foreach($orders as $orders)
+        @foreach($order as $orders)
             <tr>
-                @if (!isset($status) || $status == 'unassigned')
-                    <td><input type="checkbox" class="all-driver_check" name="all_driver_id" id="all-driver_check"></td>
-                @endif
+               
                 <td>{{ $orders->order_number }}</td>
                 <td>{{ $orders->customer_id }}</td>
                 <td>{{ $orders->customer_name }}</td>
                 <td>{{ $orders->phone_number }}</td>
-                <td>{{ $orders->type }}</td>
+                @if($orders->is_return != 1)
+                <td>Normal</td>
+                @else
+                <td>Return</td>
+                @endif
+                @if (!isset($status) || $status == 'unassigned')
+                <td><input type="checkbox" class="all-driver_check" name="all_driver_id" id="all-driver_check"></td>
+                @else
                 <td>{{ $orders->agent_name }}</td>
-                <td>{{ $orders->due_time }}</td>
-                <td>{{ $orders->routes }}</td>
+            @endif
+               
+                <td>{{ $orders->order_time }}</td>
+                <td>{{ $orders->address }}</td>
                 <td>{{ $orders->created_at }}</td>
                 <td style="width: 85px;">{{ __("Action") }}</td>
             </tr>

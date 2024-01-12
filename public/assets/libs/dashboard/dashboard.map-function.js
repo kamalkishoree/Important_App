@@ -163,24 +163,34 @@ function handleDrawRouteSuccess(data, isMultiple = false) {
 
     var directionsService = new google.maps.DirectionsService();
 
+    
+
     function calculateRoute(request) {
+  
         directionsRenderer = new google.maps.DirectionsRenderer();
         directionsRenderer.setMap(map);
 
         directionsService.route(request, function (response, status) {
             if (status === "OK") {
                 directionsRenderer.setDirections(response);
-
+               var pickupIcon = mapIcons(1);
+         
+               var dropOffIcon = mapIcons(2);
                 var pickupMarker = new google.maps.Marker({
                     position: pickupLocation,
                     map: map,
+                    icon : pickupIcon,
                     title: "Pickup Location",
+                    optimized: true,
                 });
+
 
                 var dropoffMarker = new google.maps.Marker({
                     position: dropoffLocation,
                     map: map,
+                    icon:dropOffIcon,
                     title: "Dropoff Location",
+                    optimized: true,
                 });
 
                 markers.push(pickupMarker);
@@ -197,6 +207,31 @@ function handleDrawRouteSuccess(data, isMultiple = false) {
     allRenderRoute.forEach(function (routeRequest) {
         calculateRoute(routeRequest);
     });
+}
+
+function mapIcons(type) {
+    var urlnewcreate = ""; 
+
+    urlnewcreate = "assigned";
+    if (type == 1) {
+        urlnewcreate += "_P.png";
+    } else if (type == 2) {
+        urlnewcreate += "_D.png";
+    } else {
+        urlnewcreate += "_A.png";
+    }
+
+    img = url+'/assets/newicons/' + urlnewcreate;
+    const image = {
+        url: img, // url
+        // scaledSize: new google.maps.Size(50, 50), // scaled size
+        // origin: new google.maps.Point(0, 0), // origin
+        // anchor: new google.maps.Point(22, 22) // anchor
+        size: new google.maps.Size(50, 50),
+        origin: new google.maps.Point(0, 0),
+        anchor: new google.maps.Point(0, 32),
+    };
+    return image;
 }
 
     

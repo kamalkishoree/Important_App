@@ -49,3 +49,4 @@ var newicons = '';
 var is_show_loader = 0;
 var is_load_html = 0;
 var allRenderRoute = [];
+var url = window.location.origin;
