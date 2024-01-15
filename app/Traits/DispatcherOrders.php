@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 trait DispatcherOrders
 {
-    public function orderData($request)
+    public function orderData($request = null, &$response = null)
     {
         $sql = "SELECT *
         FROM client_preferences
@@ -21,10 +21,11 @@ trait DispatcherOrders
         $userstatus = isset($request->userstatus) ? $request->userstatus : 2;
         $checkuserroutes = isset($request->checkuserroutes) ? $request->checkuserroutes : '';
         $team_ids = isset($request->team_id) ? $request->team_id : '';
-        $is_load_html = isset($request->is_load_html) ? $request->is_load_html : 1;
+        $is_load_html = isset($request->is_load_html) ? $request->is_load_html : 0;
         $search_by_name = isset($request->search_by_name) ? $request->search_by_name : '';
         $agent_ids = isset($request->agent_id) ? $request->agent_id : '';
-        $branchId = $request->branchId;
+        $branchId = $request->branchId ?? '';
+        $dashboard_theme = $request->dashboard_theme ?? 2;
         $user = Auth::user();
         $auth = Client::where('code', $user->code)->with(['getAllocation', 'getPreference'])->first();
         
@@ -149,7 +150,7 @@ trait DispatcherOrders
             $sql .= "AND teams.id IN ({$team_ids})";
         }
 
-        $sql .= " GROUP BY teams.id";
+        $sql .= " GROUP BY teams.id LIMIT 10";
 
         $teams =(array) \DB::select($sql);
 
@@ -308,7 +309,7 @@ trait DispatcherOrders
 
         $uniquedrivers = [];
         $unassigned_orders = [];
-        $un_total_distance = 26.25;
+        $un_total_distance = 0.00;
         $distancematrix = [];
         $tasks = [];
         if (count($un_order)>=1) {
@@ -398,33 +399,36 @@ trait DispatcherOrders
             $defaultCountryLongitude  = '';
         }
         
-        $data = [
-            'status' =>"success",
-            'teams'=> $teams,
-            'userstatus' => $userstatus,
-            'client_code' => $user->code,
-            'defaultCountryLongitude' => $defaultCountryLongitude,
-            'defaultCountryLatitude' => $defaultCountryLatitude,
-            'date'=> $date,
-            'preference' => $clientPreference,
-            'routedata' => $uniquedrivers,
-            'distance_matrix' => $distancematrix,
-            'unassigned_orders' => $unassigned_orders,
-            'unassigned_distance' => $un_total_distance,
-            'map_key'=>$googleapikey,
-            'client_timezone'=>$auth->timezone,
-            'checkuserroutes' => $checkuserroutes,
-            'agent_ids' => $agent_ids,
-            'tasks' => $tasks,
-            'page' => $page,
-            'lastPage' => $lastPage
-        ];
+        if(is_null($response)){
+            $response = [];
+        }
+        $response['status'] = "success";
+        $response['teams'] = $teams;
+        $response['userstatus'] = $userstatus;
+        $response['client_code'] = $user->code;
+        $response['defaultCountryLongitude'] = $defaultCountryLongitude;
+        $response['defaultCountryLatitude'] = $defaultCountryLatitude;
+        $response['date'] = $date;
+        $response['preference'] = $clientPreference;
+        $response['routedata'] = [] ;
+        $response['distance_matrix'] = $distancematrix;
+        $response['unassigned_orders'] = $unassigned_orders;
+        $response['unassigned_distance'] = $un_total_distance;
+        $response['map_key'] = $googleapikey;
+        $response['client_timezone'] = $auth->timezone;
+        $response['checkuserroutes'] = $checkuserroutes;
+        $response['agent_ids'] = $agent_ids;
+        $response['tasks'] = $tasks;
+        $response['page'] = $page;
+        $response['lastPage'] = $lastPage;
+
 
         if($is_load_html == 1)
         {
-            return view('agent_dashboard_order_html', compact('un_order'))->with($data)->render();
+            
+            return view('dashboard.parts.layout-'.$dashboard_theme.'.ajax.order', compact('un_order'))->with($response)->render();
         }else{
-            return json_encode($data);
+            return $response;
         }
 
     }

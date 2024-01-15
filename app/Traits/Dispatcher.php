@@ -20,32 +20,45 @@ use Log;
 
 trait Dispatcher
 {
-    public function homePage($request)
+    public function teamData($request = null, &$response = null)
     {
+        // Set default values if not provided in the request
         $userstatus = $request->userstatus ?? 2;
         $team_ids = $request->team_id ?? '';
-        $is_load_html = $request->is_load_html ?? 1;
+        $is_load_html = $request->is_load_html ?? 0;
         $search_by_name = $request->search_by_name ?? '';
+        $dashboard_theme = $request->dashboard_theme ?? 2;
+
+        // Get the authenticated user
         $user = Auth::user();
+
+        // Get client information based on user's code
         $auth = Client::where('code', $user->code)->with(['getAllocation', 'getPreference'])->first();
+
+        // Initialize Timezone object and set the user's timezone
         $tz = new Timezone();
         $auth->timezone = $tz->timezone_name($user->timezone);
 
-        $date = $request->routedate ? $date = Carbon::parse($request->routedate)->format('Y-m-d') : date('Y-m-d');
+        // Parse and format the route date or use the current date
+        $date = isset($request->routedate) ? Carbon::parse($request->routedate)->format('Y-m-d') : date('Y-m-d');
         $startdate = date("Y-m-d 00:00:00", strtotime($date));
         $enddate = date("Y-m-d 23:59:59", strtotime($date));
 
         
         $startdate = Carbon::parse($startdate . @$auth->timezone ?? 'UTC')->tz('UTC');
         $enddate = Carbon::parse($enddate . @$auth->timezone ?? 'UTC')->tz('UTC');
-        
+        // Format start and end dates
         $startdate = $startdate->format('Y-m-d');
         $enddate = $enddate->format('Y-m-d');
+
+        // Set a limit for the results
         $limit = 10;
+
+
 
         // GET TEAM DATA
 
-    $sql = "SELECT teams.*,
+        $sql = "SELECT teams.*,
             COUNT(DISTINCT ag.id) AS total_agents,
             SUM(ag.is_available = 1) AS online_agents,
             SUM(ag.is_available = 0) AS offline_agents,
@@ -64,26 +77,24 @@ trait Dispatcher
         FROM teams";
 
 
-        if($userstatus != 2){
-           
+        if ($userstatus != 2) {
+
             $sql .= "
             LEFT JOIN agents AS ag ON ag.team_id = teams.id AND ag.deleted_at IS NULL AND ag.is_available = {$userstatus}
-            LEFT JOIN agents ON agents.team_id = teams.id AND agents.deleted_at IS NULL AND agents.is_available = {$userstatus}
-            LEFT JOIN agent_logs ON agent_logs.agent_id = agents.id";
-
-           
-        }else{
+            LEFT JOIN agents ON agents.team_id = teams.id AND agents.deleted_at IS NULL AND agents.is_available = {$userstatus}";
+            // LEFT JOIN agent_logs ON agent_logs.agent_id = agents.id";
+        } else {
             $sql .= "
             LEFT JOIN agents AS ag ON ag.team_id = teams.id AND ag.deleted_at IS NULL
             LEFT JOIN agents ON agents.team_id = teams.id AND agents.deleted_at IS NULL";
-            
         }
-        
-        $sql .= " LEFT JOIN orders ON orders.driver_id = agents.id AND orders.order_time >= '{$startdate}' AND orders.order_time <= '{$enddate}'
+
+        $sql .= " 
+        LEFT JOIN orders ON orders.driver_id = agents.id AND orders.order_time >= '{$startdate}' AND orders.order_time <= '{$enddate}'
         LEFT JOIN tasks ON tasks.order_id = orders.id
         LEFT JOIN locations ON tasks.location_id = locations.id";
-        
-      
+
+
         if ($user && $user->manager_type == 3 && $user->manual_allocation == 1 && $user->all_team_access != 1) {
             $teamsIdsQuery = "
                 SELECT DISTINCT team_id
@@ -97,39 +108,43 @@ trait Dispatcher
                 AND EXISTS (
                     SELECT 1
                     FROM teams
-                    WHERE teams.id IN (".implode(',', $teamsIds).")
+                    WHERE teams.id IN (" . implode(',', $teamsIds) . ")
                     AND agents.team_id = teams.id
                 )
             ";
         }
 
         $searchNameSql = '';
-        if(!empty($search_by_name)){
+        if (!empty($search_by_name)) {
             $searchNameSql = " WHERE agents.name LIKE '%$search_by_name%'";
         }
 
         $teamsIdSql = '';
-        if(!empty($team_ids)){
+        if (!empty($team_ids)) {
             $team_ids = implode(',', $team_ids);
-            if(empty($searchNameSql))
+            if (empty($searchNameSql))
                 $teamsIdSql = "WHERE teams.id IN ({$team_ids})";
             else
                 $teamsIdSql = " AND teams.id IN ({$team_ids})";
         }
 
         $sql .= "{$searchNameSql} {$teamsIdSql}  GROUP BY agent_id having `total_agents` > 0";
-      
-        $total_count  = count(\DB::select($sql));
-        $perPage = $limit; // Number of items per page
+
+        $lastPage = 0;
         $page = $request->input('page', 1);
+        if($dashboard_theme != 1){
+            $total_count  = count(\DB::select($sql));
+            $perPage = $limit; // Number of items per page
+            
+            $offset = ($page - 1) * $perPage;
+    
+            $sql .= " LIMIT $perPage OFFSET $offset";
+            $lastPage =  ceil($total_count / $perPage);
+        }
         
-        $offset = ($page - 1) * $perPage;
-
-        $sql .= " LIMIT $perPage OFFSET $offset";
         $teams = \DB::select($sql);
-        $lastPage =  ceil($total_count / $perPage);
 
-       //--------------------------------------------------
+        //--------------------------------------------------
         // GET ALL TASKS
         //--------------------------------------------------
 
@@ -226,52 +241,52 @@ trait Dispatcher
         ORDER BY orders.id DESC
         LIMIT {$limit};
         ";
-// AND (
-//                  {$user->manager_type} = 3 AND orders.created_by = {$user->id}
-//                  OR {$user->manager_type} != 3
-//             )
+        // AND (
+        //                  {$user->manager_type} = 3 AND orders.created_by = {$user->id}
+        //                  OR {$user->manager_type} != 3
+        //             )
         $orders = \DB::select($sql);
-        
+
         $newmarker = [];
-     
+
         foreach ($orders as $key => $order) {
             $append = [];
-                switch($order->task_type_id){
-                    case 1:
-                        $name = 'Pickup';
+            switch ($order->task_type_id) {
+                case 1:
+                    $name = 'Pickup';
                     break;
-                    case 2:
-                        $name = 'DropOff';
+                case 2:
+                    $name = 'DropOff';
                     break;
-                    default:
-                        $name = 'Appointment';
+                default:
+                    $name = 'Appointment';
                     break;
-                }
-                $append['task_type']             = $name;
-                $append['task_id']               = $order->task_id;
-                $append['latitude']              = floatval($order->latitude) ?? 0.00;
-                $append['longitude']             = floatval($order->longitude) ??  0.00;
-                $append['address']               = $order->address ?? '';
-                $append['task_type_id']          = $order->task_type_id ?? '';
-                $append['task_status']           = (int)$order->task_status;
-                $append['team_id']               = @$order->team_id ?? 0;
-                $append['driver_name']           = @$order->agent_name ?? '';
-                $append['driver_id']             = $order->driver_id ?? '';
-                $append['customer_name']         = $order->customer_name ?? '';
-                $append['customer_phone_number'] = $order->phone_number ?? '';
-                $append['task_order']            = $order->task_order ?? 0;
-                $append['agentlog']            = [
-                    'id' => $order->agent_log_id ?? '',
-                    'device_type' => $order->device_type ?? '',
-                    'created_at' => $order->created_at ?? '',
-                    'battery_level' => $order->battery_level ?? ''
-                ];
-                array_push($newmarker, $append);
+            }
+            $append['task_type']             = $name;
+            $append['task_id']               = $order->task_id;
+            $append['latitude']              = floatval($order->latitude) ?? 0.00;
+            $append['longitude']             = floatval($order->longitude) ??  0.00;
+            $append['address']               = $order->address ?? '';
+            $append['task_type_id']          = $order->task_type_id ?? '';
+            $append['task_status']           = (int)$order->task_status;
+            $append['team_id']               = @$order->team_id ?? 0;
+            $append['driver_name']           = @$order->agent_name ?? '';
+            $append['driver_id']             = $order->driver_id ?? '';
+            $append['customer_name']         = $order->customer_name ?? '';
+            $append['customer_phone_number'] = $order->phone_number ?? '';
+            $append['task_order']            = $order->task_order ?? 0;
+            $append['agentlog']            = [
+                'id' => $order->agent_log_id ?? '',
+                'device_type' => $order->device_type ?? '',
+                'created_at' => $order->created_at ?? '',
+                'battery_level' => $order->battery_level ?? ''
+            ];
+            array_push($newmarker, $append);
             // }
-        }        
+        }
         // GET AGENTS
 
-       
+
         // $sql = "SELECT 
         //     agents.*,
         //     JSON_OBJECT(
@@ -289,13 +304,13 @@ trait Dispatcher
         //         'distance_covered', agent_logs.distance_covered,
         //         'is_active', agent_logs.is_active
         //     ) AS agentlog,
-            
+
         //     JSON_OBJECT(
         //         'id', fleets.id,
         //         'name', fleets.name,
         //         'registration_name', fleets.registration_name
         //     ) AS get_driver
-            
+
         // FROM agents
         // JOIN agent_logs ON agent_logs.agent_id = agents.id AND agent_logs.lat IS NOT NULL AND agent_logs.long IS NOT NULL
         // LEFT JOIN agent_fleets ON agent_fleets.agent_id = agents.id
@@ -347,8 +362,8 @@ trait Dispatcher
 
             $teamsIds = \DB::select($teamsIdsQuery, ['userId' => $user->id]);
             $teamsIds = (array) $teamsIds[0];
-            
-            if(!empty($teamsIds)){
+
+            if (!empty($teamsIds)) {
                 $teamsIds = implode(',', $teamsIds);
                 $sql .= "
                     AND EXISTS (
@@ -360,13 +375,13 @@ trait Dispatcher
                 ";
             }
         }
-        if($userstatus!=2){
+        if ($userstatus != 2) {
             $sql .= " AND agents.is_available = {$userstatus}";
         }
         $sql .= " GROUP BY agents.id";
         $agents = \DB::select($sql);
-        
-     
+
+
         $j = 0;
         $routeoptimization = array();
         $taskarray = array();
@@ -376,7 +391,7 @@ trait Dispatcher
         $uniquedrivers = [];
         $unassigned_orders = [];
         $distancematrix = [];
-        $un_total_distance = 0;
+        $un_total_distance = 0.00;
         foreach ($agents as $key => $singleagent) {
             $agents[$key] = $singleagent = (array) $singleagent;
             $singleagent['agentlog']['id'] = $singleagent['agentlog_id'] ?? null;
@@ -413,15 +428,15 @@ trait Dispatcher
                     }
                     $uniquedrivers[$j]['driver_detail'] = $singleagent['agentlog'];
                     $uniquedrivers[$j]['task_details'] = $taskarray;
-                    if(count($uniquedrivers[$j]['task_details']) > 1){
-                        $points[] = array(floatval($uniquedrivers[$j]['driver_detail']['lat']),floatval($uniquedrivers[$j]['driver_detail']['long']));
+                    if (count($uniquedrivers[$j]['task_details']) > 1) {
+                        $points[] = array(floatval($uniquedrivers[$j]['driver_detail']['lat']), floatval($uniquedrivers[$j]['driver_detail']['long']));
                         foreach ($uniquedrivers[$j]['task_details'] as $singletask) {
-                            $points[] = array(floatval($singletask['latitude']),floatval($singletask['longitude']));
+                            $points[] = array(floatval($singletask['latitude']), floatval($singletask['longitude']));
                             $taskids[] = $singletask['task_id'];
                         }
                         $taskarray[$uniquedrivers[$j]['driver_detail']['agent_id']] = implode(',', $taskids);
                         $routeoptimization[$uniquedrivers[$j]['driver_detail']['agent_id']] = $points;
-                        
+
                         $distancematrix[$uniquedrivers[$j]['driver_detail']['agent_id']]['tasks'] = $taskarray[$uniquedrivers[$j]['driver_detail']['agent_id']];
                         $distancematrix[$uniquedrivers[$j]['driver_detail']['agent_id']]['distance'] = $routeoptimization[$uniquedrivers[$j]['driver_detail']['agent_id']];
                     }
@@ -433,7 +448,7 @@ trait Dispatcher
         $sql = "SELECT * FROM client_preferences where id = 1 LIMIT 1";
         $clientPreference = \DB::select($sql);
         $clientPreference = $clientPreference[0];
-        
+
 
         $sql = "SELECT orders.*,
         tasks.id AS task_id,
@@ -446,71 +461,72 @@ trait Dispatcher
         AND orders.order_time <= '{$enddate}'
         AND orders.status = 'unassigned'
         ";
-// AND (
-//             {$user->manager_type} = 3 AND orders.created_by = {$user->id}
-//             OR {$user->manager_type} != 3
-//         )        
+        // AND (
+        //             {$user->manager_type} = 3 AND orders.created_by = {$user->id}
+        //             OR {$user->manager_type} != 3
+        //         )        
         $un_order = \DB::select($sql);
-        
-       
+
+
         $result = [];
 
         foreach ($un_order as $row) {
             $orderId = $row->id;
-        
+
             // Create an array for the task information
             $task = [
                 'id' => $row->task_id,
                 'task_order' => $row->task_order,
             ];
-        
+
             // Remove task-specific columns from the main row
             unset($row->task_id, $row->task_order);
-        
+
             // If the order hasn't been added to the result yet, add it with an empty 'task' array
             if (!isset($result[$orderId])) {
                 $result[$orderId] = (array)$row; // Convert the row to an array
                 $result[$orderId]['tasks'] = [];
             }
-        
+
             // Add the task information to the 'tasks' array for the order
             $result[$orderId]['tasks'][] = $task;
         }
-        
+
         // Convert the associative array to a simple array of order objects
         $un_order = array_values($result);
-         
-       
-        
-        if (count($un_order)>=1) {
-            $unassigned_orders = $this->splitOrder($un_order);
 
-            if (count($unassigned_orders)>1) {
+
+        $unassigned_orders = [];
+        if (count($un_order) >= 1) {
+            $unassigned_orders = $this->splitOrderv2($un_order);
+
+            if (count($unassigned_orders) > 1) {
                 $unassigned_distance_mat = array();
                 $unassigned_points = [];
-                if(!empty($unassigned_orders[0]['task'][0]['location'])){
-                    $unassigned_points[] = array(floatval($unassigned_orders[0]['task'][0]['location']['latitude']),floatval($unassigned_orders[0]['task'][0]['location']['longitude']));
+                if (!empty($unassigned_orders[0]['task'][0]['location'])) {
+                    $unassigned_points[] = array(floatval($unassigned_orders[0]['task'][0]['location']['latitude']), floatval($unassigned_orders[0]['task'][0]['location']['longitude']));
                 }
                 $unassigned_taskids = array();
                 $un_route = array();
                 foreach ($unassigned_orders as $singleua) {
                     $unassigned_taskids[] = $singleua['task'][0]['id'];
-                    if(!empty($singleua['task'][0]['location'])){
-                        $unassigned_points[] = array(floatval($singleua['task'][0]['location']['latitude']),floatval($singleua['task'][0]['location']['longitude']));
+                    if (!empty($singleua['task'][0]['location'])) {
+                        $unassigned_points[] = array(floatval($singleua['task'][0]['location']['latitude']), floatval($singleua['task'][0]['location']['longitude']));
                     }
 
                     //for drawing route
                     $s_task = $singleua['task'][0];
-                    switch($s_task['task_type_id']){
+                    // pr($s_task);
+                    switch ($s_task['task_type_id']) {
                         case 1:
                             $name = 'Pickup';
-                        break;
+                            break;
                         case 2:
                             $name = 'DropOff';
-                        break;
+                            break;
                         default:
                             $name = 'Appointment';
-                        break;
+                            break;
                     }
                     $aappend = [];
                     $aappend['task_type'] = $name;
@@ -532,8 +548,8 @@ trait Dispatcher
                 $unassigned_distance_mat['distance'] = $unassigned_points;
                 $distancematrix[0] = $unassigned_distance_mat;
                 $first_un_loc = [];
-                if(!empty($unassigned_orders[0]['task'][0]['location'])){
-                    $first_un_loc = array('lat'=>floatval($unassigned_orders[0]['task'][0]['location']['latitude']),'long'=>floatval($unassigned_orders[0]['task'][0]['location']['longitude']));
+                if (!empty($unassigned_orders[0]['task'][0]['location'])) {
+                    $first_un_loc = array('lat' => floatval($unassigned_orders[0]['task'][0]['location']['latitude']), 'long' => floatval($unassigned_orders[0]['task'][0]['location']['longitude']));
                 }
                 $final_un_route['driver_detail'] = $first_un_loc;
                 $final_un_route['task_details'] = $un_route;
@@ -548,29 +564,32 @@ trait Dispatcher
         $getAdminCurrentCountry = Countries::where('id', '=', $user->country_id)->get()->first();
         $defaultCountryLatitude  = $getAdminCurrentCountry->latitude ?? '';
         $defaultCountryLongitude  = $getAdminCurrentCountry->longitude ?? '';
-       
-        $data = [
-            'status' =>"success",
-            'client_code' => $user->code,
-            'userstatus' => $userstatus,
-            'agents' => $agents,
-            'routedata' => $uniquedrivers,
-            'teams' => $teams,
-            'defaultCountryLongitude' => $defaultCountryLongitude,
-            'defaultCountryLatitude' => $defaultCountryLatitude,
-            'newmarker' => $newmarker??[],
-            'distance_matrix' => $distancematrix,
-            'sql' => $request->sql,
-            'page' => $page,
-            'lastPage' => $lastPage
-        ];
 
-        if($is_load_html == 1)
-        {
-            return view('agent_dashboard_task_html_sql')->with($data)->render();
-        }else{
-            return json_encode($data);
+
+        if(is_null($response)){
+            $response = [];
         }
+        $response['status'] = "success";
+        $response['client_code'] = $user->code;
+        $response['userstatus'] = $userstatus;
+        $response['agents'] = $agents;
+        $response['routedata'] = $uniquedrivers;
+        $response['teams'] = $teams;
+        $response['defaultCountryLongitude'] = $defaultCountryLongitude;
+        $response['defaultCountryLatitude'] = $defaultCountryLatitude;
+        $response['newmarker'] = $newmarker ?? [];
+        $response['distance_matrix'] = $distancematrix;
+        $response['sql'] = $request->sql;
+        $response['page'] = $page;
+        $response['lastPage'] = $lastPage;
+        $response['unassigned_orders'] = $unassigned_orders;
+        $response['unassigned_distance'] = $un_total_distance;
 
+
+        if ($is_load_html == 1) {
+            return view('dashboard.parts.layout-' . $dashboard_theme . '.ajax.agent')->with($response)->render();
+        } else {
+            return $response;
+        }
     }
 }
