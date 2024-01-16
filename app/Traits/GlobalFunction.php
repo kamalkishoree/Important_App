@@ -73,12 +73,12 @@ trait GlobalFunction{
 
      
 
-            // if($agent_tag !='')
-            // {
-            //     $geoagents_ids = $geoagents_ids->whereHas('agent.tags', function($q) use ($agent_tag){
-            //         $q->where('name', '=', $agent_tag);
-            //     });
-            // }
+            if($agent_tag !='')
+            {
+                $geoagents_ids = $geoagents_ids->whereHas('agent.tags', function($q) use ($agent_tag){
+                    $q->where('name', '=', $agent_tag);
+                });
+            }
 
             $order = Order::find($order_id);
 
@@ -273,7 +273,7 @@ trait GlobalFunction{
                     $sum = 0;
                     $last = $pricingRule->base_distance??1;
 
-                    if(empty($distancePricing)  && count($distancePricing)==0)
+                    if(empty($distancePricing)  && count($distancePricing??[])==0)
                     {
                         return $sum??0;  
                     }
@@ -297,7 +297,7 @@ trait GlobalFunction{
                     }
                 }else{
                     $distancePricing = DistanceWisePricingRule::where('price_rule_id',$pricingRule->id)->where('distance_fee','>=',$lastDistance)->orderBy('distance_fee','asc')->first();
-                    if(empty($distancePricing)  && count($distancePricing)==0)
+                    if(empty($distancePricing)  && count($distancePricing??[])==0)
                     {
                         return $sum??0;  
                     }
