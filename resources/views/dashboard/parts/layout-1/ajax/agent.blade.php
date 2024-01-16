@@ -13,7 +13,7 @@ if(!empty($agents)){
         }
     }
 }
-// pr($teams);
+
 
 $defaultmaplocation['lat'] = $defaultCountryLatitude;
 $defaultmaplocation['long'] = $defaultCountryLongitude;
@@ -154,6 +154,7 @@ $agentslocations[] = $defaultmaplocation;
             $teamAgents = array_filter($agents, function($agent) use($item) {
                 return $agent['team_id'] == $item['id'];
             });
+         
         @endphp
             <div class="card-header main_card" id="heading-1">
                     <a role="button" data-toggle="collapse" href="#collapse-{{ $item['id'] }}"
@@ -209,18 +210,18 @@ $agentslocations[] = $defaultmaplocation;
                             $turnbyturn = '';
                         }
                         
-
+                  
                         $status = 'Free';
-                        if ($item['order_count'] > 0) {
-                            $status = 'Busy ';
-                            if ($item->is_available == 1) {
-                                $pdfperams = "'" . $item['task_id'] . "','',''," . $item['agent_id'] . ",'" . $date . "'";
-                                $turnbyturn = '<span class="navigation_btn optimize_btn" onclick="NavigatePath(' . $pdfperams . ')">' . __('Export') . '</span>';
-                            } else {
-                                $pdfperams = '';
-                                $turnbyturn = '';
-                            }
-                        }
+                        // if ($item['order_count'] > 0) {
+                        //     $status = 'Busy ';
+                        //     if ($agent->is_available == 1) {
+                        //         $pdfperams = "'" . $item['task_id'] . "','',''," . $item['agent_id'] . ",'" . $date . "'";
+                        //         $turnbyturn = '<span class="navigation_btn optimize_btn" onclick="NavigatePath(' . $pdfperams . ')">' . __('Export') . '</span>';
+                        //     } else {
+                        //         $pdfperams = '';
+                        //         $turnbyturn = '';
+                        //     }
+                        // }
                         // pr($agent);
                         ?>
 

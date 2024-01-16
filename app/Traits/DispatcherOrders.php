@@ -153,7 +153,7 @@ trait DispatcherOrders
         $sql .= " GROUP BY teams.id LIMIT 10";
 
         $teams =(array) \DB::select($sql);
-
+       
         foreach ($teams as $key =>$team) {
             $teams[$key] = $team = (array) $team;
             $team['online_agents']  = $team['total_online_agents'];
@@ -259,6 +259,7 @@ trait DispatcherOrders
             agents.id AS agent_id,
             agents.team_id,
             agents.name AS agent_name,
+            agents.is_available AS is_available,
             agent_logs.id AS agent_log_id,
             agent_logs.device_type,
             agent_logs.created_at,
@@ -362,6 +363,7 @@ trait DispatcherOrders
                     $aappend['task_status']           = $singleua['task_status'];
                     $aappend['team_id']               = 0;
                     $aappend['driver_name']           = '';
+                    $aappend['is_available']           = '';
                     $aappend['driver_id']             = 0;
                     $aappend['customer_name']         = $singleua['customer_name'] ?? '';
                     $aappend['customer_phone_number'] = $singleua['phone_number'] ?? '';
