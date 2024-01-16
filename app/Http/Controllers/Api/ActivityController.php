@@ -476,13 +476,35 @@ class ActivityController extends BaseController
 
     public function cmsData(Request $request)
     {
-        $data = Cms::where('id', $request->cms_id)->first();
+        try {
+            // Retrieve CMS data based on the provided cms_id
+            $data = Cms::where('id', $request->cms_id)->first();
 
-        return response()->json([
-            'data' => $data,
-            'status' => 200,
-            'message' => __('success')
-           ], 200);
+            // Check if data exists
+            if (!$data) {
+                return response()->json([
+                    'status' => 404,
+                    'message' => __('Not Found'),
+                ], 404);
+            }
+
+            // Remove HTML tags from the content field
+            $data->content = strip_tags($data->content);
+
+            // Return the data as a JSON response
+            return response()->json([
+                'data' => $data,
+                'status' => 200,
+                'message' => __('success'),
+            ], 200);
+        } catch (\Exception $e) {
+            // Handle exceptions and provide an error response
+            return response()->json([
+                'status' => 500,
+                'message' => __('Internal Server Error'),
+                'error' => $e->getMessage(), // Include the error message for debugging (remove in production)
+            ], 500);
+        }
     }
 
 
