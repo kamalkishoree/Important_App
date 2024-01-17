@@ -489,7 +489,9 @@ class ActivityController extends BaseController
             }
 
             // Remove HTML tags from the content field
-            $data->content = strip_tags($data->content);
+            $string = htmlentities($data->content, ENT_QUOTES, 'utf-8');
+            $data->content = str_replace("&nbsp;", "", $string);
+            $data->content = html_entity_decode($data->content);
 
             // Return the data as a JSON response
             return response()->json([
