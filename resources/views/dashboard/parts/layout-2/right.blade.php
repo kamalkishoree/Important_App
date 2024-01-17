@@ -13,17 +13,18 @@
                 <div class="side_head mb-2 py-2">
                     <div class="d-flex align-items-center justify-content-center mb-2"> 
                         <i class="mdi mdi-sync mr-1" onclick="reloadData()" aria-hidden="true"></i>
-                        <div class="radio radio-primary form-check-inline ml-3 mr-2">
-                            <input type="radio" id="user_status_all" value="2" name="user_status" class="checkUserStatus" checked>
-                            <label for="user_status_all"> {{__("All")}} </label>
-                        </div>
+                       
                         <div class="radio radio-primary form-check-inline">
-                            <input type="radio" id="user_status_online" value="1" name="user_status" class="checkUserStatus">
+                            <input type="radio" id="user_status_online" value="1" name="user_status" class="checkUserStatus" checked>
                             <label for="user_status_online"> {{__("Online")}} </label>
                         </div>
                         <div class="radio radio-info form-check-inline mr-2">
                             <input type="radio" id="user_status_offline" value="0" name="user_status" class="checkUserStatus">
                             <label for="user_status_offline"> {{__("Offline")}} </label>
+                        </div>
+                        <div class="radio radio-primary form-check-inline ml-3 mr-2">
+                            <input type="radio" id="user_status_all" value="2" name="user_status" class="checkUserStatus" >
+                            <label for="user_status_all"> {{__("All")}} </label>
                         </div>
                         
                         {{-- <span class="allAccordian ml-2"><span class="" onclick="openAllAccordian()">{{__("Open All")}}</span></span> --}}

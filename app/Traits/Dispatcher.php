@@ -604,26 +604,11 @@ trait Dispatcher
         $dashboard_theme = $request->dashboard_theme ?? 2;
 
         // Get the authenticated user
-        $user = Auth::user();
-
+        $startdate = $request->start_date ?? '';
+        $enddate = $request->end_date ?? '';
+        $user = $response['user'];
+      
         // Get client information based on user's code
-        $auth = Client::where('code', $user->code)->with(['getAllocation', 'getPreference'])->first();
-        $tz = new Timezone();
-        $auth->timezone = $tz->timezone_name($user->timezone);
-
-        // Parse and format the route date or use the current date
-        $date = isset($request->routedate) ? Carbon::parse($request->routedate)->format('Y-m-d') : date('Y-m-d');
-        $startdate = date("Y-m-d 00:00:00", strtotime($date));
-        $enddate = date("Y-m-d 23:59:59", strtotime($date));
-
-        
-        $startdate = Carbon::parse($startdate . @$auth->timezone ?? 'UTC')->tz('UTC');
-        $enddate = Carbon::parse($enddate . @$auth->timezone ?? 'UTC')->tz('UTC');
-        // Format start and end dates
-        $startdate = $startdate->format('Y-m-d');
-        $enddate = $enddate->format('Y-m-d');
-        // Initialize Timezone object and set the user's timezone
-        // Set a limit for the results
         $limit = 10;
 
         
@@ -731,6 +716,7 @@ trait Dispatcher
             // $response['userstatus'] = $userstatus;
             // $response['agents'] = $agents;
             // $response['routedata'] = $uniquedrivers;
+            $response['agents'] = [];
             $response['teams'] = $teams;
             $response['defaultCountryLongitude'] = $defaultCountryLongitude;
             $response['defaultCountryLatitude'] = $defaultCountryLatitude;
