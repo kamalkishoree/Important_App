@@ -405,7 +405,7 @@ trait DispatcherOrders
             $response = [];
         }
         $response['status'] = "success";
-        $response['teams'] = $teams;
+        //$response['teams'] = $teams;
         $response['userstatus'] = $userstatus;
         $response['client_code'] = $user->code;
         $response['defaultCountryLongitude'] = $defaultCountryLongitude;
