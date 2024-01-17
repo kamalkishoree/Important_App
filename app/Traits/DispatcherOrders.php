@@ -542,8 +542,7 @@ trait DispatcherOrders
             $response['lastPage'] = $lastPage;
 
             if($is_load_html == 1)
-            {
-                
+            {  
                 return view('dashboard.parts.layout-'.$dashboard_theme.'.ajax.order', compact('all_order'))->with($response)->render();
             }else{
                 return $response;

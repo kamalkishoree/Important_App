@@ -87,7 +87,7 @@ class DashBoardController extends Controller
         
        // pr($response);
         if($dashboard_theme != 1){
-            $this->orderDataEN($request, $response);
+            //$this->orderDataEN($request, $response);
         }
 
         return view('dashboard.index')->with($response);
