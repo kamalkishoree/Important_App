@@ -435,122 +435,198 @@ trait DispatcherOrders
 
     }
 
-    public function orderDataEN($request = null, &$response = null) {
+    // public function orderDataEN($request = null, &$response = null) {
 
-            $limit = 10;
-            $userstatus = isset($request->userstatus) ? $request->userstatus : 2;
-            $checkuserroutes = isset($request->checkuserroutes) ? $request->checkuserroutes : '';
-            $team_ids = isset($request->team_id) ? $request->team_id : '';
-            $is_load_html = isset($request->is_load_html) ? $request->is_load_html : 0;
-            $search_by_name = isset($request->search_by_name) ? $request->search_by_name : '';
-            $agent_ids = isset($request->agent_id) ? $request->agent_id : '';
-            $branchId = $request->branchId ?? '';
-            $dashboard_theme = $request->dashboard_theme ?? 2;
-            $startdate = $request->start_date ?? '';
-            $enddate = $request->end_date ?? '';
-            $user = $response['user'];
-            $date = $response['date'] ?? date('Y-m-d');
+    //         $limit = 10;
+    //         $userstatus = isset($request->userstatus) ? $request->userstatus : 2;
+    //         $checkuserroutes = isset($request->checkuserroutes) ? $request->checkuserroutes : '';
+    //         $team_ids = isset($request->team_id) ? $request->team_id : '';
+    //         $is_load_html = isset($request->is_load_html) ? $request->is_load_html : 0;
+    //         $search_by_name = isset($request->search_by_name) ? $request->search_by_name : '';
+    //         $agent_ids = isset($request->agent_id) ? $request->agent_id : '';
+    //         $branchId = $request->branchId ?? '';
+    //         $dashboard_theme = $request->dashboard_theme ?? 2;
+    //         $startdate = $request->start_date ?? '';
+    //         $enddate = $request->end_date ?? '';
+    //         $user = $response['user'];
+    //         $date = $response['date'] ?? date('Y-m-d');
            
-            $perPage = $limit; // Number of items per page
-            $page = $request->input('page', 1);
+    //         $perPage = $limit; // Number of items per page
+    //         $page = $request->input('page', 1);
             
-            $offset = ($page - 1) * $perPage;
+    //         $offset = ($page - 1) * $perPage;
 
-            $sql = "SELECT 
-                orders.*,
-                agents.id AS agent_id,
-                agents.team_id,
-                agents.name AS agent_name,
-                agents.is_available AS is_available,
-                agent_logs.id AS agent_log_id,
-                agent_logs.device_type,
-                agent_logs.created_at,
-                agent_logs.battery_level,
-                tasks.id AS task_id,
-                tasks.task_type_id,
-                tasks.task_status,
-                tasks.task_order,
-                tasks.assigned_time,
-                locations.id AS location_id,
-                locations.latitude,
-                locations.longitude,
-                locations.address,
-                locations.short_name,
-                customers.id AS customer_id,
-                customers.name AS customer_name,
-                customers.phone_number
-            FROM orders
-            LEFT JOIN tasks ON orders.id = tasks.order_id
-            LEFT JOIN locations ON tasks.location_id = locations.id
-            LEFT JOIN agents ON orders.driver_id = agents.id
-            LEFT JOIN agent_logs ON agent_logs.agent_id = agents.id
-            LEFT JOIN customers ON orders.customer_id = customers.id
-            WHERE orders.order_time >= '{$startdate}'
-            AND orders.order_time <= '{$enddate}'";
-    //         AND (
-    //             {$user->manager_type} = 3 AND orders.created_by = {$user->id}
-    //             OR {$user->manager_type} != 3
-    //         )";
-
-            if(!empty($checkuserroutes)){
-                $sql .= " AND orders.status = '{$checkuserroutes}'";
-            }
-            if(!empty($agent_ids)){
-                $sql .= " AND orders.driver_id IN (".implode(',', $agent_ids).")";
-            }
-
-            $count = "{$sql} GROUP BY orders.id ORDER BY orders.id DESC";
-            
-            $count = \DB::select($count);
-            
-            $totalcount = count($count);
-        
-            $lastPage =  ceil($totalcount / $perPage);
-            
-            $sql .= " GROUP BY orders.id ORDER BY orders.id DESC LIMIT $perPage OFFSET $offset";
-            $all_order = \DB::select($sql);
-            //pr($un_order);
-
-            $uniquedrivers = [];
-            $unassigned_orders = [];
-            $un_total_distance = 0.00;
-            $distancematrix = [];
-            $tasks = [];
-
-
-
-
-
-
-            if(is_null($response)){
-                $response = [];
-            }
-
-
-            $response['status'] = "success";
-            //$response['teams'] = $teams;
-            $response['userstatus'] = $userstatus;
+    //         $sql = "SELECT 
+    //             orders.*,
+    //             agents.id AS agent_id,
+    //             agents.team_id,
+    //             agents.name AS agent_name,
+    //             agents.is_available AS is_available,
+    //             agent_logs.id AS agent_log_id,
+    //             agent_logs.device_type,
+    //             agent_logs.created_at,
+    //             agent_logs.battery_level,
+    //             tasks.id AS task_id,
+    //             tasks.task_type_id,
+    //             tasks.task_status,
+    //             tasks.task_order,
+    //             tasks.assigned_time,
+    //             locations.id AS location_id,
+    //             locations.latitude,
+    //             locations.longitude,
+    //             locations.address,
+    //             locations.short_name,
+    //             customers.id AS customer_id,
+    //             customers.name AS customer_name,
+    //             customers.phone_number
+    //         FROM orders
+    //         LEFT JOIN tasks ON orders.id = tasks.order_id
+    //         LEFT JOIN locations ON tasks.location_id = locations.id
+    //         LEFT JOIN agents ON orders.driver_id = agents.id
+    //         LEFT JOIN agent_logs ON agent_logs.agent_id = agents.id
+    //         LEFT JOIN customers ON orders.customer_id = customers.id
+    //         WHERE orders.order_time >= '{$startdate}'
+    //         AND orders.order_time <= '{$enddate}'";
  
-            $response['date'] = $date;
-            $response['distance_matrix'] = $distancematrix;
-            $response['unassigned_orders'] = $all_order;
-            $response['unassigned_distance'] = [];
-            $response['client_timezone'] = $user->timezone;
-            $response['agent_ids'] = $agent_ids;
-            $response['tasks'] = [];
-            $response['page'] = $page;
-            $response['lastPage'] = $lastPage;
+    //         if(!empty($checkuserroutes)){
+    //             $sql .= " AND orders.status = '{$checkuserroutes}'";
+    //         }
+    //         if(!empty($agent_ids)){
+    //             $sql .= " AND orders.driver_id IN (".implode(',', $agent_ids).")";
+    //         }
 
-            if($is_load_html == 1)
-            {  
-                return view('dashboard.parts.layout-'.$dashboard_theme.'.ajax.order', compact('all_order'))->with($response)->render();
-            }else{
-                return $response;
-            }
+    //         $count = "{$sql} GROUP BY orders.id ORDER BY orders.id DESC";
+            
+    //         $count = \DB::select($count);
+            
+    //         $totalcount = count($count);
+        
+    //         $lastPage =  ceil($totalcount / $perPage);
+            
+    //         $sql .= " GROUP BY orders.id ORDER BY orders.id DESC LIMIT $perPage OFFSET $offset";
+    //         $all_order = \DB::select($sql);
+    //         //pr($un_order);
+
+    //         $uniquedrivers = [];
+    //         $unassigned_orders = [];
+    //         $un_total_distance = 0.00;
+    //         $distancematrix = [];
+    //         $tasks = [];
 
 
 
+
+
+
+    //         if(is_null($response)){
+    //             $response = [];
+    //         }
+
+
+    //         $response['status'] = "success";
+    //         //$response['teams'] = $teams;
+    //         $response['userstatus'] = $userstatus;
+ 
+    //         $response['date'] = $date;
+    //         $response['distance_matrix'] = $distancematrix;
+    //         $response['unassigned_orders'] = $all_order;
+    //         $response['unassigned_distance'] = [];
+    //         $response['client_timezone'] = $user->timezone;
+    //         $response['agent_ids'] = $agent_ids;
+    //         $response['tasks'] = [];
+    //         $response['page'] = $page;
+    //         $response['lastPage'] = $lastPage;
+
+    //         if($is_load_html == 1)
+    //         {  
+    //             return view('dashboard.parts.layout-'.$dashboard_theme.'.ajax.order', compact('all_order'))->with($response)->render();
+    //         }else{
+    //             return $response;
+    //         }
+
+
+
+    // }
+
+    public function orderDataEN($request = null, &$response = null) {
+        $limit = 10;
+        $userstatus = isset($request->userstatus) ? $request->userstatus : 2;
+        $checkuserroutes = isset($request->checkuserroutes) ? $request->checkuserroutes : '';
+        $team_ids = isset($request->team_id) ? $request->team_id : '';
+        $is_load_html = isset($request->is_load_html) ? $request->is_load_html : 0;
+        $search_by_name = isset($request->search_by_name) ? $request->search_by_name : '';
+        $agent_ids = isset($request->agent_id) ? $request->agent_id : '';
+        $branchId = $request->branchId ?? '';
+        $dashboard_theme = $request->dashboard_theme ?? 2;
+        $startdate = $request->start_date ?? '';
+        $enddate = $request->end_date ?? '';
+        $user = $response['user'];
+        $date = $response['date'] ?? date('Y-m-d');
+        $perPage = $limit; // Number of items per page
+        $page = $request->input('page', 1);
+        $offset = ($page - 1) * $perPage;
+    
+        $sql = "SELECT 
+                    orders.id,
+                    orders.order_time,
+                    orders.status,
+                    orders.driver_id,
+                    tasks.id AS task_id,
+                    tasks.task_type_id,
+                    tasks.task_status,
+                    tasks.task_order,
+                    tasks.assigned_time,
+                    locations.id AS location_id,
+                    locations.latitude,
+                    locations.longitude,
+                    locations.address,
+                    locations.short_name,
+                    customers.id AS customer_id,
+                    customers.name AS customer_name,
+                    customers.phone_number
+                FROM orders
+                LEFT JOIN tasks ON orders.id = tasks.order_id
+                LEFT JOIN locations ON tasks.location_id = locations.id
+                LEFT JOIN agents ON orders.driver_id = agents.id
+                LEFT JOIN customers ON orders.customer_id = customers.id
+                WHERE orders.order_time >= '{$startdate}'
+               AND orders.order_time <= '{$enddate}'";
+    
+        if (!empty($checkuserroutes)) {
+            $sql .= " AND orders.status = '{$checkuserroutes}'";
+        }
+        if (!empty($agent_ids)) {
+            $sql .= " AND orders.driver_id IN (" . implode(',', $agent_ids) . ")";
+        }
+    
+        $countSql = "{$sql} GROUP BY orders.id ORDER BY orders.id DESC";
+        $countParams = ['start_date' => $startdate, 'end_date' => $enddate, 'checkuserroutes' => $checkuserroutes];
+        $count = \DB::select($countSql, $countParams);
+        $totalcount = count($count);
+        $lastPage = ceil($totalcount / $perPage);
+    
+        $sql .= " GROUP BY orders.id ORDER BY orders.id DESC LIMIT $perPage OFFSET $offset";
+       
+
+        $orderResults = \DB::select($sql);
+    
+        $response['status'] = "success";
+        $response['userstatus'] = $userstatus;
+        $response['date'] = $date;
+        $response['unassigned_orders'] = $orderResults;
+        $response['client_timezone'] = $user->timezone;
+        $response['agent_ids'] = $agent_ids;
+        $response['tasks'] = [];
+        $response['page'] = $page;
+        $response['lastPage'] = $lastPage;
+    
+        if ($is_load_html == 1) {
+            return view('dashboard.parts.layout-' . $dashboard_theme . '.ajax.order', compact('orderResults'))->with($response)->render();
+        } else {
+            return $response;
+        }
     }
+    
 
 }
 
