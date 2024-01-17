@@ -977,11 +977,12 @@ class TaskController extends BaseController
         }
 
 
-        if (isset($orderdata) && $orderdata->driver_id != null) {
+        if (isset($orderdata) && $orderdata->driver_id != null ) {
             if ($orderdata && $orderdata->call_back_url) {
                 $call_web_hook = $this->updateStatusDataToOrder($orderdata, 2,1);  # task accepted
             }
             //Send SMS in case of friend's booking
+      
             if(isset($orderdata->type) && $orderdata->type == 1 && strlen($orderdata->friend_phone_number) > 8)
             {
                 $keyData = [
@@ -1232,7 +1233,9 @@ class TaskController extends BaseController
                 TaskReject::create($data);
             }
             Order::where('id', $orderdata->id)->update(['driver_id'=>null ,'status'=>'unassigned']);
-            if($unassignedorder_data->notify_all){
+            $unassignedorder_data = Order::where('id', $request->order_id)->where('status', 'unassigned')->first();
+
+            if(isset($unassignedorder_data) && $unassignedorder_data->notify_all ){
                 //For order api
                 Order::where('id', $orderdata->id)->update(['notify_all'=>0]);
                 $this->dispatchNow(new RosterDelete($request->order_id,'O'));
@@ -1509,8 +1512,6 @@ class TaskController extends BaseController
                 'no_seats_for_pooling' => isset($request->no_seats_for_pooling) ? $request->no_seats_for_pooling : 0,
                 'is_cab_pooling' => isset($request->is_cab_pooling) ? $request->is_cab_pooling : 0,
             ];
-            \Log::info('data');
-             \Log::info($order);
         
 
             if (checkColumnExists('orders', 'rejectable_order')) {
