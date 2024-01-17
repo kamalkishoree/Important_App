@@ -51,11 +51,11 @@ class DashBoardController extends Controller
             $defaultCountryLongitude  = '';
         }
 
-
         $teams  = Team::get();
-        if ($show_dashboard_by_agent_wise == 1) {
+        //$teams = [];
+        if ($show_dashboard_by_agent_wise == 0 && $dashboard_theme == 1) {
+            
             // $agents  = Agent::with('agentlog')->where('is_approved',1)->get();
-
             $agentsData = \DB::table('agents')
                 ->select('agents.*', 'latest_log.lat', 'latest_log.long', 'latest_log.device_type', 'latest_log.battery_level', 'latest_log.created_at')
                 ->leftJoin('agent_logs as latest_log', function ($join) {
@@ -78,13 +78,20 @@ class DashBoardController extends Controller
             });
 
 
-        }
-        $response = ['client_code' => Auth::user()->code, 'date' => $date, 'defaultCountryLongitude' => $defaultCountryLongitude, 'defaultCountryLatitude' => $defaultCountryLatitude, 'map_key' => $googleapikey, 'client_timezone' => $auth->timezone, 'searchTeams' => $teams, 'agentsData' => $agents, 'show_dashboard_by_agent_wise' => $show_dashboard_by_agent_wise, 'dashboard_theme' => $dashboard_theme];
+       }
+        $response = ['client_code' => Auth::user()->code, 'date' => $date, 'defaultCountryLongitude' => $defaultCountryLongitude, 'defaultCountryLatitude' => $defaultCountryLatitude, 'map_key' => $googleapikey, 'client_timezone' => $auth->timezone, 'searchTeams' => $teams, 'agentsData' => $agents,'agents' => $agents, 'show_dashboard_by_agent_wise' => $show_dashboard_by_agent_wise, 'dashboard_theme' => $dashboard_theme];
         $request->merge(['dashboard_theme' => $dashboard_theme]);
-        $this->teamData($request, $response);
-        if($dashboard_theme != 1){
-            $this->orderData($request, $response);
+        if ($dashboard_theme == 1) {
+            $this->teamData($request, $response);
+        } else {
+            $this->teamDataEN($request, $response);
         }
+        // pr($response);
+        
+       // pr($response);
+        // if($dashboard_theme != 1){
+        //     $this->orderData($request, $response);
+        // }
 
         return view('dashboard.index')->with($response);
     }

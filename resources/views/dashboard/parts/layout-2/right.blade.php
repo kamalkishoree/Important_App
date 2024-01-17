@@ -58,15 +58,7 @@
                     <div style="width: 100%">
                         <div id="map_canvas" style="width: 100%; height:calc(100vh - 70px);"></div>
                     </div>
-                    {{-- <div class="contant">
-                        <div class="bottom-content">
-                            <input type="text"  id="basic-datepicker" class="datetime" value="{{date('Y-m-d', strtotime($date))}}" data-date-format="Y-m-d">
-                            <div style="display:none">
-                                <input class="newchecks filtercheck teamchecks" cla type="checkbox" value="-1" name="teamchecks[]" checked>
-                                <input class="taskchecks filtercheck" type="checkbox" name="taskstatus[]" value="5" checked>
-                            </div>
-                        </div>
-                    </div> --}}
+            
                 </div>
             </div>
             {{-- @dd($unassigned_orders) --}}
@@ -171,31 +163,3 @@
         $defaultmaplocation['long'] = $defaultCountryLongitude;
         $agentslocations[] = $defaultmaplocation;
     ?>
-<script>
-    // Generate an array with 50 random coordinates and additional properties
-const deliveryPath = [];
-
-for (let i = 0; i < 50; i++) {
-    const latitude = 29.96591720 + (Math.random() / Math.pow(10, Math.floor(Math.random() * 3) + 1)); // Random latitude around 37.7749
-    const longitude = 31.24765820 + (Math.random() / Math.pow(10, Math.floor(Math.random() * 3) + 1)); // Random longitude around -122.4194
-
-    const deliveryObject = {
-        agent_id: 22,
-        lat: latitude,
-        lng: longitude,
-        status: "running",
-        shortCode: 5678,
-        order_id: 452452,
-        id:22
-    };
-
-    deliveryPath.push(deliveryObject);
-}
-var i =0;
-    setInterval(() => {
-        // MoveAgentLocation(deliveryPath[i])
-        i++;
-    }, 3000); 
-
-
-    </script>
