@@ -2213,7 +2213,7 @@ class TaskController extends BaseController
         $try = $auth->getAllocation->number_of_retries;
         $cash_at_hand = $auth->getAllocation->maximum_cash_at_hand_per_person ?? 0;
         $max_redius = $auth->getAllocation->maximum_radius;
-        $max_task = $auth->getAllocation->maximum_batch_size;
+        $max_task = $auth->getAllocation->maximum_task_per_person;
         $time = $this->checkTimeDiffrence($notification_time, $beforetime);
         $randem = rand(11111111, 99999999);
         $rostersbeforetime = $this->checkBeforeTimeDiffrence($notification_time, $beforetime);
@@ -2307,7 +2307,7 @@ class TaskController extends BaseController
         $try = $auth->getAllocation->number_of_retries;
         $cash_at_hand = $auth->getAllocation->maximum_cash_at_hand_per_person ?? 0;
         $max_redius = $auth->getAllocation->maximum_radius;
-        $max_task = $auth->getAllocation->maximum_batch_size;
+        $max_task = $auth->getAllocation->maximum_task_per_person;
         $time = $this->checkTimeDiffrence($notification_time, $beforetime);
         $randem = rand(11111111, 99999999);
         $rostersbeforetime = $this->checkBeforeTimeDiffrence($notification_time, $beforetime);
@@ -2420,7 +2420,7 @@ class TaskController extends BaseController
         $try = $auth->getAllocation->number_of_retries;
         $cash_at_hand = $auth->getAllocation->maximum_cash_at_hand_per_person ?? 0;
         $max_redius = $auth->getAllocation->maximum_radius;
-        $max_task = $auth->getAllocation->maximum_batch_size;
+        $max_task = $auth->getAllocation->maximum_task_per_person;
         $time = $this->checkTimeDiffrence($notification_time, $beforetime);
         $rostersbeforetime = $this->checkBeforeTimeDiffrence($notification_time, $beforetime);
         $randem = rand(11111111, 99999999);
@@ -2540,7 +2540,7 @@ class TaskController extends BaseController
         $try = $auth->getAllocation->number_of_retries;
         $cash_at_hand = $auth->getAllocation->maximum_cash_at_hand_per_person ?? 0;
         $max_redius = $auth->getAllocation->maximum_radius;
-        $max_task = $auth->getAllocation->maximum_batch_size;
+        $max_task = $auth->getAllocation->maximum_task_per_person;
         $time = $this->checkTimeDiffrence($notification_time, $beforetime);
         $rostersbeforetime = $this->checkBeforeTimeDiffrence($notification_time, $beforetime);
         $randem = rand(11111111, 99999999);

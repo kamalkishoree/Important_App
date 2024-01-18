@@ -977,11 +977,12 @@ class TaskController extends BaseController
         }
 
 
-        if (isset($orderdata) && $orderdata->driver_id != null) {
+        if (isset($orderdata) && $orderdata->driver_id != null ) {
             if ($orderdata && $orderdata->call_back_url) {
                 $call_web_hook = $this->updateStatusDataToOrder($orderdata, 2,1);  # task accepted
             }
             //Send SMS in case of friend's booking
+      
             if(isset($orderdata->type) && $orderdata->type == 1 && strlen($orderdata->friend_phone_number) > 8)
             {
                 $keyData = [
@@ -1232,7 +1233,9 @@ class TaskController extends BaseController
                 TaskReject::create($data);
             }
             Order::where('id', $orderdata->id)->update(['driver_id'=>null ,'status'=>'unassigned']);
-            if($unassignedorder_data->notify_all){
+            $unassignedorder_data = Order::where('id', $request->order_id)->where('status', 'unassigned')->first();
+
+            if(isset($unassignedorder_data) && $unassignedorder_data->notify_all ){
                 //For order api
                 Order::where('id', $orderdata->id)->update(['notify_all'=>0]);
                 $this->dispatchNow(new RosterDelete($request->order_id,'O'));
@@ -1509,8 +1512,6 @@ class TaskController extends BaseController
                 'no_seats_for_pooling' => isset($request->no_seats_for_pooling) ? $request->no_seats_for_pooling : 0,
                 'is_cab_pooling' => isset($request->is_cab_pooling) ? $request->is_cab_pooling : 0,
             ];
-            \Log::info('data');
-             \Log::info($order);
         
 
             if (checkColumnExists('orders', 'rejectable_order')) {
@@ -2586,7 +2587,6 @@ class TaskController extends BaseController
 
     public function SendToAll($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling, $agent_tag = '', $is_order_updated, $is_one_push_booking = 0,$particular_driver_id = 0)
     {
-        \Log::info($geo);
         $allcation_type    = 'AR';
         $date              = \Carbon\Carbon::today();
         $auth              = Client::where('database_name', $header['client'][0])->with(['getAllocation', 'getPreference'])->first();
@@ -2598,7 +2598,7 @@ class TaskController extends BaseController
         $try               = $auth->getAllocation->number_of_retries;
         $cash_at_hand      = $auth->getAllocation->maximum_cash_at_hand_per_person ?? 0;
         $max_redius        = $auth->getAllocation->maximum_radius;
-        $max_task          = $auth->getAllocation->maximum_batch_size;
+        $max_task          = $auth->getAllocation->maximum_task_per_person;
         $time              = $this->checkTimeDiffrence($notification_time, $beforetime);
         $randem            = rand(11111111, 99999999);
         $data = [];
@@ -2704,7 +2704,7 @@ class TaskController extends BaseController
         $try = $auth->getAllocation->number_of_retries;
         $cash_at_hand = $auth->getAllocation->maximum_cash_at_hand_per_person ?? 0;
         $max_redius = $auth->getAllocation->maximum_radius;
-        $max_task = $auth->getAllocation->maximum_batch_size;
+        $max_task = $auth->getAllocation->maximum_task_per_person;
         $time = $this->checkTimeDiffrence($notification_time, $beforetime);
         $randem = rand(11111111, 99999999);
         $data = [];
@@ -2808,7 +2808,7 @@ class TaskController extends BaseController
         $try = $auth->getAllocation->number_of_retries;
         $cash_at_hand = $auth->getAllocation->maximum_cash_at_hand_per_person ?? 0;
         $max_redius = $auth->getAllocation->maximum_radius;
-        $max_task = $auth->getAllocation->maximum_batch_size;
+        $max_task = $auth->getAllocation->maximum_task_per_person;
         $time = $this->checkTimeDiffrence($notification_time, $beforetime);
         $randem = rand(11111111, 99999999);
         $data = [];
@@ -5061,7 +5061,7 @@ class TaskController extends BaseController
         $try               = $auth->getAllocation->number_of_retries;
         $cash_at_hand      = $auth->getAllocation->maximum_cash_at_hand_per_person??0;
         $max_redius        = $auth->getAllocation->maximum_radius;
-        $max_task          = $auth->getAllocation->maximum_batch_size;
+        $max_task          = $auth->getAllocation->maximum_task_per_person;
         $time              = $this->checkTimeDiffrence($notification_time, $beforetime);
         $randem            = rand(11111111, 99999999);
         $data = [];
@@ -5160,7 +5160,7 @@ class TaskController extends BaseController
         $try               = $auth->getAllocation->number_of_retries;
         $cash_at_hand      = $auth->getAllocation->maximum_cash_at_hand_per_person??0;
         $max_redius        = $auth->getAllocation->maximum_radius;
-        $max_task          = $auth->getAllocation->maximum_batch_size;
+        $max_task          = $auth->getAllocation->maximum_task_per_person;
         $time              = $this->checkTimeDiffrence($notification_time, $beforetime);
         $randem            = rand(11111111, 99999999);
         $data = [];
