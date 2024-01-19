@@ -158,6 +158,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 		Route::any('payment/vnpay/api',    'VnpayController@vnpay_respontAPP')->name('vnpay_webview');
 		Route::get('driver/wallet/refreshBalance/{id?}', 'AgentController@refreshWalletbalance')->name('driver.wallet.refreshBalance');
 		Route::get('api_documentation', 'DashBoardController@api_documentation');
+		Route::get('getlogs', 'DashBoardController@GetAgentLogs');
 		Route::group(['middleware' => ['auth:client'], 'prefix' => '/'], function () {
 
 			Route::post('rating_type/create', 'Rating\RatingTypeController@store')->name('rating_type.create');

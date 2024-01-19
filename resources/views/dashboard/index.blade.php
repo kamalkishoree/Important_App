@@ -1,11 +1,12 @@
 
 @extends('layouts.vertical', ['title' => 'Dashboard','demo'=>'creative'])
-
 {{-- Variable section --}}
 @php
     use Carbon\Carbon;
     $color = ['one','two','three','four','five','six','seven','eight'];
     $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain/';
+    $agent_lat_longs = json_encode(@$agentMarkerData);
+   
 @endphp
 
 {{--End Variable section --}}
@@ -25,6 +26,7 @@
 
 @section('script')
     <script>
+        var agentsLatLong =`<?php  echo $agent_lat_longs  ?>`;
         var channelname = "orderdata{{ $client_code }}{{ date('Y-m-d', time()) }}";
         var logchannelname = "agentlog{{ $client_code }}{{ date('Y-m-d', time()) }}";
         var imgproxyurl = {!! json_encode($imgproxyurl) !!};
@@ -43,6 +45,7 @@
         var getTasks = "{{ url('/get-tasks') }}";
         var arrangeRoute  = "{{ url('/arrange-route') }}";
         var getAgentNomenclature = "{{ __(getAgentNomenclature()) }}";
+    
     </script>
      @include("dashboard/parts/layout-$dashboard_theme/bottom")
 @endsection

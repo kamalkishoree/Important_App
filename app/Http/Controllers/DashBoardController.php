@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Model\Agent;
 use App\Model\ClientPreference;
 use App\Model\Team;
 use App\Model\Client;
@@ -12,6 +13,7 @@ use App\Model\Countries;
 use App\Traits\googleMapApiFunctions;
 use App\Traits\{GlobalFunction,  Dispatcher, DispatcherOrders};
 use Carbon\Carbon;
+use DB;
 
 
 class DashBoardController extends Controller
@@ -24,7 +26,7 @@ class DashBoardController extends Controller
      */
     public function index(Request $request)
     {
-
+      
         $agents = [];
         $com_data = $this->GetCommonItem($request);
         // pr($com_data['clientPreference']);
@@ -83,13 +85,20 @@ class DashBoardController extends Controller
         } else {
             $this->teamDataEN($request, $response);
         }
+
         // pr($response);
         
        // pr($response);
         if($dashboard_theme != 1){
+          $response['agentMarkerData']=  $this->GetAgentLogs(-1,-1);
+          
             $this->orderDataEN($request, $response);
         }
+        else{
+            $this->orderData($request, $response);
 
+        }
+    
         return view('dashboard.index')->with($response);
     }
 
@@ -206,8 +215,12 @@ class DashBoardController extends Controller
     public function dashboardTeamData(Request $request)
     {  
         $data_com = $this->GetCommonItem($request);
+       
         $request->merge(['start_date'=>@$data_com['startdate'],'end_date'=>@$data_com['enddate']]);
-        return $this->teamDataEN($request,$data_com);
+        $data['agentMarkerData']=  $this->GetAgentLogs(-1,$request->userstatus);
+        $data= $this->teamDataEN($request,$data_com);
+       
+        return $data;
     }
     public function dashboardOrderData(Request $request)
     {
@@ -215,9 +228,29 @@ class DashBoardController extends Controller
          $request->merge(['start_date'=>@$data_com['startdate'],'end_date'=>@$data_com['enddate']]);
          $data_com['preference'] = $data_com['clientPreference'];
          $data = $this->orderDataEN($request,$data_com);
-       
          return $data;
     }
+
+
+    
+        
+        /**
+         * Get Agent records for current location
+         *
+         * @param  int  $pAgentId,$pIsAvailable
+         * @parsam send -1 if need all records
+         * @return \Illuminate\Http\Response
+         */
+        public function GetAgentLogs($pAgentId = null, $pIsAvailable = null)
+        {
+           
+            // Call the stored procedure
+          
+            $results = DB::select('CALL GetLatestAgentLogs(?, ?)', [$pAgentId, $pIsAvailable]);
+            // Return or do something with the results
+            return $results;
+        } 
+    
 
     
 }

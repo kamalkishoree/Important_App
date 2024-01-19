@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\AgentOrderLog;
 use App\DriverRefferal;
 use App\Http\Controllers\Api\BaseController;
 use Illuminate\Http\Request;
@@ -16,7 +17,7 @@ use Config;
 use Illuminate\Support\Facades\URL;
 use GuzzleHttp\Client as GClient;
 use App\Traits\FormAttributeTrait;
-use App\Traits\{GlobalFunction};
+use App\Traits\{GlobalFunction,DashboardSocketTrait};
 use Exception;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
@@ -25,6 +26,7 @@ class ActivityController extends BaseController
 {
     use FormAttributeTrait;
     use GlobalFunction;
+    use DashboardSocketTrait;
     /**
      * Store/Update Client Preferences
      */
@@ -241,7 +243,9 @@ class ActivityController extends BaseController
 
     public function agentLog(Request $request)
     {
+      
         $user_id = Auth::user()->id;
+      
         $header = $request->header();
         $client_code = Client::where('database_name', $header['client'][0])->first();
         $preferences = ClientPreference::with('currency')->first();
@@ -324,20 +328,11 @@ class ActivityController extends BaseController
                             // insert agent coverd distance
                             $data['distance_covered'] = $getDistance;
                             $data['current_task_id'] = $tasks->id;
-                            $log = AgentLog::create($data);
+                        
+                            $log=  $this->updateAgentLog($data,$request->order_id);
                             $agent_details=Agent::with('agentlog')->where('id',$log->agent_id)->first();
 
-                            $send_data=[
-                                'name'=>$agent_details->name,
-                                'agent_id'=>$agent_details->agent_id,
-                                'id'=>$agent_details->id,
-                                'is_available'=>@$agent_details->is_available,
-                                'is_busy'=>$agent_details->is_busy,
-                                'lat'=>$agent_details['agentlog']->lat,
-                                'lng'=>$agent_details['agentlog']->long,
-                                'event_type' => 'agent_log'];
-                            //event(new \App\Events\SendMessage($send_data));
-                            $this->FireEvent($send_data);
+                         
 
                             // check notification send to customer pr km/miles
                             $agentDistanceCovered = AgentLog::where('current_task_id', $tasks->id)->where('distance_covered', 'LIKE', '%'.$getDistance.'%')->count();
@@ -365,11 +360,21 @@ class ActivityController extends BaseController
                     }
                 }                                           
             }else{
-                AgentLog::create($data);
+                $log=  $this->updateAgentLog($data,$request->order_id);
+                $agent_details=Agent::with('agentlog')->where('id',$log->agent_id)->first();
                 //event(new \App\Events\agentLogFetch());
             }
         }
-
+        $send_data=[
+            'name'=>$agent_details->name,
+            'agent_id'=>$agent_details->agent_id,
+            'id'=>$agent_details->id,
+            'is_available'=>@$agent_details->is_available,
+            'is_busy'=>$agent_details->is_busy,
+            'lat'=>$agent_details['agentlog']->lat,
+            'lng'=>$agent_details['agentlog']->long,
+            'event_type' => 'agent_log'];
+        $this->FireEvent($send_data);
         $id    = Auth::user()->id;
         $all   = $request->all;
 

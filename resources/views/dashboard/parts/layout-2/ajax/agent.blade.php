@@ -1,3 +1,4 @@
+
 @php
     $date = date('Y-m-d');
     $color = ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight'];

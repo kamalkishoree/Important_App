@@ -549,6 +549,8 @@ trait DispatcherOrders
     // }
 
     public function orderDataEN($request = null, &$response = null) {
+
+        
         $limit = 10;
         $userstatus = isset($request->userstatus) ? $request->userstatus : 2;
         $checkuserroutes = isset($request->checkuserroutes) ? $request->checkuserroutes : '';
@@ -606,10 +608,10 @@ trait DispatcherOrders
         $lastPage = ceil($totalcount / $perPage);
     
         $sql .= " GROUP BY orders.id ORDER BY orders.id DESC LIMIT $perPage OFFSET $offset";
-       
+  
 
         $orderResults = \DB::select($sql);
-    
+     
         $response['status'] = "success";
         $response['userstatus'] = $userstatus;
         $response['date'] = $date;

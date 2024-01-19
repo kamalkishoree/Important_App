@@ -248,6 +248,7 @@ trait Dispatcher
             $orders = \DB::select($sql);
 
             $newmarker = [];
+         
 
             foreach ($orders as $key => $order) {
                 $append = [];
@@ -647,6 +648,8 @@ trait Dispatcher
             LEFT JOIN orders ON orders.driver_id = agents.id AND orders.order_time >= '{$startdate}' AND orders.order_time <= '{$enddate}'
             LEFT JOIN tasks ON tasks.order_id = orders.id
             LEFT JOIN locations ON tasks.location_id = locations.id";
+
+            
 
 
             if ($user && $user->manager_type == 3 && $user->manual_allocation == 1 && $user->all_team_access != 1) {

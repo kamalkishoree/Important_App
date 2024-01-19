@@ -85,6 +85,6 @@
     @endforeach
     @if ($lastPage != $page && $unassigned_orders)
         <button class="form-control" id="load-more" data-page="{{ $page + 1 }}"
-            data-url="{{ route('dashboard.agent-orderdata', ['page' => $page + 1]) }}">Load More</button>
+            data-url="{{ route('dashboard.orderdata', ['page' => $page + 1]) }}">Load More</button>
     @endif
 @endif

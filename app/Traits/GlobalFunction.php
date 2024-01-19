@@ -1,5 +1,7 @@
 <?php
 namespace App\Traits;
+
+use App\AgentOrderLog;
 use DB;
 use Illuminate\Support\Collection;
 use Log;
@@ -649,7 +651,16 @@ trait GlobalFunction{
             }
         }
     
-    
+    public function updateAgentLog($data ,$order_id =""){
+      
+        if(empty($order_id)){
+            $log = AgentLog::updateOrCreate(['agent_id' =>$data['agent_id']],$data);
+            }else{
+                $log = AgentOrderLog::create($data);
+            }
+            return $log ;
+    }
+
         //This is for drag and drop functionality
         public function arrangeRoute(Request $request)
         {

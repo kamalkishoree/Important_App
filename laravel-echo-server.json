@@ -1,5 +1,5 @@
 {
-	"authHost": "http://192.168.96.84:9091",
+	"authHost": "http://192.168.102.7:8001",
 	"authEndpoint": "/broadcasting/auth",
 	"clients": [
 		{
@@ -30,7 +30,7 @@
 	},
 	"apiOriginAllow": {
 		"allowCors": true,
-		"allowOrigin": "http://192.168.96.84:9091",
+		"allowOrigin": "http://192.168.102.7:8001",
 		"allowMethods": "GET,POST",
 		"allowHeaders": "*"
 	}
