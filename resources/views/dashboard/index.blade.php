@@ -4,7 +4,7 @@
 @php
     use Carbon\Carbon;
     $color = ['one','two','three','four','five','six','seven','eight'];
-    $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain/';
+    $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/60/60/sm/0/plain/https://'.env('AWS_BUCKET').'.s3.us-west-2.amazonaws.com/';
     $agent_lat_longs = json_encode(@$agentMarkerData);
    
 @endphp
@@ -45,6 +45,7 @@
         var getTasks = "{{ url('/get-tasks') }}";
         var arrangeRoute  = "{{ url('/arrange-route') }}";
         var getAgentNomenclature = "{{ __(getAgentNomenclature()) }}";
+        var const_img ='/assets/images/profile-pic-dummy.png'
     
     </script>
      @include("dashboard/parts/layout-$dashboard_theme/bottom")

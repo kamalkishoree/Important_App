@@ -326,12 +326,13 @@ function addMarker(location, lables, images, data, type) {
             "</div>" +
             "</div>";
     } else {
-        img = data.image_url;
+        img = imgproxyurl+data.image_url;
+        
         contentString =
             '<div class="row no-gutters align-items-center">' +
             '<div class="col-sm-4">' +
             '<div class="img_box mb-sm-0 mb-2"> <img src="' +
-            data.image_url +
+            img +
             '"/></div> </div>' +
             '<div class="col-sm-8 pl-2 user_info">' +
             '<div class="user_name mb-2 11"><label class="d-block m-0">' +
@@ -377,7 +378,7 @@ function addMarker(location, lables, images, data, type) {
     }
 
     markers.push(marker);
-    mark.push({id:data.id, data:marker})
+    mark.push({id:data.agent_id, data:marker})
 
     marker.addListener("click", () => {
         infowindow.open(map, marker);
@@ -432,7 +433,7 @@ function handler(element) {
     channelname = `${channelName}${element.value}`;
     logchannelname = `${logChannelName}${element.value}`;
     if (old_channelname != channelname) {
-        ListenDataChannel();
+        //ListenDataChannel();
         ListenAgentLogChannel();
     }
 }
@@ -479,6 +480,8 @@ function drawAgents(){
                 displayagent,
                 type
             );
+
+         
         }
     }
 

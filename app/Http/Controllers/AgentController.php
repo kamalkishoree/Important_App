@@ -242,6 +242,7 @@ class AgentController extends Controller
                     $query->whereIn('warehouses.id', $managerWarehousesIds);
                 });
             }
+          
             if ($request->status == 2) {
                 $agents = $agents->withTrashed()
                     ->where('is_approved', $request->status)
@@ -253,6 +254,7 @@ class AgentController extends Controller
             } else {
                 $agents = $agents->where('is_approved', $request->status)->orderBy('id', 'desc');
             }
+            
             return Datatables::of($agents)->editColumn('name', function ($agents) use ($request) {
                 $name = $agents->name;
                 return $name;

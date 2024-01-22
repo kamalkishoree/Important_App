@@ -21,7 +21,15 @@ Route::get('hitevent', function (Request $request) {
 	event(new \App\Events\agentLogFetch());
 	dd("Event successfull");
 });
+Route::get('/t', function () {
+	//$data =[];
+	$data = ['event_type'=>'agent_status_update','lat' => 25.2138, 'lng'=> 75.8648,'name'=>'Gurvinder','agent_id'=>720956,'is_available'=>1,'is_busy'=>0,'id'=>47];
+	//$data['event_type'] = 'agent_log';
 
+
+	event(new \App\Events\SendMessage($data));
+	dd('Event Run Successfully.');
+});
 Route::get('/switch/language', function (Request $request) {
 	if ($request->lang) {
 		session()->put("applocale", $request->lang);
