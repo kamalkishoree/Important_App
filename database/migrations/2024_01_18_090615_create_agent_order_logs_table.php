@@ -15,7 +15,7 @@ class CreateAgentOrderLogsTable extends Migration
     {
         Schema::create('agent_order_logs', function (Blueprint $table) 
             {
-            	$table->id();
+            $table->id();
 			$table->bigInteger('agent_id')->unsigned();
 			$table->bigInteger('current_task_id')->unsigned();
 			$table->decimal('lat', 10, 8)->default(0);
@@ -30,9 +30,7 @@ class CreateAgentOrderLogsTable extends Migration
 		});
 
 		Schema::table('agent_logs', function (Blueprint $table) {
-			$table->index('lat');
-			$table->index('long');
-			$table->index('on_route');
+			
             $table->index('created_at');
 		});
     
