@@ -300,7 +300,7 @@ function handleError(data) {
 }
 
 function addMarker(location, lables, images, data, type) {
-    console.log(data);
+  
     var contentString = "";
     if (type == 1) {
         contentString =
