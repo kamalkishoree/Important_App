@@ -654,7 +654,7 @@ trait GlobalFunction{
     public function updateAgentLog($data ,$order_id =""){
       
         if(empty($order_id)){
-            $log = AgentLog::updateOrCreate(['agent_id' =>$data['agent_id']],$data);
+            $log = AgentLog::updateOrCreate(['agent_id' =>$data['agent_id']],$data)->latest('created_at')->first();
             }else{
                 $log = AgentOrderLog::create($data);
             }
