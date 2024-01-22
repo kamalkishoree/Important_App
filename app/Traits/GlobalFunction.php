@@ -73,12 +73,12 @@ trait GlobalFunction{
 
      
 
-            // if($agent_tag !='')
-            // {
-            //     $geoagents_ids = $geoagents_ids->whereHas('agent.tags', function($q) use ($agent_tag){
-            //         $q->where('name', '=', $agent_tag);
-            //     });
-            // }
+            if($agent_tag !='')
+            {
+                $geoagents_ids = $geoagents_ids->whereHas('agent.tags', function($q) use ($agent_tag){
+                    $q->where('name', '=', $agent_tag);
+                });
+            }
 
             $order = Order::find($order_id);
 
