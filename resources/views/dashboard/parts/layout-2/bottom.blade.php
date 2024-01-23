@@ -9,7 +9,8 @@
     $(async function(){
         try{
             
-            const socketIoUrl = window.location.hostname + ":" + 6001;
+            //const socketIoUrl = window.location.hostname + ":" + 6001;
+            const socketIoUrl = window.location.hostname;
             
             // Create a socket.io connection
             const socket = new io(socketIoUrl);
