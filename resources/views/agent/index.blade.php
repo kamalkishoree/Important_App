@@ -7,6 +7,9 @@
 
 <link href="{{ asset('assets/libs/dropzone/dropzone.min.css') }}" rel="stylesheet" type="text/css" />
 <link href="{{ asset('assets/libs/dropify/dropify.min.css') }}" rel="stylesheet" />
+
+
+
 <style>
     .cursors {
         cursor: move;
@@ -168,7 +171,7 @@ width: 160px !important;
 overflow: hidden;
 }
 
-/* 
+/*
 .custom-radio-design [type="radio"]:checked,
 .custom-radio-design [type="radio"]:not(:checked) {
     position: absolute;
@@ -403,7 +406,7 @@ $is_driver_slot = getClientPreferenceDetail()->is_driver_slot;
                                     <button type="button" class="btn btn-success waves-effect waves-light saveaccounting mr-1" data-toggle="modal" data-target="#pay-receive-modal" data-backdrop="static" data-keyboard="false">{{__("Pay")}} / {{__("Receive")}}</button>
                                     @if($is_driver_slot == 1)
                                         <button type="button" class="btn btn-success waves-effect waves-light " id="gerenal_slot" >{{__("Gerenal Slot")}}</button>
-                                    @endif                                    
+                                    @endif
                                 </li>
                             </ul>
                     </div>
@@ -457,8 +460,8 @@ $is_driver_slot = getClientPreferenceDetail()->is_driver_slot;
                                             <th>{{__("Action")}}</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-
+                                    <tbody class="agent-listing-data">
+                                       <?php echo $agentData  ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -493,7 +496,7 @@ $is_driver_slot = getClientPreferenceDetail()->is_driver_slot;
                                             <th>{{__("Action")}}</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody class="awaiting_approval_agent_datatable-data">
 
                                     </tbody>
                                 </table>
@@ -529,13 +532,15 @@ $is_driver_slot = getClientPreferenceDetail()->is_driver_slot;
                                             <th>{{__("Action")}}</th>
                                         </tr>
                                     </thead>
-                                    <tbody>.</tbody>
+                                    <tbody class="blocked_agent_datatable-data">
+
+                                    </tbody>
                                 </table>
                             </div>
                         </div>
                     </div> <!-- end card-body-->
                 </div> <!-- end card-->
-                
+
             </div> <!-- end col -->
         </div>
     </div>
@@ -558,7 +563,7 @@ $is_driver_slot = getClientPreferenceDetail()->is_driver_slot;
                                         <input id="blocktime" class="form-control" autofocus>
                                     </div>
                                 </div>
-                                
+
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
@@ -574,7 +579,7 @@ $is_driver_slot = getClientPreferenceDetail()->is_driver_slot;
                                             <input class="form-control" placeholder="End Time" type="time" name="end_time" id="end_time" required />
                                         </div>
                                     </div>
-                                    
+
                                     <div class="row forDate" style="display: none;">
                                 <input type="hidden" class="custom-control-input methods" value="agents">
                                 </div>
@@ -590,7 +595,7 @@ $is_driver_slot = getClientPreferenceDetail()->is_driver_slot;
                                     <div class="col-md-6 slotForDiv">
                                         {!! Form::label('title', 'Recurring',['class' => 'control-label']) !!}
                                     <div class="form-group">
-                                      
+
                                         <ul class="list-inline">
                                             <li class="d-block pl-1 ml-3 mb-1 custom-radio-design">
                                                 <input type="checkbox" class="custom-control-input check recurring" id="recurring" name="recurring">
@@ -609,7 +614,7 @@ $is_driver_slot = getClientPreferenceDetail()->is_driver_slot;
                                          </div>
                                     </div>
                                 </div>
-                             
+
                             <div class="row mb-2 weekDays" style="display:none">
                                 <div class="col-md-12">
                                     <div class="">
@@ -645,7 +650,7 @@ $is_driver_slot = getClientPreferenceDetail()->is_driver_slot;
                                     </div>
                                 </div>
                             </div>
-                        
+
                             <div class="row forDate" style="display: none;">
                                 <div class="col-md-12" >
                                     <div class="form-group">
@@ -653,9 +658,9 @@ $is_driver_slot = getClientPreferenceDetail()->is_driver_slot;
                                         <input class="form-control date-datepicker" placeholder={{ __("Select Date") }} type="text" name="slot_date" id="slot_date" required />
                                     </div>
                                 </div>
-                        
+
                             </div>
-                        
+
                         </form>`;
 
                     var EditSlotHtml = `<form class="needs-validation" name="slot-form" id="update-event" action="" method="post">
@@ -675,7 +680,7 @@ $is_driver_slot = getClientPreferenceDetail()->is_driver_slot;
                                         <input id="blocktime" class="form-control"  autofocus>
                                     </div>
                                 </div>
-                                
+
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
@@ -691,8 +696,8 @@ $is_driver_slot = getClientPreferenceDetail()->is_driver_slot;
                                             <input class="form-control" placeholder="End Time" type="time" name="end_time" id="edit_end_time" required />
                                         </div>
                                     </div>
-                                
-                            
+
+
                                 </div>
                                 <div class="row memo view_booking">
                                     <div class="col-md-6 slot_type">
@@ -708,7 +713,7 @@ $is_driver_slot = getClientPreferenceDetail()->is_driver_slot;
                                     <div class="col-md-6 slotForDiv">
                                         {!! Form::label('title', 'Recurring',['class' => 'control-label']) !!}
                                     <div class="form-group">
-                                      
+
                                         <ul class="list-inline">
                                             <li class="d-block pl-1 ml-3 mb-1 custom-radio-design">
                                                 <input type="checkbox" class="custom-control-input check edit_recurring recurring" id="recurring" name="recurring">
@@ -727,7 +732,7 @@ $is_driver_slot = getClientPreferenceDetail()->is_driver_slot;
                                          </div>
                                     </div>
                                 </div>
-                             
+
                             <div class="row mb-2 weekDays view_booking" style="display:none">
                                 <div class="col-md-12">
                                     <div class="">
@@ -763,7 +768,7 @@ $is_driver_slot = getClientPreferenceDetail()->is_driver_slot;
                                     </div>
                                 </div>
                             </div>
-                        
+
                             <div class="row forDate" style="display: none;">
                                 <div class="col-md-12" >
                                     <div class="form-group">
@@ -771,7 +776,7 @@ $is_driver_slot = getClientPreferenceDetail()->is_driver_slot;
                                         <input class="form-control date-datepicker" placeholder={{ __("Select Date") }} type="text" name="slot_date" id="edit_slot_date" required />
                                     </div>
                                 </div>
-                        
+
                             </div>
                             <input  name="edit_type" type="hidden" id="edit_type" value="">
                             <input  name="edit_day" type="hidden" id="edit_day" value="">
@@ -786,7 +791,7 @@ $is_driver_slot = getClientPreferenceDetail()->is_driver_slot;
                                     <a  class="btn btn-info w-100" target="_blank" id="viewOrder">{{ __("View Order") }}</a>
                                 </div>
                             </div>
-                        
+
                         </form>`;
 </script>
 @endif
@@ -878,16 +883,16 @@ $is_driver_slot = getClientPreferenceDetail()->is_driver_slot;
         });
         stay.preventDefault();
     });
-    
+
      $(document).on("click","input[name='payment_type']",function() {
         var test = $(this).val();
 		if(test == 2){
 			  $("#receive_from").removeClass("d-none");
 		}else{
-			  $("#receive_from").addClass("d-none");    		
-		}         
+			  $("#receive_from").addClass("d-none");
+		}
     });
-    
+
 </script>
 @include('agent.pagescript')
 @endsection
