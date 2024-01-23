@@ -4,7 +4,7 @@
 <script src="{{ asset('assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
 <script src="{{ asset('js/app.js') }}"></script>
 {{-- <script src="https://dev-rochat.netsolutionindia.com/socket.io/socket.io.js"></script> --}}
-<script src="//{{ Request::getHost() }}:6001/socket.io/socket.io.js"></script>
+<script src="{{$socket_url}}"></script>
 <script>
     $(async function(){
         try{

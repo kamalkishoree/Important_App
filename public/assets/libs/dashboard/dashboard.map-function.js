@@ -327,7 +327,7 @@ function addMarker(location, lables, images, data, type) {
             "</div>";
     } else {
         img = imgproxyurl+data.image_url;
-        
+        console.log(img);
         contentString =
             '<div class="row no-gutters align-items-center">' +
             '<div class="col-sm-4">' +
