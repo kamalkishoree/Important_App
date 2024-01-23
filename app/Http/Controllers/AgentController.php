@@ -40,6 +40,7 @@ use App\Model\ {
 use Kawankoding\Fcm\Fcm;
 use App\Traits\agentEarningManager;
 use App\Traits\smsManager;
+use Illuminate\Contracts\View\View;
 
 class AgentController extends Controller
 {
@@ -80,6 +81,8 @@ class AgentController extends Controller
 
     public function index(Request $request)
     {
+        $tz = new Timezone();
+
         $user = Auth::user();
         $managerWarehouses = Client::with('warehouse')->where('id', $user->id)->first();
         $managerWarehousesIds = $managerWarehouses->warehouse->pluck('id');
@@ -146,9 +149,18 @@ class AgentController extends Controller
         if ($user->is_superadmin == 0 && $user->manager_type == 1) {
             $warehouses = Warehouse::whereIn('id', $managerWarehousesIds)->get();
         }
+        $client = Client::where('code', $user->code)->with([
+            'getTimezone',
+            'getPreference',
+            'warehouse'
+        ])->first();
+        $client_timezone = $client->getTimezone ? $client->getTimezone->timezone : 251;
+        $timezone = $tz->timezone_name($client_timezone);
 
-        // $agents = Agent::orderBy('id', 'DESC');
-            
+        $returnHTML = view ('agent/agent-index')->with(['agents' => $agents,'timezone' => $timezone])->render();
+
+
+
         return view('agent.index')->with([
             'agents' => $agents,
             'geos' => $geos,
@@ -163,6 +175,7 @@ class AgentController extends Controller
             'agentInActive' => $agentInActive,
             'freelancerCount' => $freelancerCount,
             'teams' => $teams,
+            'agentData' => $returnHTML,
             'tags' => $tags,
             'selectedCountryCode' => $countryCode,
             'calenderSelectedDate' => $selectedDate,
@@ -175,6 +188,9 @@ class AgentController extends Controller
 
     public function agentFilter(Request $request)
     {
+
+
+
         try {
             $tz = new Timezone();
             $user = Auth::user();
@@ -202,7 +218,6 @@ class AgentController extends Controller
             $request->merge([
                 'is_attendence' => $isAttendence
             ]);
-
             $client_timezone = $client->getTimezone ? $client->getTimezone->timezone : 251;
             $timezone = $tz->timezone_name($client_timezone);
             $agents = Agent::with('warehouseAgent')->orderBy('id', 'DESC');
@@ -242,7 +257,7 @@ class AgentController extends Controller
                     $query->whereIn('warehouses.id', $managerWarehousesIds);
                 });
             }
-          
+
             if ($request->status == 2) {
                 $agents = $agents->withTrashed()
                     ->where('is_approved', $request->status)
@@ -254,144 +269,16 @@ class AgentController extends Controller
             } else {
                 $agents = $agents->where('is_approved', $request->status)->orderBy('id', 'desc');
             }
-            
-            return Datatables::of($agents)->editColumn('name', function ($agents) use ($request) {
-                $name = $agents->name;
-                return $name;
-            })
-                ->editColumn('profile_picture', function ($agents) use ($request) {
-                $src = (isset($agents->profile_picture) ? $request->imgproxyurl . Storage::disk('s3')->url($agents->profile_picture) : Phumbor::url(URL::to('/asset/images/no-image.png')));
-                return $src;
-            })
-                ->editColumn('team', function ($agents) use ($request) {
-                $team = (isset($agents->team->name) ? $agents->team->name : __('Team Not Alloted'));
-                return $team;
-            })
-                ->editColumn('warehouse', function ($agents) use ($request) {
-                $warehouse = (isset($agents->warehouse->name) ? $agents->warehouse->name : __('-'));
-                return $warehouse;
-            })
-                ->editColumn('vehicle_type_id', function ($agents) use ($request) {
-                $src = asset('assets/icons/extra/' . $agents->vehicle_type_id . '.png');
-                return $src;
-            })
-                ->editColumn('type', function ($agents) use ($request) {
-                return __($agents->type);
-            })
-                ->editColumn('cash_to_be_collected', function ($agents) use ($request) {
-                $cash = $agents->order->where('status', 'completed')
-                    ->sum('cash_to_be_collected');
-                return number_format((float) $cash, 2, '.', '');
-            })
-                ->editColumn('driver_cost', function ($agents) use ($request) {
-                $orders = $agents->order->where('status', 'completed')
-                    ->sum('driver_cost');
-                return number_format((float) $orders, 2, '.', '');
-            })
-                ->editColumn('cr', function ($agents) use ($request) {
-                $receive = $agents->agentPayment->sum('cr');
-                return number_format((float) $receive, 2, '.', '');
-            })
-                ->editColumn('dr', function ($agents) use ($request) {
-                $pay = $agents->agentPayment->sum('dr');
-                return number_format((float) $pay, 2, '.', '');
-            })
-                ->editColumn('pay_to_driver', function ($agents) use ($request) {
-                $cash = $agents->order->where('status', 'completed')
-                    ->sum('cash_to_be_collected');
-                $orders = $agents->order->where('status', 'completed')
-                    ->sum('driver_cost');
-                $receive = $agents->agentPayment->sum('cr');
-                $pay = $agents->agentPayment->sum('dr');
 
-                $payToDriver = ($pay - $receive) - ($cash - $orders);
-                return number_format((float) $payToDriver, 2, '.', '');
-            })
-                ->addColumn('subscription_plan', function ($agents) use ($request) {
-                return $agents->subscriptionPlan ? $agents->subscriptionPlan->plan->title : '';
-            })
-                ->addColumn('subscription_expiry', function ($agents) use ($request, $timezone) {
-                return $agents->subscriptionPlan ? convertDateTimeInTimeZone($agents->subscriptionPlan->end_date, $timezone) : '';
-            })
-                ->addColumn('state', function ($agents) use ($request, $timezone) {
-                if (! empty($agents->deleted_at)) {
-                    return 3;
-                } else if ($agents->is_approved) {
-                    return $agents->is_approved;
-                }
-            })
-                ->addColumn('agent_rating', function ($agents) use ($request, $timezone) {
-                if (! empty($agents->agentRating())) {
-                    return number_format($agents->agentRating()
-                        ->avg('rating'), 2, '.', '');
-                } else {
-                    return '0.00';
-                }
-            })
-                ->editColumn('created_at', function ($agents) use ($request, $timezone) {
-                return convertDateTimeInTimeZone($agents->created_at, $timezone);
-            })
-                ->editColumn('updated_at', function ($agents) use ($request, $timezone) {
-                return convertDateTimeInTimeZone($agents->updated_at, $timezone);
-            })
-                ->editColumn('action', function ($agents) use ($request) {
-                $approve_action = '';
-                if ($request->is_driver_slot == 1 || $request->is_attendence == 1) {
-                    $approve_action .= '<div class="inner-div agent_slot_button" data-agent_id="' . $agents->id . '" data-status="2" title="Working Hours"><i class="dripicons-calendar mr-1" style="color: green; cursor:pointer;"></i></div>';
-                }
-                if ($request->status == 1) {
-                    $approve_action .= '<div class="inner-div agent_approval_button" data-agent_id="' . $agents->id . '" data-status="2" title="Reject"><i class="fa fa-user-times" style="color: red; cursor:pointer;"></i></div>';
-                } else if ($request->status == 0) {
-                    $approve_action .= '<div class="inner-div agent_approval_button" data-agent_id="' . $agents->id . '" data-status="1" title="Approve"><i class="fas fa-user-check" style="color: green; cursor:pointer;"></i></div><div class="inner-div ml-1 agent_approval_button" data-agent_id="' . $agents->id . '" data-status="2" title="Reject"><i class="fa fa-user-times" style="color: red; cursor:pointer;"></i></div>';
-                } else if ($request->status == 2) {
-                    $approve_action .= '<div class="inner-div agent_approval_button" data-agent_id="' . $agents->id . '" data-status="1" title="Approve"><i class="fas fa-user-check" style="color: green; cursor:pointer;"></i></div>';
-                }
-                $action = '' . $approve_action . '
-                               <!-- <div class="inner-div"> <a href="' . route('agent.edit', $agents->id) . '" class="action-icon editIcon" agentId="' . $agents->id . '"> <i class="mdi mdi-square-edit-outline"></i></a></div>-->
-                                    <div class="inner-div">
-                                        <form id="agentdelete' . $agents->id . '" method="POST" action="' . route('agent.destroy', $agents->id) . '">
-                                            <input type="hidden" name="_token" value="' . csrf_token() . '" />
-                                            <input type="hidden" name="_method" value="DELETE">
-                                            <div class="form-group">
-                                                <button type="submit" class="btn btn-primary-outline action-icon"> <i class="mdi mdi-delete" agentid="' . $agents->id . '"></i></button>
-                                            </div>
-                                        </form>
-                                    </div>
-                               ';
-                return $action;
-            })
-                ->filter(function ($instance) use ($request) {
-                if (! empty($request->get('search'))) {
-                    // $instance->collection = $instance->collection->filter(function ($row) use ($request){
-                    // if (!empty($row['uid']) && Str::contains(Str::lower($row['uid']), Str::lower($request->get('search')))){
-                    // return true;
-                    // }elseif (!empty($row['phone_number']) && Str::contains(Str::lower($row['phone_number']), Str::lower($request->get('search')))){
-                    // return true;
-                    // }else if (!empty($row['name']) && Str::contains(Str::lower($row['name']), Str::lower($request->get('search')))) {
-                    // return true;
-                    // }else if (!empty($row['type']) && Str::contains(Str::lower($row['type']), Str::lower($request->get('search')))) {
-                    // return true;
-                    // }else if (!empty($row['team']) && Str::contains(Str::lower($row['team']), Str::lower($request->get('search')))) {
-                    // return true;
-                    // }else if (!empty($row['created_at']) && Str::contains(Str::lower($row['created_at']), Str::lower($request->get('search')))) {
-                    // return true;
-                    // }
-                    // return false;
-                    // });
 
-                    $search = $request->get('search');
-                    $instance->where('uid', 'Like', '%' . $search . '%')
-                        ->orWhere('name', 'Like', '%' . $search . '%')
-                        ->orWhere('phone_number', 'Like', '%' . $search . '%')
-                        ->orWhere('type', 'Like', '%' . $search . '%')
-                        ->orWhere('created_at', 'Like', '%' . $search . '%')
-                        ->orWhereHas('team', function ($q) use ($search) {
-                        $q->where('name', 'Like', '%' . $search . '%');
-                    });
-                }
-            }, true)
-                ->make(true);
-        } catch (Exception $e) {}
+            $returnHTML = View ('agent/agent-index')->with(['agents' => $agents->get(),'timezone' => $timezone])->render();
+
+            return response()->json($returnHTML,200);
+
+
+        } catch (Exception $e) {
+
+        }
     }
 
     public function export()
@@ -509,7 +396,7 @@ class AgentController extends Controller
         }
 
         $driver_registration_documents = DriverRegistrationDocument::get();
-       
+
         foreach ($driver_registration_documents as $driver_registration_document) {
             $agent_docs = new AgentDocs();
             $name = str_replace(" ", "_", $driver_registration_document->name);
@@ -587,7 +474,7 @@ class AgentController extends Controller
             }
             $agents_docs = AgentDocs::where('agent_id', $id)->get();
             $driver_registration_documents = DriverRegistrationDocument::get();
-            
+
             $returnHTML = view('agent.form-show')->with([
                 'agent' => $agent,
                 'driver_registration_documents' => $driver_registration_documents,
@@ -1002,13 +889,13 @@ class AgentController extends Controller
         $vehicle_type = $request->has('vehicle_type') ? $request->vehicle_type : '' ;
         $drivers = Agent::orderby('name', 'asc')->select('id', 'name', 'phone_number')
                     ->where('is_approved', 1);
-      
+
             if ($search) {
                 $drivers =    $drivers->where('name', 'like', '%' . $search . '%');
-            } 
+            }
             if ($vehicle_type) {
-                $drivers =    $drivers->whereIn('vehicle_type_id', $vehicle_type);   
-            } 
+                $drivers =    $drivers->whereIn('vehicle_type_id', $vehicle_type);
+            }
             $drivers =    $drivers->get();
             $response = array();
             foreach ($drivers as $driver) {
@@ -1019,7 +906,7 @@ class AgentController extends Controller
             }
 
             return response()->json($response);
-        
+
     }
 
     protected function sendSms2($to, $body)
