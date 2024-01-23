@@ -89,9 +89,10 @@ class DashBoardController extends Controller
         // pr($response);
         
        // pr($response);
+       $response['agentMarkerData']=  $this->GetAgentLogs(-1,-1);
         if($dashboard_theme != 1){
-          $response['agentMarkerData']=  $this->GetAgentLogs(-1,-1);
-          
+       
+      
             $this->orderDataEN($request, $response);
         }
         else{

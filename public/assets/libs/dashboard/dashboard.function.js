@@ -1205,7 +1205,13 @@ function MoveAgentLocation(data) {
         image = url + "/demo/images/location.png";
     } else {
         image = url + "/demo/images/location_grey.png";
-    } 
+    }
+    var image = {
+        url: image, // url
+        scaledSize: new google.maps.Size(50, 50), // scaled size
+        origin: new google.maps.Point(0, 0), // origin
+        anchor: new google.maps.Point(22, 22), // anchor
+    };
         var dataAgent = getUser(data.id);
         marker = dataAgent.data;
         //marker.setMap( map );
@@ -1221,6 +1227,7 @@ function moveBus(map, marker, data, image) {
 //function to listen different channels of event of different dates and different agent status
 
 function ListenAgentLogChannel() {
+    
     if (window.Echo) {
         window.Echo.channel("laravel_database_user-channel").listen(
             ".UserEvent",
@@ -1241,7 +1248,6 @@ function ListenAgentLogChannel() {
                     MoveAgentLocation(data);
                 } else {
                     var date = $("#birthdatepicker").val();
-                    console.log(date);
                     order_details(
                         (val = ""),
                         date,
