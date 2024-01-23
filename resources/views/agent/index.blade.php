@@ -434,7 +434,7 @@ $is_driver_slot = getClientPreferenceDetail()->is_driver_slot;
                     <div class="agent_tabel_block tab-content nav-material pt-0" id="top-tabContent">
                         <div class="tab-pane fade past-order show active" id="active_vendor" role="tabpanel" aria-labelledby="active-vendor">
 
-                            <div class="table-responsive nagtive-margin">
+                            <div class="table-responsive nagtive-margin mt-4">
                                 <table class="table table-striped dt-responsive nowrap w-100 all agent-listing" id="agent-listing">
                                     <thead>
                                         <tr>
