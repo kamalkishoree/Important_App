@@ -3,7 +3,7 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="{{ asset('assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
 <script src="{{ asset('js/app.js') }}"></script>
-<script src="//{{ Request::getHost() }}:6001/socket.io/socket.io.js"></script>
+<script src="{{$socket_url}}"></script>
 <script>
     $(async function(){
         try{
