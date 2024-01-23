@@ -10,7 +10,7 @@
         try{
             
             //const socketIoUrl = window.location.hostname + ":" + 6001;
-            const socketIoUrl = window.location.hostname;
+            const socketIoUrl = "https://aceuat-dispatch.netsolutionindia.com";
             
             // Create a socket.io connection
             const socket = new io(socketIoUrl);
