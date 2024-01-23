@@ -68,7 +68,7 @@
         ?>
         <div id="accordion-1" class="mb-2 teams-data">
             <div class="card no-border-radius">
-                <div class="card-header ml-2" id="by1">
+                <div class="card-header " id="by1">
                     <div class="row p-2">
                         <div class="col-md-3 col-3">
                             <img class="profile-circle"

@@ -31,7 +31,8 @@
                     </div>
                    <div class="row search_bar">
                         <div class="col-md-6">
-                            <div class="form-group mb-0 ml-1">
+                            <div class="form-group mb-0 ml-1 custom_select">
+                                
                                 <select name="team_id[]" id="team_id" multiple="multiple" class="form-control">
                                     @foreach ($searchTeams as $team)
                                         <option value="{{$team->id}}">{{$team->name}}</option>
