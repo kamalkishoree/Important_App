@@ -7,6 +7,8 @@
 <script src="{{$socket_url}}"></script>
 <script>
     $(async function(){
+
+       
         try{
             
             //const socketIoUrl = window.location.hostname + ":" + 6001;
@@ -26,7 +28,15 @@
         catch(e){
             console.error(e);
         }
+        
+      
+        // $("#agent_id").select2({
+        //     allowClear: true,
+        //     width: "resolve",
+        //     placeholder: "Select Agent"
+        // });
     })
+
 </script>
 <script src="{{ asset('assets/libs/dashboard/variable.js') }}"></script>
 <script src="{{ asset('assets/libs/dashboard/dashboard.map-function.js') }}"></script>

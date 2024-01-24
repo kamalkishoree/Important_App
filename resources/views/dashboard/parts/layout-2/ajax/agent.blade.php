@@ -75,7 +75,7 @@
                                 src="{{ isset($item->profile_picture) ? $imgproxyurl . Storage::disk('s3')->url($item->profile_picture) : 'https://dummyimage.com/36x36/ccc/fff' }}">
                         </div>
                         <div class="col-md-9 col-9">
-                            <h6 class="mb-0 header-title scnd">
+                            <h6 class=" header-title scnd">
                                 {{ ucfirst($item->agent_name) }}
                                 <div class="optimizebtn1">
                                     {!! $optimize !!}
@@ -84,10 +84,10 @@
                                     {!! $turnbyturn !!}
                                 </div>
                             </h6>
-                            <p class="mb-0"><span class="badge badge-blue text-white">{{ $item->name ?? '' }}</span>
+                            <p class=""><span class="badge badge-blue text-white">{{ $item->name ?? '' }}</span>
                             </p>
 
-                            <p class="mb-0">{{ $status }}<span>{{ $item->agent_task_count }}
+                            <p class="">{{ $status }}<span>{{ $item->agent_task_count }}
                                     {{ __('Tasks') }}</span></p>
                         </div>
                     </div>
