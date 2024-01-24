@@ -1229,7 +1229,7 @@ function moveBus(map, marker, data, image) {
 function ListenAgentLogChannel() {
     
     if (window.Echo) {
-        window.Echo.channel("laravel_database_user-channel").listen(
+        window.Echo.channel(`${app_name}_database_user-channel`).listen(
             ".UserEvent",
             (data) => {
                 //markers = [];
