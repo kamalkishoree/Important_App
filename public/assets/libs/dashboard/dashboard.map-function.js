@@ -44,6 +44,7 @@ async function loadTeams(is_load_html, is_show_loader) {
     //fetch team data form server
     try {
         var response = await createRequest(teamDataUrl, "post", headers, data);
+        
         // Handle successful response
         handleDataSuccess(response, is_load_html, "#teams_container");
     } catch (error) {
@@ -179,7 +180,7 @@ function handleDrawRouteSuccess(data, isMultiple = false) {
                 var pickupMarker = new google.maps.Marker({
                     position: pickupLocation,
                     map: map,
-                    icon : pickupIcon,
+                    icon : icon,
                     title: "Pickup Location",
                     optimized: true,
                 });
@@ -188,7 +189,7 @@ function handleDrawRouteSuccess(data, isMultiple = false) {
                 var dropoffMarker = new google.maps.Marker({
                     position: dropoffLocation,
                     map: map,
-                    icon:dropOffIcon,
+                    icon:icon,
                     title: "Dropoff Location",
                     optimized: true,
                 });
@@ -252,7 +253,11 @@ function handleDataSuccess(result, is_load_html, element) {
 
         //this code is executed only while updating the team data
         if (element == "#teams_container") {
-            if ($("#newmarker_map_data").val() != "") {
+           var newmarker_map_data = ($("#newmarker_map_data").val() == undefined) ? '' : $("#newmarker_map_data").val();
+           var uniquedrivers_map_data = ($("#uniquedrivers_map_data").val() == undefined) ? '' : $("#uniquedrivers_map_data").val();
+           var agentslocations_map_data = ($("#agentslocations_map_data").val() == undefined) ? '' : $("#agentslocations_map_data").val();
+
+            if (newmarker_map_data != "") {
                 olddata = JSON.parse($("#newmarker_map_data").val());
             }
 
@@ -260,11 +265,11 @@ function handleDataSuccess(result, is_load_html, element) {
                 allagent = JSON.parse(agentsLatLong);
             }
 
-            if ($("#uniquedrivers_map_data").val() != "") {
+            if (uniquedrivers_map_data != "") {
                 allroutes = JSON.parse($("#uniquedrivers_map_data").val());
             }
 
-            if ($("#agentslocations_map_data").val() != "") {
+            if (agentslocations_map_data != "") {
                 defaultmaplocation = JSON.parse(
                     $("#agentslocations_map_data").val()
                 );

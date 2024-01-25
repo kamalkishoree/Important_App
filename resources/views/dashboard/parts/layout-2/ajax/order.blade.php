@@ -31,16 +31,18 @@
                             <div class="col-12 ">
                                 <i class="fas fa-bars"></i>
                                 @php
-                                   
+                                
                                    if(empty($orders->order_time))
                                     {
+                                        
                                         $dateString = date('Y-m-d H:i:s');
+                                        
                                     }else{
-                                        $timeformat = $preference->time_format == '24' ? 'H:i:s':'g:i a';
+                                        // $timeformat = $preference->time_format == '24' ? 'H:i:s':'g:i a';
 
                                         $dateString = $orders->assigned_time;
                                     }
-                                
+                              
 
                                     // Format the date as needed
                                     //$order = date('Y-m-d H:i:s');//@$order->format('Y-m-d H:i:s');
@@ -48,8 +50,8 @@
                                 @endphp
 
                                 <h5 class="w-100 d-flex align-items-center  justify-content-between">
-                                    {{-- <span>{{@date(''.@$timeformat.'', strtotime(@$date))}}</span> --}}
-                                    <span>{{ $dateString }}</span>
+                                     {{-- <span>{{@date(''.@$timeformat.'', (@$dateString))}}</span> --}}
+                                     <span>{{ @$orders->order_time }}</span> 
                                     {{-- <p>
                                             @if (!empty($agent))
                                                 <span class="badge ">{{ucfirst($agent['name'])}}</span>
