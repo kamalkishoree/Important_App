@@ -46,7 +46,7 @@
         float: right;
         margin: 5px 0 10px 15px;
         position: relative;
-    z-index: 9999;
+    z-index: 9;
     }
 
     div#agent-listing_filter {
