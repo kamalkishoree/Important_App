@@ -50,6 +50,8 @@
         var const_img ='/assets/images/profile-pic-dummy.png';
         var socket_url = '{{ Request::getHost() }}/socket.io/socket.io.js';
         var app_name = '{{ $app_name }}';
+        var agentFilter = "{{url('agent/filter')}}";
+
 
     
     </script>

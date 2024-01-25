@@ -1,6 +1,4 @@
 <script type="text/javascript">
-
-
     $(document).ready(function() {
         $(document).on("click", ".nav-link", function() {
             let rel = $(this).data('rel');
@@ -14,7 +12,7 @@
 
         // initDataTable();
         setTimeout(function() {
-            $('#agent-listing').DataTable();
+            $('#active-vendor').trigger('click');
         }, 200);
 
         $(document).on("change", "#geo_filter", function() {
@@ -247,26 +245,13 @@
                 ajax: {
                     url: "{{url('agent/filter')}}",
                     data: function(d) {
-
-
-
                         d.search = $('input[type="search"]').val();
                         d.imgproxyurl = '{{$imgproxyurl}}';
                         d.geo_filter = geo_filter;
                         d.tag_filter = tag_filter;
                         d.status = status;
-                    },
-                    success: function(data) {
-
-                        let name = table+"-data";
-                         $('.'+name).empty();
-                         $('.'+name).append(data);
-                 },
-                    "error": function (xhr, error, thrown) {
-                   console.log('DataTables error:', error);
-                   console.log('DataTables error:', thrown);
-                }
-                    },
+                    }
+                },
                 columns:columnsDynamic
             });
             if(status ==2 || status ==0){
@@ -310,7 +295,7 @@
                 backdrop: 'static',
                 keyboard: false
             });
-
+            
             makeTag();
 
             phoneInput();
@@ -319,7 +304,7 @@
             var instance = $("[name=phone_number]");
             instance.intlTelInput();
             $("#countryCode").val(instance.intlTelInput('getSelectedCountryData').dialCode);
-
+            
         });
 
         jQuery('#onfoot').click();
@@ -350,13 +335,13 @@
             break;
             case "5":
             truck = "{{ asset('assets/icons/truck_blue.png') }}";
-            break;
+            break;          
             case "6":
             auto = "{{ asset('assets/icons/auto_blue.png') }}";
-            break;
+            break;          
             }
             setIcon (act ,walk,cycle,bike,car,truck,auto);
-
+    
             });
             function setIcon (act ,walk,cycle,bike,car,truck,auto){
 
@@ -451,7 +436,7 @@
         });
 
         /* add Team using ajax*/
-
+        
         $(document).on("submit", "#submitAgent", function(e) {
             e.preventDefault();
             // $(document).on('click', '.submitAgentForm', function() {
@@ -477,7 +462,7 @@
         });
 
         function saveTeam(urls, formData, inp = '', modal = '') {
-
+            
             $.ajax({
                 method: 'post',
                 headers: {
@@ -595,7 +580,7 @@
                             setTimeout(function() {
                                 $('#' + activeTabDetail).DataTable().ajax.reload();
                             }, 100);
-
+                            
                         }
                     }
                 });
