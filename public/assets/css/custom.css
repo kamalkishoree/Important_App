@@ -2095,7 +2095,7 @@ ul.select2-selection__rendered li{
     margin:5px 2px
 }
 .dark .assigned-block,body.dark .alTaskType{
-    background-color:transparent
+    background-color:transparent !important;
 }
 .alTaskType select,.alTaskType textarea,body.dark .alTaskType input,body.dark .edit-icon-float-right{
     color:#acbfd2
@@ -2306,11 +2306,12 @@ body.dark .copyin1{
         padding-right:0
     }
 }
-@media screen (min-width:500px) and (max-width:767px){
-    body{
-        padding-bottom:100px!important
+@media screen and (min-width: 500px) and (max-width: 767px) {
+    body {
+        padding-bottom: 100px !important;
     }
 }
+
 @media(max-width:767px){
     .card-body .table-responsive #agent-listing_wrapper{
         padding:50px 0 0!important
