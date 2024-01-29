@@ -102,7 +102,15 @@ class AgentController extends Controller
                 $query->whereIn('warehouses.id', $managerWarehousesIds);
             });
         }
+
+
+
+        $paginatedAgents = clone $agents;
         $agents = $agents->get();
+
+        // Apply pagination to the cloned instance
+        $perPage = 10;
+        $paginatedAgents = $paginatedAgents->where('is_approved',1)->paginate($perPage);
 
         $tags = TagsForAgent::all();
         $tag = [];
@@ -115,6 +123,7 @@ class AgentController extends Controller
                 $query->where('sub_admin_id', $user->id);
             });
         }
+
 
         $teams = $teams->get();
         $selectedDate = ! empty($request->date) ? $request->date : '';
@@ -157,7 +166,10 @@ class AgentController extends Controller
         $client_timezone = $client->getTimezone ? $client->getTimezone->timezone : 251;
         $timezone = $tz->timezone_name($client_timezone);
 
-        $returnHTML = view ('agent/agent-index')->with(['agents' => $agents,'timezone' => $timezone])->render();
+        $paginationLinks = $paginatedAgents->links();
+
+        $returnHTML['html'] = view ('agent/agent-index')->with(['agents' => $paginatedAgents,'timezone' => $timezone])->render();
+        $returnHTML['pagination'] =$paginationLinks->toHtml();
 
 
 
@@ -269,15 +281,25 @@ class AgentController extends Controller
             } else {
                 $agents = $agents->where('is_approved', $request->status)->orderBy('id', 'desc');
             }
+            $page = request()->input('page', 1);
+            $perPage = 10;
+            $agents = $agents->paginate($perPage, ['*'], 'page', $page);
+
+            // You can also pass the pagination links to the view
+            $paginationLinks = $agents->links()->toHtml() ?? "";
+
+             $returnHTML['html'] = view ('agent/agent-index')->with(['agents' => $agents,'timezone' => $timezone])->render();
 
 
-            $returnHTML = View ('agent/agent-index')->with(['agents' => $agents->get(),'timezone' => $timezone])->render();
+             $returnHTML['pagination'] =$paginationLinks;
+
 
             return response()->json($returnHTML,200);
 
 
         } catch (Exception $e) {
 
+            \Log::info($e->getMessage());
         }
     }
 
@@ -708,7 +730,7 @@ class AgentController extends Controller
     public function destroy($domain = '', $id)
     {
         DriverGeo::where('driver_id', $id)->delete(); // i have to fix it latter
-        $agent = Agent::where('id', $id)->first();
+        $agent = Agent::withTrashed()->where('id', $id)->first();
         Agent::where('id', $agent->id)->update([
             'phone_number' => $agent->phone_number . '_' . $agent->id . "_D",
             'device_token' => '',
@@ -841,7 +863,8 @@ class AgentController extends Controller
             // $sms_body = AgentSmsTemplate::where('slug', $slug)->first();
             $keyData = [];
             $sms_body = sendSmsTemplate($slug, $keyData);
-            if (! empty($sms_body)) {
+
+            if (! empty($sms_body) && ! empty($sms_body['body'])) {
                 $send = $this->sendSmsNew($agent_approval->phone_number, $sms_body)->getData();
             }
 

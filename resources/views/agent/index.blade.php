@@ -405,7 +405,7 @@ $is_driver_slot = getClientPreferenceDetail()->is_driver_slot;
                                     <button type="button" class="btn btn-blue waves-effect waves-light openModal mr-1" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> {{__("Add")}} {{ getAgentNomenclature() }}</button>
                                     <button type="button" class="btn btn-success waves-effect waves-light saveaccounting mr-1" data-toggle="modal" data-target="#pay-receive-modal" data-backdrop="static" data-keyboard="false">{{__("Pay")}} / {{__("Receive")}}</button>
                                     @if($is_driver_slot == 1)
-                                        <button type="button" class="btn btn-success waves-effect waves-light " id="gerenal_slot" >{{__("Gerenal Slot")}}</button>
+                                        <button type="button" class="btn btn-success waves-effect waves-light " id="gerenal_slot" >{{__("General Slot")}}</button>
                                     @endif
                                 </li>
                             </ul>
@@ -435,7 +435,7 @@ $is_driver_slot = getClientPreferenceDetail()->is_driver_slot;
                         <div class="tab-pane fade past-order show active" id="active_vendor" role="tabpanel" aria-labelledby="active-vendor">
 
                             <div class="table-responsive nagtive-margin">
-                                <table class="table table-striped dt-responsive nowrap w-100 all agent-listing" id="agent-listing">
+                                <table class="table table-striped dt-responsive nowrap w-100 all agent-listing mt-5" id="agent-listing">
                                     <thead>
                                         <tr>
                                             <th class="sort-icon">{{__(getAgentNomenclature()." ID")}} <i class="fa fa-sort ml-1" aria-hidden="true"></i></th>
@@ -461,7 +461,7 @@ $is_driver_slot = getClientPreferenceDetail()->is_driver_slot;
                                         </tr>
                                     </thead>
                                     <tbody class="agent-listing-data">
-                                       <?php echo $agentData  ?>
+                                       <?= $agentData['html'] ?? ""  ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -469,7 +469,7 @@ $is_driver_slot = getClientPreferenceDetail()->is_driver_slot;
                         <div class="tab-pane fade" id="awaiting_vendor" role="tabpanel" aria-labelledby="awaiting-vendor">
                             <div class="row">
                             </div>
-                            <div class="table-responsive">
+                            <div class="table-responsive mt-5 ">
                                 <table class="table table-striped dt-responsive nowrap w-100 all agent-listing" id="awaiting_approval_agent_datatable">
                                     <thead>
                                         <tr>
@@ -505,7 +505,7 @@ $is_driver_slot = getClientPreferenceDetail()->is_driver_slot;
                         <div class="tab-pane fade past-order" id="block_vendor" role="tabpanel" aria-labelledby="block-vendor">
                             <div class="row">
                             </div>
-                            <div class="table-responsive">
+                            <div class="table-responsive mt-5">
                                 <table class="table table-striped dt-responsive nowrap w-100 all agent-listing" id="blocked_agent_datatable">
                                     <thead>
                                         <tr>
@@ -538,6 +538,12 @@ $is_driver_slot = getClientPreferenceDetail()->is_driver_slot;
                                 </table>
                             </div>
                         </div>
+                        <div class="row mt-4">
+                            <div class="col-md-12 pagination">
+                                <?=  $agentData['pagination'] ?? ""  ?>
+                            </div>
+                        </div>
+
                     </div> <!-- end card-body-->
                 </div> <!-- end card-->
 
