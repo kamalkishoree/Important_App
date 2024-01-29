@@ -9,14 +9,14 @@
 
       <td>
        @php
-        // $src = (isset($agent->profile_picture) ? $agent->imgproxyurl . Storage::disk('s3')->url($agent->profile_picture) : Phumbor::url(URL::to('/asset/images/no-image.png')));
+        $src = (isset($agent->profile_picture) ? $agent->imgproxyurl . Storage::disk('s3')->url($agent->profile_picture) : Phumbor::url(URL::to('/asset/images/no-image.png')));
           @endphp
           <?php
           $isAvailableIcon = ($agent->is_available == 1)
               ? '<i class="fa fa-circle agent-status" aria-hidden="true" style="color:green"></i>'
               : '<i class="fa fa-circle agent-status" aria-hidden="true" style="color:red"></i>';
 
-          echo $isAvailableIcon . '<img alt="' . $agent->id . '" src="' . $agent->profile_picture . '" width="40">';
+          echo $isAvailableIcon . '<img alt="' . $agent->id . '" src="' . $src . '" width="40">';
           ?>
 
       </td>
