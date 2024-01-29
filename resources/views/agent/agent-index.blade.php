@@ -1,4 +1,7 @@
-  @if(count($agents) > 0 )
+
+
+</tr>
+@if(count($agents) > 0 )
   @foreach ($agents as $agent)
 
   <tr>

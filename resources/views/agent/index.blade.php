@@ -91,7 +91,10 @@
         overflow-y: hidden!important;
     }
 
-
+.table_top_bar {
+    display: flex;
+    justify-content: space-between;
+}
 /* agent page css here */
 .edit-icon-div {
     position: relative;
@@ -366,7 +369,7 @@ $is_driver_slot = getClientPreferenceDetail()->is_driver_slot;
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <div class="alFilterLocation">
+                    <div class="alFilterLocation table_top_bar">
                         <ul class="p-0 d-flex justify-content-start">
                                 <li class="first_child">
                                     <div class="text-sm-left">
@@ -405,6 +408,20 @@ $is_driver_slot = getClientPreferenceDetail()->is_driver_slot;
                                         <button type="button" class="btn btn-success waves-effect waves-light " id="gerenal_slot" >{{__("General Slot")}}</button>
                                     @endif
                                 </li>
+                                <li class="d-flex">
+                                 <div class="toolbar">
+                                            <a href="{{ route('agents.export') }}" class="btn btn-success waves-effect waves-light">
+                                                <span class="btn-label">
+                                                    <i class="mdi mdi-export-variant"></i>
+                                                </span>
+                                                {{ __("Export CSV") }}
+                                            </a>
+                                        </div>
+
+                                </li>
+                            </ul>
+                            <ul>
+                                <li><input type="search" class="form-control search-btn" placeholder="Search"></li>
                             </ul>
                     </div>
                     <ul class="nav nav-tabs nav-material alNavTopMinus" id="top-tab" role="tablist">

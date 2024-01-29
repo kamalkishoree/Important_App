@@ -459,6 +459,13 @@ class AgentController extends Controller
                     $q->where('geo_id', $geo_id);
                 });
             }
+            if (! empty($request->get('search'))) {
+                $search = $request->get('search');
+                $agents->where(function ($query) use ($search) {
+                    $query->where('name', 'like', '%' . $search . '%');
+                    });
+
+            }
             if (! empty($request->get('tag_filter'))) {
                 $tag_id = $request->get('tag_filter');
                 $agents->whereHas('tags', function ($q) use ($tag_id) {
@@ -1077,7 +1084,7 @@ class AgentController extends Controller
                 $send = $this->sendSmsNew($agent_approval->phone_number, $sms_body)->getData();
             }
 
-            $agents = Agent::get();
+            $agents = Agent::withTrashed()->get();
             $agentsCount = count($agents);
             $employeesCount = count($agents->where('type', 'Employee'));
             $freelancerCount = count($agents->where('type', 'Freelancer'));
@@ -1087,7 +1094,7 @@ class AgentController extends Controller
             $agentNotAvailable = count($agents->where('is_available', 0));
             $agentIsApproved = count($agents->where('is_approved', 1));
             $agentNotApproved = count($agents->where('is_approved', 0));
-            $agentRejected = count($agents->where('is_approved', 2));
+            $agentRejected = count($agents->where('is_approved', 2)->whereNull('deleted_at')) +count($agents->whereIn('is_approved', [0,1,2])->whereNotNull('deleted_at'));
 
             return response()->json([
                 'status' => 1,
