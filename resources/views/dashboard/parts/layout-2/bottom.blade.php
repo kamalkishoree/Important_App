@@ -4,12 +4,15 @@
 <script src="{{ asset('assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
 <script src="{{ asset('js/app.js') }}"></script>
 {{-- <script src="https://dev-rochat.netsolutionindia.com/socket.io/socket.io.js"></script> --}}
-<script src="//{{ Request::getHost() }}:6001/socket.io/socket.io.js"></script>
+<script src="{{$socket_url}}"></script>
 <script>
     $(async function(){
+
+       
         try{
             
-            const socketIoUrl = window.location.hostname + ":" + 6001;
+            //const socketIoUrl = window.location.hostname + ":" + 6001;
+            const socketIoUrl = "https://aceuat-dispatch.netsolutionindia.com";
             
             // Create a socket.io connection
             const socket = new io(socketIoUrl);
@@ -25,7 +28,15 @@
         catch(e){
             console.error(e);
         }
+        
+      
+        // $("#agent_id").select2({
+        //     allowClear: true,
+        //     width: "resolve",
+        //     placeholder: "Select Agent"
+        // });
     })
+
 </script>
 <script src="{{ asset('assets/libs/dashboard/variable.js') }}"></script>
 <script src="{{ asset('assets/libs/dashboard/dashboard.map-function.js') }}"></script>

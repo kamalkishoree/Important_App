@@ -68,14 +68,14 @@
         ?>
         <div id="accordion-1" class="mb-2 teams-data">
             <div class="card no-border-radius">
-                <div class="card-header ml-2" id="by1">
+                <div class="card-header " id="by1">
                     <div class="row p-2">
                         <div class="col-md-3 col-3">
                             <img class="profile-circle"
                                 src="{{ isset($item->profile_picture) ? $imgproxyurl . Storage::disk('s3')->url($item->profile_picture) : 'https://dummyimage.com/36x36/ccc/fff' }}">
                         </div>
                         <div class="col-md-9 col-9">
-                            <h6 class="mb-0 header-title scnd">
+                            <h6 class=" header-title scnd">
                                 {{ ucfirst($item->agent_name) }}
                                 <div class="optimizebtn1">
                                     {!! $optimize !!}
@@ -84,10 +84,10 @@
                                     {!! $turnbyturn !!}
                                 </div>
                             </h6>
-                            <p class="mb-0"><span class="badge badge-blue text-white">{{ $item->name ?? '' }}</span>
+                            <p class=""><span class="badge badge-blue text-white">{{ $item->name ?? '' }}</span>
                             </p>
 
-                            <p class="mb-0">{{ $status }}<span>{{ $item->agent_task_count }}
+                            <p class="">{{ $status }}<span>{{ $item->agent_task_count }}
                                     {{ __('Tasks') }}</span></p>
                         </div>
                     </div>

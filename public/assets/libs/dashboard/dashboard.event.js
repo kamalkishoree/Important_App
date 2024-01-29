@@ -30,6 +30,7 @@ $(function(){
         width: "resolve",
         placeholder: "Select Team"
     });
+    $('#dummy').hide()
 
     $("#agent_id").select2({
         allowClear: true,

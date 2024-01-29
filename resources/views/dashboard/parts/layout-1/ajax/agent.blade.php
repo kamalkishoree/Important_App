@@ -78,11 +78,12 @@ $agentslocations[] = $defaultmaplocation;
                                 </div>
                             </a>
                         </div>
-
+                           
                         <div id="collapse0" class="collapse" data-parent="#accordion-0" aria-labelledby="by0">
                             <div id="handle-dragula-left0" class="dragable_tasks" agentid="0"  params="{{ $params0 }}" date="{{ $date }}">
-                                @foreach($unassigned_orders as $orders)
-                                    @foreach($orders['task'] as $tasks)
+                                @foreach(@$unassigned_orders as $orders)
+                                @if(isset($orders['task']))
+                                    @foreach(@$orders['task'] as $tasks)
                                         <div class="card-body" task_id ="{{ $tasks['id'] }}">
                                             <div class="p-2 assigned-block">
                                                 @php
@@ -129,7 +130,7 @@ $agentslocations[] = $defaultmaplocation;
                                             </div>
                                         </div>
                                     @endforeach
-
+                                    @endif
                                 @endforeach
                             </div>
                         </div>

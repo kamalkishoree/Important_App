@@ -84,6 +84,19 @@ $sms_crendential = json_decode($preference->sms_credentials);
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-md-12">
+                                <div class="form-group mb-3">
+                                    <label for="map_key_1">{{ __('Distance Movement') }}</label>
+                                    <input type="number" name="distance_in_meter" id="distance_in_meter" placeholder="Distance In meter"
+                                        class="form-control"
+                                        value="{{ old('sms_key', $preference->distance_in_meter ?? '') }}" min="0">
+                                    @if ($errors->has('distance_in_meter'))
+                                        <span class="text-danger" role="alert">
+                                            <strong>{{ $errors->first('distance_in_meter') }}</strong>
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </form>

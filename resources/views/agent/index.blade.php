@@ -7,9 +7,6 @@
 
 <link href="{{ asset('assets/libs/dropzone/dropzone.min.css') }}" rel="stylesheet" type="text/css" />
 <link href="{{ asset('assets/libs/dropify/dropify.min.css') }}" rel="stylesheet" />
-
-
-
 <style>
     .cursors {
         cursor: move;
@@ -532,9 +529,7 @@ $is_driver_slot = getClientPreferenceDetail()->is_driver_slot;
                                             <th>{{__("Action")}}</th>
                                         </tr>
                                     </thead>
-                                    <tbody class="blocked_agent_datatable-data">
-
-                                    </tbody>
+                                    <tbody class="blocked_agent_datatable-data">.</tbody>
                                 </table>
                             </div>
                         </div>

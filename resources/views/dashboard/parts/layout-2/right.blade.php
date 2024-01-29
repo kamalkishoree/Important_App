@@ -9,8 +9,9 @@
                     <div class="spinner-border avatar-lg text-primary m-2" role="status"></div>
                 </div>
             </div> --}}
-            <div id="scrollbar" class="col-md-3 col-xl-3 left-sidebar pt-3">
-                <div class="side_head mb-2 py-2">
+            {{-- <div id="scrollbar" class="col-md-3 col-xl-3 left-sidebar pt-3"> --}}
+            <div id="scrollbar" class="col-md-3 col-xl-3">
+                <div class="side_head">   <!---mb-2 py-2"-->
                     <div class="d-flex align-items-center justify-content-center mb-2"> 
                         <i class="mdi mdi-sync mr-1" onclick="reloadData()" aria-hidden="true"></i>
                        
@@ -31,19 +32,23 @@
                     </div>
                    <div class="row search_bar">
                         <div class="col-md-6">
-                            <div class="form-group mb-0 ml-1">
-                                <select name="team_id[]" id="team_id" multiple="multiple" class="form-control">
+                            <div class="form-group">
+                                <input type="text" class="form-control" name="search_by_name" id="search_by_name" value="" placeholder="Search Name" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group custom_select">
+                                <select name="" id="dummy" class="form-control">
+                                    <option>Select Team</option>
+                                </select>
+                                <select style="display: none" name="team_id[]" id="team_id" multiple="multiple" class="form-control">
                                     @foreach ($searchTeams as $team)
                                         <option value="{{$team->id}}">{{$team->name}}</option>
                                     @endforeach
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group mb-0 ml-1">
-                                <input type="text" class="form-control" name="search_by_name" id="search_by_name" value="" placeholder="Search Name" />
-                            </div>
-                        </div>
+                        
                    </div>
                 </div>
                 <div  id="teams_container">
@@ -57,14 +62,15 @@
             <div class="col-md-6 col-xl-6">
                 <div class="map-wrapper">
                     <div style="width: 100%">
-                        <div id="map_canvas" style="width: 100%; height:calc(100vh - 70px);"></div>
+                        <div id="map_canvas" style="width: 100%; height:100vh;"></div>
                     </div>
             
                 </div>
             </div>
             {{-- @dd($unassigned_orders) --}}
-            <div id="scrollbar" class="col-md-3 col-xl-3 left-sidebar pt-3">
-                <div class="side_head mb-2 py-2">
+            {{-- left-sidebar pt-3 --}}
+            <div id="scrollbar" class="col-md-3 col-xl-3">
+                <div class="side_head"> <!---mb-2 py-2--->
                     <div class="select_bar_date mb-2 d-flex align-items-center justify-content-center">
                         <input type="date"  id="basic-datepicker" class="datetime form-control" value="{{date('Y-m-d', strtotime($date))}}" data-date-format="YY-mm-dd" onchange="handler(this);" style="width: 250px;">
                         <div style="display:none">
@@ -89,7 +95,7 @@
                     </div>
                     <div class="select_bar">
                         <div class="form-group mb-0 ml-1">
-                        <select name="agent_id[]" id="agent_id" multiple="multiple" class="form-control">
+                        {{-- <select name="agent_id[]" id="agent_id" multiple="multiple" class="form-control">
                               
                               @foreach ($agentsData as $agent)
                                   @php
@@ -98,7 +104,7 @@
                                   @endphp
                                       <option value="{{$agent['id']}}">{{ ucfirst($agent['name']). $checkAgentActive }}</option>
                                   @endforeach
-                              </select>
+                              </select> --}}
                         </div>
                     </div>
                 </div>
@@ -132,7 +138,7 @@
             <div id="agent_route_container">
                 <div id="accordion" class="overflow-hidden">
                     <!-- dragable_tasks -->
-                    <div id="handle-dragula-left0" class=" " agentid="0"  params="{{ $params0 }}" date="{{ $date }}">
+                    <div id="handle-dragula-left0" class="no_data" agentid="0"  params="{{ $params0 }}" date="{{ $date }}">
                         @include('dashboard.parts.layout-'.$dashboard_theme.'.ajax.order')
                     </div>
                 </div>

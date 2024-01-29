@@ -79,6 +79,209 @@ class AgentController extends Controller
         pr($fcm_store);
     }
 
+    // public function index(Request $request)
+    // {
+    //     $tz = new Timezone();
+
+    //     $user = Auth::user();
+    //     $managerWarehouses = Client::with('warehouse')->where('id', $user->id)->first();
+    //     $managerWarehousesIds = $managerWarehouses->warehouse->pluck('id');
+    //     $agents = Agent::with('warehouseAgent')->orderBy('id', 'DESC');
+    //     // if (!empty($request->date)) {
+    //     // $agents->whereBetween('created_at', [$request->date . " 00:00:00", $request->date . " 23:59:59"]);
+    //     // }
+
+    //     $deletedAgents = Agent::onlyTrashed()->get();
+
+    //     if ($user->is_superadmin == 0 && $user->all_team_access == 0 && $user->manager_type == 0) {
+    //         $agents = $agents->whereHas('team.permissionToManager', function ($query) use ($user) {
+    //             $query->where('sub_admin_id', $user->id);
+    //         });
+    //     } else if ($user->is_superadmin == 0 && $user->manager_type == 1) {
+    //         $agents = $agents->whereHas('warehouseAgent', function ($query) use ($managerWarehousesIds) {
+    //             $query->whereIn('warehouses.id', $managerWarehousesIds);
+    //         });
+    //     }
+    //     $agents = $agents->get();
+
+    //     $tags = TagsForAgent::all();
+    //     $tag = [];
+    //     foreach ($tags as $key => $value) {
+    //         array_push($tag, $value->name);
+    //     }
+    //     $teams = Team::where('client_id', auth()->user()->code)->orderBy('name');
+    //     if ($user->is_superadmin == 0 && $user->all_team_access == 0) {
+    //         $teams = $teams->whereHas('permissionToManager', function ($query) use ($user) {
+    //             $query->where('sub_admin_id', $user->id);
+    //         });
+    //     }
+
+    //     $teams = $teams->get();
+    //     $selectedDate = ! empty($request->date) ? $request->date : '';
+    //     // $tags = TagsForTeam::all();
+
+    //     $getAdminCurrentCountry = Countries::where('id', '=', $user->country_id)->get()->first();
+    //     if (! empty($getAdminCurrentCountry)) {
+    //         $countryCode = $getAdminCurrentCountry->code;
+    //     } else {
+    //         $countryCode = '';
+    //     }
+
+    //     // getting all geo fence list to filter agents
+    //     $geos = Geo::where('client_id', $user->code)->orderBy('created_at', 'DESC')->get();
+
+    //     $agentsCount = count($agents);
+    //     $employeesCount = count($agents->where('type', 'Employee'));
+    //     $freelancerCount = count($agents->where('type', 'Freelancer'));
+    //     $agentActive = count($agents->where('is_activated', 1));
+    //     $agentInActive = count($agents->where('is_activated', 0));
+    //     $agentIsAvailable = count($agents->where('is_available', 1));
+    //     $agentNotAvailable = count($agents->where('is_available', 0));
+    //     $agentIsApproved = count($agents->where('is_approved', 1));
+    //     $agentNotApproved = count($agents->where('is_approved', 0));
+    //     $agentRejected = count($agents->where('is_approved', 2));
+    //     $agentRejected += count($deletedAgents);
+    //     $driver_registration_documents = DriverRegistrationDocument::with('driver_option')->get();
+
+    //     $warehouses = Warehouse::get();
+    //     $managerWarehouses = Client::with('warehouse')->where('id', $user->id)->first();
+    //     $managerWarehousesIds = $managerWarehouses->warehouse->pluck('id');
+    //     if ($user->is_superadmin == 0 && $user->manager_type == 1) {
+    //         $warehouses = Warehouse::whereIn('id', $managerWarehousesIds)->get();
+    //     }
+    //     $client = Client::where('code', $user->code)->with([
+    //         'getTimezone',
+    //         'getPreference',
+    //         'warehouse'
+    //     ])->first();
+    //     $client_timezone = $client->getTimezone ? $client->getTimezone->timezone : 251;
+    //     $timezone = $tz->timezone_name($client_timezone);
+
+    //     $returnHTML = view ('agent/agent-index')->with(['agents' => $agents,'timezone' => $timezone])->render();
+
+
+
+    //     return view('agent.index')->with([
+    //         'agents' => $agents,
+    //         'geos' => $geos,
+    //         'driver_registration_documents' => $driver_registration_documents,
+    //         'agentIsAvailable' => $agentIsAvailable,
+    //         'agentNotAvailable' => $agentNotAvailable,
+    //         'agentIsApproved' => $agentIsApproved,
+    //         'agentNotApproved' => $agentNotApproved,
+    //         'agentsCount' => $agentsCount,
+    //         'employeesCount' => $employeesCount,
+    //         'agentActive' => $agentActive,
+    //         'agentInActive' => $agentInActive,
+    //         'freelancerCount' => $freelancerCount,
+    //         'teams' => $teams,
+    //         'agentData' => $returnHTML,
+    //         'tags' => $tags,
+    //         'selectedCountryCode' => $countryCode,
+    //         'calenderSelectedDate' => $selectedDate,
+    //         'showTag' => implode(',', $tag),
+    //         'agentRejected' => $agentRejected,
+    //         'warehouses' => $warehouses,
+    //         'client' => $managerWarehouses
+    //     ]);
+    // }
+
+    // public function agentFilter(Request $request)
+    // {
+
+
+
+    //     try {
+    //         $tz = new Timezone();
+    //         $user = Auth::user();
+    //         $client = Client::where('code', $user->code)->with([
+    //             'getTimezone',
+    //             'getPreference',
+    //             'warehouse'
+    //         ])->first();
+
+    //         $managerWarehouses = Client::with('warehouse')->where('id', $user->id)->first();
+    //         $managerWarehousesIds = $managerWarehouses->warehouse->pluck('id');
+    //         $getAdditionalPreference = getAdditionalPreference([
+    //             'pickup_type',
+    //             'drop_type',
+    //             'is_attendence',
+    //             'idle_time'
+    //         ]);
+    //         $isDriverSlotActive = $client->getPreference ? $client->getPreference->is_driver_slot : 0;
+    //         $isAttendence = ($getAdditionalPreference['is_attendence'] == 1) ? $getAdditionalPreference['is_attendence'] : 0;
+
+    //         $request->merge([
+    //             'is_driver_slot' => $isDriverSlotActive
+    //         ]);
+
+    //         $request->merge([
+    //             'is_attendence' => $isAttendence
+    //         ]);
+    //         $client_timezone = $client->getTimezone ? $client->getTimezone->timezone : 251;
+    //         $timezone = $tz->timezone_name($client_timezone);
+    //         $agents = Agent::with('warehouseAgent')->orderBy('id', 'DESC');
+
+    //         if (! empty($request->get('date_filter'))) {
+    //             $dateFilter = explode('to', $request->get('date_filter'));
+    //             if (count($dateFilter) > 1) {
+    //                 $agents->whereBetween('created_at', [
+    //                     trim($dateFilter[0]) . " 00:00:00",
+    //                     trim($dateFilter[1]) . " 23:59:59"
+    //                 ]);
+    //             } else {
+    //                 $agents->whereBetween('created_at', [
+    //                     trim($dateFilter[0]) . " 00:00:00",
+    //                     trim($dateFilter[0]) . " 23:59:59"
+    //                 ]);
+    //             }
+    //         }
+    //         if (! empty($request->get('geo_filter'))) {
+    //             $geo_id = $request->get('geo_filter');
+    //             $agents->whereHas('geoFence', function ($q) use ($geo_id) {
+    //                 $q->where('geo_id', $geo_id);
+    //             });
+    //         }
+    //         if (! empty($request->get('tag_filter'))) {
+    //             $tag_id = $request->get('tag_filter');
+    //             $agents->whereHas('tags', function ($q) use ($tag_id) {
+    //                 $q->where('tag_id', $tag_id);
+    //             });
+    //         }
+    //         if ($user->is_superadmin == 0 && $user->all_team_access == 0 && $user->manager_type == 0) {
+    //             $agents = $agents->whereHas('team.permissionToManager', function ($query) use ($user) {
+    //                 $query->where('sub_admin_id', $user->id);
+    //             });
+    //         } else if ($user->is_superadmin == 0 && $user->manager_type == 1) {
+    //             $agents = $agents->whereHas('warehouseAgent', function ($query) use ($managerWarehousesIds) {
+    //                 $query->whereIn('warehouses.id', $managerWarehousesIds);
+    //             });
+    //         }
+
+    //         if ($request->status == 2) {
+    //             $agents = $agents->withTrashed()
+    //                 ->where('is_approved', $request->status)
+    //                 ->orWhere(function ($query) {
+    //                 return $query->where('is_approved', 1)
+    //                     ->where('deleted_at', '!=', NULL);
+    //             })
+    //                 ->orderBy('id', 'desc');
+    //         } else {
+    //             $agents = $agents->where('is_approved', $request->status)->orderBy('id', 'desc');
+    //         }
+
+
+    //         $returnHTML = View ('agent/agent-index')->with(['agents' => $agents->get(),'timezone' => $timezone])->render();
+
+    //         return response()->json($returnHTML,200);
+
+
+    //     } catch (Exception $e) {
+
+    //     }
+    // }
+
+
     public function index(Request $request)
     {
         $tz = new Timezone();
@@ -166,12 +369,16 @@ class AgentController extends Controller
         $client_timezone = $client->getTimezone ? $client->getTimezone->timezone : 251;
         $timezone = $tz->timezone_name($client_timezone);
 
+
         $paginationLinks = $paginatedAgents->links();
 
         $returnHTML['html'] = view ('agent/agent-index')->with(['agents' => $paginatedAgents,'timezone' => $timezone])->render();
         $returnHTML['pagination'] =$paginationLinks->toHtml();
 
 
+
+
+        // $agents = Agent::orderBy('id', 'DESC');
 
         return view('agent.index')->with([
             'agents' => $agents,
@@ -184,10 +391,10 @@ class AgentController extends Controller
             'agentsCount' => $agentsCount,
             'employeesCount' => $employeesCount,
             'agentActive' => $agentActive,
+            'agentData' => $returnHTML,
             'agentInActive' => $agentInActive,
             'freelancerCount' => $freelancerCount,
             'teams' => $teams,
-            'agentData' => $returnHTML,
             'tags' => $tags,
             'selectedCountryCode' => $countryCode,
             'calenderSelectedDate' => $selectedDate,
@@ -200,9 +407,6 @@ class AgentController extends Controller
 
     public function agentFilter(Request $request)
     {
-
-
-
         try {
             $tz = new Timezone();
             $user = Auth::user();
@@ -230,6 +434,7 @@ class AgentController extends Controller
             $request->merge([
                 'is_attendence' => $isAttendence
             ]);
+
             $client_timezone = $client->getTimezone ? $client->getTimezone->timezone : 251;
             $timezone = $tz->timezone_name($client_timezone);
             $agents = Agent::with('warehouseAgent')->orderBy('id', 'DESC');
@@ -269,7 +474,6 @@ class AgentController extends Controller
                     $query->whereIn('warehouses.id', $managerWarehousesIds);
                 });
             }
-
             if ($request->status == 2) {
                 $agents = $agents->withTrashed()
                     ->where('is_approved', $request->status)
@@ -290,7 +494,6 @@ class AgentController extends Controller
 
              $returnHTML['html'] = view ('agent/agent-index')->with(['agents' => $agents,'timezone' => $timezone])->render();
 
-
              $returnHTML['pagination'] =$paginationLinks;
 
 
@@ -301,6 +504,7 @@ class AgentController extends Controller
 
             \Log::info($e->getMessage());
         }
+
     }
 
     public function export()
@@ -525,6 +729,7 @@ class AgentController extends Controller
             'tags',
             'warehouseAgent'
         ])->where('id', $id)->first();
+
         $teams = Team::where('client_id', auth()->user()->code);
         if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
             $teams = $teams->whereHas('permissionToManager', function ($query) {
@@ -534,12 +739,14 @@ class AgentController extends Controller
         $teams = $teams->get();
 
         $tags = TagsForAgent::all();
+
         $uptag = [];
         foreach ($tags as $key => $value) {
             array_push($uptag, $value->name);
         }
 
         $tagIds = [];
+
         foreach ($agent->tags as $tag) {
             $tagIds[] = $tag->name;
         }
@@ -551,6 +758,8 @@ class AgentController extends Controller
         } else {
             $send_otp = __('View OTP after Logging in the ' . getAgentNomenclature() . ' App');
         }
+
+
 
         $agents_docs = AgentDocs::where('agent_id', $id)->get();
         $driver_registration_documents = DriverRegistrationDocument::with('driver_option')->get();
