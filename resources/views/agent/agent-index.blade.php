@@ -9,6 +9,9 @@
           <img src="{{  $src }}">
       </td>
       <td>
+        <?php if (empty($agent->deleted_at)) { ?>
+        <div class="inner-div"> <a href={{route('agent.edit', $agent->id)}} class="action-icon editIcon" agentId="{{$agent->id}}"> <i class="mdi mdi-square-edit-outline"></i></a></div>
+          <?php } ?>
         {{ $agent->name}}
     </td>
       <td>
@@ -97,15 +100,19 @@ $agent->subscriptionPlan ? convertDateTimeInTimeZone($agent->subscriptionPlan->e
         }}
       </td>
       <td>
-        @php
+        
 
+      @if (! empty($agents->deleted_at))
+        <span class="badge badge-pill badge-danger pill-state">Deleted</span>
+      @else 
+        @if($agent->is_approved == 1)
+          <span class="badge badge-pill badge-success pill-state">Active</span>
+        @endif
+        @if($agent->is_approved == 2)
+          <span class="badge badge-pill badge-secondary pill-state">Blocked</span>
+        @endif
+      @endif
 
-if (! empty($agent->deleted_at)) {
-                    echo 3;
-                } else if ($agent->is_approved) {
-                    echo $agent->is_approved;
-                }
-@endphp
       </td>
       <td>
 
