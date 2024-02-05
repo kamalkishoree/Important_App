@@ -1511,6 +1511,7 @@ class TaskController extends BaseController
                 'available_seats' => isset($request->available_seats) ? $request->available_seats : 0,
                 'no_seats_for_pooling' => isset($request->no_seats_for_pooling) ? $request->no_seats_for_pooling : 0,
                 'is_cab_pooling' => isset($request->is_cab_pooling) ? $request->is_cab_pooling : 0,
+                'tip_amount' => isset($request->tip_amount) ? $request->tip_amount : 0,
             ];
         
 
