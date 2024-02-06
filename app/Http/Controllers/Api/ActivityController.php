@@ -365,16 +365,16 @@ class ActivityController extends BaseController
                 //event(new \App\Events\agentLogFetch());
             }
         }
-        $send_data=[
-            'name'=>$agent_details->name,
-            'agent_id'=>$agent_details->agent_id,
-            'id'=>$agent_details->id,
-            'is_available'=>@$agent_details->is_available,
-            'is_busy'=>$agent_details->is_busy,
-            'lat'=>$agent_details['agentlog']->lat,
-            'lng'=>$agent_details['agentlog']->long,
-            'event_type' => 'agent_log'];
-        $this->FireEvent($send_data);
+        // $send_data=[
+        //     'name'=>$agent_details->name,
+        //     'agent_id'=>$agent_details->agent_id,
+        //     'id'=>$agent_details->id,
+        //     'is_available'=>@$agent_details->is_available,
+        //     'is_busy'=>$agent_details->is_busy,
+        //     'lat'=>$agent_details['agentlog']->lat,
+        //     'lng'=>$agent_details['agentlog']->long,
+        //     'event_type' => 'agent_log'];
+        // $this->FireEvent($send_data);
         $id    = Auth::user()->id;
         $all   = $request->all;
 
