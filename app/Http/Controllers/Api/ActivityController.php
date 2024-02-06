@@ -130,17 +130,17 @@ class ActivityController extends BaseController
         $preferences = ClientPreference::with('currency')->where('client_id', $client_code->code)->first();
         $client_currency = $preferences->currency;
         $tz = new Timezone();
-        // $client_code->timezone = $tz->timezone_name($client_code->timezone);
-        // $start     = Carbon::now($client_code->timezone ?? 'UTC')->startOfDay();
-        // $end       = Carbon::now($client_code->timezone ?? 'UTC')->endOfDay();
-        // $utc_start = Carbon::parse($start . $client_code->timezone ?? 'UTC')->tz('UTC');
-        // $utc_end   = Carbon::parse($end . $client_code->timezone ?? 'UTC')->tz('UTC');
+        $client_code->timezone = $tz->timezone_name($client_code->timezone);
+        $start     = Carbon::now($client_code->timezone ?? 'UTC')->startOfDay();
+        $end       = Carbon::now($client_code->timezone ?? 'UTC')->endOfDay();
+        $utc_start = Carbon::parse($start . $client_code->timezone ?? 'UTC')->tz('UTC');
+        $utc_end   = Carbon::parse($end . $client_code->timezone ?? 'UTC')->tz('UTC');
 
-        $client_code->timezone = isset($client_code->timezone) ?  $client_code->timezone : 'UTC';
-        $start     = Carbon::now($client_code->timezone)->startOfDay();
-        $end       = Carbon::now($client_code->timezone)->endOfDay();
-        $utc_start = Carbon::parse($start . $client_code->timezone)->tz('UTC');
-        $utc_end   = Carbon::parse($end . $client_code->timezone)->tz('UTC');
+        // $client_code->timezone = isset($client_code->timezone) ?  $client_code->timezone : 'UTC';
+        // $start     = Carbon::now($client_code->timezone)->startOfDay();
+        // $end       = Carbon::now($client_code->timezone)->endOfDay();
+        // $utc_start = Carbon::parse($start . $client_code->timezone)->tz('UTC');
+        // $utc_end   = Carbon::parse($end . $client_code->timezone)->tz('UTC');
 
         $id     = Auth::user()->id;
 
