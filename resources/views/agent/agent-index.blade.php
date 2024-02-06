@@ -1,4 +1,9 @@
+
+
+</tr>
+@if(count($agents) > 0 )
   @foreach ($agents as $agent)
+
   <tr>
       <td>{{ $agent->id }}</td>
 
@@ -6,13 +11,28 @@
        @php
         $src = (isset($agent->profile_picture) ? $agent->imgproxyurl . Storage::disk('s3')->url($agent->profile_picture) : Phumbor::url(URL::to('/asset/images/no-image.png')));
           @endphp
-          <img src="{{  $src }}">
+          <?php
+          $isAvailableIcon = ($agent->is_available == 1)
+              ? '<i class="fa fa-circle agent-status" aria-hidden="true" style="color:green"></i>'
+              : '<i class="fa fa-circle agent-status" aria-hidden="true" style="color:red"></i>';
+
+          echo $isAvailableIcon . '<img alt="' . $agent->id . '" src="' . $src . '" width="40">';
+          ?>
+
       </td>
       <td>
-        <?php if (empty($agent->deleted_at)) { ?>
-        <div class="inner-div"> <a href={{route('agent.edit', $agent->id)}} class="action-icon editIcon" agentId="{{$agent->id}}"> <i class="mdi mdi-square-edit-outline"></i></a></div>
-          <?php } ?>
-        {{ $agent->name}}
+        <div class="edit-icon-div">
+            @if(($agent->is_approved == 1) && ($agent->deleted_at == ""))
+            <a href="{{ route('agent.edit', $agent->id) }}" class="child-name editIcon" agentId="{{ $agent->id }}">{{ $agent->name }}</a>
+            <a href="{{ route('agent.edit', $agent->id) }}" class="child-icon editIcon d-none"  agentId="{{ $agent->id }}">
+              <i class="mdi mdi-square-edit-outline"></i>
+            </a>
+            @else
+            {{ $agent->name }}
+            @endif
+
+          </div>
+
     </td>
       <td>
         {{ $agent->phone_number}}
@@ -100,18 +120,28 @@ $agent->subscriptionPlan ? convertDateTimeInTimeZone($agent->subscriptionPlan->e
         }}
       </td>
       <td>
-        
+        @php
+        if (!empty($agent->deleted_at)) {
+            $data = 3;
+        } elseif ($agent->is_approved) {
+            $data = $agent->is_approved;
+        }
+        else{
+            $data ="";
+        }
 
-      @if (! empty($agents->deleted_at))
-        <span class="badge badge-pill badge-danger pill-state">Deleted</span>
-      @else 
-        @if($agent->is_approved == 1)
-          <span class="badge badge-pill badge-success pill-state">Active</span>
-        @endif
-        @if($agent->is_approved == 2)
-          <span class="badge badge-pill badge-secondary pill-state">Blocked</span>
-        @endif
-      @endif
+        $val = '<span class="badge badge-pill badge-success pill-state">Active</span>';
+
+        if ($data == 1) {
+            $val = '<span class="badge badge-pill badge-success pill-state">Active</span>';
+        } elseif ($data == 2) {
+            $val = '<span class="badge badge-pill badge-secondary pill-state">Blocked</span>';
+        } else {
+            $val = '<span class="badge badge-pill badge-danger pill-state">Deleted</span>';
+        }
+
+        echo $val;
+    @endphp
 
       </td>
       <td>
@@ -132,7 +162,7 @@ if (! empty($agent->agentRating())) {
       <td>
         {{ convertDateTimeInTimeZone($agent->updated_at, $timezone) }}
       </td>
-      <td>
+      <td style="display:flex !important; ">
         @php
 
         $approve_action = '';
@@ -164,4 +194,16 @@ if (! empty($agent->agentRating())) {
       </td>
 
   </tr>
+
 @endforeach
+@else
+
+<tr>
+    <td colspan="12" style="text-align: center;">
+        No Agent
+    </td>
+</tr>
+
+@endif
+
+

@@ -270,9 +270,9 @@ class AgentController extends Controller
     //             $agents = $agents->where('is_approved', $request->status)->orderBy('id', 'desc');
     //         }
 
-                  
+
     //         $returnHTML = View ('agent/agent-index')->with(['agents' => $agents->get(),'timezone' => $timezone])->render();
-           
+
     //         return response()->json($returnHTML,200);
 
 
@@ -284,6 +284,8 @@ class AgentController extends Controller
 
     public function index(Request $request)
     {
+        $tz = new Timezone();
+
         $user = Auth::user();
         $managerWarehouses = Client::with('warehouse')->where('id', $user->id)->first();
         $managerWarehousesIds = $managerWarehouses->warehouse->pluck('id');
@@ -303,7 +305,15 @@ class AgentController extends Controller
                 $query->whereIn('warehouses.id', $managerWarehousesIds);
             });
         }
+
+
+
+        $paginatedAgents = clone $agents;
         $agents = $agents->get();
+
+        // Apply pagination to the cloned instance
+        $perPage = 10;
+        $paginatedAgents = $paginatedAgents->where('is_approved',1)->paginate($perPage);
 
         $tags = TagsForAgent::all();
         $tag = [];
@@ -316,6 +326,7 @@ class AgentController extends Controller
                 $query->where('sub_admin_id', $user->id);
             });
         }
+
 
         $teams = $teams->get();
         $selectedDate = ! empty($request->date) ? $request->date : '';
@@ -350,9 +361,25 @@ class AgentController extends Controller
         if ($user->is_superadmin == 0 && $user->manager_type == 1) {
             $warehouses = Warehouse::whereIn('id', $managerWarehousesIds)->get();
         }
+        $client = Client::where('code', $user->code)->with([
+            'getTimezone',
+            'getPreference',
+            'warehouse'
+        ])->first();
+        $client_timezone = $client->getTimezone ? $client->getTimezone->timezone : 251;
+        $timezone = $tz->timezone_name($client_timezone);
+
+
+        $paginationLinks = $paginatedAgents->links();
+
+        $returnHTML['html'] = view ('agent/agent-index')->with(['agents' => $paginatedAgents,'timezone' => $timezone])->render();
+        $returnHTML['pagination'] =$paginationLinks->toHtml();
+
+
+
 
         // $agents = Agent::orderBy('id', 'DESC');
-            
+
         return view('agent.index')->with([
             'agents' => $agents,
             'geos' => $geos,
@@ -364,6 +391,7 @@ class AgentController extends Controller
             'agentsCount' => $agentsCount,
             'employeesCount' => $employeesCount,
             'agentActive' => $agentActive,
+            'agentData' => $returnHTML,
             'agentInActive' => $agentInActive,
             'freelancerCount' => $freelancerCount,
             'teams' => $teams,
@@ -431,6 +459,13 @@ class AgentController extends Controller
                     $q->where('geo_id', $geo_id);
                 });
             }
+            if (! empty($request->get('search'))) {
+                $search = $request->get('search');
+                $agents->where(function ($query) use ($search) {
+                    $query->where('name', 'like', '%' . $search . '%');
+                    });
+
+            }
             if (! empty($request->get('tag_filter'))) {
                 $tag_id = $request->get('tag_filter');
                 $agents->whereHas('tags', function ($q) use ($tag_id) {
@@ -457,143 +492,26 @@ class AgentController extends Controller
             } else {
                 $agents = $agents->where('is_approved', $request->status)->orderBy('id', 'desc');
             }
-            return Datatables::of($agents)->editColumn('name', function ($agents) use ($request) {
-                $name = $agents->name;
-                return $name;
-            })
-                ->editColumn('profile_picture', function ($agents) use ($request) {
-                $src = (isset($agents->profile_picture) ? $request->imgproxyurl . Storage::disk('s3')->url($agents->profile_picture) : Phumbor::url(URL::to('/asset/images/no-image.png')));
-                return $src;
-            })
-                ->editColumn('team', function ($agents) use ($request) {
-                $team = (isset($agents->team->name) ? $agents->team->name : __('Team Not Alloted'));
-                return $team;
-            })
-                ->editColumn('warehouse', function ($agents) use ($request) {
-                $warehouse = (isset($agents->warehouse->name) ? $agents->warehouse->name : __('-'));
-                return $warehouse;
-            })
-                ->editColumn('vehicle_type_id', function ($agents) use ($request) {
-                $src = asset('assets/icons/extra/' . $agents->vehicle_type_id . '.png');
-                return $src;
-            })
-                ->editColumn('type', function ($agents) use ($request) {
-                return __($agents->type);
-            })
-                ->editColumn('cash_to_be_collected', function ($agents) use ($request) {
-                $cash = $agents->order->where('status', 'completed')
-                    ->sum('cash_to_be_collected');
-                return number_format((float) $cash, 2, '.', '');
-            })
-                ->editColumn('driver_cost', function ($agents) use ($request) {
-                $orders = $agents->order->where('status', 'completed')
-                    ->sum('driver_cost');
-                return number_format((float) $orders, 2, '.', '');
-            })
-                ->editColumn('cr', function ($agents) use ($request) {
-                $receive = $agents->agentPayment->sum('cr');
-                return number_format((float) $receive, 2, '.', '');
-            })
-                ->editColumn('dr', function ($agents) use ($request) {
-                $pay = $agents->agentPayment->sum('dr');
-                return number_format((float) $pay, 2, '.', '');
-            })
-                ->editColumn('pay_to_driver', function ($agents) use ($request) {
-                $cash = $agents->order->where('status', 'completed')
-                    ->sum('cash_to_be_collected');
-                $orders = $agents->order->where('status', 'completed')
-                    ->sum('driver_cost');
-                $receive = $agents->agentPayment->sum('cr');
-                $pay = $agents->agentPayment->sum('dr');
+            $page = request()->input('page', 1);
+            $perPage = 10;
+            $agents = $agents->paginate($perPage, ['*'], 'page', $page);
 
-                $payToDriver = ($pay - $receive) - ($cash - $orders);
-                return number_format((float) $payToDriver, 2, '.', '');
-            })
-                ->addColumn('subscription_plan', function ($agents) use ($request) {
-                return $agents->subscriptionPlan ? $agents->subscriptionPlan->plan->title : '';
-            })
-                ->addColumn('subscription_expiry', function ($agents) use ($request, $timezone) {
-                return $agents->subscriptionPlan ? convertDateTimeInTimeZone($agents->subscriptionPlan->end_date, $timezone) : '';
-            })
-                ->addColumn('state', function ($agents) use ($request, $timezone) {
-                if (! empty($agents->deleted_at)) {
-                    return 3;
-                } else if ($agents->is_approved) {
-                    return $agents->is_approved;
-                }
-            })
-                ->addColumn('agent_rating', function ($agents) use ($request, $timezone) {
-                if (! empty($agents->agentRating())) {
-                    return number_format($agents->agentRating()
-                        ->avg('rating'), 2, '.', '');
-                } else {
-                    return '0.00';
-                }
-            })
-                ->editColumn('created_at', function ($agents) use ($request, $timezone) {
-                return convertDateTimeInTimeZone($agents->created_at, $timezone);
-            })
-                ->editColumn('updated_at', function ($agents) use ($request, $timezone) {
-                return convertDateTimeInTimeZone($agents->updated_at, $timezone);
-            })
-                ->editColumn('action', function ($agents) use ($request) {
-                $approve_action = '';
-                if ($request->is_driver_slot == 1 || $request->is_attendence == 1) {
-                    $approve_action .= '<div class="inner-div agent_slot_button" data-agent_id="' . $agents->id . '" data-status="2" title="Working Hours"><i class="dripicons-calendar mr-1" style="color: green; cursor:pointer;"></i></div>';
-                }
-                if ($request->status == 1) {
-                    $approve_action .= '<div class="inner-div agent_approval_button" data-agent_id="' . $agents->id . '" data-status="2" title="Reject"><i class="fa fa-user-times" style="color: red; cursor:pointer;"></i></div>';
-                } else if ($request->status == 0) {
-                    $approve_action .= '<div class="inner-div agent_approval_button" data-agent_id="' . $agents->id . '" data-status="1" title="Approve"><i class="fas fa-user-check" style="color: green; cursor:pointer;"></i></div><div class="inner-div ml-1 agent_approval_button" data-agent_id="' . $agents->id . '" data-status="2" title="Reject"><i class="fa fa-user-times" style="color: red; cursor:pointer;"></i></div>';
-                } else if ($request->status == 2) {
-                    $approve_action .= '<div class="inner-div agent_approval_button" data-agent_id="' . $agents->id . '" data-status="1" title="Approve"><i class="fas fa-user-check" style="color: green; cursor:pointer;"></i></div>';
-                }
-                $action = '' . $approve_action . '
-                               <!-- <div class="inner-div"> <a href="' . route('agent.edit', $agents->id) . '" class="action-icon editIcon" agentId="' . $agents->id . '"> <i class="mdi mdi-square-edit-outline"></i></a></div>-->
-                                    <div class="inner-div">
-                                        <form id="agentdelete' . $agents->id . '" method="POST" action="' . route('agent.destroy', $agents->id) . '">
-                                            <input type="hidden" name="_token" value="' . csrf_token() . '" />
-                                            <input type="hidden" name="_method" value="DELETE">
-                                            <div class="form-group">
-                                                <button type="submit" class="btn btn-primary-outline action-icon"> <i class="mdi mdi-delete" agentid="' . $agents->id . '"></i></button>
-                                            </div>
-                                        </form>
-                                    </div>
-                               ';
-                return $action;
-            })
-                ->filter(function ($instance) use ($request) {
-                if (! empty($request->get('search'))) {
-                    // $instance->collection = $instance->collection->filter(function ($row) use ($request){
-                    // if (!empty($row['uid']) && Str::contains(Str::lower($row['uid']), Str::lower($request->get('search')))){
-                    // return true;
-                    // }elseif (!empty($row['phone_number']) && Str::contains(Str::lower($row['phone_number']), Str::lower($request->get('search')))){
-                    // return true;
-                    // }else if (!empty($row['name']) && Str::contains(Str::lower($row['name']), Str::lower($request->get('search')))) {
-                    // return true;
-                    // }else if (!empty($row['type']) && Str::contains(Str::lower($row['type']), Str::lower($request->get('search')))) {
-                    // return true;
-                    // }else if (!empty($row['team']) && Str::contains(Str::lower($row['team']), Str::lower($request->get('search')))) {
-                    // return true;
-                    // }else if (!empty($row['created_at']) && Str::contains(Str::lower($row['created_at']), Str::lower($request->get('search')))) {
-                    // return true;
-                    // }
-                    // return false;
-                    // });
+            // You can also pass the pagination links to the view
+            $paginationLinks = $agents->links()->toHtml() ?? "";
 
-                    $search = $request->get('search');
-                    $instance->where('uid', 'Like', '%' . $search . '%')
-                        ->orWhere('name', 'Like', '%' . $search . '%')
-                        ->orWhere('phone_number', 'Like', '%' . $search . '%')
-                        ->orWhere('type', 'Like', '%' . $search . '%')
-                        ->orWhere('created_at', 'Like', '%' . $search . '%')
-                        ->orWhereHas('team', function ($q) use ($search) {
-                        $q->where('name', 'Like', '%' . $search . '%');
-                    });
-                }
-            }, true)
-                ->make(true);
-        } catch (Exception $e) {}
+             $returnHTML['html'] = view ('agent/agent-index')->with(['agents' => $agents,'timezone' => $timezone])->render();
+
+             $returnHTML['pagination'] =$paginationLinks;
+
+
+            return response()->json($returnHTML,200);
+
+
+        } catch (Exception $e) {
+
+            \Log::info($e->getMessage());
+        }
+
     }
 
     public function export()
@@ -818,7 +736,7 @@ class AgentController extends Controller
             'tags',
             'warehouseAgent'
         ])->where('id', $id)->first();
-      
+
         $teams = Team::where('client_id', auth()->user()->code);
         if (Auth::user()->is_superadmin == 0 && Auth::user()->all_team_access == 0) {
             $teams = $teams->whereHas('permissionToManager', function ($query) {
@@ -828,14 +746,14 @@ class AgentController extends Controller
         $teams = $teams->get();
 
         $tags = TagsForAgent::all();
-       
+
         $uptag = [];
         foreach ($tags as $key => $value) {
             array_push($uptag, $value->name);
         }
 
         $tagIds = [];
-        
+
         foreach ($agent->tags as $tag) {
             $tagIds[] = $tag->name;
         }
@@ -848,7 +766,7 @@ class AgentController extends Controller
             $send_otp = __('View OTP after Logging in the ' . getAgentNomenclature() . ' App');
         }
 
-    
+
 
         $agents_docs = AgentDocs::where('agent_id', $id)->get();
         $driver_registration_documents = DriverRegistrationDocument::with('driver_option')->get();
@@ -1028,7 +946,7 @@ class AgentController extends Controller
     public function destroy($domain = '', $id)
     {
         DriverGeo::where('driver_id', $id)->delete(); // i have to fix it latter
-        $agent = Agent::where('id', $id)->first();
+        $agent = Agent::withTrashed()->where('id', $id)->first();
         Agent::where('id', $agent->id)->update([
             'phone_number' => $agent->phone_number . '_' . $agent->id . "_D",
             'device_token' => '',
@@ -1161,11 +1079,12 @@ class AgentController extends Controller
             // $sms_body = AgentSmsTemplate::where('slug', $slug)->first();
             $keyData = [];
             $sms_body = sendSmsTemplate($slug, $keyData);
-            if (! empty($sms_body)) {
+
+            if (! empty($sms_body) && ! empty($sms_body['body'])) {
                 $send = $this->sendSmsNew($agent_approval->phone_number, $sms_body)->getData();
             }
 
-            $agents = Agent::get();
+            $agents = Agent::withTrashed()->get();
             $agentsCount = count($agents);
             $employeesCount = count($agents->where('type', 'Employee'));
             $freelancerCount = count($agents->where('type', 'Freelancer'));
@@ -1175,7 +1094,7 @@ class AgentController extends Controller
             $agentNotAvailable = count($agents->where('is_available', 0));
             $agentIsApproved = count($agents->where('is_approved', 1));
             $agentNotApproved = count($agents->where('is_approved', 0));
-            $agentRejected = count($agents->where('is_approved', 2));
+            $agentRejected = count($agents->where('is_approved', 2)->whereNull('deleted_at')) +count($agents->whereIn('is_approved', [0,1,2])->whereNotNull('deleted_at'));
 
             return response()->json([
                 'status' => 1,
