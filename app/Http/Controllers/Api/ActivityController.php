@@ -96,7 +96,7 @@ class ActivityController extends BaseController
     }
 
 
-    //function to enable/disable availability for cab pooling for drivers 
+    //function to enable/disable availability for cab pooling for drivers
     public function updateDriverCabPoolingStatus(Request $request)
     {
         try{
@@ -130,11 +130,17 @@ class ActivityController extends BaseController
         $preferences = ClientPreference::with('currency')->where('client_id', $client_code->code)->first();
         $client_currency = $preferences->currency;
         $tz = new Timezone();
-        $client_code->timezone = $tz->timezone_name($client_code->timezone);
-        $start     = Carbon::now($client_code->timezone ?? 'UTC')->startOfDay();
-        $end       = Carbon::now($client_code->timezone ?? 'UTC')->endOfDay();
-        $utc_start = Carbon::parse($start . $client_code->timezone ?? 'UTC')->tz('UTC');
-        $utc_end   = Carbon::parse($end . $client_code->timezone ?? 'UTC')->tz('UTC');
+        // $client_code->timezone = $tz->timezone_name($client_code->timezone);
+        // $start     = Carbon::now($client_code->timezone ?? 'UTC')->startOfDay();
+        // $end       = Carbon::now($client_code->timezone ?? 'UTC')->endOfDay();
+        // $utc_start = Carbon::parse($start . $client_code->timezone ?? 'UTC')->tz('UTC');
+        // $utc_end   = Carbon::parse($end . $client_code->timezone ?? 'UTC')->tz('UTC');
+
+        $client_code->timezone = isset($client_code->timezone) ?  $client_code->timezone : 'UTC';
+        $start     = Carbon::now($client_code->timezone)->startOfDay();
+        $end       = Carbon::now($client_code->timezone)->endOfDay();
+        $utc_start = Carbon::parse($start . $client_code->timezone)->tz('UTC');
+        $utc_end   = Carbon::parse($end . $client_code->timezone)->tz('UTC');
 
         $id     = Auth::user()->id;
 
@@ -162,8 +168,8 @@ class ActivityController extends BaseController
                 ->orderBy("id","ASC")
                 ->get();
             }
-           
-           
+
+
             if (count($tasks) > 0) {
                 //sort according to task_order
                 $tasks = $tasks->toArray();
@@ -172,6 +178,10 @@ class ActivityController extends BaseController
                         return $a['task_order'] <=> $b['task_order'];
                     });
                 }
+            }
+
+            foreach($tasks as $key => $task){
+                $tasks[$key]['order']['order_time'] =  Carbon::parse( $task['order']['order_time'])->setTimezone($client_code->timezone)->toDateTimeString();
             }
         }
 
@@ -243,9 +253,9 @@ class ActivityController extends BaseController
 
     public function agentLog(Request $request)
     {
-      
+
         $user_id = Auth::user()->id;
-      
+
         $header = $request->header();
         $client_code = Client::where('database_name', $header['client'][0])->first();
         $preferences = ClientPreference::with('currency')->first();
@@ -268,11 +278,11 @@ class ActivityController extends BaseController
             'on_route'          => $request->on_route,
             'device_type'       => ucwords($request->device_type),
             'heading_angle'     => $request->heading_angle ?? 0
-           
+
         ];
 
         $is_cab_pooling_toggle = isset($preferences->is_cab_pooling_toggle)?$preferences->is_cab_pooling_toggle:0;
-        
+
         if($is_cab_pooling_toggle == 1){
             if(isset($request->is_pooling_available)){
                 $agentupdate =  Agent::where('id', Auth::user()->id)->update(['is_pooling_available' => $request->is_pooling_available]);
@@ -280,23 +290,23 @@ class ActivityController extends BaseController
         }else{
             $agentupdate =  Agent::where('id', Auth::user()->id)->update(['is_pooling_available' => 0]);
         }
-        
+
 
         if ($request->lat=="" || $request->lat==0 || $request->lat== '0.00000000') {
         } else {
 
             $custom_mode = !empty($preferences->custom_mode) ? json_decode($preferences->custom_mode) : [];
             $clientPreference = !empty($preferences->customer_notification_per_distance) ? json_decode($preferences->customer_notification_per_distance) : [];
-            
+
             if(!empty($custom_mode->is_hide_customer_notification) && ($custom_mode->is_hide_customer_notification == 1) && !empty($clientPreference->is_send_customer_notification) && ($clientPreference->is_send_customer_notification == 'on')){
 
             //    \Log::info('permission success');
-                //get agent orders 
+                //get agent orders
                 $orders = Order::where('driver_id', Auth::user()->id)->where('status', 'assigned')->orderBy('order_time')->pluck('id')->toArray();
                 if (count($orders) > 0) {
                     //\Log::info('get order');
-                    
-                   
+
+
                     //get agent current task
                    if($preferences->is_dispatcher_allocation == 1)
                    {
@@ -316,49 +326,49 @@ class ActivityController extends BaseController
                         $longitude   = [];
 
                         //\Log::info($callBackUrl);
-                        // check task location in not empty and task created by custmer from order penel  
+                        // check task location in not empty and task created by custmer from order penel
                         if(!empty($tasks->location) && !empty($callBackUrl)){
                             //\Log::info('get task location');
                             $tasksLocationLat  = $tasks->location->latitude;
                             $tasksLocationLong = $tasks->location->longitude;
-        
+
                             //get distance using lat-long
                             $getDistance = $this->getLatLongDistance($tasksLocationLat, $tasksLocationLong, $request->lat, $request->long, $clientPreference->distance_unit);
-        
+
                             // insert agent coverd distance
                             $data['distance_covered'] = $getDistance;
                             $data['current_task_id'] = $tasks->id;
-                        
+
                             $log=  $this->updateAgentLog($data,$request->order_id);
                             $agent_details=Agent::with('agentlog')->where('id',$log->agent_id)->first();
 
-                         
+
 
                             // check notification send to customer pr km/miles
                             $agentDistanceCovered = AgentLog::where('current_task_id', $tasks->id)->where('distance_covered', 'LIKE', '%'.$getDistance.'%')->count();
-                            
+
                             if($agentDistanceCovered == 1 && $getDistance > 0){
                                 //\Log::info('in send notification');
                                 $notificationTitle       = $clientPreference->title;
                                 $notificationDiscription = str_ireplace("{distance}", $getDistance.' '.$clientPreference->distance_unit, $clientPreference->description);
                                 $notificationDiscription = str_ireplace("{co2_emission}", $clientPreference->co2_emission * $getDistance, $notificationDiscription);
-                                
+
                                 $postdata =  ['notificationTitle' => $notificationTitle, 'notificationDiscription' => $notificationDiscription];
-        
+
                                 $client = new GClient(['content-type' => 'application/json']);
-                                
+
                                 $res = $client->post($callBackUrl,
                                     ['form_params' => ($postdata)]
                                 );
-                                $response = json_decode($res->getBody(), true);  
+                                $response = json_decode($res->getBody(), true);
                                 //\Log::info('responce');
                                 //\Log::info($response);
 
                             }
-                            
+
                         }
                     }
-                }                                           
+                }
             }else{
                 $log=  $this->updateAgentLog($data,$request->order_id);
                 $agent_details=Agent::with('agentlog')->where('id',$log->agent_id)->first();
@@ -399,7 +409,7 @@ class ActivityController extends BaseController
             }else{
                 $tasks = Task::whereIn('order_id', $orders)->where('task_status', '!=', 4)->Where('task_status', '!=', 5)->with(['location','tasktype','order.customer','order.additionData','order.waitingTimeLogs'])->orderBy('order_id', 'desc')->orderBy('id', 'ASC')->get();
             }
-            
+
             if (count($tasks) > 0) {
                 //sort according to task_order
                 $tasks = $tasks->toArray();
@@ -424,7 +434,7 @@ class ActivityController extends BaseController
                 }
             }
         }
-        
+
         $getAdditionalPreference = getAdditionalPreference([
             'pickup_type',
             'drop_type',
@@ -516,14 +526,14 @@ class ActivityController extends BaseController
     public function taskHistory(Request $request)
     {
         $id    = Auth::user()->id;
-       
+
         $orders = Order::where('driver_id', $id);
         if(!empty($request->from_date) && !empty($request->to_date)){
             $orders =  $orders->whereBetween('order_time', [$request->from_date." 00:00:00",$request->to_date." 23:59:59"]);
         }
 
         $orders =  $orders->pluck('id');
-        
+
         $hisoryStatus = [4,5];
 
         if($request->has('task_status') && $request->task_status !=''){
@@ -576,7 +586,7 @@ class ActivityController extends BaseController
                 foreach($agentdata->tags as $tags):
                     $agent_tags[]    = $tags->id;
                 endforeach;
-                
+
                 $assignedorder   = Order::with(['customer', 'task.location'])->where('status', '=', 'assigned')->where('driver_id', $agentdata->id)->where('is_cab_pooling', 1)->first();
                 $origin_latitude = $origin_longitude = $destination_latitude = $destination_longitude = array();
                 $origin_latitude[0]  = $agentdata->agentlog->lat;
@@ -616,32 +626,32 @@ class ActivityController extends BaseController
                     $destination_latitude  = $destination_latitude[0];
                     $destination_longitude = $destination_longitude[0];
                     $orders = Order::with(['customer', 'task.location', 'pickup_task.location' => function ($query) use ($origin_latitude, $origin_longitude) {
-                                    $query->select("id", "address", "latitude", "longitude", DB::raw("6371 * acos(cos(radians(" . $origin_latitude . ")) 
-                                    * cos(radians(latitude)) 
-                                    * cos(radians(longitude) - radians(" . $origin_longitude . ")) 
-                                    + sin(radians(" .$origin_latitude. ")) 
+                                    $query->select("id", "address", "latitude", "longitude", DB::raw("6371 * acos(cos(radians(" . $origin_latitude . "))
+                                    * cos(radians(latitude))
+                                    * cos(radians(longitude) - radians(" . $origin_longitude . "))
+                                    + sin(radians(" .$origin_latitude. "))
                                     * sin(radians(latitude))) AS distance_from_pickup"));
                                 }, 'dropoff_task.location' => function ($query) use ($destination_latitude, $destination_longitude) {
-                                    $query->select("id", "address", "latitude", "longitude", DB::raw("6371 * acos(cos(radians(" . $destination_latitude . ")) 
-                                    * cos(radians(latitude)) 
-                                    * cos(radians(longitude) - radians(" . $destination_longitude . ")) 
-                                    + sin(radians(" .$destination_latitude. ")) 
+                                    $query->select("id", "address", "latitude", "longitude", DB::raw("6371 * acos(cos(radians(" . $destination_latitude . "))
+                                    * cos(radians(latitude))
+                                    * cos(radians(longitude) - radians(" . $destination_longitude . "))
+                                    + sin(radians(" .$destination_latitude. "))
                                     * sin(radians(latitude))) AS distance_from_dropoff"));
                                 }])
                                 ->where('status', '=', 'unassigned')->where('is_cab_pooling', 1)->whereDate('order_time', $date)
                                 ->whereHas('pickup_task.location', function($q) use ($origin_latitude, $origin_longitude, $radius){
-                                    $q->select("id", "address", "latitude", "longitude", DB::raw("6371 * acos(cos(radians(" . $origin_latitude . ")) 
-                                    * cos(radians(latitude)) 
-                                    * cos(radians(longitude) - radians(" . $origin_longitude . ")) 
-                                    + sin(radians(" .$origin_latitude. ")) 
+                                    $q->select("id", "address", "latitude", "longitude", DB::raw("6371 * acos(cos(radians(" . $origin_latitude . "))
+                                    * cos(radians(latitude))
+                                    * cos(radians(longitude) - radians(" . $origin_longitude . "))
+                                    + sin(radians(" .$origin_latitude. "))
                                     * sin(radians(latitude))) AS distance_pickup"))
                                         ->having("distance_pickup", "<", $radius);
                                 })
                                 ->whereHas('dropoff_task.location', function($q) use ($destination_latitude, $destination_longitude, $radius){
-                                    $q->select("id", "address", "latitude", "longitude", DB::raw("6371 * acos(cos(radians(" . $destination_latitude . ")) 
-                                    * cos(radians(latitude)) 
-                                    * cos(radians(longitude) - radians(" . $destination_longitude . ")) 
-                                    + sin(radians(" .$destination_latitude. ")) 
+                                    $q->select("id", "address", "latitude", "longitude", DB::raw("6371 * acos(cos(radians(" . $destination_latitude . "))
+                                    * cos(radians(latitude))
+                                    * cos(radians(longitude) - radians(" . $destination_longitude . "))
+                                    + sin(radians(" .$destination_latitude. "))
                                     * sin(radians(latitude))) AS distance_dropoff"))
                                         ->having("distance_dropoff", "<", $radius);
                                 })
@@ -654,18 +664,18 @@ class ActivityController extends BaseController
                     $origin_latitude       = $origin_latitude[0];
                     $origin_longitude      = $origin_longitude[0];
                     $suggessions = Order::with(['customer', 'task.location', 'pickup_task.location' => function ($query) use ($origin_latitude, $origin_longitude) {
-                                $query->select("id", "address", "latitude", "longitude", DB::raw("6371 * acos(cos(radians(" . $origin_latitude . ")) 
-                                    * cos(radians(latitude)) 
-                                    * cos(radians(longitude) - radians(" . $origin_longitude . ")) 
-                                    + sin(radians(" .$origin_latitude. ")) 
+                                $query->select("id", "address", "latitude", "longitude", DB::raw("6371 * acos(cos(radians(" . $origin_latitude . "))
+                                    * cos(radians(latitude))
+                                    * cos(radians(longitude) - radians(" . $origin_longitude . "))
+                                    + sin(radians(" .$origin_latitude. "))
                                     * sin(radians(latitude))) AS distance_from_pickup"));
                                 }])
                                 ->where('status', '=', 'unassigned')->where('is_cab_pooling', 1)->whereDate('order_time', $date)
                                 ->whereHas('pickup_task.location', function($q) use ($origin_latitude, $origin_longitude, $radius){
-                                $q->select("id", "address", "latitude", "longitude", DB::raw("6371 * acos(cos(radians(" . $origin_latitude . ")) 
-                                    * cos(radians(latitude)) 
-                                    * cos(radians(longitude) - radians(" . $origin_longitude . ")) 
-                                    + sin(radians(" .$origin_latitude. ")) 
+                                $q->select("id", "address", "latitude", "longitude", DB::raw("6371 * acos(cos(radians(" . $origin_latitude . "))
+                                    * cos(radians(latitude))
+                                    * cos(radians(longitude) - radians(" . $origin_longitude . "))
+                                    + sin(radians(" .$origin_latitude. "))
                                     * sin(radians(latitude))) AS distance_pickup"))
                                     ->having("distance_pickup", "<", $radius);
                                 })
@@ -709,11 +719,11 @@ class ActivityController extends BaseController
     public function getReferOrder(Request $request)
     {
         $id     = Auth::user()->id;
- 
+
         $tasks   = [];
-      
+
         $orders = Order::where('refer_driver_id', $id)->whereNull('driver_id')->where('status', 'unassigned')->orderBy("order_time","ASC")->orderBy("id","ASC")->pluck('id')->toArray();
-        
+
 
 
         if (count($orders) > 0) {
@@ -792,7 +802,7 @@ class ActivityController extends BaseController
                     'message' => __('Request Declined')
                 ], 200);
             }
-            
+
         }else{
             return response()->json([
                 'data' =>[],
@@ -803,7 +813,7 @@ class ActivityController extends BaseController
     }
     public function userRating(Request $request)
     {
-       
+
         $UserRating = UserRating::where('order_id',$request->order_id)->first() ?? new UserRating();
         $UserRating->driver_id = Auth::user() ? Auth::user()->id :  $request->driver_id;
         $UserRating->user_id = $request->user_id;
@@ -830,12 +840,12 @@ class ActivityController extends BaseController
         if(!empty($request->from_date) && !empty($request->to_date)){
             $orders =  $orders->whereBetween('order_time', [$request->from_date." 00:00:00",$request->to_date." 23:59:59"]);
         }
-        
+
         $orders =  $orders->where('is_comm_settled','0')->where('driver_cost','>=',0)->whereHas('task', function ($query) {
             $query->where('task_status', 4); // completed task
         });
         $orders = $orders->orderBy('id', 'DESC')->paginate(10);
-     
+
         return response()->json([
             'orders' => $orders,
             'status' => 200,
@@ -844,7 +854,7 @@ class ActivityController extends BaseController
     }
 
     public function postSendReffralCode(Request $request)
-    {          
+    {
         $validator = Validator::make($request->all(), [
             'email' => 'required',
             'refferal_code' => 'required',
@@ -857,12 +867,12 @@ class ActivityController extends BaseController
         try {
             $driver = Auth::user();
             $client = Client::first();
-            
+
             $driver_refferal_detail = DriverRefferal::where('driver_id', $driver->id)->first();
             if ($driver_refferal_detail) {
                 $smtp = SmtpDetail::where('id', 1)->first();
                 if(!empty($smtp))
-                {             
+                {
                     $email_template_content = 'Register yourself using {code} this referral code in {client_name} app';
                     $email_template_content = str_ireplace("{code}", $driver_refferal_detail->refferal_code, $email_template_content);
                     $email_template_content = str_ireplace("{client_name}", ucwords($client->name), $email_template_content);
