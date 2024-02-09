@@ -15,16 +15,15 @@ use App\Model\Roster;
 use Config;
 use Illuminate\Support\Facades\URL;
 use GuzzleHttp\Client as GClient;
-use App\Traits\FormAttributeTrait;
-use App\Traits\{GlobalFunction};
+use App\Traits\{FormAttributeTrait,DashboardSocketTrait, GlobalFunction};
 use Exception;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class ActivityController extends BaseController
 {
-    use FormAttributeTrait;
-    use GlobalFunction;
+    use FormAttributeTrait,GlobalFunction,DashboardSocketTrait;
+
     /**
      * Store/Update Client Preferences
      */
