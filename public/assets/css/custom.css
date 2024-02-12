@@ -51,8 +51,17 @@ input.select2-search__field::placeholder {
     font-weight: 400;
     font-size: 0.875rem;
 }
-th.sorting_asc {
+body .agent_tabel_block th.sorting_asc, .agent_tabel_block td.sorting_1 {
+    width: 90px !important;
+}
+body th.sorting_asc, td.sorting_1 {
     padding-left: 8px !important;
+    width: 30px !important;
+    min-width: 30px !important;
+}
+body #pricing-datatable_wrapper th.sorting_asc, #pricing-datatable_wrapper td.sorting_1{
+    width: 100px !important;
+    min-width: 100px !important;
 }
 .selectize-input.items.not-full.has-options.has-items::-webkit-scrollbar {
     width: 10px;
@@ -421,7 +430,7 @@ body .navbar-custom .topnav-menu .nav-link {
 .dataTables_wrapper .form-ul {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-around;
 }
 .dataTables_wrapper .inner-div:last-child {
     margin-left: -5px;
@@ -877,8 +886,8 @@ hr.new3 {
 }
 .datenow .cstmbtn.check_btn.btn {
     right: 15px;
-    line-height: 25.39px;
-    top: -10px;
+    line-height: 20px;
+    top: -12px;
 }
 .red_ {
     background-color: hsl(357deg 100% 50% / 100%) !important;
@@ -1303,7 +1312,7 @@ body .tagsinput .tag {
     margin-bottom: 0;
 }
 .table th, .table td {
-    padding: 10px 20px;
+    padding: 10px 10px 10px 15px;
 }
 /* .card_outer {
     height: calc(100vh - 234px);
@@ -3563,7 +3572,8 @@ body.light .card.main-table-card div#pricing-datatable_length label:after {
 }
 
 .agent_tabel_block table.table.table-striped td, .main_outter_box th {
-    width: 160px !important;
+    min-width: 90px;
+    /* width: 120px !important; */
     overflow: hidden;    
     /* white-space: nowrap;
     -moz-text-overflow: ellipsis;        
