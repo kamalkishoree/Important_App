@@ -412,7 +412,9 @@ class ActivityController extends BaseController
                     });
                 }
                 foreach($tasks as $key => $task){
-                    $tasks[$key]['order']['order_time'] =  Carbon::parse( $task['order']['order_time'])->setTimezone($client_code->timezone)->toDateTimeString();
+                    if(!empty($task['order']['order_time'])){
+                        $tasks[$key]['order']['order_time'] = $this->getConvertUTCToLocalTime($task['order']['order_time'], $client_code->timezone);
+                    }
                 }
             }
         }
