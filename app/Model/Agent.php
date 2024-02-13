@@ -71,7 +71,7 @@ class Agent extends Authenticatable implements  Wallet, WalletFloat
 
     public function agentdocs()
     {
-    return $this->hasMany('App\Model\AgentDocs','agent_id','id')->whereNotIn('file_type', ['Image', 'Pdf'])->orderBy('document_id', 'asc');
+    return $this->hasMany('App\Model\AgentDocs','agent_id','id')->whereNotIn('file_type', ['Image', 'Pdf'])->where('document_id','>',0)->orderBy('document_id', 'asc');
     }
 
 
