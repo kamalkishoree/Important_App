@@ -977,7 +977,7 @@ class TaskController extends BaseController
         }
 
 
-        if (isset($orderdata) && $orderdata->driver_id != null ) {
+        if (isset($orderdata) && $orderdata->driver_id != null && $request->status != 2) {
             if ($orderdata && $orderdata->call_back_url) {
                 $call_web_hook = $this->updateStatusDataToOrder($orderdata, 2,1);  # task accepted
             }
