@@ -16,17 +16,15 @@ use App\Model\Roster;
 use Config;
 use Illuminate\Support\Facades\URL;
 use GuzzleHttp\Client as GClient;
-use App\Traits\FormAttributeTrait;
-use App\Traits\{GlobalFunction,DashboardSocketTrait};
+use App\Traits\{FormAttributeTrait,DashboardSocketTrait, GlobalFunction};
 use Exception;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class ActivityController extends BaseController
 {
-    use FormAttributeTrait;
-    use GlobalFunction;
-    use DashboardSocketTrait;
+    use FormAttributeTrait,GlobalFunction,DashboardSocketTrait;
+
     /**
      * Store/Update Client Preferences
      */
@@ -131,10 +129,11 @@ class ActivityController extends BaseController
         $client_currency = $preferences->currency;
         $tz = new Timezone();
         $client_code->timezone = $tz->timezone_name($client_code->timezone);
-        $start     = Carbon::now($client_code->timezone ?? 'UTC')->startOfDay();
-        $end       = Carbon::now($client_code->timezone ?? 'UTC')->endOfDay();
-        $utc_start = Carbon::parse($start . $client_code->timezone ?? 'UTC')->tz('UTC');
-        $utc_end   = Carbon::parse($end . $client_code->timezone ?? 'UTC')->tz('UTC');
+        $client_code->timezone = isset($client_code->timezone) ?  $client_code->timezone : 'UTC';
+        $start     = Carbon::now($client_code->timezone)->startOfDay();
+        $end       = Carbon::now($client_code->timezone)->endOfDay();
+        $utc_start = Carbon::parse($start . $client_code->timezone)->tz('UTC');
+        $utc_end   = Carbon::parse($end . $client_code->timezone)->tz('UTC');
 
         // $client_code->timezone = isset($client_code->timezone) ?  $client_code->timezone : 'UTC';
         // $start     = Carbon::now($client_code->timezone)->startOfDay();
@@ -168,8 +167,7 @@ class ActivityController extends BaseController
                 ->orderBy("id","ASC")
                 ->get();
             }
-
-
+           
             if (count($tasks) > 0) {
                 //sort according to task_order
                 $tasks = $tasks->toArray();
@@ -177,6 +175,14 @@ class ActivityController extends BaseController
                     usort($tasks, function ($a, $b) {
                         return $a['task_order'] <=> $b['task_order'];
                     });
+                }
+                foreach($tasks as $key => $task){
+                    if(!empty($task['assigned_time'])){
+                        $tasks[$key]['assigned_time'] = $this->getConvertUTCToLocalTime($task['assigned_time'], $client_code->timezone);
+                    }
+                    if(!empty($task['order']['order_time'])){
+                        $tasks[$key]['order']['order_time'] = $this->getConvertUTCToLocalTime($task['order']['order_time'], $client_code->timezone);
+                    }
                 }
             }
 
@@ -261,10 +267,11 @@ class ActivityController extends BaseController
         $preferences = ClientPreference::with('currency')->first();
         $tz = new Timezone();
         $client_code->timezone = $tz->timezone_name($client_code->timezone);
-        $start     = Carbon::now($client_code->timezone ?? 'UTC')->startOfDay();
-        $end       = Carbon::now($client_code->timezone ?? 'UTC')->endOfDay();
-        $utc_start = Carbon::parse($start . $client_code->timezone ?? 'UTC')->tz('UTC');
-        $utc_end   = Carbon::parse($end . $client_code->timezone ?? 'UTC')->tz('UTC');
+        $client_code->timezone = isset($client_code->timezone) ?  $client_code->timezone : 'UTC';
+        $start     = Carbon::now($client_code->timezone)->startOfDay();
+        $end       = Carbon::now($client_code->timezone)->endOfDay();
+        $utc_start = Carbon::parse($start . $client_code->timezone)->tz('UTC');
+        $utc_end   = Carbon::parse($end . $client_code->timezone)->tz('UTC');
 
         $tasks   = [];
         $data =  [
@@ -418,6 +425,11 @@ class ActivityController extends BaseController
                         return $a['task_order'] <=> $b['task_order'];
                     });
                 }
+                foreach($tasks as $key => $task){
+                    if(!empty($task['order']['order_time'])){
+                        $tasks[$key]['order']['order_time'] = $this->getConvertUTCToLocalTime($task['order']['order_time'], $client_code->timezone);
+                    }
+                }
             }
         }
 
@@ -504,7 +516,9 @@ class ActivityController extends BaseController
             }
 
             // Remove HTML tags from the content field
-            $data->content = strip_tags($data->content);
+            $string = htmlentities($data->content, ENT_QUOTES, 'utf-8');
+            $data->content = str_replace("&nbsp;", "", $string);
+            $data->content = html_entity_decode($data->content);
 
             // Return the data as a JSON response
             return response()->json([

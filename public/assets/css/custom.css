@@ -57,6 +57,18 @@ th.sorting_asc{
 #spancheck,.assign-show,.card-body.custom_body_card .dt-buttons.btn-group.flex-wrap,.card.main-table-card div#pricing-datatable_wrapper div#pricing-datatable_filter label,.dropdown-divider,.login-form .blank-label,.login-form .custom-control-label::before,.login-form input,.notification-list .noti-title,.shows,.upload_box .dropify-wrapper .dropify-clear span{
     display:none
 }
+body .agent_tabel_block th.sorting_asc, .agent_tabel_block td.sorting_1 {
+    width: 90px !important;
+}
+body th.sorting_asc, td.sorting_1 {
+    padding-left: 8px !important;
+    width: 30px !important;
+    min-width: 30px !important;
+}
+body #pricing-datatable_wrapper th.sorting_asc, #pricing-datatable_wrapper td.sorting_1{
+    width: 100px !important;
+    min-width: 100px !important;
+}
 .select2-container--default .select2-selection--multiple .select2-selection__choice{
     padding:0 10px 0 20px!important
 }
@@ -295,6 +307,11 @@ body.dark.modal-open .dropdown.bootstrap-select button.btn.dropdown-toggle.btn-l
 }
 .dataTables_wrapper .inner-div:last-child{
     margin-left:-5px
+}
+.dataTables_wrapper .form-ul {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
 }
 .dataTables_wrapper .inner-div{
     vertical-align:middle;
