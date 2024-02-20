@@ -3,7 +3,7 @@ namespace App\Traits;
 use DB;
 use Illuminate\Support\Collection;
 use Log;
-use App\Model\{ChatSocket, Client, Agent, ClientPreference, DistanceWisePricingRule, DriverGeo,Order,Task,OrderAdditionData, PricingRule, DriverHomeAddress, Location,Team,LocationDistance,AgentLog,Countries};
+use App\Model\{ChatSocket, Client, Agent, ClientPreference, DistanceWisePricingRule, DriverGeo,Order,Task,OrderAdditionData, PricingRule, DriverHomeAddress, Location,Team,LocationDistance,AgentLog,Countries,AgentsTag};
 use Illuminate\Support\Facades\Config;
 use PhpParser\Node\Stmt\Else_;
 use App\Model\Timezone;
@@ -77,12 +77,28 @@ trait GlobalFunction{
             }
 
      
+            if (!empty($agent_tag)) {
 
-            if($agent_tag !='')
-            {
-                $geoagents_ids = $geoagents_ids->whereHas('agent.tags', function($q) use ($agent_tag){
-                    $q->where('name', '=', $agent_tag);
-                });
+                if (is_array($agent_tag)) {
+
+                    $agents = AgentsTag::whereIn('tag_id', $agent_tag)->pluck('agent_id')->toArray();
+
+                } else {
+
+                    // Case 2: $agent_tag is a string
+
+                    $agents = AgentsTag::whereHas('tags', function ($qry) use ($agent_tag) {
+
+                        $qry->where('name', 'LIKE', '%' . $agent_tag . '%');
+
+                    })->pluck('agent_id')->toArray();
+
+                }
+
+                $geoagents_ids =  DriverGeo::where('geo_id', $geo)->whereIn('driver_id', $agents);
+
+                
+
             }
 
             $order = Order::find($order_id);
