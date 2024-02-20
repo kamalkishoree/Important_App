@@ -76,12 +76,14 @@ trait GlobalFunction{
                 });
             }
 
-     
+            $agents = [];
             if (!empty($agent_tag)) {
 
                 if (is_array($agent_tag)) {
 
-                    $agents = AgentsTag::whereIn('tag_id', $agent_tag)->pluck('agent_id')->toArray();
+                    $agents = AgentsTag::whereIn('tag_id', $agent_tag)->whereHas('agent',function($qry){
+                        $qry->where('is_available',1);
+                    })->pluck('agent_id')->toArray();
 
                 } else {
 
@@ -91,10 +93,13 @@ trait GlobalFunction{
 
                         $qry->where('name', 'LIKE', '%' . $agent_tag . '%');
 
+                    })->whereHas('agent',function($qry){
+                        $qry->where('is_available',1);
                     })->pluck('agent_id')->toArray();
 
                 }
-
+                
+                
                 $geoagents_ids =  DriverGeo::where('geo_id', $geo)->whereIn('driver_id', $agents);
 
                 
