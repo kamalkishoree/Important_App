@@ -21,7 +21,15 @@ Route::get('hitevent', function (Request $request) {
 	event(new \App\Events\agentLogFetch());
 	dd("Event successfull");
 });
+Route::get('/t', function () {
+	//$data =[];
+	$data = ['event_type'=>'agent_status_update','lat' => 25.2138, 'lng'=> 75.8648,'name'=>'Gurvinder','agent_id'=>720956,'is_available'=>1,'is_busy'=>0,'id'=>47];
+	//$data['event_type'] = 'agent_log';
 
+
+	event(new \App\Events\SendMessage($data));
+	dd('Event Run Successfully.');
+});
 Route::get('/switch/language', function (Request $request) {
 	if ($request->lang) {
 		session()->put("applocale", $request->lang);
@@ -132,7 +140,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::get('/order-details/tracking/{clientcode}/{order_id}', 'TrackingController@OrderTrackingDetail')->name('order.tracking.detail');
 			Route::get('/order-cancel/tracking/{clientcode}/{order_id}', 'TrackingController@orderCancelFromOrder')->name('order.cancel.from_order');
 			Route::get('/order/driver-rating/{clientcode}/{order_id}', 'TrackingController@DriverRating')->name('order.driver.rating');
-			Route::get('/order/form-attribute/{clientcode}/{order_id}', 'TrackingController@OrderFormAttribute')->name('order.tracking');
+			Route::get('/order/form-attribute/{clientcode}/{order_id}', 'TrackingController@OrderFormAttribute');
 			Route::get('/order/driver_additional_rating/{clientcode}/{order_id}', 'TrackingController@OrderRatingform')->name('order.driverAdditional.rating');
 			Route::post('/order/submit_driver_additional_rating/{clientcode}/{order_id}', 'TrackingController@OrderRatingSubmit')->name('submit.driverAdditional.rating');
 			// Create agent connected account stripe
@@ -158,6 +166,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 		Route::any('payment/vnpay/api',    'VnpayController@vnpay_respontAPP')->name('vnpay_webview');
 		Route::get('driver/wallet/refreshBalance/{id?}', 'AgentController@refreshWalletbalance')->name('driver.wallet.refreshBalance');
 		Route::get('api_documentation', 'DashBoardController@api_documentation');
+		Route::get('getlogs', 'DashBoardController@GetAgentLogs');
 		Route::group(['middleware' => ['auth:client'], 'prefix' => '/'], function () {
 
 			Route::post('rating_type/create', 'Rating\RatingTypeController@store')->name('rating_type.create');
@@ -382,6 +391,10 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 			Route::get('general/slot/get', 'AgentSlotController@getGeneralSlot')->name('general.slot.list');
 			Route::post('general/slot/save', 'AgentSlotController@saveGeneralSlot')->name('general.slot.save');
 			Route::get('general/slot/destroy/{id}', 'AgentSlotController@destroyGeneralSlot')->name('vendor_city.destroy');
+
+			///
+			Route::post('dashboard/teamsData', 'DashBoardController@dashboardTeamData')->name('dashboard.teamsdata');
+			Route::post('dashboard/ordersData', 'DashBoardController@dashboardOrderData')->name('dashboard.orderdata');
 
 			Route::prefix('attribute')->group(function () {
                 Route::name('attribute.')->group(function () {

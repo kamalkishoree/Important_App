@@ -21,7 +21,9 @@ trait ClientPreferenceManager
         'is_attendence',
         'idle_time',
         'reffered_to_amount',
-        'reffered_by_amount'
+        'reffered_by_amount',
+        'refferel_to_agent_amount',
+        'refferel_by_agent_amount',
     ];
 
     /**
