@@ -181,7 +181,7 @@
                                     @endphp
 
                                     <div
-                                        class="col-xl-12 agent_boxes team_{{ $agent->team_id ?? 0 }} agent_{{ $agent->id }} {{ $val == 'checked' ? 'selected' : '' }}">
+                                        class="col-xl-12 agent_boxes team_{{ $agent->team_id ?? 0 }} agent_{{ $agent->id }} {{ $val == 'checked' ? 'checked' : '' }}">
                                         <div class="boxes card-box mb-2">
                                             <div class="custom-control custom-checkbox">
                                                 <div class="row">
