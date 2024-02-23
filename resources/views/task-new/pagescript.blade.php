@@ -46,6 +46,7 @@
     }
 
     $(".addTaskModal").click(function (e) {
+        
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
@@ -161,7 +162,8 @@
                 id: ids
             },
             success: function(data) {
-                var array = data;
+                var customerdata = data.customer;
+                var array = data.location;
                 
                 jQuery.each(array, function(i, val) {
                     $(".withradio").append(

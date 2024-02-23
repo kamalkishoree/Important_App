@@ -10,13 +10,15 @@ use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Traits\ApiResponser;
+use Illuminate\Support\Facades\Storage;
 // use App\Http\Traits\ToasterResponser;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\AgentPayoutRequestListExport;
 use App\Http\Controllers\{BaseController, StripeGatewayController};
+use App\Http\Controllers\Api\RazorpayGatewayController;
 use App\Traits\agentEarningManager;
-use App\Model\{Client, ClientPreference, User, Agent, Order, PaymentOption, PayoutOption, AgentPayout, AgentBankDetail};
-
+use App\Model\{Client, ClientPreference, User, Agent, Order, PaymentOption, PayoutOption, AgentPayout, AgentBankDetail,AgentCashCollectPop};
+use Illuminate\Support\Facades\Validator;
 class AgentPayoutController extends BaseController{
     use ApiResponser;
     // use ToasterResponser;
@@ -86,7 +88,7 @@ class AgentPayoutController extends BaseController{
 
 
     public function agentPayoutRequests(Request $request)
-    {        
+    {
         $user = Auth::user();
         $total_order_value = Order::orderBy('id','desc');
         if ($user->is_superadmin == 0 && $user->all_team_access == 0) {
@@ -105,10 +107,9 @@ class AgentPayoutController extends BaseController{
         $completed_payout_count = $completed_payouts->count();
         $failed_payout_count = $failed_payouts->count();
         $payout_options = PayoutOption::where('status', 1)->get();
-        $preferences = ClientPreference::with('currency')->select('currency_id')->where('id', 1)->first();
+        $preferences = ClientPreference::with('currency')->where('id', 1)->first();
         $currency_symbol = $preferences->currency->symbol ?? '$';
-
-        return view('agent.payout-requests')->with(['total_order_value' => number_format($total_order_value, 2), 'pending_payout_value'=>$pending_payout_value, 'completed_payout_value'=>$completed_payout_value, 'pending_payout_count'=>$pending_payout_count, 'completed_payout_count'=>$completed_payout_count, 'failed_payout_count'=>$failed_payout_count, 'payout_options'=>$payout_options, 'currency_symbol'=>$currency_symbol]);
+        return view('agent.payout-requests')->with(['total_order_value' => number_format($total_order_value, 2), 'preferences' => $preferences, 'pending_payout_value'=>$pending_payout_value, 'completed_payout_value'=>$completed_payout_value, 'pending_payout_count'=>$pending_payout_count, 'completed_payout_count'=>$completed_payout_count, 'failed_payout_count'=>$failed_payout_count, 'payout_options'=>$payout_options, 'currency_symbol'=>$currency_symbol]);
     }
 
     public function agentPayoutRequestsFilter(Request $request){
@@ -136,7 +137,7 @@ class AgentPayoutController extends BaseController{
             $payout->agentName = $payout->agent ? $payout->agent->name : '';
             // $payout->requestedBy = ucfirst($payout->user->name);
             $payout->amount = $payout->amount;
-            $payout->type = __($payout->payoutOption->title);
+            $payout->type = __(optional($payout->payoutOption)->title);
             $payout->bank_account = $payout->agent_bank_detail_id ?? '';
         }
         return Datatables::of($vendor_payouts)
@@ -158,27 +159,27 @@ class AgentPayoutController extends BaseController{
             $user = Auth::user();
             $id = $request->payout_id;
             $payout_option_id = $request->payout_option_id;
-          
+
             $payout = AgentPayout::with(['payoutBankDetails'=> function($q){
                 $q->where('status', 1);
             }])->where('id', $id)->first();
-          
+
             $request->request->add(['agent_id' => $payout->agent_id]);
-            
+
             $agent = Agent::where('id', $payout->agent_id)->where('is_approved', 1)->first();
             if(!$agent){
-                return Redirect()->back()->with('error', __('This Agent is not approved!'));
+                return Redirect()->back()->with('error', __('This '.getAgentNomenclature().' is not approved!'));
             }
-            
+
             $agent_account = $payout->payoutBankDetails->first() ? $payout->payoutBankDetails->first()->beneficiary_account_number : '';
             $agent_id = $agent->id;
-            
 
-            $available_funds = agentEarningManager::getAgentEarning($payout->agent_id, 1);
 
-            if($request->amount > $available_funds){
-                return Redirect()->back()->with('error', __('Payout amount is greater than agent available funds'));
-            }
+            // $available_funds = agentEarningManager::getAgentEarning($payout->agent_id, 1);
+
+            // if($request->amount > $available_funds){
+            //     return Redirect()->back()->with('error', __('Payout amount is greater than '.getAgentNomenclature().' available funds'));
+            // }
 
             $payout_option = '';
             if($payout_option_id > 0){
@@ -193,6 +194,15 @@ class AgentPayoutController extends BaseController{
                     return Redirect()->back()->with('error', __($response->message));
                 }
                 $request->request->add(['transaction_id' => $response->data]);
+            }elseif($payout_option_id == 3){
+                //Razorpay
+                $razorpayController = new RazorpayGatewayController();
+                $request->request->add(['aid' => $agent_id]);
+                $response = $razorpayController->razorpay_complete_funds_request($request)->getData();
+                if($response->status != '200'){
+                    return Redirect()->back()->with('error', $response->message);
+                }
+                $request->request->add(['transaction_id' => $response->data->id]);
             }
 
             // update payout request
@@ -221,7 +231,10 @@ class AgentPayoutController extends BaseController{
                     $wallet->forceWithdrawFloat($debit_amount, $meta);
                 }
             }
-            
+            if($payout->order_id !=''){
+                Order::where('id',$payout->order_id)->update(['is_comm_settled'=>2]);
+            }
+
             return Redirect()->back()->with('success', __('Payout has been completed successfully'));
         }
         catch(Exception $ex){
@@ -256,7 +269,7 @@ class AgentPayoutController extends BaseController{
                 $payout = AgentPayout::with(['payoutBankDetails'=> function($q){
                     $q->where('status', 1);
                 }])->where('id', $pay_id)->first();
-                
+
                 $agent = Agent::where('id', $payout->agent_id)->where('is_approved', 1)->first();
                 $credit = $agent->agentPayment->sum('cr');
                 $debit = $agent->agentPayment->sum('dr');
@@ -290,7 +303,7 @@ class AgentPayoutController extends BaseController{
                     $wallet->forceWithdrawFloat($debit_amount, [$custom_meta]);
                 }
             }
-            
+
             DB::commit();
             return $this->success('', __('Payout has been completed successfully'), 201);
         }
@@ -333,4 +346,6 @@ class AgentPayoutController extends BaseController{
             return $this->error($ex->getMessage(), $ex->getCode());
         }
     }*/
+
+
 }

@@ -64,7 +64,7 @@ body {
   width: 240px;
   background: #ffffff;
   bottom: 0;
-  padding: 20px 0;
+  padding: 10px 0;
   position: fixed;
   transition: all 0.1s ease-out;
   top: 70px;
@@ -180,7 +180,7 @@ li.menuitem-active > a:not(.collapsed) > span.menu-arrow {
 }
 
 body[data-sidebar-size=condensed] .logo-box {
-  width: 70px !important;
+  width: 60px !important;
 }
 body[data-sidebar-size=condensed] .logo span.logo-lg {
   display: none;
@@ -194,10 +194,10 @@ body[data-sidebar-size=condensed] .left-side-menu {
   width: 70px !important;
   z-index: 5;
 }
-body[data-sidebar-size=condensed] .left-side-menu .simplebar-mask,
+/* body[data-sidebar-size=condensed] .left-side-menu .simplebar-mask,
 body[data-sidebar-size=condensed] .left-side-menu .simplebar-content-wrapper {
   overflow: visible !important;
-}
+} */
 body[data-sidebar-size=condensed] .left-side-menu .simplebar-scrollbar {
   display: none !important;
 }
@@ -324,9 +324,9 @@ body[data-sidebar-size=condensed] .user-box {
 }
 
 @media (min-width: 768px) {
-  body[data-sidebar-size=condensed]:not([data-layout=compact]) {
+  /* body[data-sidebar-size=condensed]:not([data-layout=compact]) {
     min-height: 1750px;
-  }
+  } */
 }
 @media (max-width: 767.98px) {
   .pro-user-name {
@@ -647,13 +647,13 @@ body[data-sidebar-icon=twotones] #sidebar-menu > ul > li > a svg {
 }
 
 .logo-box {
-  height: 70px;
+  height: 60px;
   width: 240px;
   float: left;
   transition: all 0.1s ease-out;
 }
 .logo-box .logo {
-  line-height: 70px;
+  line-height: 60px;
 }
 
 .logo-light {
@@ -671,7 +671,7 @@ body[data-sidebar-icon=twotones] #sidebar-menu > ul > li > a svg {
   position: fixed;
   left: 0;
   right: 0;
-  height: 70px;
+  height: 60px;
   z-index: 1001;
   /* Search */
 }
@@ -683,9 +683,9 @@ body[data-sidebar-icon=twotones] #sidebar-menu > ul > li > a svg {
   color: rgba(255, 255, 255, 0.6);
   min-width: 32px;
   display: block;
-  line-height: 70px;
+  line-height: 60px;
   text-align: center;
-  max-height: 70px;
+  max-height: 60px;
 }
 .navbar-custom .dropdown.show .nav-link {
   background-color: rgba(255, 255, 255, 0.05);
@@ -749,8 +749,8 @@ body[data-sidebar-icon=twotones] #sidebar-menu > ul > li > a svg {
   border: none;
   color: #fff;
   display: inline-block;
-  height: 70px;
-  line-height: 70px;
+  height: 60px;
+  line-height: 60px;
   width: 60px;
   background-color: transparent;
   font-size: 24px;
@@ -849,7 +849,7 @@ body[data-sidebar-icon=twotones] #sidebar-menu > ul > li > a svg {
 
 @media (max-width: 991.98px) {
   .logo-box {
-    width: 70px !important;
+    width: 60px !important;
     padding-right: 0 !important;
   }
   .logo-box .logo-lg {
@@ -978,7 +978,7 @@ body[data-layout-mode=horizontal] .logo-box {
 .page-title-box .page-title {
   font-size: 1.25rem;
   margin: 0;
-  line-height: 75px;
+  line-height: 50px;
   color: #323a46;
 }
 .page-title-box .page-title-right {
@@ -994,8 +994,9 @@ body[data-layout-mode=horizontal] .logo-box {
     display: block;
     white-space: nowrap;
     text-overflow: ellipsis;
+    margin-left: 40px;
     overflow: hidden;
-    line-height: 70px;
+    line-height: 50px;
   }
   .page-title-box .breadcrumb {
     display: none;

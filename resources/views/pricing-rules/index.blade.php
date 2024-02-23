@@ -11,7 +11,7 @@
 
     <link href="{{ asset('assets/libs/dropzone/dropzone.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('assets/libs/dropify/dropify.min.css') }}" rel="stylesheet" type="text/css" />
-    <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.6/css/intlTelInput.css'>
+    <link rel="stylesheet" href="{{ asset('telinput/css/intlTelInput.css') }}" type="text/css">
     <link href="{{ asset('assets/libs/nestable2/nestable2.min.css') }}" rel="stylesheet" type="text/css" />
     <style>
         // workaround
@@ -100,7 +100,7 @@
         </div> --}}
         
         <div class="col-12">
-            <div class="card">
+            <div class="card main-table-card">
                 <div class="card-body">
                     <div class="row mb-2">
                         <div class="col-sm-8">
@@ -114,16 +114,12 @@
                         </div>
                         <div class="col-sm-4 text-right">
                             <button type="button" class="btn btn-blue waves-effect waves-light openModal" data-toggle="modal" data-target="" data-backdrop="static" data-keyboard="false"><i class="mdi mdi-plus-circle mr-1"></i> {{__("Add Pricing Rules")}}</button>
-
-                            <!--<a href="{{ route('pricing-rules.create') }}"
-                                class="btn btn-blue waves-effect waves-light"><i class="mdi mdi-plus-circle mr-1"></i>
-                                Add Pricing Rules</a> -->
+                            <input type="hidden" value="0" id="option-check">
                         </div>
-
                     </div>
 
                     <div class="table-responsive">
-                        <table class="table table-striped dt-responsive nowrap w-100" id="pricing-datatable">
+                        <table class="table table-striped dt-responsive nowrap w-100 pricing-rules" id="pricing-datatable">
                             <thead>
                                 <tr>
                                     <th>{{__("Name")}}</th>
@@ -211,7 +207,7 @@
 <script src="{{ asset('assets/libs/dropify/dropify.min.js') }}"></script>
 <script src="{{ asset('assets/js/pages/form-fileuploads.init.js') }}"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/9.0.10/js/intlTelInput.js"></script>
+<script src="{{ asset('telinput/js/intlTelInput.js') }}"></script>
 
 <script src="{{asset('assets/libs/mohithg-switchery/mohithg-switchery.min.js')}}"></script>
 <script src="{{ asset('assets/libs/datatables/datatables.min.js') }}"></script>
@@ -222,9 +218,9 @@
 
 <script>
 
-    $(document).on('click', '.selectpicker', function( event ) {
+    /* $(document).on('click', '.selectpicker', function( event ) {
         event.stopPropagation();
-    }); 
+    });  */
 
 
     $(document).ready(function() {
@@ -240,7 +236,11 @@
                     },
                     searchPlaceholder: "{{__('Search')}}",
                     'loadingRecords': '&nbsp;',
-                    'processing': '<div class="spinner"></div>'
+                    //'processing': '<div class="spinner"></div>'
+                    'processing':function(){
+                        spinnerJS.showSpinner();
+                        spinnerJS.hideSpinner();
+                    }
                 },
             });
     });
@@ -254,7 +254,7 @@
         $('.digital-clock1').text("Current Time: "+date) 
     }
 
-    function runPicker(){
+    function runPicker1(){
         $('#geo_id, #team_id, #team_tag_id, #driver_tag_id, #geo_id_edit, #team_id_edit, #team_tag_id_edit, #driver_tag_id_edit').select2({
             placeholder: "Select an option",
             allowClear: true
@@ -334,7 +334,8 @@
             backdrop: 'static',
             keyboard: false
         });
-        runPicker();
+        runPicker1();
+        $('#option-check').val('1');
     });
 
     // click event of add new time frame button
@@ -388,7 +389,7 @@
     });
 
     $(".editIcon").click(function (e) {
-
+        $('#option-check').val(0);
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
@@ -417,7 +418,7 @@
                     elems.forEach(function(html) {
                     var switchery =new Switchery(html);
                 });
-                runPicker();
+                runPicker1();
 
                 $(document).on('click', '.add_edit_sub_pricing_row', function(){
                     var rowid = $(this).attr("data-id");

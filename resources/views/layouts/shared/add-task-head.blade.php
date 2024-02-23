@@ -1,275 +1,437 @@
 <style>
-        #adds {
-            margin-bottom: 14px;
-        }
+#adds {
+	margin-bottom: 14px;
+}
 
-        .shows {
-            display: none;
-        }
+.shows {
+	display: none;
+}
 
-        .rec {
-            margin-bottom: 7px;
-        }
+.rec {
+	margin-bottom: 7px;
+}
 
-        .needsclick {
+.needsclick {
+	margin-left: 27%;
+}
 
-            margin-left: 27%;
-        }
+.padd {
+	padding-left: 9% !important;
+}
 
-        .padd {
-            padding-left: 9% !important;
-        }
+.newchnage {
+	margin-left: 27% !important;
+}
 
-        .newchnage {
-            margin-left: 27% !important;
-        }
+.address {
+	margin-bottom: 6px;
+}
 
-        .address {
-            margin-bottom: 6px
-        }
+.tags {
+	
+}
 
-        .tags {
+#typeInputss {
+	overflow-y: auto;
+	overflow-x: hidden;
+	height: 200px;
+	/* display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column; */
+}
 
-        }
+.upload {
+	margin-bottom: 20px;
+	margin-top: 10px;
+}
 
-        #typeInputss {
-            overflow-y: auto;
-            overflow-x: hidden;
-            height: 130px;
-            /* display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column; */
-        }
+.span1 {
+	color: #ff0000;
+}
 
-        .upload {
-            margin-bottom: 20px;
-            margin-top: 10px;
+.check {
+	
+}
 
-        }
+.newcheck {
+	margin-left: -54px;
+}
 
-        .span1 {
-            color: #ff0000;
-        }
+.upside {
+	margin-top: -10px;
+}
 
-        .check {
+.newgap {
+	margin-top: 11px !important;
+}
 
-        }
+.append {
+	margin-bottom: 15px;
+}
 
-        .newcheck {
-            margin-left: -54px;
-        }
+.spanbold {
+	font-weight: bolder;
+}
 
-        .upside {
-            margin-top: -10px;
-        }
+.copyin {
+	background-color: rgb(148 148 148/ 11%);
+	margin-top: 10px;
+}
 
-        .newgap {
-            margin-top: 11px !important;
-        }
+hr.new3 {
+	border-top: 1px dashed white;
+	margin: 0 0 .5rem 0;
+}
 
+#spancheck {
+	display: none;
+}
 
+.imagepri {
+	min-width: 50px;
+	height: 50px;
+	width: 50px;
+	border-style: groove;
+	margin-left: 5px;
+	margin-top: 5px;
+}
 
-        .append {
-            margin-bottom: 15px;
-        }
+.withradio {
+	
+}
 
-        .spanbold {
-            font-weight: bolder;
-        }
+.showsimage {
+	margin-top: 31px;
+}
 
-        .copyin {
-            background-color: rgb(148 148 148 / 11%);
-            margin-top: 10px;
+.showshadding {
+	margin-left: 98px;
+}
 
+.newchnageimage {
+	
+}
 
-        }
-        .copyin1 {
-            background-color: rgb(148 148 148 / 11%);
+.showsimagegall {
+	margin-top: 20px;
+}
 
-        }
-        hr.new3 {
-         border-top: 1px dashed white;
-         margin: 0 0 .5rem 0;
-       }
-       #spancheck{
-           display: none;
-       }
-       .imagepri{
-        min-width: 50px;
-           height: 50px;
-           width: 50px;
-           border-style: groove;
-           margin-left: 5px;
-           margin-top: 5px;
-       }
-       .withradio{
+.imagepri_wrap {
+	position: relative;
+}
 
+button.close.imagepri_close {
+	position: absolute;
+	top: -7px;
+	right: 1px;
+	background-color: red;
+	border-radius: 50%;
+	padding: 0px 3px;
+	font-size: 14px;
+	color: white;
+}
 
-       }
-       .showsimage{
-        margin-top: 31px;
-       }
-       .showshadding{
-        margin-left: 98px;
-       }
-       .newchnageimage{
-       }
-       .showsimagegall{
-        margin-top: 20px;
-       }
-       .imagepri_wrap {
-            position: relative;
-        }
-        button.close.imagepri_close {
-            position: absolute;
-            top: -7px;
-            right: 1px;
-            background-color: red;
-            border-radius: 50%;
-            padding: 0px 3px;
-            font-size: 14px;
-            color: white;
-        }
-       .allset{
-           margin-left: 9px !important;
-           margin-right: 9px !important;
-           padding-top: 10px;
-       }
-       .inactiveLink {
-            pointer-events: none;
-            cursor: default;
-        }
-       .hidealloction{
-           display: none;
-       }
-       .ui-menu.ui-autocomplete { z-index: 9000 !important; }
+.allset {
+	margin-left: 9px !important;
+	margin-right: 9px !important;
+	padding-top: 10px;
+}
 
-  .pac-container, .pac-container .pac-item { z-index: 9999 !important; }
+.inactiveLink {
+	pointer-events: none;
+	cursor: default;
+}
+
+.hidealloction {
+	display: none;
+}
+
+.ui-menu.ui-autocomplete {
+	z-index: 9000 !important;
+}
+
+.pac-container, .pac-container .pac-item {
+	z-index: 9999 !important;
+}
+
+.alTaskType {
+	background-color: #F4F3FD;
+	border: 1px solid transparent;
+	border-radius: 7px;
+}
+
+.alTaskType.active {
+	background-color: #FEE9DB;
+	border: 1px solid #FA6400;
+}
+
+.alTaskType input, .alTaskType textarea, .alTaskType select {
+	background-color: transparent;
+	padding: 6px 10px;
+	border: 1px solid #d1d1d1;
+	border-radius: 5px;
+}
+
+.border-right {
+	border-right: 1px dashed #d1d1d1 !important;
+}
+
+.alCol-12 {
+	-ms-flex: 0 0 100%;
+	flex: 0 0 100%;
+	max-width: 100%;
+}
+
+.alCol-6 {
+	-ms-flex: 0 0 50%;
+	flex: 0 0 50%;
+	max-width: 50%;
+}
+
+.alCol-12.mainaddress.col-8 .addressDetails .form-group.col-6 {
+	-ms-flex: 0 0 50%;
+	flex: 0 0 50%;
+	max-width: 50%;
+}
+
+.mainaddress.col-8 .addressDetails .form-group.col-6 {
+	-ms-flex: 0 0 100%;
+	flex: 0 0 100%;
+	max-width: 100%;
+}
+
+.addressDetails {
+	-ms-flex: 0 0 50%;
+	flex: 0 0 50%;
+	max-width: 50%;
+}
+
+.alCol-12.mainaddress.col-8 .alContactOther .col-6 {
+	-ms-flex: 0 0 50%;
+	flex: 0 0 50%;
+	max-width: 50%;
+}
+
+.mainaddress.col-8 .alContactOther .col-6 {
+	-ms-flex: 0 0 100%;
+	flex: 0 0 100%;
+	max-width: 100%;
+}
+
+.mainaddress.col-8 .alContactOther .alRightBorder, .alCol-12.mainaddress.col-8 .alContactOther
+	{
+	border-right: 1px dashed transparent;
+}
+
+.alCol-12.mainaddress.col-8 .alContactOther .alRightBorder, .mainaddress.col-8 .alContactOther
+	{
+	border-right: 1px dashed #d1d1d1;
+}
+
+::-webkit-scrollbar {
+	width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+	background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+	background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+	background: #555;
+}
 </style>
-<div id="task-modal-header" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content" style="">
-            <div class="modal-header align-items-center border-0 mb-md-0 mb-3">
-                <h4 class="page-title m-0">{{__("Route")}}</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            </div>
-            <form id="taskFormHeader" method="post" enctype="multipart/form-data" action="{{ route('tasks.store') }}">
-                @csrf
-                <div class="modal-body p-14 pt-0" id="addCardBox">
-
-                </div>
-                <span class="show_all_error invalid-feedback"></span>
-                <div class="modal-footer justify-content-center">
-                     <a href="javascript: void(0);" class="btn btn-blue waves-effect waves-light submitTaskHeader"><span class="spinner-border spinner-border-sm submitTaskHeaderLoader" style="display:none;" role="status" aria-hidden="true"></span> <span id="submitTaskHeaderText">{{__("Submit")}}</span></a>
-                </div>
-            </form>
-        </div>
-    </div>
+<div id="task-modal-header" class="modal fade" tabindex="-1"
+	role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+	style="display: none; font-size: 14px;">
+	<div class="modal-dialog modal-dialog-top modal-xl">
+		<div class="modal-content" style="">
+			<div class="modal-header align-items-center border-0 mb-md-0">
+				<h4 class="page-title m-1">{{__("Add Route")}}</h4>
+				<button type="button" class="close" data-dismiss="modal"
+					aria-hidden="true">×</button>
+			</div>
+			<form id="taskFormHeader" method="post" enctype="multipart/form-data"
+				action="{{ route('tasks.store') }}">
+				@csrf
+				<div class="modal-body p-0" id="addCardBox"></div>
+				<span class="show_all_error invalid-feedback"></span>
+				<div class="modal-footer justify-content-center p-0">
+					<a href="javascript: void(0);"
+						class="btn btn-blue waves-effect waves-light submitTaskHeader"><span
+						class="spinner-border spinner-border-sm submitTaskHeaderLoader"
+						style="display: none;" role="status" aria-hidden="true"></span> <span
+						id="submitTaskHeaderText">{{__("Submit")}}</span></a>
+				</div>
+			</form>
+		</div>
+	</div>
 </div>
 
-<div id="show-map-Header" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-full-width">
-        <div class="modal-content">
+<div class="modal fade" id="addRouteModal" tabindex="-1" role="dialog"
+	aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel">Add Route</h5>
+				<button type="button" class="close" data-dismiss="modal"
+					aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body row justify-content-center">
+				<button type="button" class="btn btn-success addTaskModalHeader mr-3"
+					data-toggle="modal" data-dismiss="modal">Pick-Drop</button>
+				<a id="create-route" href="{{ route('create-product-route')}}"><button type="button"
+						class="btn btn-primary">Select Product</button></a>
 
-            <div class="modal-header border-0">
-                <h4 class="modal-title">{{__("Select Location")}}</h4>
-                <button type="button" class="close remove-modal-open" data-dismiss="modal" aria-hidden="true">×</button>
-            </div>
-            <div class="modal-body px-3 py-0">
 
-                <div class="row">
-                    <form id="task_form_header" action="#" method="POST" style="width: 100%">
-                        <div class="col-md-12">
-                            <div id="googleMapHeader" style="height: 500px; min-width: 500px; width:100%"></div>
-                            <input type="hidden" name="lat_input" id="lat_map_header" value="0" />
-                            <input type="hidden" name="lng_input" id="lng_map_header" value="0" />
-                            <input type="hidden" name="address_input" id="addredd_map_header" value="" />
-                            <input type="hidden" name="for" id="map_for_header" value="" />
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <div class="modal-footer border-0">
-                <button type="submit" class="btn btn-blue waves-effect waves-light selectMapOnHeader remove-modal-open">{{__("Ok")}}</button>
-                <!--<button type="Cancel" class="btn btn-blue waves-effect waves-light cancelMapLocation">cancel</button>-->
-            </div>
-        </div>
-    </div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
 </div>
-            @php
-                $style = "";
-                if(session('preferences.twilio_status') != 'invalid_key'){
-                        $style = "display:none;";
-                }
-            @endphp
-            {{-- <div class="row displaySettingsError" style="{{$style}}">
-                <div class="col-12">
-                    <div class="alert alert-danger excetion_keys" role="alert">
-                        @if(session('preferences.twilio_status') == 'invalid_key')
-                        <span><i class="mdi mdi-block-helper mr-2"></i> <strong>Twilio</strong> key is not valid</span> <br/>
-                        @endif
-                    </div>
-                </div>
 
+<div id="show-map-Header" class="modal fade" tabindex="-1" role="dialog"
+	aria-labelledby="myModalLabel" aria-hidden="true"
+	style="display: none;">
+	<div class="modal-dialog modal-xl">
+		<div class="modal-content">
 
-            </div> --}}
+			<div class="modal-header border-0">
+				<h4 class="modal-title">{{__("Select Location")}}</h4>
+				<button type="button" class="close remove-modal-open"
+					data-dismiss="modal" aria-hidden="true">×</button>
+			</div>
+			<div class="modal-body px-3 py-0">
 
+				<div class="row">
+					<form id="task_form_header" action="#" method="POST"
+						style="width: 100%">
+						<div class="col-md-12">
+							<div id="googleMapHeader"
+								style="height: 500px; min-width: 500px; width: 100%"></div>
+							<input type="hidden" name="lat_input" id="lat_map_header"
+								value="0" /> <input type="hidden" name="lng_input"
+								id="lng_map_header" value="0" /> <input type="hidden"
+								name="address_input" id="addredd_map_header" value="" /> <input
+								type="hidden" name="for" id="map_for_header" value="" />
+						</div>
+					</form>
+				</div>
+			</div>
+			<div class="modal-footer border-0">
+				<button type="submit"
+					class="btn btn-blue waves-effect waves-light selectMapOnHeader remove-modal-open">{{__("Ok")}}</button>
+				<!--<button type="Cancel" class="btn btn-blue waves-effect waves-light cancelMapLocation">cancel</button>-->
+			</div>
+		</div>
+	</div>
+</div>
+@php $style = ""; if(session('preferences.twilio_status') !=
+'invalid_key'){ $style = "display:none;"; } @endphp {{--
+<div class="row displaySettingsError" style="">
+	<div class="col-12">
+		<div class="alert alert-danger excetion_keys" role="alert">
+			@if(session('preferences.twilio_status') == 'invalid_key') <span><i
+				class="mdi mdi-block-helper mr-2"></i> <strong>Twilio</strong> key
+				is not valid</span> <br /> @endif
+		</div>
+	</div>
+</div>
+--}}
 <div class="row address" id="addHeader0" style="display: none;">
-    <input type="text" id="addHeader0-input" name="address" class="autocomplete form-control addHeader0-input" placeholder={{__("Address")}}>
-    <input type="hidden" name="latitude[]" id="addHeader0-latitude" value="0" class="cust_latitude" />
-    <input type="hidden" name="longitude[]" id="addHeader0-longitude" value="0" class="cust_longitude" />
+	<input type="text" id="addHeader0-input" name="address"
+		class="autocomplete form-control addHeader0-input" placeholder={{__("Address")}}>
+	<input type="hidden" name="latitude[]" id="addHeader0-latitude"
+		value="0" class="cust_latitude" /> <input type="hidden"
+		name="longitude[]" id="addHeader0-longitude" value="0"
+		class="cust_longitude" />
 </div>
-@php
-    $key    = session('preferences.map_key_1') != null ? session('preferences.map_key_1'):'kdsjhfkjsdhfsf';
-    $theme  = \App\Model\ClientPreference::where(['id' => 1])->first('theme');
+@php $key = session('preferences.map_key_1') != null ?
+session('preferences.map_key_1'):'kdsjhfkjsdhfsf'; $theme =
+\App\Model\ClientPreference::where(['id' => 1])->first('theme'); @endphp
+<link href="{{ asset('assets/libs/selectize/selectize.min.css') }}"
+	rel="stylesheet" type="text/css" />
 
-
-@endphp
-<link href="{{ asset('assets/libs/selectize/selectize.min.css') }}" rel="stylesheet" type="text/css" />
-
-<script src="{{ asset('assets/js/jquery-ui.min.js') }}" crossorigin="anonymous"></script>
+<script src="{{ asset('assets/js/jquery-ui.min.js') }}"
+	crossorigin="anonymous"></script>
 <link rel="stylesheet" href="{{ asset('assets/css/jquery-ui.css') }}">
-{{-- <script src='https://cdn.rawgit.com/pguso/jquery-plugin-circliful/master/js/jquery.circliful.min.js'></script> --}}
-{{-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB85kLYYOmuAhBUPd7odVmL6gnQsSGWU-4&libraries=places"></script>  --}}
+{{--
+<script
+	src='https://cdn.rawgit.com/pguso/jquery-plugin-circliful/master/js/jquery.circliful.min.js'></script>
+--}} {{--
+<script
+	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB85kLYYOmuAhBUPd7odVmL6gnQsSGWU-4&libraries=places"></script>
+--}}
 <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
 @if(\Route::current()->getName() == "tasks.show")
-<script src="https://maps.googleapis.com/maps/api/js?key={{Auth::user()->getPreference->map_key_1??''}}&libraries=places,drawing,geometry,visualization&v=weekly"></script>
+<script
+	src="https://maps.googleapis.com/maps/api/js?key={{Auth::user()->getPreference->map_key_1??''}}&libraries=places,drawing,geometry,visualization&v=weekly"></script>
 @else
-<script defer src="https://maps.googleapis.com/maps/api/js?key={{Auth::user()->getPreference->map_key_1??''}}&libraries=places,geometry,drawing,visualization&v=weekly"></script>
+<script defer
+	src="https://maps.googleapis.com/maps/api/js?key={{Auth::user()->getPreference->map_key_1??''}}&libraries=places,geometry,drawing,visualization&v=weekly"></script>
 @endif
 <script src="{{ asset('assets/libs/selectize/selectize.min.js') }}"></script>
 <script src="{{ asset('assets/libs/multiselect/multiselect.min.js') }}"></script>
-<script src="{{ asset('assets/libs/bootstrap-select/bootstrap-select.min.js') }}"></script>
-<script src="{{ asset('assets/libs/bootstrap-touchspin/bootstrap-touchspin.min.js') }}"></script>
-<script src="{{ asset('assets/libs/bootstrap-maxlength/bootstrap-maxlength.min.js') }}"></script>
+<script
+	src="{{ asset('assets/libs/bootstrap-select/bootstrap-select.min.js') }}"></script>
+<script
+	src="{{ asset('assets/libs/bootstrap-touchspin/bootstrap-touchspin.min.js') }}"></script>
+<script
+	src="{{ asset('assets/libs/bootstrap-maxlength/bootstrap-maxlength.min.js') }}"></script>
 <script src="{{asset('assets/libs/flatpickr/flatpickr.min.js')}}"></script>
-<script src="{{asset('assets/libs/bootstrap-colorpicker/bootstrap-colorpicker.min.js')}}"></script>
+<script
+	src="{{asset('assets/libs/bootstrap-colorpicker/bootstrap-colorpicker.min.js')}}"></script>
 <script src="{{asset('assets/libs/clockpicker/clockpicker.min.js')}}"></script>
-<script src="{{asset('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.js')}}"></script>
-
+<script
+	src="{{asset('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.js')}}"></script>
+<script src="{{asset('assets/libs/dropzone/dropzone.min.js')}}"></script>
+<script src="{{asset('assets/libs/dropify/dropify.min.js')}}"></script>
+<!-- <link -->
+<!-- rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.3/css/intlTelInput.css"> -->
+<!-- <script -->
+<!-- src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.3/js/intlTelInput.js"></script> -->
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.3/js/utils.js"></script> -->
 <!-- Page js-->
-<script src="{{asset('assets/js/pages/form-pickers.init.js')}}"></script>
+
 <script>
-// jQuery('.remove-modal-open').click(function(){
-//         jQuery('body').addClass('modal-open');
-//     });
-
     var theme      = {!!json_encode($theme)!!};
-
 
     var maoArray = {};
     var autoWrap = ['addHeader0'];
     var count = 1; editCount = 0; var a = 0; countZ = 1;
-   /* $('.openModal').click(function(){
-        $('#task-modal-header').modal({
-            //backdrop: 'static',
-            keyboard: false
-        });
-        autoWrap.push('addHeader1');
-        loadMap(autoWrap);
-    });*/
 
+    @if(Auth::user())
+    $(document).on("change",".admin_panel_theme", function(){
+        if($(this).prop('checked')){
+            var theme = 'dark';
+        }else{
+            var theme = 'light';
+        }
+        $.ajax({
+            url: "{{route('preference', Auth::user()->code)}}",
+            type: "POST",
+            data: {
+                theme: theme,
+                "_token": "{{ csrf_token() }}",
+            },
+            success: function(response) {
+                location.reload();
+            },
+        });
+
+    });
+    @endif
     $(document).ready(function(){
       loadMapHeader(autoWrap);
 
@@ -284,8 +446,6 @@
             enableTime: true,
             dateFormat: "Y-m-d H:i",
             minDate: "today",
-
-            //wrap:true,
         });
 
         $('.selectpicker').selectpicker();
@@ -293,9 +453,9 @@
 
     var latitudes = [];
     var longitude = [];
-
     $(".addTaskModalHeader").click(function (e) {
 
+        
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
@@ -303,7 +463,6 @@
         });
 
         autoWrap.indexOf('addHeader1') === -1 ? autoWrap.push('addHeader1') : '' ;
-        // console.log("exists");
         e.preventDefault();
 
         $.ajax({
@@ -312,10 +471,6 @@
             data: '',
             dataType: 'json',
             success: function (data) {
-
-                //$('.page-title1').html('Hello');
-                //console.log('data');
-
                 $('.submitTaskHeaderLoader').css('display', 'none');
                 $('#submitTaskHeaderText').text('Submit');
                 $('.submitTaskHeader').removeClass("inactiveLink");
@@ -324,54 +479,24 @@
 
                 $('#task-modal-header').find('.selectizeInput').selectize();
 
-                //$('#task-modal-header #selectize-optgroups').selectize();
-                //$('#task-modal-header #selectize-optgroups').selectize();
+                
+                $('.dropify').dropify();
+                $(".newcustomer").hide();
+                $(".searchshow").show();
+                $(".append").show();
+                $('.copyin').remove();
 
-                $(".shows").hide();
                 $(".addspan").hide();
                 $(".tagspan").hide();
                 $(".tagspan2").hide();
                 $(".searchspan").hide();
-                $(".appoint").hide();
                 $(".datenow").hide();
 
                 $(".pickup-barcode-error").hide();
                 $(".drop-barcode-error").hide();
                 $(".appointment-barcode-error").hide();
-                $("#AddressInput a").click(function() {
-                    $(".shows").show();
-                    $(".append").hide();
-                    $(".searchshow").hide();
-                    $('input[name=ids').val('');
-                    $('input[name=search').val('');
-                    $('.copyin').remove();
-                    autoWrap = ['addHeader0', 'addHeader1'];
-                    countZ = 1;
-                });
-                $("#Inputsearch a").click(function() {
-                    $(".shows").hide();
-                    $(".append").hide();
-                    $(".searchshow").show();
-                    $('.copyin').remove();
-                    autoWrap = ['addHeader0', 'addHeader1'];
-                    countZ = 1;
-                });
 
-                $("#nameInputHeader").keyup(function() {
-                    $(".shows").hide();
-                    $(".oldhide").show();
-                    $(".append").hide();
-                    $('input[name=ids').val('');
-                    $('.copyin').remove();
-                    autoWrap = ['addHeader0', 'addHeader1'];
-                    countZ = 1;
-                });
-
-                // $("#file").click(function() {
-                //     $('.showsimagegall').hide();
-                //     $('.imagepri').remove();
-
-                // });
+                $('.appoint').hide();
 
                 loadMapHeader(autoWrap);
                 searchRes();
@@ -380,13 +505,71 @@
                     keyboard: false
                 });
 
+               
                 runPicker();
+                phoneInput();
+                $('#task-modal-header .edit-icon-float-right').on('click', function() {
+                    $('#task-modal-header .meta_data_task_div').toggle();
+                    if($(this).find('i').hasClass('mdi mdi-chevron-down')){
+                        $(this).find('i').removeClass('mdi mdi-chevron-down');
+                        $(this).find('i').addClass('mdi mdi-chevron-up');
+                    }else{
+                        $(this).find('i').removeClass('mdi mdi-chevron-up');
+                        $(this).find('i').addClass('mdi mdi-chevron-down');
+                    }
+                });
+
+                
             },
             error: function (data) {
             }
         });
     });
-
+              /*   const phoneInputs = document.querySelectorAll(".phone_number");
+                  phoneInputs.forEach(phoneInitializer);
+                function phoneInitializer(element)
+                {
+                    let phone_number_code = window.intlTelInput(element, {
+                    separateDialCode: true,
+                    preferredCountries: ["{{getCountryCode()}}"],
+                    initialCountry: "{{getCountryCode()}}",
+                    hiddenInput: "full_number",
+                    utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.3/js/utils.js"
+                    });
+                    element.addEventListener("countrychange", function() {
+                    const dialCodeInput = element.nextElementSibling;
+                    dialCodeInput.value =phone_number_code.getSelectedCountryData().dialCode;
+                    });
+                }
+                function phoneInput() {
+                        let phone_number_intltel = window.intlTelInput(document.querySelector("#taskFormHeader .phone_number"),{
+                            separateDialCode: true,
+                            preferredCountries:["{{getCountryCode()}}"],
+                            initialCountry:"{{getCountryCode()}}",
+                            hiddenInput: "full_number",
+                            utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.3/js/utils.js"
+                        });
+                    console.log('hello');
+                    
+                        document.querySelector("#taskFormHeader .phone_number").addEventListener("countrychange", function() {
+                            $("#taskFormHeader #dialCode").val(phone_number_intltel.getSelectedCountryData().dialCode);
+                        });
+               }     */  
+    function phoneInput() {
+        //initialize intlTelInput
+        let phone_number_intltel = window.intlTelInput(document.querySelector("#taskFormHeader .phone_number"),{
+            separateDialCode: true,
+            preferredCountries:["{{getCountryCode()}}"],
+            initialCountry:"{{getCountryCode()}}",
+            hiddenInput: "full_number",
+            utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.3/js/utils.js"
+        });
+        document.querySelector("#taskFormHeader .phone_number").addEventListener("countrychange", function() {
+            $("#taskFormHeader #dialCode").val(phone_number_intltel.getSelectedCountryData().dialCode);
+        });
+    }
+   // phoneInput();
+         
     var CSRF_TOKEN = $("input[name=_token]").val();
 
     function searchRes(){
@@ -404,7 +587,6 @@
                     },
                     success: function(data) {
                         response(data);
-                        //console.log(data);
                     }
                 });
             },
@@ -420,6 +602,10 @@
 
         $("#task-modal-header #searchDriver").autocomplete({
             source: function(request, response) {
+                var vehicle_type = [];
+                $('.vehicle_type :selected').each(function(){
+                    vehicle_type.push($(this).val());
+                });
                 // Fetch data
                 $.ajax({
                     url: "{{ route('agent.search') }}",
@@ -427,7 +613,8 @@
                     dataType: "json",
                     data: {
                         _token: CSRF_TOKEN,
-                        search: request.term
+                        search: request.term,
+                        vehicle_type: vehicle_type
                     },
                     success: function(data) {
                         response(data);
@@ -438,7 +625,6 @@
                 // Set selection
                 $('#task-modal-header #searchDriver').val(ui.item.label); // display the selected text
                 $('#task-modal-header #agentid').val(ui.item.value); // save selected id to input
-                // $(".oldhide").hide();
                 return false;
             }
         });
@@ -455,28 +641,70 @@
                   id: ids
               },
               success: function(data) {
-                  var array = data;
-                  $('.withradio .append').remove();
-                  jQuery.each(array, function(i, val) {
-                      $(".withradio").append(
-                          '<div class="append"><div class="custom-control custom-radio count"><input type="radio" id="' + val.id + '" name="old_address_id" value="' + val.id + '" class="custom-control-input redio old-select-address callradio" data-srtadd="'+ val.short_name +'" data-flat_no="'+ val.flat_no +'"  data-adr="'+ val.address +'" data-lat="'+ val.latitude +'" data-long="'+ val.longitude +'" data-pstcd="'+ val.post_code +'" data-emil="'+ val.email +'" data-ph="'+ val.phone_number +'"><label class="custom-control-label" for="' + val.id + '"><span class="spanbold">' + val.short_name +
+                    var customerdata = data.customer;
+                    var array = data.location;
+
+                    var countrycode = customerdata.countrycode;
+                    $("#taskFormHeader").find("input[name='phone_number']").val(customerdata.phone_number);
+                    $("#taskFormHeader #dialCode").val(customerdata.dial_code);
+                  
+                    $("#taskFormHeader").find("input[name='email']").val(customerdata.email);
+                    
+                   
+                    $(".alTaskType").each(function(){
+                        if (!($(this).hasClass('is_warehouse_selected'))) {
+                            $(this).find('.withradio .append').remove();
+                        }
+                      });
+
+
+                    
+                    jQuery.each(array, function(i, val) {
+                    var countz = '';
+                    var rand =  Math.random().toString(36).substring(7);
+                   
+                    $(".withradio").each(function(){
+                        var count = parseInt(countz);if(isNaN(count)){count = 0;}
+
+                   
+                        var id = $(this).parent().closest('.alTaskType').hasClass('is_warehouse_selected');   
+                       if(!id){
+                        $(this).append(
+                          '<div class="append"><div class="custom-control custom-radio count"><input type="radio" id="' + (rand + count) + '" name="old_address_id' + countz + '" value="' + val.id + '" class="custom-control-input redio old-select-address callradio" data-srtadd="'+ val.short_name +'" data-flat_no="'+ val.flat_no +'"  data-adr="'+ val.address +'" data-lat="'+ val.latitude +'" data-long="'+ val.longitude +'" data-pstcd="'+ val.post_code +'" data-emil="'+ val.email +'" data-ph="'+ val.phone_number +'"><label class="custom-control-label" for="' + (rand + count) + '"><span class="spanbold">' + val.short_name +
                           '</span>-' + val.address +
                           '</label></div></div>');
+                        countz = count + 1;
+                        }
+                    });
                   });
+                  
+                    //getting instance of intlTelInput
+                    var input = document.querySelector("#taskFormHeader .phone_number");
+                    
+                    var iti = window.intlTelInputGlobals.getInstance(input);
+                    iti.setCountry(countrycode);
 
               }
           });
       }
       var post_count = 2;
+      var warehouse_count = 2;
+      var email_count = 2;
+      var phone_no_count = 2;
+      var address_count = 2;
+      var choose_warehouse_count = 2;
     $(document).on('click', '.subTaskHeader', function(){
-      var cur = countZ;
-      countZ = countZ + 1;
-      //console.log(countZ);
+        var cur = countZ;
+        countZ = countZ + 1;
         var $clone = $('.cloningDiv').clone();
         $clone.removeClass('cloningDiv');
         $clone.removeClass('copyin1');
         $clone.addClass('copyin');
+        $clone.addClass('warehouse_id_'+countZ);
+       
         $clone.addClass('repeated-block check-validation');
+
+        $clone.find('.selecttype').find("option").prop("disabled", false);
 
         $clone.find('.cust_add_div').prop('id', 'addHeader' + countZ);
         $clone.find('.cust_add').prop('id', 'addHeader' + countZ +'-input');
@@ -491,14 +719,7 @@
         var count1 = 1;
         $.each(inputid, function(index, elem){
 
-            var jElem = $(elem); // jQuery element
-            //var name = jElem.prop('id');
-
-            ////console.log(name + "-hello");
-            //name = rand;
-
-            //rand += count1;
-            ////console.log(name);
+            var jElem = $(elem);
             jElem.prop('id', rand+count1);
             jElem.prop('name', 'old_address_id' + cur);
             jElem.prop('checked', false);
@@ -509,13 +730,6 @@
         $.each(labels, function(index, elem){
 
             var jElem = $(elem); // jQuery element
-            //var name = jElem.prop('for');
-
-            ////console.log(name + "-bye");
-            //name = rand;
-
-            //name += count2;
-            ////console.log(name);
             jElem.prop('for', rand+count2);
             count2++;
         });
@@ -535,7 +749,6 @@
           $.each(address1, function(index, elem){
 
               var jElem = $(elem); // jQuery element
-              //jElem.prop('required', true);
           });
 
           var flatNo1 = $clone.find('.flat_no');
@@ -567,36 +780,79 @@
 
           var postcode1 = $clone.find('.postcode');
           $.each(postcode1, function(index, elem){
-            var jElem = $(elem)
+            var jElem = $(elem);
             var name = jElem.prop('id');
-            console.log(name);
             name = name.replace(/\d+/g, '');
             name = 'addHeader'+post_count+'-postcode';
             jElem.prop('id', name);
-            //   var jElem = $(elem); // jQuery element
-              //jElem.prop('required', true);
               post_count++;
-              console.log(post_count);
+             
+          });
+          var warehouse_clone = $clone.find('.warehouse');
+          $.each(warehouse_clone, function(index, elem){
+            var jElem = $(elem);
+            var name = jElem.prop('id');
+            name = name.replace(/\d+/g, '');
+            name = 'addHeader'+warehouse_count+'-warehouse';
+            jElem.prop('id', name);
+            jElem.attr('data-id', warehouse_count);
+            warehouse_count++;
+              
+          });
+          var address_email = $clone.find('.address_email');
+          $.each(address_email, function(index, elem){
+            var jElem = $(elem);
+            var name = jElem.prop('id');
+            name = name.replace(/\d+/g, '');
+            name = 'addHeader'+email_count+'-address_email';
+            jElem.prop('id', name);
+            jElem.attr('data-id', email_count);
+            email_count++;
+          });
+          var choose_warehouse = $clone.find('.choose_warehouse');
+          $.each(choose_warehouse, function(index, elem){
+            var jElem = $(elem);
+            jElem.attr('data-id', choose_warehouse_count);
+            choose_warehouse_count++;
+          });
+          var address_phone_number = $clone.find('.address_phone_number');
+          $.each(address_phone_number, function(index, elem){
+            var jElem = $(elem);
+            var name = jElem.prop('id');
+            name = name.replace(/\d+/g, '');
+            name = 'addHeader'+phone_no_count+'-address_phone_number';
+            jElem.prop('id', name);
+            jElem.attr('data-id', phone_no_count);
+            phone_no_count++;
+          });
+          var saved_address = $clone.find('.alsavedaddress');
+          $.each(saved_address, function(index, elem){
+            var jElem = $(elem);
+            jElem.find('.append').remove();
+            var name = jElem.prop('id');
+            name = name.replace(/\d+/g, '');
+            name = 'alsavedaddress'+address_count;
+            jElem.prop('id', name);
+            address_count++;
           });
 
+        $clone.find('.appoint').hide();
         $(document).find('#addSubFields').before($clone);
-        $('#addHeader'+countZ+' input[type="text"]').val('');
+        $clone.find('input[type="text"]').val('');
         autoWrap.indexOf('addHeader'+countZ) === -1 ? autoWrap.push('addHeader'+countZ) : console.log("exists");
           loadMapHeader(autoWrap);
+          $clone.find('input').click();
+          $clone.find('input[type="radio"]').prop('checked', false);
+          $clone.find('input[type="text"]').val('');
     });
 
     function loadMapHeader(autoWrap){
-       // console.log(autoWrap);
-
         $.each(autoWrap, function(index, name) {
             const geocoder = new google.maps.Geocoder;
 
-        //console.log(index+'--'+name);
             if($('#'+name).length == 0) {
-                //console.log('blank - ' + name);
                 return;
             }
-            //maoArray[name] = new google.maps.places.Autocomplete(('.form-control')[0], { types: ['geocode'] }); //console.log('hello');
             maoArray[name] = new google.maps.places.Autocomplete(document.getElementById(name+'-input'), { types: ['geocode'] });
 
             google.maps.event.addListener(maoArray[name], 'place_changed', function() {
@@ -611,12 +867,8 @@
                         const lat = results[0].geometry.location.lat();
                         const lng = results[0].geometry.location.lng();
                         const address = results[0].formatted_address;
-                        //console.log(name+'-input');
-                        // document.getElementById(name + '-input').value = address;
                         document.getElementById(name + '-latitude').value = lat;
                         document.getElementById(name + '-longitude').value = lng;
-                        // const postCode = results[0].address_components.find(addr => addr.types[0] === "postal_code").short_name;
-                        // document.getElementById(name + '-postcode').value = postCode;
                     }
                 });
             });
@@ -628,23 +880,38 @@
         $(this).closest(".copyin").remove();
     });
 
-    /*$(document).on('click', ".onedelete", function() {
+    $(document).on("click", "input[type='radio'].checkcustomer", function() {
 
-        $(this).closest(".copyin").remove();
+        var customerredio = $("#customerradio input[type='radio']:checked").val();
+        if(customerredio == 'existingcustomer') {
+            $(".newcustomer").hide();
+            $(".searchshow").show();
+            $(".append").show();
+            
+            autoWrap = ['addHeader0', 'addHeader1'];
+            countZ = 1;
+        }else{
+            $(".newcustomer").show();
+            $(".append").hide();
+            $(".searchshow").hide();
+            $('input[name=ids]').val('');
+            $('#taskFormHeader .phone_number').val('');
+            $('input[name=search]').val('');
+            $('#taskFormHeader .email').val('');
+            autoWrap = ['addHeader0', 'addHeader1'];
+            countZ = 1;
+        }
     });
 
-    subTaskHeader*/
 
-    $(document).on("click", "input[type='radio'].check", function() {
-
-          var dateredio = $("#dateredio input[type='radio']:checked").val();
-          if (dateredio == 'schedule') {
-            $(".datenow").show();
-          }else{
-              $(".datenow").hide();
-          }
-
-      });
+    $(document).on("click", "input[type='radio'].checkschedule", function() {
+        var dateredio = $("#dateredio input[type='radio']:checked").val();
+        if (dateredio == 'schedule') {
+        $(".datenow").show();
+        }else{
+            $(".datenow").hide();
+        }
+    });
 
 
       $(document).on('click', "#taskschedule", function() {
@@ -700,21 +967,27 @@
 
         if (cus_id == '') {
             if (name != '' && email != '' && phone_no != '') {
-
+                $(".searchspan").hide();
             } else {  err = 1;
                 $(".searchspan").show();
                 return false;
             }
+        }else{
+            $(".searchspan").hide();
         }
         var s_name = $("input[name='short_name[]']").val();
         var s_address = $("input[name='address[]']").val();
-        if ((!$("input[name='old_address_id']:checked").val()) && (s_address=="") ) {
-                err = 1;
-                $(".addspan").show();
-                return false;
+        var warehouse_id = $("select[name='warehouse_id[]']").val();
+        if(warehouse_id){
+            err = 0;
+            $(".addspan").hide();
         }
-
-
+        else if ((!$("input[name='old_address_id']:checked").val()) && (s_address=="")) {
+            err = 1;
+            $(".addspan").show();
+            return false;
+        }
+        
         $(".selecttype").each(function(){
             var taskselect              = $(this).val();
             var checkPickupBarcode      = $('#check-pickup-barcode').val();
@@ -734,29 +1007,26 @@
                 err = 1;
                 return false;
             }
-            // else{
-            //     $(this).closest('.check-validation').find('.pickup-barcode-error').hide();
-            //     $(this).closest('.check-validation').find('.drop-barcode-error').hide();
-            //     $(this).closest('.check-validation').find('.appointment-barcode-error').hide();
-            //     return true;
-            // }
+            
         });
 
 
-
-       //return false;
         var selectedVal = "";
         var selected = $("#typeInputss input[type='radio']:checked");
         selectedVal = selected.val();
-        //console.log(selectedVal);
-        if (typeof(selectedVal) == "undefined") {
-            var short_name = $("#task-modal-header input[name=short_name").val();
-            var address = $("#task-modal-header input[name=address]").val();
-            var post_code = $("#task-modal-header input[name=post_code]").val();
-            var cash_to_be_collected = $("#task-modal-header input[name=cash_to_be_collected]").val();
-            if (short_name != '' && address != '' && post_code != '' && cash_to_be_collected != '') {
 
-            } else {  err = 1;
+        if (typeof(selectedVal) == "undefined") {
+            var short_name = $("#task-modal-header input[name='short_name[]']").val();
+            var address = $("#task-modal-header input[name='address[]']").val();
+            var post_code = $("#task-modal-header input[name='post_code[]']").val();
+            var cash_to_be_collected = $("#task-modal-header input[name='cash_to_be_collected']").val();
+            if(warehouse_id){
+                err = 0;
+                $(".addspan").hide();
+            }else if (short_name != '' && address != '') {
+                
+            } else {  
+                err = 1;
                 $(".addspan").show();
                 return false;
             }
@@ -768,7 +1038,6 @@
 
             if( err == 0){
                 $('.submitTaskHeaderLoader').css('display', 'inline-block');
-                // $('#submitTaskHeaderText').text('Done');
                 $('.submitTaskHeader').addClass("inactiveLink");
 
                 var formData = new FormData(document.querySelector("#taskFormHeader"));
@@ -779,7 +1048,6 @@
 
 
     function TaskSubmit(data, method, url, modals) {
-    //alert(data);
     $.ajax({
         method: method,
         headers: {
@@ -792,21 +1060,21 @@
         success: function(response) {
             if(response.status == 'Success')
             {var color = 'green';var heading="Success!";}else{var color = 'red';var heading="Error!";}
-            $.toast({ 
+            $.toast({
             heading:heading,
-            text : response.message, 
-            showHideTransition : 'slide', 
-            bgColor : color,              
-            textColor : '#eee',            
-            allowToastClose : true,      
-            hideAfter : 5000,            
-            stack : 5,                   
-            textAlign : 'left',         
-            position : 'top-right'      
+            text : response.message,
+            showHideTransition : 'slide',
+            bgColor : color,
+            textColor : '#eee',
+            allowToastClose : true,
+            hideAfter : 5000,
+            stack : 5,
+            textAlign : 'left',
+            position : 'top-right'
             });
             if (response.status == 'Success') {
                     $("#task-modal-header .close").click();
-                    location.reload();
+                    location.href="/tasks";
             } else {
                 $("#task-modal-header .show_all_error.invalid-feedback").show();
                 $("#task-modal-header .show_all_error.invalid-feedback").text(response.message);
@@ -859,10 +1127,14 @@
 
         if (this.value == 3){
            $span = $(this).closest(".firstclone1").find(".appoint").show();
+           $(this).closest(".firstclone1").find(".warehouse-field").hide();
+           $(this).closest(".firstclone1").find(".vehicle_type").hide();
            //console.log($span);
         }
         else{
             $(this).closest(".firstclone1").find(".appoint").hide();
+            $(this).closest(".firstclone1").find(".warehouse-field").show();
+            $(this).closest(".firstclone1").find(".vehicle_type").show();
         }
     });
 
@@ -879,8 +1151,8 @@
     }
 
     function insertArrayToFiles(routefileListArray){
-        const dT = new ClipboardEvent('').clipboardData || new DataTransfer(); 
-        for (let file of routefileListArray) { 
+        const dT = new ClipboardEvent('').clipboardData || new DataTransfer();
+        for (let file of routefileListArray) {
             dT.items.add(file);
         }
         $('#file').prop("files",dT.files);
@@ -910,7 +1182,7 @@
             $('#imagePreview').append('<div class="imagepri_wrap mb-2" data-id="'+i+'"><img src="' + objectUrl + '" class="imagepri mr-2" /><button type="button" class="close imagepri_close" aria-hidden="true">×</button></div>');
             window.URL.revokeObjectURL(fileList[i]);
         }
-        
+
         reArrangeFileWrapIndexes();
     }
 
@@ -938,20 +1210,14 @@
 
             $( ".tags" ).removeClass("hidealloction");
             $( ".drivers" ).addClass("hidealloction");
-            // $(".tags").show();
-            // $(".drivers").hide();
         }
         if (radioValue == 'u') {
             $( ".tags" ).addClass("hidealloction");
             $( ".drivers" ).addClass("hidealloction");
-            // $(".tags").hide();
-            // $(".drivers").hide();
         }
         if (radioValue == 'm') {
             $( ".drivers" ).removeClass("hidealloction");
             $( ".tags" ).addClass("hidealloction");
-            // $(".drivers").show();
-            // $(".tags").hide();
         }
     });
 
@@ -1049,25 +1315,28 @@
     });
 
     $(document).on('click', '.selectMapOnHeader', function () {
-
+        
         var mapLat = document.getElementById('lat_map_header').value;
         var mapLlng = document.getElementById('lng_map_header').value;
         var mapFor = document.getElementById('map_for_header').value;
         var address = document.getElementById('addredd_map_header').value;
-        //console.log(mapLat+'-'+mapLlng+'-'+mapFor);
+        
         document.getElementById(mapFor + '-latitude').value = mapLat;
         document.getElementById(mapFor + '-longitude').value = mapLlng;
         document.getElementById(mapFor + '-input').value = address;
-
 
         $('#show-map-Header').modal('hide');
     });
 
 
-
-
-
-
+    $(document).on('click', '.alFormTaskType', function () {
+        $(".alTaskType").removeClass("active");
+        $(".mainaddress").addClass("alCol-12");
+        $(".alsavedaddress").hide();
+        $(this).closest('.alTaskType').find(".mainaddress").removeClass("alCol-12");
+        $(this).closest('.alTaskType').addClass("active");
+        $(this).closest('.alTaskType').find(".alsavedaddress").show();
+    });
 
     if(theme['theme'] == 'dark'){
 
@@ -1180,7 +1449,7 @@
     $('.onlynumber').keyup(function ()
         {
         this.value = this.value.replace(/[^0-9\.]/g,'');
-        });
+    });
 
 
 </script>

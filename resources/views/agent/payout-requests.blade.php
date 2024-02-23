@@ -1,4 +1,4 @@
-@extends('layouts.vertical', ['title' => Session::get('agent_name') ])
+@extends('layouts.vertical', ['title' => getAgentNomenclature() ])
 
 @section('css')
 <link href="{{ asset('assets/libs/select2/select2.min.css') }}" rel="stylesheet" type="text/css" />
@@ -118,10 +118,34 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
         </div>
         <div class="row">
             <div class="col-12">
-                <div class="card widget-inline">
+                <div class="card widget-inline main-card-header payout-switch">
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-sm-6 col-md-4 mb-3 mb-md-0">
+                            <div class="col-sm-4 col-md-3 mb-3 mb-md-0">
+                                <div class="text-center d-flex">
+                                    <form method="POST" id="form_auto_payout" action="{{route('preference', Auth::user()->code)}}">
+                                        @csrf
+                                        <input type="hidden" name="autopay_submit" id="autopay_submit" value="submit"/>
+                                    <!-- <div class="custom-control custom-switch mb-2">
+                                        <input type="checkbox" class="custom-control-input auto_payout" id="customSwitch" name="auto_payout" {{ (isset($preference) && $preference->auto_payout =="1")? "checked" : "" }}>
+                                        <label class="custom-control-label" for="customSwitch"></label>
+                                    </div> -->
+                                    <div class="mb-2">
+                                        <input type="checkbox" data-plugin="switchery" id="auto_payout" name="auto_payout" class="switchery" data-color="#039cfd" {{ (isset($preferences) && $preferences->auto_payout =="1")? "checked" : "" }}/>
+                                    </div>
+                                    <p class="text-muted font-15 mb-0">{{__("Auto Payout")}}</p>
+                                    </form>
+
+                                    @if(isset($preferences) && $preferences->auto_payout =="1")
+                                        <form method="POST" action="{{route('preference', Auth::user()->code)}}" class="d-flex">
+                                            @csrf
+                                            <input type="text" name="charge_percent_from_agent" id="" class="form-control" value="@if((isset($preferences->charge_percent_from_agent))){{$preferences->charge_percent_from_agent}}@endif" placeholder="Commission Percentage">
+                                            <button class="btn btn-blue ml-2" type="submit">Save</button>
+                                        </form>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="col-sm-4 col-md-3 mb-3 mb-md-0">
                                 <div class="text-center">
                                     <h3>
                                         <i class="fas fa-money-check-alt text-primary"></i>
@@ -130,7 +154,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     <p class="text-muted font-15 mb-0">{{ __('Total Order Value') }}</p>
                                 </div>
                             </div>
-                            <div class="col-sm-6 col-md-4 mb-3 mb-md-0">
+                            <div class="col-sm-4 col-md-3 mb-3 mb-md-0">
                                 <div class="text-center">
                                     <h3>
                                         <i class="fas fa-money-check-alt text-primary"></i>
@@ -139,7 +163,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                                     <p class="text-muted font-15 mb-0"> {{ __('Pending Payout Value') }}</p>
                                 </div>
                             </div>
-                            <div class="col-sm-6 col-md-4 mb-3 mb-md-0">
+                            <div class="col-sm-4 col-md-3 mb-3 mb-md-0">
                                 <div class="text-center">
                                     <h3>
                                         <i class="fas fa-money-check-alt text-primary"></i>
@@ -154,7 +178,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-12 col-lg-12 tab-product pt-0">
+            <div class="col-sm-12 col-lg-12 tab-product pt-0 payout_req-tab">
                 <ul class="nav nav-tabs nav-material" id="top-tab" role="tablist">
                     <li class="nav-item">
                         <a class="nav-link active" id="pending-payouts" data-toggle="tab" href="#pending_payouts" role="tab" aria-selected="false" data-rel="pending_payouts_datatable" data-status="0">
@@ -175,21 +199,21 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                         <div class="material-border"></div>
                     </li>
                 </ul>
-                
+
                 {{-- <div class="col-sm-4 payout-toggle">
-                    <button type="button" class="btn btn-info payout_all_agents" data-toggle="modal" data-target="#payout-all-agents-model" data-backdrop="static" data-keyboard="false">{{__("Payout")}}</button> 
+                    <button type="button" class="btn btn-info payout_all_agents" data-toggle="modal" data-target="#payout-all-agents-model" data-backdrop="static" data-keyboard="false">{{__("Payout")}}</button>
                 </div> --}}
-                
+
                 <div class="tab-content nav-material pt-0" id="top-tabContent">
                     <div class="tab-pane fade past-order show active" id="pending_payouts" role="tabpanel" aria-labelledby="pending-payouts">
                         <div class="row">
                             <div class="col-12">
-                               
+
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="table-responsive">
                                             {{-- <form name="saveOrder" id="saveOrder"> @csrf</form> --}}
-                                           
+
                                             <table class="table table-centered table-nowrap table-striped" id="pending_payouts_datatable" width="100%">
                                                 <thead>
                                                     <tr>
@@ -280,7 +304,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                 </div>
                 <div class="modal-body px-3">
                     <div class="row">
-                        <h4 class="modal-title">{{__('Are you sure you want to payout')}} 
+                        <h4 class="modal-title">{{__('Are you sure you want to payout')}}
                             <span id="payout-agent"></span> for
                             <span id="payout-amount-final"></span>?
                         </h4>
@@ -366,11 +390,14 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
 <script src="{{ asset('assets/js/jquery.tagsinput-revisited.js') }}"></script>
 <script src="{{ asset('telinput/js/intlTelInput.js') }}"></script>
 <link rel="stylesheet" href="{{ asset('assets/css/jquery.tagsinput-revisited.css') }}" />
-
-
+<script src="{{asset('assets/libs/mohithg-switchery/mohithg-switchery.min.js')}}"></script>
 <script>
-    
+
     $(document).ready(function() {
+        var elems = Array.prototype.slice.call(document.querySelectorAll('.switchery'));
+            elems.forEach(function(html) {
+            var switchery =new Switchery(html);
+        });
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('input[name="_token"]').val()
@@ -381,6 +408,10 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             let rel= $(this).data('rel');
             let status= $(this).data('status');
             initDataTable(rel, status);
+        });
+
+        $(document).on("change","#auto_payout",function() {
+            document.getElementById("form_auto_payout").submit();
         });
 
         // initDataTable();
@@ -471,7 +502,11 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                     }},
                     {data: 'status', class:'text-center', name: 'status', orderable: false, searchable: false, "mRender":function(data, type, full){
                         if(full.status == 'Pending'){
-                            return "<button class='btn btn-sm btn-info payout_btn' data-id='"+full.id+"' data-payout_method='"+full.payout_option_id+"' data-agent='"+full.aegnt_id+"'>{{__('Payout')}}</button>";
+                            var html ="<button class='btn btn-sm btn-info payout_btn' data-id='"+full.id+"' data-payout_method='"+full.payout_option_id+"' data-agent='"+full.aegnt_id+"'>{{__('Payout')}}</button>";
+                            if(full.order_id){
+                                html += `<a class='m-2' href="/order/invoice/${full.order_id}" target="_blank"><i class="fa fa-file-code fa-lg" aria-hidden="true"></i></a>`;
+                            }
+                            return html;
                         }else{
                             return full.status;
                         }
@@ -493,7 +528,11 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                     }},
                     {data: 'status', class:'text-center', name: 'status', orderable: false, searchable: false, "mRender":function(data, type, full){
                         if(full.status == 'Pending'){
-                            return "<button class='btn btn-sm btn-info payout_btn' data-id='"+full.id+"'>{{__('Payout')}}</button>";
+                            var html = "<button class='btn btn-sm btn-info payout_btn' data-id='"+full.id+"'>{{__('Payout')}}</button>";
+                            if(full.order_id){
+                                html += `<a class='m-2' href="/order/invoice/${full.order_id}" target="_blank"><i class="fa fa-file-code fa-lg" aria-hidden="true"></i></a>`;
+                            }
+                            return html;
                         }else{
                             return full.status;
                         }

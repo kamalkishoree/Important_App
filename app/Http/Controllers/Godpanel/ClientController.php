@@ -28,10 +28,13 @@ use Crypt;
 use Carbon\Carbon;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
+use App\Traits\GlobalFunction;
+use Illuminate\Support\Facades\Http;
 use Log;
 
 class ClientController extends Controller
 {
+    use GlobalFunction;
     /**
      * Display a listing of the resource.
      *
@@ -50,7 +53,8 @@ class ClientController extends Controller
      */
     public function create()
     {
-        return view('godpanel/update-client');
+        $ChatSocketUrl = GlobalFunction::socketDropDown();
+        return view('godpanel/update-client')->with(['ChatSocketUrl' =>$ChatSocketUrl]);
     }
 
     /**
@@ -108,7 +112,8 @@ class ClientController extends Controller
             'status'=> 1,
             'timezone' => $request->timezone ? $request->timezone : 'America/New_York',
             'custom_domain'=> $request->custom_domain??'',
-            'sub_domain'   => $request->sub_domain
+            'sub_domain'   => $request->sub_domain,
+            'socket_url' =>$request->socket_url
         ];
             $data['code'] = $this->randomString();
 
@@ -205,8 +210,9 @@ class ClientController extends Controller
      */
     public function edit($id)
     {
+        $ChatSocketUrl = GlobalFunction::socketDropDown();
         $client = Client::find($id);
-        return view('godpanel/update-client')->with('client', $client);
+        return view('godpanel/update-client')->with(['client'=>$client, 'ChatSocketUrl' =>$ChatSocketUrl]);
     }
 
     /**
@@ -248,7 +254,8 @@ class ClientController extends Controller
             $data = [
             'database_name' => $getClient['database_name'],
             'custom_domain' => $request->custom_domain,
-            'sub_domain'   => $request->sub_domain
+            'sub_domain'   => $request->sub_domain,
+            'socket_url' =>$request->socket_url
         ];
         
             $client = Client::where('id', $id)->update($data);
@@ -330,7 +337,7 @@ class ClientController extends Controller
         ];
             Config::set("database.connections.$schemaName", $default);
             config(["database.connections.mysql.database" => $schemaName]);
-            DB::connection($schemaName)->table('clients')->update(['custom_domain' => $request->custom_domain,'sub_domain'   => $request->sub_domain]);
+            DB::connection($schemaName)->table('clients')->update(['custom_domain' => $request->custom_domain, 'sub_domain'   => $request->sub_domain]);
             DB::disconnect($schemaName);
             return 1;
         } catch (Exception $ex) {
@@ -355,7 +362,7 @@ class ClientController extends Controller
 
         try {
 
-        $client = Client::where('database_name', $databaseName)->first(['name', 'email', 'password', 'phone_number', 'password', 'database_path', 'database_name', 'database_username', 'database_password', 'logo', 'company_name', 'company_address', 'custom_domain', 'status', 'code','sub_domain','database_host'])->toarray();
+        $client = Client::where('database_name', $databaseName)->first(['name', 'email', 'password', 'phone_number', 'password', 'database_path', 'database_name', 'database_username', 'database_password', 'logo', 'dark_logo', 'company_name', 'company_address', 'custom_domain', 'status', 'code','sub_domain','database_host'])->toarray();
         $check_if_already = 0;
         $stage = $request->dump_into??'PROD';
         $data = $request->all();
@@ -404,4 +411,133 @@ class ClientController extends Controller
     }
 
     }
+
+
+    /////////////// *********************** socket url update********************************* ////////////////////////////////////////
+
+    public function socketUpdateAction(Request $request,$id)
+    {
+      $data = GlobalFunction::checkDbStat($id);
+        try {
+                DB::connection($data['schemaName'])->beginTransaction();
+                $update = DB::table('clients')->where('id',$id)->update(['socket_url' => $request->socket_url]);
+                $update_sub = DB::connection($data['schemaName'])->table('clients')->where('id',1)->update(['socket_url' => $request->socket_url]);
+                DB::connection($data['schemaName'])->commit();
+                return redirect()->route('client.index')->with('success', 'Socket URL updated successfully!');
+           
+            
+        } catch (\PDOException $e) {
+            DB::connection($data['schemaName'])->rollBack();
+            return redirect()->route('client.index')->with('error', $e->getMessage());
+        }
+            
+        
+        
+    }
+
+    public function enableLumenService(Request $request)
+{
+    $api_domain = ClientPreference::first();
+    $client = Client::find($request->client_id);
+
+    $data = [
+        'client_id' => $request->client_id,
+        'is_lumen_enabled' => $request->is_lumen,
+        'code' => $client->code,
+        'custom_domain' => $client->custom_domain,
+        'database_name' => $client->database_name,
+        'name' => $client->name ?? 'lumen',
+        'email' => $client->email,
+        'password' => rand(11111111, 9999999)
+    ];
+
+
+    $headers = [
+        'Content-Type' => 'application/json',
+        'X-API-Key' => $client->lumen_access_token ?? '12345abcd',
+        'code' => $client->code
+    ];
+
+    
+   \Log::info('data');
+   \Log::info($data);
+    if (isset($api_domain)) {
+     
+        $response = Http::withHeaders($headers)->post($api_domain->lumen_domain_url . '/api/v1/createLumenClient', $data);
+        \Log::info('response');
+        \Log::info($response->json());
+        if ($response->status() === 200) {
+            $responseData = $response->json();
+            
+            // Extract the API key from the response and save it in the database
+            if (isset($responseData['api_key'])) {
+                $client->lumen_access_token = $responseData['api_key'];
+                $client->is_lumen_enabled = $request->is_lumen;
+                $client->save();
+            }
+        } else {
+            $responseData = null;
+        }
+    } else {
+        $responseData = null;
+    }
+
+
+
+    return response()->json([
+        'message' => 'Order created successfully',
+        'data' => $data ?? '',
+        'api_response' => $responseData ?? '',
+    ], 200);
+}
+
+public function enableNotificationService(Request $request)
+{
+    $api_domain = ClientPreference::first();
+    $client = Client::find($request->client_id);
+
+    $data = [
+        'notification_service' => $request->notification_service,
+        'code' => $client->code
+    ];
+
+    \Log::info('post data');
+    \Log::info($data);
+
+    $headers = [
+        'Content-Type' => 'application/json',
+        'X-API-Key' => $client->lumen_access_token ?? '12345abcd',
+        'code' => $client->code
+    ];
+
+
+    if (isset($api_domain)) {
+        \Log::info('api domain');
+        \Log::info($api_domain->key_value);
+
+        $response = Http::withHeaders($headers)->post($api_domain->lumen_domain_url . '/api/v1/createLumenClient', $data);
+
+        if ($response->status() === 200) {
+            $responseData = $response->json();
+            
+            // Extract the API key from the response and save it in the database
+            
+                $client->notification_service = $request->notification_service;
+                $client->save();
+            
+        } else {
+            $responseData = null;
+        }
+    } else {
+        $responseData = null;
+    }
+
+
+
+    return response()->json([
+        'message' => 'service updated successfully',
+        'data' => $data ?? '',
+        'api_response' => $responseData ?? '',
+    ], 200);
+}
 }

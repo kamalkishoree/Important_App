@@ -7,7 +7,7 @@
         }
 
         .book {
-            
+
             margin-bottom: 10px;
         }
 
@@ -17,7 +17,7 @@
         }
 
         .checkss {
-            margin-top: 20px;           
+            margin-top: 20px;
 
         }
 
@@ -37,7 +37,9 @@
         .extra {
             display: none;
         }
-
+        .auto_allocation ul.list-inline li.active label{
+    background: #d36b6b;
+}
     </style>
 @endsection
 
@@ -47,7 +49,7 @@
 
         <!-- start page title -->
         <div class="row">
-            <div class="col-12">
+            <div class="col-12 auto-location-dispat">
                 <div class="page-title-box">
                     <h4 class="page-title">{{__("Auto Allocation")}}</h4>
                 </div>
@@ -65,7 +67,7 @@
             </div>
         </div>
         <!-- end page title -->
-        <div class="row">
+        <div class="row location_page-mobile">
             <div class="col-xl-11 col-md-offset-1">
                 <form method="POST" action="{{ route('preference', Auth::user()->code) }}">
                     @csrf
@@ -74,14 +76,14 @@
                             <div class="card-box">
                                 <h4 class="header-title">{{__("Acknowledgement Type")}}</h4>
                                 <p class="sub-header">
-                                    {{__("Agent can either acknowledge the receipt of the task or accept/decline a Task based on your selection below.")}}
+                                    {{__(getAgentNomenclature())}} {{__("can either acknowledge the receipt of the task or accept/decline a Task based on your selection below.")}}
                                 </p>
                                 {{-- @php
                                 dd($preference->);
                                 @endphp --}}
                                 <div class="row mb-2">
                                     <div class="col-md-12">
-                                    <div class="login-form">
+                                    <div class="login-form auto_allocation">
                                         <ul class="list-inline">
                                             <li class="d-inline-block mr-2">
                                                 <input type="radio" id="acknowledge1" class="autoredio" value="acknowledge"
@@ -102,10 +104,10 @@
                                             </li>
                                           </ul>
                                         </div>
-                                    </div>                                    
+                                    </div>
 
                                 </div>
-                                
+
                             </div>
                         </div>
                     </div>
@@ -119,7 +121,7 @@
                             <input type="checkbox" value="1" class="custom-control-input large-icon" id="manual_allocation"
                                 name="manual_allocation"
                                 {{ isset($allocation) && $allocation->manual_allocation == 1 ? 'checked' : '' }}>
-                            <label class="custom-control-label checkss" for="manual_allocation">{{__("Enable this option to automatically assign Task to your agent.")}}</label>
+                            <label class="custom-control-label checkss" for="manual_allocation">{{__("Enable this option to automatically assign Task to your ")}} {{(getAgentNomenclature())}}</label>
 
                             <div class="col-sm-4 text-right">
 
@@ -136,7 +138,7 @@
                                 name="self_assign"
                                 {{ isset($allocation) && $allocation->self_assign == 1 ? 'checked' : '' }}>
                             <label class="custom-control-label checkss" for="self_assign">Enable this option to alow self Assign.</label>
- 
+
                             <div class="col-sm-4 text-right">
 
                                 @if ($errors->has('manual_allocation'))
@@ -159,7 +161,7 @@
                                         <option value="5" {{ isset($allocation) && $allocation->number_of_retries == 5 ? 'selected' : '' }}>5</option>
 
                                     </select>
-                                    
+
                                 </div>
                                 @if ($errors->has('number_of_retries'))
                                     <span class="text-danger" role="alert">
@@ -219,7 +221,7 @@
                                 </div>
 
                             </div>
-                            
+
                         </div>
 
                         <h4 class="header-title">{{__("Select a method to allocate task")}}</h4>
@@ -229,7 +231,7 @@
                                 <div class="border p-3 rounded book ">
                                     <div class="row">
                                         <div class="col-md-8 first-part">
-                                    
+
                                         <div class="custom-control custom-radio">
                                             <input type="radio" id="shippingMethodRadio1" name="auto_assign_logic"
                                                 class="custom-control-input custom-logic" value="one_by_one"
@@ -268,7 +270,7 @@
                                 <div class="border p-3 rounded book">
                                     <div class="row">
                                         <div class="col-md-8 first-part">
-                                
+
                                         <div class="custom-control custom-radio">
                                             <input type="radio" id="shippingMethodRadio3" name="auto_assign_logic"
                                                 class="custom-control-input custom-logic" value="batch_wise"
@@ -306,8 +308,8 @@
                                 <div class="abc">
                                 </div>
                             </div>
-                            
-                            
+
+
                             @if ($errors->has('auto_assign_logic'))
                                 <span class="text-danger" role="alert">
                                     <strong>{{ $errors->first('auto_assign_logic') }}</strong>
@@ -362,12 +364,13 @@
 
 @section('script')
     <script>
-        $(document).ready(function() {            
+        $(document).ready(function() {
             var sendtoall = "{{$preference->acknowledgement_type}}";
                 if(sendtoall == 'acknowledge'){
                     $('.sendtoall').hide();
                 }
 
+            $("input[name='acknowledgement_type']:checked").parents("li:first").addClass('active');
             $(function() {
                 $('#manual_allocation').change(function() {
                     var checked = $('#manual_allocation').prop('checked');
@@ -395,9 +398,12 @@
                 $('.extra').hide();
             });
 
-            var CSRF_TOKEN = $("input[name=_token]").val();           
-            
+            var CSRF_TOKEN = $("input[name=_token]").val();
+
             $(document).on('click', '.autoredio', function () {
+                var obj = $(this);
+                $('.auto_allocation ul.list-inline li.active').removeClass('active');
+                $(this).parents("li:first").addClass('active');
                 var value = $("input[name='acknowledgement_type']:checked").val();
                 if(value == 'acknowledge'){
                     $('.sendtoall').hide();

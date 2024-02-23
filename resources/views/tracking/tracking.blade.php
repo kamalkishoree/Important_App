@@ -20,7 +20,14 @@
 @php
 $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
 @endphp
-
+<style>
+    span.price h4 {
+    display: inline-block;
+    padding-right: 20px;
+    width: 280px;
+    padding: 6px 0px;
+}
+</style>
 <body>
 
     <!--location Area -->
@@ -48,7 +55,7 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
                                     <img src="{{ 'https://imgproxy.royodispatch.com/insecure/fit/300/100/sm/0/plain/' . Storage::disk('s3')->url($order->profile_picture ?? 'assets/client_00000051/agents605b6deb82d1b.png/XY5GF0B3rXvZlucZMiRQjGBQaWSFhcaIpIM5Jzlv.jpg') }}"
                                         alt="" />
                                 </div>
-                                <h4>{{ isset($order->name) ? $order->name :__('Driver not assigned yet') }}</h4>
+                                <h4>{{ isset($order->name) ? $order->name :__(getAgentNomenclature().' not assigned yet') }}</h4>
                                 <p>{{ $order->phone_number }}</p>
                             </div>
                             <span class="col-lg-8 attrbute_classes">
@@ -77,6 +84,34 @@ $task_type_array = [__('Pickup'), __('Drop-Off'), __('Appointment')];
                 </div>
             </div>
         </div>
+
+        <div class="row mt-3 ml-4">
+            <div class="col-md-12">
+                <span class="price"><h4>Base Price </h4> </span> 
+                <span> {{ $client->currency->symbol }} {{ $order->base_price ?? 0.00 }}</span>
+            </div>
+            <div class="col-md-12">
+                <span class="price"><h4>Duration Price </h4> </span> 
+                <span> {{ $client->currency->symbol }} {{ $order->duration_price ?? 0.00 }}</span>
+            </div>
+            <div class="col-md-12">
+                <span class="price"><h4>Waiting Price per min </h4> </span> 
+                <span > {{ $client->currency->symbol }} {{ $order->base_duration ?? 0.00 }}/min</span>
+            </div>
+            <div class="col-md-12">
+                <span class="price"><h4>Wait Time </h4> </span> 
+                <span >  {{ $order->wait_time ?? 0 }} min</span>
+            </div>
+            <div class="col-md-12">
+                <span class="price"><h4>Waiting Price </h4> </span>
+                <span > {{ $client->currency->symbol }} {{ $order->waiting_price ?? 0.00 }}</span>
+            </div>
+            <div class="col-md-12">
+                <span class="price"><h4>Cash Collected </h4> </span> 
+                <span > {{ $client->currency->symbol }} {{ ($order->cash_to_be_collected + $order->waiting_price) ?? 0.00 }}</span>
+            </div>
+        </div>
+
         </div>
     </section>
 

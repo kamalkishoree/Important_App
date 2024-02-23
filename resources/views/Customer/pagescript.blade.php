@@ -1,3 +1,5 @@
+<script src="{{ asset('assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
+
 <script>
     var autocomplete = {};
     var autocompletesWraps = ['add0'];
@@ -78,7 +80,6 @@
         var mapLat = document.getElementById('lat_map').value;
         var mapLlng = document.getElementById('lng_map').value;
         var mapFor = document.getElementById('map_for').value;
-        //console.log(mapLat+'-'+mapLlng+'-'+mapFor);
         document.getElementById(mapFor + '-latitude').value = mapLat;
         document.getElementById(mapFor + '-longitude').value = mapLlng;
 
@@ -94,13 +95,17 @@
             "processing": true,
             "serverSide": true,
             "responsive": true,
-            "iDisplayLength": 10,
+            "iDisplayLength": 20,
             language: {
                         search: "",
                         paginate: { previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>" },
                         searchPlaceholder: "{{__('Search Customers')}}",
                         'loadingRecords': '&nbsp;',
-                        'processing': '<div class="spinner"></div>'
+                       // 'processing': '<div class="spinner"></div>'
+                       'processing':function(){
+                            spinnerJS.showSpinner();
+                            spinnerJS.hideSpinner();
+                        }
             },
             drawCallback: function () {
                 $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
@@ -122,6 +127,7 @@
             columns: [
                 {data: 'name', name: 'name', orderable: true, searchable: false},
                 {data: 'email', name: 'email', orderable: true, searchable: false},
+                {data: 'dial_code', name: 'dial_code', orderable: true, searchable: false},
                 {data: 'phone_number', name: 'phone_number', orderable: true, searchable: false},
                 {data: 'status', name: 'status', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                         var check = (full.status == 'Active')? 'checked' : '';
@@ -132,30 +138,43 @@
             ]
             });
         loadMap(autocompletesWraps);
+    
+        var phone_number = window.intlTelInput(document.querySelector("#add_customer .phone_number"),{
+            separateDialCode: true,
+            preferredCountries:["{{getCountryCode()}}"],
+            initialCountry:"{{getCountryCode()}}",
+            hiddenInput: "full_number",
+            utilsScript: "//cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.3/js/utils.js"
+        });
+
+        document.querySelector("#add_customer .phone_number").addEventListener("countrychange", function() {
+            $("#add_customer #dialCode").val(phone_number.getSelectedCountryData().dialCode);
+        });
     });
+    
 
     //change status on a customer
-        $(function() {
-            $(document).on('change', '.customer_status_switch', function() {
-                var status = $(this).prop('checked') == true ? "Active" : 'In-Active';
-                var user_id = $(this).data('id');
+    $(function() {
+        $(document).on('change', '.customer_status_switch', function() {
+            var status = $(this).prop('checked') == true ? "Active" : 'In-Active';
+            var user_id = $(this).data('id');
 
-                $.ajax({
-                    type: "GET",
-                    dataType: "json",
-                    url: '/changeStatus',
-                    data: {
-                        'status': status,
-                        'id': user_id
-                    },
-                    success: function(data) {
-                        if (data.status == 1) {
-                            $.NotificationApp.send("", data.success, "top-right", "#5ba035", "success");
-                        }
+            $.ajax({
+                type: "GET",
+                dataType: "json",
+                url: '/changeStatus',
+                data: {
+                    'status': status,
+                    'id': user_id
+                },
+                success: function(data) {
+                    if (data.status == 1) {
+                        $.NotificationApp.send("", data.success, "top-right", "#5ba035", "success");
                     }
-                });
-            })
-        });
+                }
+            });
+        })
+    });
 
     //append new address fields
 
@@ -175,7 +194,7 @@
             count +
             '"> <i class="mdi mdi-map-marker-radius"></i></button></div><input type="hidden" name="latitude[]" id="add' +
             count + '-latitude" value="0" /><input type="hidden" name="longitude[]" id="add' + count +
-            '-longitude" value="0" /></div></div><div class="col-lg-4 col-md-3 mb-lg-0 mb-3"><div class="form-group"><input type="text" id="add'+ count +'-email" name="address_email[]" class="form-control" placeholder="'+emailplaceholder+'" value=""><span class="invalid-feedback" role="alert"><strong></strong></span></div></div><div class="col-lg-4 col-md-3 mb-lg-0 mb-3"><div class="form-group"><input type="text" id="add'+ count +'-phone_number" name="address_phone_number[]" class="form-control" placeholder="'+phoneplaceholder+'" value=""><span class="invalid-feedback" role="alert"><strong></strong></span></div></div><div class="col-lg-4 col-md-3 mb-lg-0 mb-3"><div class="form-group d-flex align-items-center" id=""><input type="text" id="add' +
+            '-longitude" value="0" /></div></div><div class="col-lg-4 col-md-3 mb-lg-0 mb-3"><div class="form-group"><input type="text" id="add'+ count +'-email" name="address_email[]" class="form-control" placeholder="'+emailplaceholder+'" value=""><span class="invalid-feedback" role="alert"><strong></strong></span></div></div><div class="col-lg-4 col-md-3 mb-lg-0 mb-3"><div class="form-group"><input type="text" id="add'+ count +'-phone_number" name="address_phone_number[]" class="form-control phone_number" placeholder="'+phoneplaceholder+'" value=""><span class="invalid-feedback" role="alert"><strong></strong></span></div></div><div class="col-lg-4 col-md-3 mb-lg-0 mb-3"><div class="form-group d-flex align-items-center" id=""><input type="text" id="add' +
             count + '-postcode" class="form-control" placeholder="'+postcodeplaceholder+'" name="post_code[]"><button type="button" class="btn btn-primary-outline action-icon" onclick="deleteAddress('+delbtn+')"> <i class="mdi mdi-delete"></i></button></div></div></div>'
             );
 
@@ -192,8 +211,9 @@
 
     function loadMap(autocompletesWraps) {
 
-        //console.log(autocompletesWraps);
+        // console.log(autocompletesWraps);
         $.each(autocompletesWraps, function(index, name) {
+           
             const geocoder = new google.maps.Geocoder;
 
             if ($('#' + name).length == 0) {
@@ -253,9 +273,6 @@
             dataType: 'json',
             success: function(data) {
 
-               // $('.page-title1').html('Hello');
-                //console.log('data');
-
                 $('#edit-customer-modal #editCardBox').html(data.html);
                 $('#edit-customer-modal').modal({
                     backdrop: 'static',
@@ -268,6 +285,17 @@
                     loadMap(autocompletesWraps);
                 }
 
+                var phone_number = window.intlTelInput(document.querySelector("#edit-customer-modal .phone_number"),{
+                    separateDialCode: true,
+                    initialCountry:$("#edit-customer-modal #countryCode").val(),
+                    hiddenInput: "full_number",
+                    utilsScript: "//cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.3/js/utils.js"
+                });
+                
+                
+                document.querySelector("#edit-customer-modal .phone_number").addEventListener("countrychange", function() {
+                    $("#edit-customer-modal #dialCode").val(phone_number.getSelectedCountryData().dialCode);
+                });
             },
             error: function(data) {
                 // console.log('data2');
@@ -293,7 +321,7 @@
             '"> <i class="mdi mdi-map-marker-radius"></i></button></div><input type="hidden" name="latitude[]" id="edit' +
             editCount + '-latitude" value="0" /><input type="hidden" name="longitude[]" id="edit' +
             editCount +
-            '-longitude" value="0" /></div></div><div class="col-lg-4 col-md-3 mb-lg-0 mb-3"><div class="form-group"><input type="text" id="edit'+ editCount +'-email" name="address_email[]" class="form-control" placeholder="'+emailplaceholder+'" value=""><span class="invalid-feedback" role="alert"><strong></strong></span></div></div><div class="col-lg-4 col-md-3 mb-lg-0 mb-3"><div class="form-group"><input type="text" id="edit'+ editCount +'-phone_number" name="address_phone_number[]" class="form-control" placeholder="'+phoneplaceholder+'" value=""><span class="invalid-feedback" role="alert"><strong></strong></span></div></div><div class="col-lg-4 col-md-3 mb-lg-0 mb-3"><div class="form-group delete_btn d-flex align-items-center" id=""><input type="text" id="edit' +
+            '-longitude" value="0" /></div></div><div class="col-lg-4 col-md-3 mb-lg-0 mb-3"><div class="form-group"><input type="text" id="edit'+ editCount +'-email" name="address_email[]" class="form-control" placeholder="'+emailplaceholder+'" value=""><span class="invalid-feedback" role="alert"><strong></strong></span></div></div><div class="col-lg-4 col-md-3 mb-lg-0 mb-3"><div class="form-group"><input type="text" id="edit'+ editCount +'-phone_number" name="address_phone_number[]" class="form-control phone_number" placeholder="'+phoneplaceholder+'" value=""><span class="invalid-feedback" role="alert"><strong></strong></span></div></div><div class="col-lg-4 col-md-3 mb-lg-0 mb-3"><div class="form-group delete_btn d-flex align-items-center" id=""><input type="text" id="edit' +
                 editCount + '-postcode" class="form-control" placeholder="'+postcodeplaceholder+'" name="post_code[]"><button type="button" class="btn btn-primary-outline action-icon" onclick="deleteAddress('+delbtn+')"> <i class="mdi mdi-delete"></i></button></div></div></div>'
 
             );
@@ -328,7 +356,6 @@
         var formData = new FormData(form);
         var urls = document.getElementById('customer_id').getAttribute('url');
         saveCustomer(urls, formData, inp = 'Edit', modal = 'edit-customer-modal');
-        //console.log(urls);
     });
 
     //ajax for save data
@@ -397,7 +424,11 @@
                         }
                     },
                     error: function(response) {
-                        alert('There is some issue. Try again later');
+                        Swal.fire({
+                    icon: 'error',
+                    title: 'Oops',
+                    text: 'There is some issue. Try again later',
+                });
                         // $('.pageloader').css('display','none');
                     }
                 });

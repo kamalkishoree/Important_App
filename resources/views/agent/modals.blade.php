@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header border-0">
-                <h4 class="modal-title">{{__("Add")}} {{ Session::get('agent_name') }}</h4>
+                <h4 class="modal-title">{{__("Add")}} {{ getAgentNomenclature() }}</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
 
@@ -38,7 +38,8 @@
                             <div class="form-group" id="phone_numberInput">
                                 <label for="phone_number" class="control-label">{{__("CONTACT NUMBER")}}</label>
                                 <div class="input-group">
-                                    <input type="tel" name="phone_number" class="form-control xyz" id="phone_number" placeholder="9876543210" maxlength="14">
+                                    <input type="tel" name="phone_number" class="form-control xyz phone_number" id="phone_number" placeholder="9876543210" maxlength="14">
+<!--                                     <input type="hidden" id="dialCode" name="dialCode" value="{{$customer->dial_code ?? ''}}"> -->
                                 </div>
                                 <span class="invalid-feedback" role="alert">
                                     <strong></strong>
@@ -73,12 +74,30 @@
                                 </span>
                             </div>
                         </div>
+                        @php
+                            $warehouse_mode = checkWarehouseMode();
+                        @endphp
+                        @if($warehouse_mode['show_warehouse_module'] == 1)
+                            <div class="col-md-6">
+                                <div class="form-group" id="warehouse_idInput">
+                                    <label for="warehouse_id" class="control-label">{{__("ASSIGN WAREHOUSE")}}</label>
+                                    <select name="warehouse_id[]" id="warehouse_id" multiple>
+                                        @foreach($warehouses as $warehouse)
+                                            <option value="{{$warehouse->id}}">{{$warehouse->name}}</option>
+                                        @endforeach
+                                    </select>
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong></strong>
+                                    </span>
+                                </div>
+                            </div>
+                        @endif
                     </div>
 
-                    {{-- <div class="row ">
+                    <div class="row agent_icon">
                         <div class="col-md-12">
                             <div class="form-group" id="vehicle_type_idInput">
-                                <p class="text-muted mt-3 mb-2">{{__("TRANSPORT TYPE")}}</p>
+                                <p class="text-muted mt-3 mb-2">{{__("TRANSPORT ICON")}}</p>
                                 <div class="radio radio-blue form-check-inline click cursors">
                                     <input type="radio" id="onfoot" value="1" name="vehicle_type_id" act="add" checked>
                                     <img id="foot_add" src="{{asset('assets/icons/walk.png')}}">
@@ -100,13 +119,17 @@
                                     <input type="radio" id="truck" value="5" name="vehicle_type_id" act="add">
                                     <img id="trucks_add" src="{{asset('assets/icons/truck.png')}}">
                                 </div>
+                                <div class="radio radio-warning form-check-inline click cursors mt-2">
+                                    <input type="radio" id="auto" value="6" name="vehicle_type_id" act="add">
+                                    <img id="auto_add" src="{{asset('assets/icons/auto.png')}}">
+                                </div>
                                 <span class="invalid-feedback" role="alert">
                                     <strong></strong>
                                 </span>
 
                             </div>
                         </div>
-                    </div> --}}
+                    </div>
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="form-group mb-3">
@@ -240,7 +263,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header border-0">
-                <h4 class="modal-title">{{__("Edit")}} {{ Session::get('agent_name') }}</h4>
+                <h4 class="modal-title">{{__("Edit")}} {{ getAgentNomenclature() }}</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
             <form id="UpdateAgent" method="post" enctype="multipart/form-data">
@@ -264,7 +287,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header border-0">
-                <h4 class="modal-title">{{__('View')}} {{ Session::get('agent_name') }}</h4>
+                <h4 class="modal-title">{{__('View')}} {{ getAgentNomenclature() }}</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
          

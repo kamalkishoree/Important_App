@@ -13,7 +13,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     </div>
     <div class="offset-md-2 col_md-6">
         <span>{{__('Live OTP')}}</span>
-        <h4>{{isset($otp)?$otp: __('View OTP after Logging in the Driver App') }}</h4>
+        <h4>{{isset($otp)?$otp: __('View OTP after Logging in the '.getAgentNomenclature().' App') }}</h4>
     </div>
 
 </div>
@@ -33,8 +33,8 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             <label for="phone_number" class="control-label">{{__('CONTACT NUMBER')}}</label>
             <div class="input-group">
 
-                <input type="tel" name="phone_number" class="form-control xyz" id="phone" placeholder="{{__('Enter mobile number')}}" value="{{ $agent->phone_number }}" readonly>
-                {{-- <input id="phone" name="phone" type="tel" class="form-control"> --}}
+                <input type="tel" name="phone_number" class="form-control phone_number xyz" id="phone" placeholder="{{__('Enter mobile number')}}" value="{{ $agent->phone_number }}" readonly>
+<!--                 <input type="hidden" id="dialCode" name="dialCode" value="{{$customer->dial_code}}"> -->
             </div>
             <span class="invalid-feedback" role="alert">
                 <strong></strong>
@@ -73,10 +73,10 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
         </div>
     </div>
 </div>
-{{-- <div class="row">
+<div class="row">
     <div class="col-md-12">
         <div class="form-group" id="vehicle_type_idInputEdit">
-            <p class="text-muted mt-3 mb-2">{{__('TRANSPORT TYPE')}}</p>
+            <p class="text-muted mt-3 mb-2">{{__('TRANSPORT ICON')}}</p>
             <div class="radio radio-blue form-check-inline click1 cursors">
                 <input type="radio" id="onfoot" value="1" act="edit" name="vehicle_type_id" readonly="readonly" @if ($agent->vehicle_type_id == '1') checked @else disabled='disabled'
                 @endif >
@@ -105,7 +105,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             </span>
         </div>
     </div>
-</div> --}}
+</div>
 <div class="row">
     <div class="col-md-12">
         <div class="form-group" id="nameInputEdit">

@@ -7,7 +7,7 @@ use App\Http\Controllers\ClientNotificationController;
 use Log;
 use App\Model\Roster;
 use Carbon\Carbon;
-use App\Jobs\SendPushNotifications;
+use App\Listeners\SendPushNotification as SP;
 use App\Model\Client;
 use Config;
 use Illuminate\Support\Facades\DB;
@@ -51,8 +51,7 @@ class SendPushNotification extends Command
     {
         $clients = Client::where('status', 1)->get('database_name');
         foreach($clients as $client){
-           
-            dispatch(new SendPushNotifications($client->database_name));
+            dispatch(new SP($client->database_name));
         }
         
     }

@@ -1,4 +1,7 @@
 <!-- Topbar Start -->
+@php
+$clientData = \App\Model\Client::select('id', 'logo','custom_domain','code')->with('getPreference')->where('id', '>', 0)->first();
+@endphp
 <div class="navbar-custom">
     <div class="container-fluid">
         <ul class="list-unstyled topnav-menu float-right mb-0 d-flex align-items-center">
@@ -94,13 +97,41 @@
                             array_push($allowed,'99999');
                         }
                         ?>
-
+        <li>
+            <div class="spinner-border text-blue header_spinner mr-2" role="status"></div>
+        </li>
+        <li class="alToggleSwitch">
+            <label class="altoggle">
+                <input type="checkbox" class="admin_panel_theme" {{$clientData->getPreference->theme == "dark" ? 'checked' : ''}}>
+                <div class="toggle__bg">
+                    <div class="toggle__sphere">
+                        <div class="toggle__sphere-bg">
+                        </div>
+                        <div class="toggle__sphere-overlay"></div>
+                    </div>
+                </div>
+            </label>
+        </li>
         @if(in_array('Add Route',$allowed) || Auth::user()->is_superadmin == 1)
+            
+         @php
+                    $warehouse_mode = checkWarehouseMode();
+                @endphp
+          
+     @if(!empty($warehouseMode->show_inventory_module) && $warehouseMode->show_inventory_module == 0)
             <li class="d-lg-inline-block" >
-                <a class="nav-link" href="#">
-                    <button type="button" class="btn btn-blue waves-effect waves-light addTaskModalHeader klklkl" data-toggle="modal" data-target="" data-backdrop="static" title="{{__('Add Route')}}" data-keyboard="false"><span><i class="mdi mdi-plus-circle mr-1"></i> {{__('Add Route')}}</span></button>
+                <a class="nav-link" href="#">   <!-- addTaskModalHeader -->
+                    <button type="button" class="btn btn-blue waves-effect waves-light addTaskModalHeader klklkl" data-toggle="modal" data-target="" data-backdrop="static" title="{{__('Add Route')}}" data-keyboard="false"><span><i class="mdi mdi-plus-circle mr-1"></i> <span class="mobile_view_btn">{{__('Add Route')}}</span></span></button>
                 </a>
             </li>
+            @else
+          
+            <li class="d-lg-inline-block" >
+                <a class="nav-link" href="#">   <!-- addTaskModalHeader -->
+                    <button type="button" class="btn btn-blue waves-effect waves-light  klklkl" data-toggle="modal" data-target="#addRouteModal" id="route-btn" data-backdrop="static" title="{{__('Add Route')}}" data-keyboard="false"><span><i class="mdi mdi-plus-circle mr-1"></i><span class="mobile_view_btn">{{__('Add Route')}}</span></span></button>
+                </a>
+            </li>
+           @endif
         @endif
 
             @php
@@ -115,19 +146,24 @@
             {{-- @php print_r(Session::all()); @endphp --}}
             <li class="dropdown d-xl-block">
                 <a class="nav-link dropdown-toggle waves-effect waves-light" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                    <i class="icon-ic_lang"></i>
+                <i class="fa fa-language" aria-hidden="true"></i>
                     <span> Language </span>
                     {{session()->get('applocale')}}
                     <i class="mdi mdi-chevron-down"></i>
                 </a>
                 <div class="dropdown-menu">
-                    <a href="/switch/language?lang=en" class="dropdown-item" langid="1">English</a>
-                    <a href="/switch/language?lang=es" class="dropdown-item" langid="1">Spanish</a>
                     <a href="/switch/language?lang=ar" class="dropdown-item" langid="1">Arabic</a>
+                    <a href="/switch/language?lang=zh" class="dropdown-item" langid="1">Chinese</a>
+                    <a href="/switch/language?lang=en" class="dropdown-item" langid="1">English</a>
                     <a href="/switch/language?lang=fr" class="dropdown-item" langid="1">French</a>
+                    <a href="/switch/language?lang=hi" class="dropdown-item" langid="1">Hindi</a>
+                    <a href="/switch/language?lang=it" class="dropdown-item" langid="1">Italian</a>
+                    <a href="/switch/language?lang=fa" class="dropdown-item" langid="1">Persian</a>
+                    <a href="/switch/language?lang=ru" class="dropdown-item" langid="1">Russian</a>
+                    <a href="/switch/language?lang=es" class="dropdown-item" langid="1">Spanish</a>
                     <a href="/switch/language?lang=sv" class="dropdown-item" langid="1">Swedish</a>
+                    <a href="/switch/language?lang=tr" class="dropdown-item" langid="1">Turkish</a>
                     <a href="/switch/language?lang=vi" class="dropdown-item" langid="1">Vietnamese</a>
-
                     <div class="dropdown-divider"></div>
                 </div>
             </li>
@@ -138,185 +174,8 @@
                     <i class="fe-maximize noti-icon"></i>
                 </a>
             </li>
-            <!-- <li class="dropdown d-none d-xl-block">
-                <a class="nav-link dropdown-toggle waves-effect waves-light" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                    Create Task
-                    <i class="mdi mdi-chevron-down"></i>
-                </a>
-                <div class="dropdown-menu">
-                    <a href="javascript:void(0);" class="dropdown-item">
-                        <i class="fe-briefcase mr-1"></i>
-                        <span>New Task</span>
-                    </a>
-                    <div class="dropdown-divider"></div>
-                </div>
-            </li> -->
-            <!-- <li class="dropdown d-none d-lg-inline-block topbar-dropdown">
-                <a class="nav-link dropdown-toggle arrow-none waves-effect waves-light" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                    <i class="fe-grid noti-icon"></i>
-                </a>
-                <div class="dropdown-menu dropdown-lg dropdown-menu-right">
-
-                    <div class="p-lg-1">
-                        <div class="row no-gutters">
-                            <div class="col">
-                                <a class="dropdown-icon-item" href="#">
-                                    <img src="{{ asset('assets/images/brands/slack.png') }}"alt="slack">
-                                    <span>Slack</span>
-                                </a>
-                            </div>
-                            <div class="col">
-                                <a class="dropdown-icon-item" href="#">
-                                    <img src="{{ asset('assets/images/brands/github.png') }}"alt="Github">
-                                    <span>GitHub</span>
-                                </a>
-                            </div>
-                            <div class="col">
-                                <a class="dropdown-icon-item" href="#">
-                                    <img src="{{ asset('assets/images/brands/dribbble.png') }}"alt="dribbble">
-                                    <span>Dribbble</span>
-                                </a>
-                            </div>
-                        </div>
-
-                        <div class="row no-gutters">
-                            <div class="col">
-                                <a class="dropdown-icon-item" href="#">
-                                    <img src="{{ asset('assets/images/brands/bitbucket.png') }}"alt="bitbucket">
-                                    <span>Bitbucket</span>
-                                </a>
-                            </div>
-                            <div class="col">
-                                <a class="dropdown-icon-item" href="#">
-                                    <img src="{{ asset('assets/images/brands/dropbox.png') }}"alt="dropbox">
-                                    <span>Dropbox</span>
-                                </a>
-                            </div>
-                            <div class="col">
-                                <a class="dropdown-icon-item" href="#">
-                                    <img src="{{ asset('assets/images/brands/g-suite.png') }}"alt="G Suite">
-                                    <span>G Suite</span>
-                                </a>
-                            </div>
-
-                        </div>
-                    </div>
-
-                </div>
-            </li> -->
-
-            <!-- <li class="dropdown d-none d-lg-inline-block topbar-dropdown">
-                <a class="nav-link dropdown-toggle arrow-none waves-effect waves-light" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                    <img src="{{ asset('assets/images/flags/us.jpg') }}" alt="user-image" height="16">
-                </a>
-                <div class="dropdown-menu dropdown-menu-right">
-
-                    <a href="javascript:void(0);" class="dropdown-item">
-                        <img src="{{ asset('assets/images/flags/germany.jpg') }}" alt="user-image" class="mr-1" height="12"> <span class="align-middle">German</span>
-                    </a>
-                    <a href="javascript:void(0);" class="dropdown-item">
-                        <img src="{{ asset('assets/images/flags/italy.jpg') }}" alt="user-image" class="mr-1" height="12"> <span class="align-middle">Italian</span>
-                    </a>
-
-                    <a href="javascript:void(0);" class="dropdown-item">
-                        <img src="{{ asset('assets/images/flags/spain.jpg') }}" alt="user-image" class="mr-1" height="12"> <span class="align-middle">Spanish</span>
-                    </a>
-                    <a href="javascript:void(0);" class="dropdown-item">
-                        <img src="{{ asset('assets/images/flags/russia.jpg') }}" alt="user-image" class="mr-1" height="12"> <span class="align-middle">Russian</span>
-                    </a>
-
-                </div>
-            </li> -->
-
-            <!-- <li class="dropdown notification-list topbar-dropdown">
-                <a class="nav-link dropdown-toggle waves-effect waves-light" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                    <i class="fe-bell noti-icon"></i>
-                    <span class="badge badge-danger rounded-circle noti-icon-badge">9</span>
-                </a>
-                <div class="dropdown-menu dropdown-menu-right dropdown-lg">
-
-
-                    <div class="dropdown-item noti-title">
-                        <h5 class="m-0">
-                            <span class="float-right">
-                                <a href="" class="text-dark">
-                                    <small>Clear All</small>
-                                </a>
-                            </span>Notification
-                        </h5>
-                    </div>
-
-                    <div class="noti-scroll" data-simplebar>
-
-
-                        <a href="javascript:void(0);" class="dropdown-item notify-item active">
-                            <div class="notify-icon">
-                                <img src="{{ asset('assets/images/users/user-1.jpg') }}" class="img-fluid rounded-circle" alt="" /> </div>
-                            <p class="notify-details">Cristina Pride</p>
-                            <p class="text-muted mb-0 user-msg">
-                                <small>Hi, How are you? What about our next meeting</small>
-                            </p>
-                        </a>
-
-
-                        <a href="javascript:void(0);" class="dropdown-item notify-item">
-                            <div class="notify-icon bg-primary">
-                                <i class="mdi mdi-comment-account-outline"></i>
-                            </div>
-                            <p class="notify-details">Caleb Flakelar commented on Admin
-                                <small class="text-muted">1 min ago</small>
-                            </p>
-                        </a>
-
-
-                        <a href="javascript:void(0);" class="dropdown-item notify-item">
-                            <div class="notify-icon">
-                                <img src="{{ asset('assets/images/users/user-4.jpg') }}" class="img-fluid rounded-circle" alt="" /> </div>
-                            <p class="notify-details">Karen Robinson</p>
-                            <p class="text-muted mb-0 user-msg">
-                                <small>Wow ! this admin looks good and awesome design</small>
-                            </p>
-                        </a>
-
-
-                        <a href="javascript:void(0);" class="dropdown-item notify-item">
-                            <div class="notify-icon bg-warning">
-                                <i class="mdi mdi-account-plus"></i>
-                            </div>
-                            <p class="notify-details">New user registered.
-                                <small class="text-muted">5 hours ago</small>
-                            </p>
-                        </a>
-
-
-                        <a href="javascript:void(0);" class="dropdown-item notify-item">
-                            <div class="notify-icon bg-info">
-                                <i class="mdi mdi-comment-account-outline"></i>
-                            </div>
-                            <p class="notify-details">Caleb Flakelar commented on Admin
-                                <small class="text-muted">4 days ago</small>
-                            </p>
-                        </a>
-
-
-                        <a href="javascript:void(0);" class="dropdown-item notify-item">
-                            <div class="notify-icon bg-secondary">
-                                <i class="mdi mdi-heart"></i>
-                            </div>
-                            <p class="notify-details">Carlos Crouch liked
-                                <b>Admin</b>
-                                <small class="text-muted">13 days ago</small>
-                            </p>
-                        </a>
-                    </div>
-
-                    <a href="javascript:void(0);" class="dropdown-item text-center text-primary notify-item notify-all">
-                        View all
-                        <i class="fe-arrow-right"></i>
-                    </a>
-
-                </div>
-            </li> -->
+            
+           
 
             <li class="dropdown notification-list topbar-dropdown">
                 <a class="nav-link dropdown-toggle nav-user mr-0 waves-effect waves-light" data-toggle="dropdown"
@@ -403,13 +262,16 @@ http://192.168.100.211:8888/unsafe/fit-in/90x50/https://royodelivery-assets.s3.u
             }
             ?>
             @php
-                    // $urlImg = URL::to('/').'images/users/user-1.jpg';
+                    $clientPreference = \App\Model\ClientPreference::select('id', 'theme')->where('id', '>', 0)->first();
 
-                  if(isset(Auth::user()->logo)){
-                    $urlImg = Storage::disk('s3')->url(Auth::user()->logo);
-                  }
-                  $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fit/300/100/sm/0/plain/';
-                  $image = $imgproxyurl.$urlImg;
+                    // $urlImg = URL::to('/').'images/users/user-1.jpg';
+                    if(isset(Auth::user()->dark_logo) && $clientPreference->theme == 'dark'){
+                        $urlImg = Storage::disk('s3')->url(Auth::user()->dark_logo);
+                    }else if(isset(Auth::user()->logo)){
+                        $urlImg = Storage::disk('s3')->url(Auth::user()->logo);
+                    }
+                    $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fit/300/100/sm/0/plain/';
+                    $image = $imgproxyurl.$urlImg;
 
             @endphp
             <a href="{{ route('index') }}" class="logo logo-dark text-center">
@@ -426,11 +288,11 @@ http://192.168.100.211:8888/unsafe/fit-in/90x50/https://royodelivery-assets.s3.u
             <a href="{{ route('index') }}" class="logo logo-light text-center">
                 <span class="logo-sm">
                     <img src="{{$image}}"
-                        alt="" height="30" style="padding-top: 4px;">
+                        alt="" height="30">
                 </span>
                 <span class="logo-lg">
                     <img src="{{$image}}"
-                        alt="" height="50" style="padding-top: 4px;">
+                        alt="" height="50">
                 </span>
             </a>
         </div>

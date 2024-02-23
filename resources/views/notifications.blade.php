@@ -8,7 +8,7 @@
     <div class="container-fluid">
         
         <!-- start page title -->
-        <div class="row">
+        <div class="row notification-dispa-mobile">
             <div class="col-12">
                 <div class="page-title-box">
                     <h4 class="page-title">{{__("Notifications")}}</h4>
@@ -16,7 +16,7 @@
             </div>
         </div>     
         
-        <div class="row">
+        <div class="row notification-dispa-mobile   ">
             <div class="col-xl-12">
                 <div class="card-box">
                     <h4 class="header-title">{{__("Notifications")}}</h4>
@@ -226,7 +226,8 @@
                 notification_type : notification_type,
                 _token : "{{ csrf_token() }}"
             };
-            startLoader('body');
+            spinnerJS.showSpinner();
+            //startLoader('body');
             $.ajax({
                 method: "POST",
                 headers: {
@@ -235,14 +236,17 @@
                 url: "/notification_update",
                 data: formData,
                 success: function(response) {
+                    
                     if (response.status == 'success') {
 
                     } else {
                         $(".show_all_error.invalid-feedback").show();
                         $(".show_all_error.invalid-feedback").text(response.message);
                     }
+                    spinnerJS.hideSpinner();
                 },
                 error: function(response) {
+                    spinnerJS.hideSpinner();
                     if (response.status === 422) {
                         let errors = response.responseJSON.errors;
                         Object.keys(errors).forEach(function(key) {

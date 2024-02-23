@@ -1,17 +1,21 @@
 <!DOCTYPE html>
     <html lang="en">
-
+        <meta name="csrf-token" content="{{ csrf_token() }}">
     <head>
         @include('layouts.shared/title-meta', ['title' => $title])
         @include('layouts.shared/head-css', ["demo" => "creative"])
 
         <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+        <script src="{{asset('assets/libs/spinner/spinner.js')}}"></script>
+        <script src="{{ asset('assets/js/storage/dispatcherStorage.js')}}"></script>
         <script src="{{asset('assets/js/vendor.min.js')}}"></script>
+        @yield('customcss')
 </head>
 @php $theme = \App\Model\ClientPreference::where(['id' => 1])->first('theme');@endphp
 <?php $body = ((isset($theme) && $theme->theme == 'dark'))? "dark":"light";?>
 
-
+@include('layouts.shared.language')
+@yield('headerJs')
 
     <body @yield('body-extra') class="{{$body}}" @if( session()->get('applocale')=="ar") dir="rtl" @endif>
         <!-- Begin page -->
@@ -28,7 +32,7 @@
         <!-- Start Page Content here -->
         <!-- ============================================================== -->
 
-        <div class="content-page">                                    
+        <div class="content-page main_outter_box">                                    
             <div class="content">
                 @php 
                     $style = "";
@@ -44,7 +48,7 @@
                             @if(session('preferences.twilio_status') == 'invalid_key')
                             <span><i class="mdi mdi-block-helper mr-2"></i> <strong>Twilio</strong> key is not valid</span> <br/>
                             @endif
-                        </div>
+                        </div>  
                     </div>
 
 

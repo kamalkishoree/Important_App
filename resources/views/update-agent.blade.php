@@ -2,7 +2,7 @@
 @section('css')
     <link href="{{ asset('assets/libs/dropzone/dropzone.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('assets/libs/dropify/dropify.min.css') }}" rel="stylesheet" type="text/css" />
-    <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.6/css/intlTelInput.css'>
+    <link rel="stylesheet" href="{{ asset('telinput/css/intlTelInput.css') }}" type="text/css">
     <style>
         // workaround
         .intl-tel-input {
@@ -39,7 +39,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box">
-                    <h4 class="page-title">{{ Session::get('agent_name') }}</h4>
+                    <h4 class="page-title">{{ getAgentNomenclature() }}</h4>
                 </div>
             </div>
         </div>
@@ -144,7 +144,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group" id="vehicle_type_idInput">
-                                        <p class="text-muted mt-3 mb-2">TRANSPORT TYPE</p>
+                                        <p class="text-muted mt-3 mb-2">TRANSPORT ICON</p>
                                         <div class="radio radio-blue form-check-inline click cursors">
                                             <input type="radio" id="onfoot" value="onfoot" name="vehicle_type_id" @if ($agent->vehicle_type_id == 'onfoot') checked
                                             @endif>
@@ -251,7 +251,7 @@
     <script src="{{ asset('assets/js/pages/form-fileuploads.init.js') }}"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.7/js/intlTelInput.js"></script>
+    <script src="{{ asset('telinput/js/intlTelInput.js') }}"></script>
 
     <script>
         $("#phone_number").intlTelInput({

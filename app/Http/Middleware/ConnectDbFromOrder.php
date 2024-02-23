@@ -7,6 +7,7 @@ use App\Model\Client;
 use Illuminate\Support\Facades\Cache;
 use Request;
 use Config;
+use Log;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
 class ConnectDbFromOrder
@@ -20,7 +21,7 @@ class ConnectDbFromOrder
      */
     public function handle($request, Closure $next)
     {
-       
+        
         config(['auth.guards.api.provider' => 'agents']);
         $database_name = $database = 'royodelivery_db';
         $header = $request->header();        
@@ -66,6 +67,8 @@ class ConnectDbFromOrder
                 'strict' => false,
                 'engine' => null
             ];
+            
+            
             Config::set("database.connections.$database_name", $default);
             Config::set("client_connected", true);
           //  Config::set("client_data", $client);

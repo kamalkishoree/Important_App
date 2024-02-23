@@ -81,15 +81,13 @@
         <div class="row">
             <div class="col-6">
                 <div class="page-title-box">
-                    <a href="{{ route('geo.fence.list') }}">
-                        <h4 class="page-title">Back</h4>
-                    </a>
+                    <h4 class="page-title">Edit Geofence</h4>
                 </div>
             </div>
             <div class="col-6">
-                <div class="page-title-box">
+                <div class="page-title-box text-right">
                     <a href="{{ route('geo.fence.list') }}">
-                        <h4 class="page-title"></h4>
+                    <button type="button" class="btn btn-blue" title="Back To List" data-keyboard="false"><span><i class="mdi mdi-chevron-double-left mr-1"></i> Back</span></button>
                     </a>
                 </div>
             </div>
@@ -102,8 +100,7 @@
             <input type="hidden" name="zoom_level" value="13" id="zoom_level" />
             <div class="row">
                 <div class="col-lg-5">
-                    <div class="card-box mb-0">
-                        <h4 class="header-title mb-3">Edit Geofence</h4>
+                    <div class="card-box mb-0 main_forms">
                         <div class="top_items">
                             <div class="row mb-2">
                                 <div class="col-md-12">
@@ -148,12 +145,12 @@
                                                 <div class="custom-control custom-checkbox select_all" id="old_show">
                                                     <input type="checkbox" class="custom-control-input all" id="checkmeout0">
                                                     <label class="custom-control-label select_all" for="checkmeout0">Select All
-                                                        {{ Session::get('agent_name') ? Session::get('agent_name') : 'Agent' }}</label>
+                                                        {{ getAgentNomenclature() }}</label>
                                                 </div>
                                                 <div class="custom-control custom-checkbox show_alls" id="new_show">
                                                     <input type="checkbox" class="custom-control-input" id="show_all">
                                                     <label class="custom-control-label" for="show_all">Show All
-                                                        {{ Session::get('agent_name') ? Session::get('agent_name') : 'Agent' }}</label>
+                                                        {{ getAgentNomenclature() }}</label>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">

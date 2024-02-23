@@ -11,9 +11,9 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
         </div>
         <p class="text-muted text-center mt-2 mb-0">{{__("Profile Pic")}}</p>
     </div>
-    <div class="offset-md-2 col_md-6">
+    <div class="col-md-8">
         <span>{{__('Live OTP')}}</span>
-        <h4>{{isset($otp)?$otp: __('View OTP after Logging in the Driver App')}}</h4>
+        <h4>{{isset($otp)?$otp: __('View OTP after Logging in the '.getAgentNomenclature().' App')}}</h4>
     </div>
 </div>
 <span class="show_all_error invalid-feedback"></span>
@@ -78,14 +78,30 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             </span>
         </div>
     </div>
+    <div class="col-md-6">
+        <div class="form-group" id="warehouse_idInputEdit">
+            <label for="warehouse_id" class="control-label">{{__("ASSIGN WAREHOUSE")}}</label>
+            @php
+                $selectedWarehouseIds = $agent->warehouseAgent->pluck('id')->toArray();
+            @endphp
+            <select class="form-control select2-select" name="warehouse_id[]" id="warehouse_id" multiple>
+                @foreach ($warehouses as $warehouse)
+                    <option value="{{ $warehouse->id }}"  @if(in_array($warehouse->id, $selectedWarehouseIds)) selected @endif>{{ $warehouse->name }}</option>
+                @endforeach
+            </select>
+            <span class="invalid-feedback" role="alert">
+                <strong></strong>
+            </span>
+        </div>
+    </div>
 </div>
 
 
 
-{{-- <div class="row">
+<div class="row agent_icon">
     <div class="col-md-12">
         <div class="form-group" id="vehicle_type_idInputEdit">
-            <p class="text-muted mt-3 mb-2">{{__("TRANSPORT TYPE")}}</p>
+            <p class="text-muted mt-3 mb-2">{{__("TRANSPORT ICON")}}</p>
             <div class="radio radio-blue form-check-inline click cursors">
                 <input type="radio" id="onfoot" value="1" act="edit" name="vehicle_type_id" @if ($agent->vehicle_type_id == '1') checked
                 @endif>
@@ -111,13 +127,17 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
                 <img id="trucks_edit"
                     src="{{ $agent->vehicle_type_id == '5' ? asset('assets/icons/truck_blue.png') : asset('assets/icons/truck.png') }}">
             </div>
+            <div class="radio  radio-info form-check-inline click cursors mt-2">
+                <input type="radio" id="auto" value="6" name="vehicle_type_id" act="edit" @if ($agent->vehicle_type_id == '6') checked @endif>
+                <img id="auto_edit"  src="{{ $agent->vehicle_type_id == '6' ? asset('assets/icons/auto_blue.png') : asset('assets/icons/auto.png') }}">
+            </div>
             <span class="invalid-feedback" role="alert">
                 <strong></strong>
             </span>
 
         </div>
     </div>
-</div> --}}
+</div>
 
 <div class="row">
     <div class="col-md-12">
@@ -201,8 +221,8 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     <div class="col-md-6">
         <div class="form-group" id="{{$driver_registration_document->name}}Input">
             <label for="" class="control-label d-flex align-items-center justify-content-between">{{$driver_registration_document->name ? ucwords($driver_registration_document->name)  : ''}} 
-                @if(strtolower($driver_registration_document->file_type) == 'pdf' && (!empty($field_value)))
-                <a href="{{ Storage::disk('s3')->url($field_value) }}" download target="_blank"><i class="fa fa-eye" aria-hidden="true"></i></a>
+                @if(in_array(strtolower($driver_registration_document->file_type), ['pdf','image']) && (!empty($field_value)))
+                    <a href="{{ Storage::disk('s3')->url($field_value) }}" download target="_blank"><i class="fa fa-eye" aria-hidden="true"></i></a>
                 @endif
             </label>
             @if(strtolower($driver_registration_document->file_type) == 'text' || strtolower($driver_registration_document->file_type) == 'date')
@@ -211,7 +231,7 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
             @if(strtolower($driver_registration_document->file_type) == 'image')
             <input type="file" data-plugins="dropify" name="{{$driver_registration_document->name}}" accept="image/*" data-default-file="{{ (!empty($field_value)) ? $imgproxyurl.Storage::disk('s3')->url($field_value) : '' }}" class="dropify" />
             @elseif(strtolower($driver_registration_document->file_type) == 'pdf')
-            <input type="file" data-plugins="dropify" name="{{$driver_registration_document->name}}" accept=".pdf" class="dropify" />
+            <input type="file" data-plugins="dropify" name="{{$driver_registration_document->name}}" accept=".pdf" class="dropify" data-default-file="{{ $field_value ?? '' }}"/>
             @endif
             <span class="invalid-feedback" role="alert">
                 <strong></strong>
@@ -222,3 +242,9 @@ $imgproxyurl = 'https://imgproxy.royodispatch.com/insecure/fill/90/90/sm/0/plain
     @endforeach
     @endif
 </div>
+
+<script>
+    $(document).ready(function(){
+        $('.select2-select').select2();
+    });
+</script>

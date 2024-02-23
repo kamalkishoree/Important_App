@@ -1,4 +1,4 @@
-@extends('layouts.vertical', ['title' => 'Agent'])
+@extends('layouts.vertical', ['title' => getAgentNomenclature()])
 
 @section('css')
     <link href="{{ asset('assets/libs/select2/select2.min.css') }}" rel="stylesheet" type="text/css" />
@@ -11,7 +11,7 @@
 
     <link href="{{ asset('assets/libs/dropzone/dropzone.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('assets/libs/dropify/dropify.min.css') }}" rel="stylesheet" type="text/css" />
-    <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.6/css/intlTelInput.css'>
+    <link rel="stylesheet" href="{{ asset('telinput/css/intlTelInput.css') }}" type="text/css">
     <style>
         // workaround
         .intl-tel-input {
@@ -90,7 +90,7 @@
                                         <th>Phone</th>
                                         <th>Type</th>
                                         <th>Team</th>
-                                        <th>Transport Type</th>
+                                        <th>Transport Icon</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -184,7 +184,7 @@
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.7/js/intlTelInput.js"></script>
+    <script src="{{ asset('telinput/js/intlTelInput.js') }}"></script>
 
     <script src="{{ asset('assets/libs/datatables/datatables.min.js') }}"></script>
     <script src="{{ asset('assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>

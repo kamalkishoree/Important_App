@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header border-0">
-                <h4 class="modal-title">{{__("Add")}} {{ Session::get('agent_name') }}</h4>
+                <h4 class="modal-title">{{__("Add")}} {{ getAgentNomenclature() }}</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
             <form id="submitAgent" enctype="multipart/form-data">
@@ -34,7 +34,8 @@
                             <div class="form-group" id="phone_numberInput">
                                 <label for="phone_number" class="control-label">{{__("CONTACT NUMBER")}}</label>
                                 <div class="input-group">
-                                    <input type="text" name="phone_number" class="form-control" id="phone_number" placeholder={{__("Enter mobile number")}} maxlength="14">
+                                    <input type="text" name="phone_number" class="form-control phone_number" id="phone_number" placeholder={{__("Enter mobile number")}} maxlength="14">
+<!--                                     <input type="hidden" name="dialCode" id="dialCode" value="{{getCountryPhoneCode()}}"> -->
                                 </div>
                                 <span class="invalid-feedback" role="alert">
                                     <strong></strong>
@@ -84,7 +85,7 @@
                     <div class="row ">
                         <div class="col-md-12">
                             <div class="form-group" id="vehicle_type_idInput">
-                                <p class="text-muted mt-3 mb-2">{{__("TRANSPORT TYPE")}}</p>
+                                <p class="text-muted mt-3 mb-2">{{__("TRANSPORT ICON")}}</p>
                                 <div class="radio radio-blue form-check-inline click cursors">
                                     <input type="radio" id="onfoot" value="onfoot" name="vehicle_type_id" checked>
                                     <img id="foot" src="{{asset('assets/icons/walk.png')}}"> 

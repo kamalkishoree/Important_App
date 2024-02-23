@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\BaseController;
+use App\Http\Controllers\Api\OboPaymentController;
+
 use App\Model\{Client, ClientPreference, PaymentOption, PayoutOption};
 
 class PaymentOptionController extends BaseController
@@ -26,8 +28,8 @@ class PaymentOptionController extends BaseController
      */
     public function index()
     {
-        $payment_codes = array('razorpay', 'stripe','vnpay','ccavenue');
-        $payout_codes = array('cash', 'stripe', 'bank_account_m_india');
+        $payment_codes = array('razorpay', 'stripe','vnpay','ccavenue', 'khalti','obo','paystack','livee');
+        $payout_codes = array('cash', 'stripe', 'bank_account_m_india','razorpay','obo','livee');
         $payOption = PaymentOption::whereIn('code', $payment_codes)->get();
         $payoutOption = PayoutOption::whereIn('code', $payout_codes)->get();
         return view('payoption/index')->with(['payOption' => $payOption, 'payoutOption' => $payoutOption]);
@@ -237,12 +239,48 @@ class PaymentOptionController extends BaseController
                     $validatedData = $request->validate([
                         'ccavenue_merchant_id' => 'required',
                         'ccavenue_access_code' => 'required',
-                        'ccavenue_enc_key' => 'required'
+                        'ccavenue_enc_key' => 'required',
+                        'custom_url' => 'required'
                     ]);
                     $json_creds = json_encode(array(
                         'merchant_id' => $request->ccavenue_merchant_id,
                         'access_code' => $request->ccavenue_access_code,
-                        'enc_key' => $request->ccavenue_enc_key
+                        'enc_key' => $request->ccavenue_enc_key,
+                        'custom_url' => $request->custom_url
+                    ));
+                }
+                else if ((isset($method_name_arr[$key])) && (strtolower($method_name_arr[$key]) == 'khalti')) {
+                    $validatedData = $request->validate([
+                        'khalti_public_key' => 'required',
+                        'khalti_secret_key' => 'required'
+                    ]);
+                    $json_creds = json_encode(array(
+                        'api_key' => $request->khalti_public_key,
+                        'api_secret_key' => $request->khalti_secret_key
+                    ));
+                }
+                else if ((isset($method_name_arr[$key])) && (strtolower($method_name_arr[$key]) == 'obo')) {
+                    $validatedData = $request->validate([
+                       'obo_business_name' => 'required',
+                        'obo_client_id' => 'required',
+                        'obo_key_id' => 'required',
+                        'obo_market_place_id' => 'required',
+                    ]);
+                    $json_creds = json_encode(array(
+                        'obo_business_name' => $request->obo_business_name,
+                        'obo_client_id' => $request->obo_client_id,
+                        'obo_key_id' => $request->obo_key_id,
+                        'obo_market_place_id' => $request->obo_market_place_id,
+                    ));
+                }
+                else if ((isset($method_name_arr[$key])) && (strtolower($method_name_arr[$key]) == 'livee')) {
+                    $request->validate([
+                        'livee_merchant_key' => 'required',
+                        'livee_resource_key' => 'required',
+                    ]);
+                    $json_creds = json_encode(array(
+                        'livee_merchant_key' => $request->livee_merchant_key,
+                        'livee_resource_key' => $request->livee_resource_key,
                     ));
                 }
             }
@@ -298,6 +336,16 @@ class PaymentOptionController extends BaseController
                     $json_creds = json_encode(array(
                         'api_key' => $request->razorpay_payout_api_key,
                         'secret_key' => $request->razorpay_payout_secret_key
+                    ));
+                }
+                else if ((isset($method_name_arr[$key])) && (strtolower($method_name_arr[$key]) == 'livee')) {
+                    $request->validate([
+                        'livee_payout_merchant_key' => 'required',
+                        'livee_payout_resource_key' => 'required',
+                    ]);
+                    $json_creds = json_encode(array(
+                        'livee_payout_merchant_key' => $request->livee_payout_merchant_key,
+                        'livee_payout_resource_key' => $request->livee_payout_resource_key,
                     ));
                 }
             }

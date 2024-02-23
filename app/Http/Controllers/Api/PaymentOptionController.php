@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 // use Omnipay\Common\CreditCard;
 use App\Traits\ApiResponser;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Controllers\Api\{BaseController, RazorpayGatewayController,VnpayController,CcavenueController};
+use App\Http\Controllers\Api\{BaseController, RazorpayGatewayController,VnpayController,CcavenueController, KhaltiGatewayController,OboPaymentController};
 use App\Model\{Client, ClientPreference, Agent, PaymentOption};
 
 class PaymentOptionController extends BaseController{
@@ -19,9 +19,9 @@ class PaymentOptionController extends BaseController{
 
     public function getPaymentOptions(Request $request, $page = ''){
         if($page == 'wallet'){
-            $code = array('paypal', 'stripe', 'yoco', 'paylink','razorpay','simplify','square','vnpay','ccavenue');
+            $code = array('paypal', 'stripe', 'yoco', 'paylink','razorpay','simplify','square','vnpay','ccavenue', 'khalti','flutterwave','paystack','livee');
         }else{
-            $code = array('cod', 'paypal', 'payfast', 'stripe', 'mobbex','yoco','paylink','razorpay','gcash','simplify','square');
+            $code = array('cod', 'paypal', 'payfast', 'stripe', 'mobbex','yoco','paylink','razorpay','gcash','simplify','square','flutterwave','paystack');
         }
         $payment_options = PaymentOption::whereIn('code', $code)->where('status', 1)->get(['id', 'code', 'title', 'credentials', 'off_site']);
         foreach($payment_options as $option){
@@ -39,6 +39,7 @@ class PaymentOptionController extends BaseController{
     }
 
     public function postPayment(Request $request, $gateway = ''){
+
         if(!empty($gateway)){
             $header = $request->header();
             $client = Client::where('database_name', $header['client'][0])->first();
@@ -105,6 +106,19 @@ class PaymentOptionController extends BaseController{
         return $gateway->paywebView($request);
     }
 
+    public function postPaymentVia_khalti(Request $request){
+        $gateway = new KhaltiGatewayController();
+        return $gateway->khaltiPurchase($request);
+    }
+    public function postPaymentVia_obo(Request $request){
+        $gateway = new OboPaymentController();
+          return $gateway->mobilePay($request);
+    }
+
+    public function postPaymentVia_paystack(Request $request){
+        $gateway = new PaystackGatewayController();
+        return $gateway->paystackPurchase($request);
+    }
     // public function postPaymentVia_simplify(Request $request){
     //     $gateway = new SimplifyGatewayController();
     //     return $gateway->simplifyPurchase($request);
@@ -113,4 +127,11 @@ class PaymentOptionController extends BaseController{
     //     $gateway = new SquareGatewayController();
     //     return $gateway->squarePurchase($request);
     // }
+
+    public function postPaymentVia_livee(Request $request)
+    {
+        $gateway = new LiveePaymentController();
+        return $gateway->mobilePay($request);
+    }
+
 }

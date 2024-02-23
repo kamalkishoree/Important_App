@@ -33,17 +33,22 @@ class AgentSMSTemplateSeeder extends Seeder
             [
               'slug' => 'driver-accepted',
               'tags' => '',
-              'label' => 'Driver Accepted',
+              'label' => getAgentNomenclature().' Accepted',
               'content' => '',
             ],
             [
               'slug' => 'driver-rejected',
               'tags' => '',
-              'label' => 'Driver Rejected',
+              'label' => getAgentNomenclature().' Rejected',
               'content' => '',
+            ],
+            [
+              'slug' => 'friend-sms',
+              'tags' => '{user-name},{customer-name},{agent-name},{car-model},{plate-no},{track-url}',
+              'label' => 'Friend-sms',
+              'content' => 'Hi {user-name}, {customer-name} have booked a ride for you. {agent-name} in our {car-model} with license plate {plate-no} has been assgined',
             ]
         );
-        
         if($option_count == 0)
       {
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
@@ -57,7 +62,7 @@ class AgentSMSTemplateSeeder extends Seeder
               $ops = AgentSmsTemplate::where('slug', $option['slug'])->first();
  
               if ($ops !== null) {
-                //   $ops->update(['content' => $option['content']]);
+                $ops->update(['tags' => $option['tags']]);
               } else {
                   $ops = AgentSmsTemplate::create([
                     'slug' => $option['slug'],

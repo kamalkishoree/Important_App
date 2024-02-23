@@ -32,19 +32,13 @@ class CustomerController extends Controller
     {
         $customers = Customer::orderBy('created_at', 'DESC')->get();
         return Datatables::of($customers)
+                ->addColumn('name', function ($customers) {
+                    $name = '<a href="'.route("tasks.index").'?customer_id='.$customers->id.'">'.$customers->name.'</a>';
+                    return $name;
+                })
                 ->editColumn('action', function ($customers) use ($request) {
                     $action = '<div class="form-ul" style="width: 60px;">
                                 <div class="inner-div"> <a href="javascript:void(0)" userId="'.$customers->id.'" class="action-icon editIcon"> <i class="mdi mdi-square-edit-outline"></i></a></div>';
-                                // <div class="inner-div">
-                                //     <form id="customerdelete'.$customers->id.'" method="POST" action="'.route('customer.destroy', $customers->id).'">
-                                //         <input type="hidden" name="_token" value="'.csrf_token().'" />
-                                //         <input type="hidden" name="_method" value="DELETE">
-                                //         <div class="form-group">
-                                //             <button type="button" class="btn btn-primary-outline action-icon"> <i class="mdi mdi-delete" customerid="'.$customers->id.'"></i></button>
-
-                                //         </div>
-                                //     </form>
-                                // </div>
                     $action .='</div>';
                     return $action;
                 })
@@ -55,6 +49,8 @@ class CustomerController extends Controller
                                 return true;
                             }else if (!empty($row['email']) && Str::contains(Str::lower($row['email']), Str::lower($request->get('search')))) {
                                 return true;
+                            }else if (!empty($row['dial_code']) && Str::contains(Str::lower($row['dial_code']), Str::lower($request->get('search')))) {
+                                return true;
                             }else if (!empty($row['phone_number']) && Str::contains(Str::lower($row['phone_number']), Str::lower($request->get('search')))) {
                                 return true;
                             }
@@ -62,6 +58,7 @@ class CustomerController extends Controller
                         });
                     }
                 })
+                ->rawColumns(['action', 'name'])
                 ->make(true);
     }
 
@@ -135,10 +132,12 @@ class CustomerController extends Controller
         $rule = $this->validationRules();
         $validation  = Validator::make($request->all(), $rule)->validate();
 
+        //pr($request);
         $data = [
             'name' => $request->name,
             'email' => $request->email,
             'phone_number' => $request->phone_number,
+            'dial_code' => $request->dialCode,
         ];
 
 
@@ -215,6 +214,7 @@ class CustomerController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'phone_number' => $request->phone_number,
+            'dial_code' => $request->dialCode,
         ];
 
         $customer->update($data);

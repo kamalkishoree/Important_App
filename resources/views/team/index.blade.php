@@ -105,7 +105,7 @@
 
         @foreach ($teams as $index => $team)
         <div class="col-xl-4 team-agent-list" id="team_agents_{{ $team->id }}" @if ($index !=0) style="display:none;" @endif>
-            <div class="card-box">
+            <div class="card-box side_table">
                 <div class="dropdown float-right">
                     <a href="#" class="dropdown-toggle arrow-none card-drop" data-toggle="dropdown" aria-expanded="false">
                         <i class="mdi mdi-dots-vertical"></i>
@@ -120,7 +120,7 @@
                     </div>
                 </div>
 
-                <h4 class="header-title mb-3">{{ Session::get('agent_name') ? Session::get('agent_name') : __('Agent') }}</h4>
+                <h4 class="header-title mb-3">{{__(getAgentNomenclature()) }}</h4>
 
                 <div class="table-responsive">
                     <table class="table table-borderless table-nowrap table-hover table-centered m-0">

@@ -21,8 +21,13 @@
     </div>
     <div class="col-lg-4 col-sm-6 mb-lg-0 mb-3">
         <div class="form-group" id="phone_numberInputEdit">
-            {!! Form::label('title', __('Phone Number'),['class' => 'control-label']) !!}
-            {!! Form::text('phone_number', $customer->phone_number, ['class' => 'form-control']) !!}
+            {!! Form::label('title', __('Phone Number'),['class' => 'control-label']) !!}<br/>
+            <div class="input-group">
+                {!! Form::text('phone_number', $customer->phone_number, ['class' => 'form-control phone_number', 'id'=>'phone_number']) !!}
+                
+            </div>
+            <input type="hidden" id="dialCode" name="dialCode" value="{{$customer->dial_code}}">
+            <input type="hidden" id="countryCode" name="countryCode" value="{{getCountryCode($customer->dial_code)}}">
             <span class="invalid-feedback" role="alert">
                 <strong></strong>
             </span>
@@ -79,7 +84,8 @@
         </div>
         <div class="col-lg-4 col-md-3 mb-lg-0 mb-3">
             <div class="form-group">
-                <input type="text" id="edit{{$i}}-phone_number" name="address_phone_number[]" class="form-control" placeholder="{{__('Phone Number')}}" value="{{$loc->phone_number}}">
+                <input type="text" id="edit{{$i}}-phone_number" name="address_phone_number[]" class="form-control phone_number" placeholder="{{__('Phone Number')}}" value="{{$loc->phone_number}}">
+<!--                 <input type="hidden" name="dialCode" id="dialCode" value="{{getCountryPhoneCode()}}"> -->
                 <span class="invalid-feedback" role="alert">
                     <strong></strong>
                 </span>

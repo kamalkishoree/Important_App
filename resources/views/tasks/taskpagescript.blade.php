@@ -1,6 +1,9 @@
 <script>
 
     $(document).ready(function() {
+
+
+        
         var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
         hash = hashes[0].split('=');
         if(hash[0] == 'status'){
@@ -11,7 +14,6 @@
 
         initializeRouteListing();
         function initializeRouteListing(){
-
             $('.agents-datatable').DataTable({
                 "dom": '<"toolbar">Bfrtip',
                 "destroy": true,
@@ -19,17 +21,20 @@
                 "processing": true,
                 "serverSide": true,
                 "responsive": true,
-                "iDisplayLength": 10,
+                "iDisplayLength": 20,
                 "paging": true,
                 "lengthChange" : true,
                 "searching": true,
-                // "ordering": true,
                 language: {
-                            search: "",
-                            paginate: { previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>" },
-                            searchPlaceholder: "{{__('Search Routes')}}",
-                            'loadingRecords': '&nbsp;',
-                            'sProcessing': '<div class="spinner" style="top: 90% !important;"></div>'
+                    search: "",
+                    paginate: { previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>" },
+                    searchPlaceholder: "{{__('Search Routes')}}",
+                    'loadingRecords': '&nbsp;',
+                    //'sProcessing': '<div class="spinner" style="top: 90% !important;"></div>'
+                    'sProcessing':function(){
+                        spinnerJS.showSpinner();
+                        spinnerJS.hideSpinner();
+                    }
                 },
                 drawCallback: function () {
                     $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
@@ -43,17 +48,19 @@
                 }],
                 ajax: {
                     url: "{{url('task/filter')}}",
-                    // "dataSrc": "",
                     headers: {
                         'X-CSRF-Token': '{{ csrf_token() }}',
                     },
                     data: function (d) {
-                        d.search = $('input[type="search"]').val();
+                        // d.search = $('input[type="search"]').val();
+                        d.search = $('.agents-datatable').DataTable().search()
                         d.routesListingType = $('#routes-listing-status').val();
+                        d.warehouseListingType = $('#search_warehouse').val();
+                        d.warehouseManagerId = $('#warehouse_manager').val();
                         d.imgproxyurl = '{{$imgproxyurl}}';
+                        d.customer_id = $("#customer_id").val();
                     }
                 },
-               // order: dataTableColumnSort(),
                 columns: dataTableColumn(),
             });
         }
@@ -74,19 +81,41 @@
                     {data: 'id', name: 'id', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                         return '<input type="checkbox" class="single_driver_check" name="driver_id[]" id="single_driver" value="'+full.id+'">';
                     }},
-                    // {data: 'order_number', name: 'order_number', orderable: true, searchable: false},
-                    {data: 'customer_id', name: 'customer_id', orderable: true, searchable: false},
                     {data: 'order_number', name: 'order_number', orderable: true, searchable: false , "mRender": function ( data, type, full ) {
-                        if(full.request_type=='D')
-                        return full.order_number+' (Delivery)';
-                        
-                        return full.order_number+' (Pickup)';
-
+                        return full.order_number;
                     }},
-                    {data: 'customer_name', name: 'customer_name', orderable: true, searchable: false},
+                    {data: 'customer_id', name: 'customer_id', orderable: true, searchable: false},
+                    {data: 'customer_name', name: 'customer_name', orderable: true, searchable: true},
                     {data: 'phone_number', name: 'phone_number', orderable: true, searchable: false},
-                    {data: 'agent_name', name: 'agent_name', orderable: true, searchable: false},
-                    {data: 'order_time', name: 'order_time', orderable: true, searchable: false},
+                    {data: 'type', name: 'type', orderable: true, searchable: false},
+                    {data: 'agent_name', name: 'agent_name', orderable: true, searchable: false, "mRender": function ( data, type, full ) {
+                        if(full.is_dispatcher_allocation == 1)
+                        {
+                            var anchorTag = '<a  href="#" data-toggle="modal" onclick="getRouteModal(' + full.id + ')" data-id="' + full.id + '">Assign Agent Modal</a>';
+                            return anchorTag;
+                        }else{
+                        if(full.status=='unassigned')
+                        {
+                            var selectbox= '<select name="agent_name_id" id="agent_name_id" data-id="'+full.id+'" class="form-control select_agent">';
+                            selectbox+='<option value=""> Select {{__(getAgentNomenclature()) }} </option>';
+                            @foreach ($agents as $item)
+                            @php
+                                $checkAgentActive = ($item->is_available == 1) ? ' ('.__('Online').')' : ' ('.__('Offline').')';
+                            @endphp
+                            selectbox+='<option value="{{$item->id}}">{{ ucfirst($item->name). $checkAgentActive}}</option>';
+                            @endforeach
+                            selectbox+='</select>';
+                            return selectbox;
+
+                        }else{
+                            return full.order_number;
+                        }
+                    }
+                    }},
+                    {data: 'order_time', name: 'order_time', orderable: true, searchable: false, "mRender": function ( data, type, full ) {
+
+                        return '<div class="datetime_div"><i class="mdi mdi-av-timer"></i> '+full.order_time+'</div>';
+                    }},
                     {data: 'short_name', name: 'short_name', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                         var shortName = JSON.parse(full.short_name.replace(/&quot;/g,'"'));
                         var routes = '';
@@ -95,58 +124,126 @@
                         });
                         return routes;
                     }},
-                    {data: 'track_url', name: 'track_url', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
-                        var trackUrl = full.track_url;
-                        return '<a onclick="window.open(this.href,"_blank");return false;" href="'+trackUrl+'">'+'{{__("Track")}}'+'</a>';
-                    }},
-                    {data: 'track_url', name: 'track_url', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
-                        return '<button class="showTaskProofs btn btn-primary-outline action-icon" value="'+full.id+'"><i class="fe-layers"></i></button>';
-                    }},
                     {data: 'order_cost', name: 'order_cost', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                         return '<button class="showaccounting btn btn-primary-outline action-icon setcolor" value="'+full.id+'">'+full.order_cost+'</button>';
                     }},
-                    {data: 'updated_at', name: 'updated_at', orderable: true, searchable: false},
+                    {data: 'created_at', name: 'created_at', orderable: true, searchable: false},
+                    // {data: 'updated_at', name: 'updated_at', orderable: true, searchable: false},
                     {data: 'action', name: 'action', orderable: true, searchable: false}
                 ];
             }else{
                 return [
-                    // {data: 'order_number', name: 'order_number', orderable: true, searchable: false},
+                    {data: 'order_number', name: 'order_number', orderable: true, searchable: false , "mRender": function ( data, type, full ) {
+                        return full.order_number;
+                    }},
                     {data: 'customer_id', name: 'customer_id', orderable: true, searchable: false},
-                    {data: 'order_number', name: 'order_number', orderable: true, searchable: false},
                     {data: 'customer_name', name: 'customer_name', orderable: true, searchable: false},
                     {data: 'phone_number', name: 'phone_number', orderable: true, searchable: false},
-                    {data: 'agent_name', name: 'agent_name', orderable: true, searchable: false},
+                    {data: 'type', name: 'type', orderable: true, searchable: false},
+                    {data: 'agent_name', name: 'agent_name', orderable: true, searchable: false, "mRender": function ( data, type, full )
+                    
+                    {
+                        if(full.is_dispatcher_allocation == 1)
+                        {
+                            var anchorTag = '<a  href="#" data-toggle="modal" onclick="getRouteModal(' + full.id + ')" data-id="' + full.id + '">Assign Agent Modal</a>';
+                            return anchorTag;
+                        }else{
+                            return full.agent_name;
+                        }
+                    }},
+
+
+                     
                     {data: 'order_time', name: 'order_time', orderable: true, searchable: false},
                     {data: 'short_name', name: 'short_name', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                         var shortName = JSON.parse(full.short_name.replace(/&quot;/g,'"'));
                         var routes = '';
                         $.each(shortName, function(index, elem) {
-                            routes += '<div class="address_box"><span class="'+elem.pickupClass+'">'+elem.taskType+'</span> <span class="short_name">'+elem.shortName+'</span> <label data-toggle="tooltip" data-placement="bottom" title="'+elem.toolTipAddress+'">'+elem.address+'</label></div>';
+                            routes += '<div class="address_box sdsd"><span class="'+elem.pickupClass+'">'+elem.taskType+'</span> <span class="short_name">'+elem.shortName+'</span> <label data-toggle="tooltip" data-placement="bottom" title="'+elem.toolTipAddress+'">'+elem.address+'</label></div>';
                         });
                         return routes;
                     }},
-                    {data: 'track_url', name: 'track_url', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
-                        var trackUrl = full.track_url;
-                        return '<a onclick="window.open(this.href,"_blank");return false;" href="'+trackUrl+'">Track</a>';
-                    }},
-                    {data: 'track_url', name: 'track_url', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
-                        return '<button class="showTaskProofs btn btn-primary-outline action-icon" value="'+full.id+'"><i class="fe-layers"></i></button>';
-                    }},
+
                     {data: 'order_cost', name: 'order_cost', orderable: false, searchable: false, "mRender": function ( data, type, full ) {
                         return '<button class="showaccounting btn btn-primary-outline action-icon setcolor" value="'+full.id+'">'+full.order_cost+'</button>';
                     }},
-                    {data: 'updated_at', name: 'updated_at', orderable: true, searchable: false},
+                    {data: 'created_at', name: 'created_at', orderable: true, searchable: false},
+                    // {data: 'updated_at', name: 'updated_at', orderable: true, searchable: false},
                     {data: 'action', name: 'action', orderable: true, searchable: false}
                 ]
             }
         }
 
 
-    });
 
+        
+    });
+    function getRouteModal(id)
+
+{
+        $.ajax({
+            type: "POST",
+            url: '{{route("task.task_route")}}',
+            data: {_token: CSRF_TOKEN, order_id: id},
+            success: function(response) {
+        
+              $('#taskRouteModal').modal();
+              $('#taskModalContent').html(response.html)
+            },
+            error: function(errors){
+           
+            }
+        });
+    
+
+}
     function handleClick(myRadio) {
         $('#getTask').submit();
     }
+
+    $(document).on('change', '.select_agent', function() {
+        if($(this).val()!='')
+        {
+            var order_id = Array($(this).attr('data-id'));
+            var task_id = $(this).attr('task-id');
+
+            $.ajax({
+                type: "POST",
+                url: '{{route("assign.agent")}}',
+                data: {_token: CSRF_TOKEN, orders_id: order_id, agent_id: $(this).val(),task_id:task_id},
+                success: function( msg ) {
+                    $.toast({
+                    heading:"Success!",
+                    text : "{{__(getAgentNomenclature()) }} assigned successfully.",
+                    showHideTransition : 'slide',
+                    bgColor : 'green',
+                    textColor : '#eee',
+                    allowToastClose : true,
+                    hideAfter : 5000,
+                    stack : 5,
+                    textAlign : 'left',
+                    position : 'top-right'
+                    });
+                  location.reload();
+                },
+                error: function(errors){
+                    $.toast({
+                    heading:"Error!",
+                    text : "{{__(getAgentNomenclature()) }} can not be assigned.",
+                    showHideTransition : 'slide',
+                    bgColor : 'red',
+                    textColor : '#eee',
+                    allowToastClose : true,
+                    hideAfter : 5000,
+                    stack : 5,
+                    textAlign : 'left',
+                    position : 'top-right'
+                    });
+                    location.reload();
+                }
+            });
+        }
+    });
 
     //this is for task detail pop-up
     $(document).on('click', '.showtasks', function() {
@@ -167,8 +264,6 @@
                 $('.repet').remove();
                 var taskname = '';
                 $.each(data.task, function(index, elem) {
-
-
                     switch (elem.task_type_id) {
                         case 1:
                             taskname = 'Pickup task';
@@ -191,15 +286,11 @@
                         '</h5><div class="wd-10"><img class="vt-top" src="{{ asset('demo/images/ic_location_blue_1.png') }}"></div><div class="wd-90"><h6>' +
                         elem.location.address + '</h6><span>' +short_name+
                         '</span><h5 class="mb-1"><span></span></h5><div class="row"><div class="col-md-6"></div><div class="col-md-6 text-right"><button class="assigned-btn">' +
-                        data.status + '</button></div></div></div></div></div></div>');
-
-
+                        data.status + '</button></div></div></div></div></div></div>'
+                    );
                 });
-
                 $('#task-list-modal').modal('show');
-
             }
-
         });
     });
 
@@ -221,7 +312,6 @@
                 _token: CSRF_TOKEN,
             },
             success: function(data) {
-
                 $("#base_distance").text(round(data.base_distance));
                 $("#actual_distance").text(data.actual_distance);
                 $("#billing_distance").text(Math.max(0, round(data.actual_distance - data.base_distance, 2)));
@@ -239,6 +329,14 @@
                 $("#distance_fee").text(data.distance_fee + ' (' + data.distance_type + ')');
                 $("#driver_type").text(data.driver_type);
 
+                if(data.is_cab_pooling == 1){
+                    $("#no_of_seats").text(data.available_seats+"/"+data.no_seats_for_pooling);
+                    $("#seatsspan_acc").show();
+                }else{
+                    $("#seatsspan_acc").hide();
+                }
+
+                $("#toll_fee").text(data.toll_fee);
                 $("#order_cost").text(data.order_cost);
                 $("#driver_cost").text(data.driver_cost ? data.driver_cost : 0.00 );
 
@@ -250,9 +348,7 @@
                 $("#freelancer_commission_percentage").text(data.freelancer_commission_percentage);
                 $("#freelancer_commission_fixed").text(data.freelancer_commission_fixed);
                 $('#task-accounting-modal').modal('show');
-
             }
-
         });
     });
 
@@ -370,6 +466,7 @@
     $(document).on('click', '.showaccounting', function() {
         $('#assign_agent').modal('show');
     });
+
     function round(value, exp) {
         if (typeof exp === 'undefined' || +exp === 0)
             return Math.round(value);
@@ -434,6 +531,9 @@
                 data: {_token: CSRF_TOKEN, orders_id: order_id, agent_id: agent_id},
                 success: function( msg ) {
                     location.reload();
+                },
+                error: function(errors){
+                    location.reload();
                 }
             });
         });
@@ -478,6 +578,61 @@
 
             }
         });
+
+        function submitProductImportForm() {
+            var form = document.getElementById('submit_bulk_upload_task');
+            var formData = new FormData(form);
+            var data_uri = "{{route('tasks.importCSV')}}";
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                type: "post",
+                headers: {
+                    Accept: "application/json"
+                },
+                url: data_uri,
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    if(response.status == 'Success')
+                    {var color = 'green';var heading="Success!";}else{var color = 'red';var heading="Error!";}
+                    $.toast({
+                    heading:heading,
+                    text : response.message,
+                    showHideTransition : 'slide',
+                    bgColor : color,
+                    textColor : '#eee',
+                    allowToastClose : true,
+                    hideAfter : 5000,
+                    stack : 5,
+                    textAlign : 'left',
+                    position : 'top-right'
+                    });
+                    if (response.status == 'Success') {
+                            $("#upload-bulk-tasks .close").click();
+                            location.reload();
+                    } else {
+                        $("#upload-bulk-tasks .show_all_error.invalid-feedback").show();
+                        $("#upload-bulk-tasks .show_all_error.invalid-feedback").text(response.message);
+                    }
+                },
+                beforeSend: function() {
+
+                    $(".loader_box").show();
+                },
+                complete: function() {
+                    $(".loader_box").hide();
+                    setTimeout(function() {
+                        location.reload();
+                    }, 2000);
+
+                }
+            });
+        }
 
 </script>
 

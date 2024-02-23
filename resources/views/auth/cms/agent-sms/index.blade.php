@@ -1,4 +1,4 @@
-@extends('layouts.vertical', ['demo' => 'creative', 'title' => 'Agent SMS'])
+@extends('layouts.vertical', ['demo' => 'creative', 'title' => getAgentNomenclature().' SMS'])
 @section('css')
 <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/bootstrap.tagsinput/0.8.0/bootstrap-tagsinput.css" rel="stylesheet">
@@ -56,13 +56,20 @@
                     </div>
                     <div class="row">
                         <input type="hidden" id="template_id" value="">
-                        <div class="col-lg-12">
+                        <div class="col-lg-12 mb-2">
                             <div class="row">
-                                <div class="col-md-10 mb-2">
+
+                                <div class="col-12 mb-2">
+                                    <label for="title" class="control-label">{{ __("Template Id") }}</label>
+                                    <input class="form-control " id="sms_template_id" placeholder="Template Id" name="sms_template_id" type="text">
+                                    <span class="text-danger error-text updatetitleError"></span>
+                                </div>
+
+                                <div class="col-md-12 mb-2">
                                     <label for="title" class="control-label">{{ __("Content") }}</label>
                                     <textarea class="form-control" id="content" placeholder="Meta Keyword" rows="6" name="meta_keyword" cols="10" maxlength="250"></textarea>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-12">
                                     <label for="title" class="control-label">{{ __("Tags") }}:-<div id="tags" disabled=""></div></label>
                                 </div>
                             </div>
@@ -94,6 +101,7 @@
                     if(response.data){
                         $('#edit_page_content #tags').html(response.data.tags);
                         $('#edit_page_content #content').val(response.data.content);
+                        $('#edit_page_content #sms_template_id').val(response.data.template_id);
                     }else{
                       $(':input:text').val('');
                       $('textarea').val('');
@@ -110,7 +118,8 @@
             var update_url = "{{route('cms.agent-sms.template.update')}}";
             let content = $('#edit_page_content #content').val();
             let template_id = $('#edit_page_content #template_id').val();
-            var data = {content: content, template_id:template_id};
+            let sms_template_id = $('#edit_page_content #sms_template_id').val();
+            var data = {content: content, template_id:template_id,sms_template_id:sms_template_id};
             $.post(update_url, data, function(response) {
               $.NotificationApp.send("Success", response.message, "top-right", "#5ba035", "success");
               setTimeout(function() {

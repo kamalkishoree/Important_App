@@ -38,7 +38,7 @@
         }
 
         function initDataTable(table, status) {
-            // console.log(table);
+            var edit_agent_route = "{{ route('agent.edit', ':id') }}";
             var geo_filter = $("#geo_filter").val();
             var tag_filter = $("#tag_filter").val();
             var columnsDynamic =   [{
@@ -72,7 +72,7 @@
                     orderable: true,
                     searchable: false,
                     "mRender": function(data, type, full) {
-                        return full.name;
+                        return '<div class="edit-icon-div"><a href="'+edit_agent_route.replace(":id", full.id)+'" class="child-name editIcon" agentId="'+full.id+'">'+full.name+'</a><a href="'+edit_agent_route.replace(":id", full.id)+'" class="child-icon editIcon d-none"  agentId="'+full.id+'"> <i class="mdi mdi-square-edit-outline"></i></a></div>';
                     }
                 },
                 {
@@ -90,6 +90,12 @@
                 {
                     data: 'team',
                     name: 'team',
+                    orderable: true,
+                    searchable: false
+                },
+                {
+                    data: 'warehouse',
+                    name: 'warehouse',
                     orderable: true,
                     searchable: false
                 },
@@ -130,6 +136,42 @@
                     data: 'pay_to_driver',
                     name: 'pay_to_driver',
                     orderable: true,
+                    searchable: false
+                },
+                {
+                    data: 'subscription_plan',
+                    name: 'subscription_plan',
+                    orderable: true,
+                    searchable: false
+                },
+                {
+                    data: 'subscription_expiry',
+                    name: 'subscription_expiry',
+                    orderable: true,
+                    searchable: false
+                },
+                {
+                    data: 'state',
+                    name: 'state',
+                    orderable: false,
+                    searchable: false,
+                    "mRender": function(data, type, full) {
+                        var val = '<span class="badge badge-pill badge-success pill-state">Active</span>';
+                           if(data == 1){
+                            val = '<span class="badge badge-pill badge-success pill-state">Active</span>';
+                           } else if(data == 2){
+                            val = '<span class="badge badge-pill badge-secondary pill-state">Blocked</span>';
+                           }else{
+                            val = '<span class="badge badge-pill badge-danger pill-state">Deleted</span>';
+                           }
+
+                         return val;
+                    }
+                },
+                {
+                    data: 'agent_rating',
+                    name: 'agent_rating',
+                    orderable: false,
                     searchable: false
                 },
                 {
@@ -181,16 +223,20 @@
                 "serverSide": true,
                 "responsive": true,
                 "processing": true,
-                "iDisplayLength": 10,
+                "iDisplayLength": 20,
                 language: {
                     search: "",
                     paginate: {
                         previous: "<i class='mdi mdi-chevron-left'>",
                         next: "<i class='mdi mdi-chevron-right'>"
                     },
-                    searchPlaceholder: "{{__('Search Agent')}}",
+                    searchPlaceholder: "{{__('Search '.getAgentNomenclature())}}",
                     'loadingRecords': '&nbsp;',
-                    'processing': '<div class="spinner"></div>'
+                    //'processing': '<div class="spinner"></div>'
+                    'processing':function(){
+                        spinnerJS.showSpinner();
+                        spinnerJS.hideSpinner();
+                    }
                 },
                 drawCallback: function() {
                     $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
@@ -227,22 +273,19 @@
         }
         var mobile_number = '';
 
-        // $('#add-agent-modal .xyz').val(mobile_number.getSelectedCountryData().dialCode);
         $(document).on("change", "#add-agent-modal .xyz", function(e) {
-            var phonevalue = $('.xyz').val();
+           var phonevalue = $('.xyz').val();
             $("#countryCode").val(mobile_number.getSelectedCountryData().dialCode);
         });
 
         function phoneInput() {
-            // console.log('phone working');
             var input = document.querySelector(".xyz");
 
-            var mobile_number_input = document.querySelector(".xyz");
-            mobile_number = window.intlTelInput(mobile_number_input, {
-                separateDialCode: true,
-                hiddenInput: "full_number",
-                initialCountry: '{{$selectedCountryCode}}',
-                utilsScript: "{{ asset('telinput/js/utils.js') }}",
+            $("#phone_number").intlTelInput({
+                separateDialCode:true,
+                preferredCountries:["{{getCountryCode()}}"],
+                initialCountry:"{{getCountryCode()}}",
+                utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.18/js/utils.js",
             });
 
         }
@@ -252,56 +295,71 @@
                 backdrop: 'static',
                 keyboard: false
             });
+            
             makeTag();
 
             phoneInput();
+
+            select2();
+            var instance = $("[name=phone_number]");
+            instance.intlTelInput();
+            $("#countryCode").val(instance.intlTelInput('getSelectedCountryData').dialCode);
+            
         });
 
         jQuery('#onfoot').click();
 
-        $(document).on('click', '.click', function() { //alert('a');
+        $(document).on('click', '.click', function() {
             var radi = $(this).find('input[type="radio"]');
             radi.prop('checked', true);
             var check = radi.val();
             var act = radi.attr('act');
+            var walk = "{{ asset('assets/icons/walk.png') }}";
+            var cycle ="{{ asset('assets/icons/cycle.png') }}";
+            var bike ="{{ asset('assets/icons/bike.png') }}";
+            var car ="{{ asset('assets/icons/car.png') }}";
+            var truck = "{{ asset('assets/icons/truck.png') }}";
+            var auto = "{{ asset('assets/icons/auto.png') }}";
             switch (check) {
-                case "1":
-                    $("#foot_" + act).attr("src", "{{ asset('assets/icons/walk_blue.png') }}");
-                    $("#cycle_" + act).attr("src", "{{ asset('assets/icons/cycle.png') }}");
-                    $("#bike_" + act).attr("src", "{{ asset('assets/icons/bike.png') }}");
-                    $("#cars_" + act).attr("src", "{{ asset('assets/icons/car.png') }}");
-                    $("#trucks_" + act).attr("src", "{{ asset('assets/icons/truck.png') }}");
-                    break;
-                case "2":
-                    $("#foot_" + act).attr("src", "{{ asset('assets/icons/walk.png') }}");
-                    $("#cycle_" + act).attr("src", "{{ asset('assets/icons/cycle_blue.png') }}");
-                    $("#bike_" + act).attr("src", "{{ asset('assets/icons/bike.png') }}");
-                    $("#cars_" + act).attr("src", "{{ asset('assets/icons/car.png') }}");
-                    $("#trucks_" + act).attr("src", "{{ asset('assets/icons/truck.png') }}");
-                    break;
-                case "3":
-                    $("#foot_" + act).attr("src", "{{ asset('assets/icons/walk.png') }}");
-                    $("#cycle_" + act).attr("src", "{{ asset('assets/icons/cycle.png') }}");
-                    $("#bike_" + act).attr("src", "{{ asset('assets/icons/bike_blue.png') }}");
-                    $("#cars_" + act).attr("src", "{{ asset('assets/icons/car.png') }}");
-                    $("#trucks_" + act).attr("src", "{{ asset('assets/icons/truck.png') }}");
-                    break;
-                case "4":
-                    $("#foot_" + act).attr("src", "{{ asset('assets/icons/walk.png') }}");
-                    $("#cycle_" + act).attr("src", "{{ asset('assets/icons/cycle.png') }}");
-                    $("#bike_" + act).attr("src", "{{ asset('assets/icons/bike.png') }}");
-                    $("#cars_" + act).attr("src", "{{ asset('assets/icons/car_blue.png') }}");
-                    $("#trucks_" + act).attr("src", "{{ asset('assets/icons/truck.png') }}");
-                    break;
-                case "5":
-                    $("#foot_" + act).attr("src", "{{ asset('assets/icons/walk.png') }}");
-                    $("#cycle_" + act).attr("src", "{{ asset('assets/icons/cycle.png') }}");
-                    $("#bike_" + act).attr("src", "{{ asset('assets/icons/bike.png') }}");
-                    $("#cars_" + act).attr("src", "{{ asset('assets/icons/car.png') }}");
-                    $("#trucks_" + act).attr("src", "{{ asset('assets/icons/truck_blue.png') }}");
-                    break;
+            case "1":
+            walk = "{{ asset('assets/icons/walk_blue.png') }}";
+            break;
+            case "2":
+            cycle = "{{ asset('assets/icons/cycle_blue.png') }}";
+            break;
+            case "3":
+            bike = "{{ asset('assets/icons/bike_blue.png') }}";
+            break;
+            case "4":
+            car = "{{ asset('assets/icons/car_blue.png') }}";
+            break;
+            case "5":
+            truck = "{{ asset('assets/icons/truck_blue.png') }}";
+            break;          
+            case "6":
+            auto = "{{ asset('assets/icons/auto_blue.png') }}";
+            break;          
             }
-        });
+            setIcon (act ,walk,cycle,bike,car,truck,auto);
+    
+            });
+            function setIcon (act ,walk,cycle,bike,car,truck,auto){
+
+            $("#foot_" + act).attr("src", walk);
+            $("#cycle_" + act).attr("src",cycle);
+            $("#bike_" + act).attr("src", bike);
+            $("#cars_" + act).attr("src",car);
+            $("#trucks_" + act).attr("src",truck);
+            $("#auto_" + act).attr("src",auto);
+        }
+
+        function select2(){
+            $("#warehouse_id").select2({
+                allowClear: true,
+                width: "resolve",
+                placeholder: "Select Warehouse"
+            });
+        }
 
         /* Get agent by ajax */
         $(document).on("click", ".editIcon", function(e) {
@@ -378,9 +436,7 @@
         });
 
         /* add Team using ajax*/
-        // $("#add-agent-modal #submitAgent").submit(function(e) {
-
-        // });
+        
         $(document).on("submit", "#submitAgent", function(e) {
             e.preventDefault();
             // $(document).on('click', '.submitAgentForm', function() {
@@ -406,7 +462,7 @@
         });
 
         function saveTeam(urls, formData, inp = '', modal = '') {
-
+            
             $.ajax({
                 method: 'post',
                 headers: {
@@ -517,10 +573,14 @@
                     },
                     success: function(data) {
                         if (data.status == 1) {
+                            $('#active_vendor_count').text('('+data.agentIsApproved+')');
+                            $('#awaiting_vendor_count').text('('+data.agentNotApproved+')');
+                            $('#blocked_vendor_count').text('('+data.agentRejected+')');
                             $.NotificationApp.send("", data.message, "top-right", "#5ba035", "success");
                             setTimeout(function() {
                                 $('#' + activeTabDetail).DataTable().ajax.reload();
                             }, 100);
+                            
                         }
                     }
                 });
@@ -533,9 +593,10 @@
     $(document).on('click', '.mdi-delete', function(e) {
       e.preventDefault();
             var r = confirm("Are you sure?");
-            if (r == true) {
-               var agentid = $(this).attr('agentid');
-               $('form#agentdelete'+agentid).submit();
+            if (r != true) {
+                return false;
             }
+            var agentid = $(this).attr('agentid');
+            $('form#agentdelete'+agentid).submit();
     });
 </script>

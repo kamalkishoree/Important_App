@@ -11,7 +11,7 @@
 
 <link href="{{asset('assets/libs/dropzone/dropzone.min.css')}}" rel="stylesheet" type="text/css" />
 <link href="{{asset('assets/libs/dropify/dropify.min.css')}}" rel="stylesheet" type="text/css" />
-<link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.6/css/intlTelInput.css'>
+<link rel="stylesheet" href="{{ asset('telinput/css/intlTelInput.css') }}" type="text/css">
 <style>
     .intl-tel-input {
       display: table-cell;
@@ -117,10 +117,7 @@
         
 
     }
-    .copyin1 {
-        background-color: rgb(148 148 148 / 11%);
-       
-    }
+    
     hr.new3 {
      border-top: 1px dashed white;
      margin: 0 0 .5rem 0;
@@ -246,7 +243,7 @@
                                     <th>Order Id</th>
                                     <th>Customer</th>
                                     {{-- <th>Order Id</th> --}}
-                                    <th>Driver</th>
+                                    <th>{{getAgentNomenclature()}}</th>
                                     <th>Create Time</th>
                                     <th>Pricing Rule</th>
                                     <th style="width: 85px;">Action</th>
@@ -392,7 +389,6 @@
 <script src="{{asset('assets/libs/dropify/dropify.min.js')}}"></script>
 <!-- Page js-->
 <script src="{{asset('assets/js/pages/form-fileuploads.init.js')}}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.7/js/intlTelInput.js"></script>
 <script src="{{asset('assets/libs/datatables/datatables.min.js')}}"></script>
 <script src="{{asset('assets/libs/sweetalert2/sweetalert2.min.js')}}"></script>
 

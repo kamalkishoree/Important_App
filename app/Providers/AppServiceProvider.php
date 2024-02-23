@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\View;
 use App\Model\Team;
 use App\Model\Tag;
 use Illuminate\Http\Request;
-use App\Model\{Client, ClientPreference};
+use App\Model\{Client, ClientPreference, PaymentOption};
 use Illuminate\Support\Facades\Storage;
 use Closure;
 use Config;
@@ -45,15 +45,15 @@ class AppServiceProvider extends ServiceProvider
         $favicon_url= asset('assets/images/favicon.ico');
         $clientDetails = Cache::get('clientdetails');
         if (!empty($clientDetails) && !empty($clientDetails->code)) {
-            if (Schema::hasColumn('client_id', 'client_preferences')) {
-                $preference  = ClientPreference::where('client_id', $clientDetails->code)->first();
-                if (!empty($preference->fcm_server_key)) {
-                    config(['laravel-fcm.server_key' => $preference->fcm_server_key ?? ""]);
-                }
+            // if (Schema::hasColumn('client_id', 'client_preferences')) {
+            //     $preference  = ClientPreference::where('client_id', $clientDetails->code)->first();
+            //     if (!empty($preference->fcm_server_key)) {
+            //         config(['laravel-fcm.server_key' => $preference->fcm_server_key ?? ""]);
+            //     }
 
 
 
-            }
+            // }
         }
         $preference  = ClientPreference::where('client_id', ( $clientDetails->code ?? ''))->first();
         if($preference){
@@ -61,8 +61,6 @@ class AppServiceProvider extends ServiceProvider
         }
 
         Builder::defaultStringLength(191);
-
-        view()->share('favicon', $favicon_url);
 
         View::composer('modals.add-agent', function($view)
         {
@@ -76,7 +74,20 @@ class AppServiceProvider extends ServiceProvider
             $view->with(["tags"=>$tags]);
         });
 
+        $payment_codes = ['khalti'];
+        $khalti_api_key = '';
+        $payment_options = PaymentOption::select('code','credentials')->whereIn('code', $payment_codes)->where('status', 1)->get();
+        if($payment_options){
+            foreach($payment_options as $option){
+                $creds = json_decode($option->credentials);
+                if($option->code == 'khalti'){
+                    $khalti_api_key = (isset($creds->api_key) && (!empty($creds->api_key))) ? $creds->api_key : '';
+                }
+            }
+        }
 
+        view()->share('khalti_api_key', $khalti_api_key);
+        view()->share('favicon', $favicon_url);
     }
 
     public function connectDynamicDb($request)
@@ -89,8 +100,10 @@ class AppServiceProvider extends ServiceProvider
             $domain = $request->getHost();
             $domain    = str_replace(array('http://', config('domainsetting.domain_set')), '', $domain);
             $domain    = str_replace(array('https://', config('domainsetting.domain_set')), '', $domain);
+            // dd($domain);
             $subDomain = explode('.', $domain);
             if ($domain != env('Main_Domain')) {
+                // dd('if part');
                 $existRedis = '';
                 if (!$existRedis) {
                     $client = Client::select('*')
@@ -103,10 +116,11 @@ class AppServiceProvider extends ServiceProvider
                 $callback = '';
                 $redisData = $client;
                 $dbname = DB::connection()->getDatabaseName();
-
+                
                 if ($domain) {
                     if ($domain != env('Main_Domain')) {
                         if ($client && $dbname != 'db_'.$client->database_name) {
+                            // dd($client);
                             $saveDataOnRedis = Cache::set('clientdetails', $client);
                             $database_name = 'db_'.$client->database_name;
                             $database_host = !empty($client->database_host) ? $client->database_host : env('DB_HOST', '127.0.0.1');
