@@ -44,6 +44,7 @@ async function loadTeams(is_load_html, is_show_loader) {
     //fetch team data form server
     try {
         var response = await createRequest(teamDataUrl, "post", headers, data);
+        
         // Handle successful response
         handleDataSuccess(response, is_load_html, "#teams_container");
     } catch (error) {
@@ -179,7 +180,7 @@ function handleDrawRouteSuccess(data, isMultiple = false) {
                 var pickupMarker = new google.maps.Marker({
                     position: pickupLocation,
                     map: map,
-                    icon : pickupIcon,
+                    icon : icon,
                     title: "Pickup Location",
                     optimized: true,
                 });
@@ -188,7 +189,7 @@ function handleDrawRouteSuccess(data, isMultiple = false) {
                 var dropoffMarker = new google.maps.Marker({
                     position: dropoffLocation,
                     map: map,
-                    icon:dropOffIcon,
+                    icon:icon,
                     title: "Dropoff Location",
                     optimized: true,
                 });
@@ -238,7 +239,7 @@ function mapIcons(type) {
 
 //handle the success response of the post request to server
 function handleDataSuccess(result, is_load_html, element) {
-    olddata = allagent = defaultmaplocation = [];
+    olddata = defaultmaplocation = [];
 
     if (is_load_html == 1) {
         //replace the content of appropriate box
@@ -252,19 +253,23 @@ function handleDataSuccess(result, is_load_html, element) {
 
         //this code is executed only while updating the team data
         if (element == "#teams_container") {
-            if ($("#newmarker_map_data").val() != "") {
+           var newmarker_map_data = ($("#newmarker_map_data").val() == undefined) ? '' : $("#newmarker_map_data").val();
+           var uniquedrivers_map_data = ($("#uniquedrivers_map_data").val() == undefined) ? '' : $("#uniquedrivers_map_data").val();
+           var agentslocations_map_data = ($("#agentslocations_map_data").val() == undefined) ? '' : $("#agentslocations_map_data").val();
+
+            if (newmarker_map_data != "") {
                 olddata = JSON.parse($("#newmarker_map_data").val());
             }
 
-            if ($("#agents_map_data").val() != "") {
-                allagent = JSON.parse($("#agents_map_data").val());
+            if(agentsLatLong != ''){
+                allagent = JSON.parse(agentsLatLong);
             }
 
-            if ($("#uniquedrivers_map_data").val() != "") {
+            if (uniquedrivers_map_data != "") {
                 allroutes = JSON.parse($("#uniquedrivers_map_data").val());
             }
 
-            if ($("#agentslocations_map_data").val() != "") {
+            if (agentslocations_map_data != "") {
                 defaultmaplocation = JSON.parse(
                     $("#agentslocations_map_data").val()
                 );
@@ -300,6 +305,7 @@ function handleError(data) {
 }
 
 function addMarker(location, lables, images, data, type) {
+  
     var contentString = "";
     if (type == 1) {
         contentString =
@@ -325,32 +331,33 @@ function addMarker(location, lables, images, data, type) {
             "</div>" +
             "</div>";
     } else {
-        img = data["image_url"];
+        img = imgproxyurl+data.image_url;
+        
         contentString =
             '<div class="row no-gutters align-items-center">' +
             '<div class="col-sm-4">' +
             '<div class="img_box mb-sm-0 mb-2"> <img src="' +
-            data["image_url"] +
+            img +
             '"/></div> </div>' +
             '<div class="col-sm-8 pl-2 user_info">' +
             '<div class="user_name mb-2 11"><label class="d-block m-0">' +
-            data["name"] +
+            data.agent_name +
             '</label><span> <i class="fas fa-phone-alt"></i>' +
-            data["phone_number"] +
+            data.phone_number +
             "</span></div>" +
             '<div><b class="d-block mb-2"><i class="far fa-clock"></i> <span> ' +
-            jQuery.timeago(new Date(data["agentlog"]["created_at"])) +
+            jQuery.timeago(new Date(data.created_at)) +
             ' </span></b> <b><i class="fas fa-mobile-alt"></i> ' +
-            data["agentlog"]["device_type"] +
+            data.device_type +
             '</b> <b class="ml-2"> <i class="fas fa-battery-half"></i>  ' +
-            data["agentlog"]["battery_level"] +
+            data.battery_level +
             "%</b>";
-        if (data["get_driver"][0]) {
+        if (data.id) {
             contentString +=
                 '<a target="_blank" href="fleet/details/' +
-                btoa(data["get_driver"][0]["id"]) +
+                btoa(data.id) +
                 '"><b class="d-block mt-2"><i class="fa fa-car"></i><span>' +
-                data["get_driver"][0]["name"] +
+                data.agent_name +
                 " </span></b></a>";
         }
         contentString += "</div>";
@@ -376,7 +383,7 @@ function addMarker(location, lables, images, data, type) {
     }
 
     markers.push(marker);
-    mark.push({id:data.id, data:marker})
+    mark.push({id:data.agent_id, data:marker})
 
     marker.addListener("click", () => {
         infowindow.open(map, marker);
@@ -431,7 +438,7 @@ function handler(element) {
     channelname = `${channelName}${element.value}`;
     logchannelname = `${logChannelName}${element.value}`;
     if (old_channelname != channelname) {
-        ListenDataChannel();
+        //ListenDataChannel();
         ListenAgentLogChannel();
     }
 }
@@ -446,12 +453,13 @@ function drawAgents(){
     }
     for (let i = 0; i < allagent.length; i++) {
         displayagent = allagent[i];
+
         if (
-            displayagent.agentlog != null &&
-            displayagent.agentlog["lat"] != "0.00000000" &&
-            displayagent.agentlog["lat"] != null &&
-            displayagent.agentlog["long"] != "0.00000000" &&
-            displayagent.agentlog["long"] != null
+            displayagent != null &&
+            displayagent.lat != "0.00000000" &&
+            displayagent.lat != null &&
+            displayagent.long != "0.00000000" &&
+            displayagent.long != null
         ) {
             if (displayagent["is_available"] == 1) {
                 images = url + "/demo/images/location.png";
@@ -469,21 +477,24 @@ function drawAgents(){
 
             addMarker(
                 {
-                    lat: parseFloat(displayagent.agentlog["lat"]),
-                    lng: parseFloat(displayagent.agentlog["long"]),
+                    lat: parseFloat(displayagent.lat),
+                    lng: parseFloat(displayagent.long),
                 },
                 send,
                 image,
                 displayagent,
                 type
             );
+
+         
         }
     }
 
 }
 
 //initialize the map
-function initMap(is_refresh) {
+async function initMap(is_refresh) {
+    
     //new code for route
     var color = [
         "blue",
@@ -494,7 +505,7 @@ function initMap(is_refresh) {
         "yellow",
         "orange",
     ];
-
+    
     const haightAshbury = {
         lat:
             allagent.length !== 0 &&
@@ -592,42 +603,7 @@ function initMap(is_refresh) {
         );
     });
 
-    //agents markers
-    for (let i = 0; i < allagent.length; i++) {
-        displayagent = allagent[i];
-        if (
-            displayagent.agentlog != null &&
-            displayagent.agentlog["lat"] != "0.00000000" &&
-            displayagent.agentlog["lat"] != null &&
-            displayagent.agentlog["long"] != "0.00000000" &&
-            displayagent.agentlog["long"] != null
-        ) {
-            if (displayagent["is_available"] == 1) {
-                images = url + "/demo/images/location.png";
-            } else {
-                images = url + "/demo/images/location_grey.png";
-            }
-            var image = {
-                url: images, // url
-                scaledSize: new google.maps.Size(50, 50), // scaled size
-                origin: new google.maps.Point(0, 0), // origin
-                anchor: new google.maps.Point(22, 22), // anchor
-            };
-            send = null;
-            type = 2;
-
-            addMarker(
-                {
-                    lat: parseFloat(displayagent.agentlog["lat"]),
-                    lng: parseFloat(displayagent.agentlog["long"]),
-                },
-                send,
-                image,
-                displayagent,
-                type
-            );
-        }
-    }
+    await drawAgents()
 
     map.setCenter(haightAshbury);
 }
@@ -1029,8 +1005,11 @@ async function checkInitMap(is_initMap) {
     }
 }
 async function getDefaultLocation() {
-    if ($("#agents_map_data").val() != "") {
-        allagent = JSON.parse($("#agents_map_data").val());
+    // if ($("#agents_map_data").val() != "") {
+    //     allagent = JSON.parse($("#agents_map_data").val());
+    // }
+    if(agentsLatLong != ''){
+        allagent = JSON.parse(agentsLatLong);
     }
 
     if ($("#agentslocations_map_data").val() != "") {

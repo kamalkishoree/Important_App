@@ -318,68 +318,68 @@ function pathlatLong(data) {
     });
     return latlong;
 }
-function AgentLocationMap(result) {
-    const infoWindow = new google.maps.InfoWindow({
-        content: "",
-        disableAutoPan: false,
-    });
-    var bounds = new google.maps.LatLngBounds();
-    const labels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    const marks = result.map(
-        (
-            [
-                position,
-                is_available,
-                agent_name,
-                agent_id,
-                is_busy,
-                agentPrimaryId,
-            ],
-            i
-        ) => {
-            if (position != "t") {
-                const geocoder = new google.maps.Geocoder();
-                image = agenticon(is_available, is_busy);
-                const label = labels[i % labels.length];
-                bounds.extend(position);
+// function AgentLocationMap(result) {
+//     const infoWindow = new google.maps.InfoWindow({
+//         content: "",
+//         disableAutoPan: false,
+//     });
+//     var bounds = new google.maps.LatLngBounds();
+//     const labels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+//     const marks = result.map(
+//         (
+//             [
+//                 position,
+//                 is_available,
+//                 agent_name,
+//                 agent_id,
+//                 is_busy,
+//                 agentPrimaryId,
+//             ],
+//             i
+//         ) => {
+//             if (position != "t") {
+//                 const geocoder = new google.maps.Geocoder();
+//                 image = agenticon(is_available, is_busy);
+//                 const label = labels[i % labels.length];
+//                 bounds.extend(position);
 
-                const marker = new google.maps.Marker({
-                    position,
-                    map,
-                    title: `${i + 1}. ${agent_name}`,
-                    icon: image,
-                    agent_id: agentPrimaryId ?? "",
-                });
-                geocoder.geocode(
-                    { location: { position } },
-                    function (results, status) {
-                        if (status === "OK") {
-                            if (results[0]) {
-                                // Set the marker title to the formatted address
-                                marker.setTitle(results[0].formatted_address);
-                            }
-                        }
-                    }
-                );
+//                 const marker = new google.maps.Marker({
+//                     position,
+//                     map,
+//                     title: `${i + 1}. ${agent_name}`,
+//                     icon: image,
+//                     agent_id: agentPrimaryId ?? "",
+//                 });
+//                 geocoder.geocode(
+//                     { location: { position } },
+//                     function (results, status) {
+//                         if (status === "OK") {
+//                             if (results[0]) {
+//                                 // Set the marker title to the formatted address
+//                                 marker.setTitle(results[0].formatted_address);
+//                             }
+//                         }
+//                     }
+//                 );
 
-                mark.push({ id: agent_id, data: marker });
+//                 mark.push({ id: agent_id, data: marker });
 
-                map.fitBounds(bounds);
-                // Add a click listener for each marker, and set up the info window.
+//                 map.fitBounds(bounds);
+//                 // Add a click listener for each marker, and set up the info window.
 
-                marker.addListener("click", () => {
-                    agent_details(agent_id);
-                    infoWindow.close();
-                    infoWindow.setContent(marker.getTitle());
-                    infoWindow.open(marker.getMap(), marker);
-                    markers.push(marker);
-                });
-                //     const markerCluster = new markerClusterer.MarkerClusterer({ map, marks});
-                return marker;
-            }
-        }
-    );
-}
+//                 marker.addListener("click", () => {
+//                     agent_details(agent_id);
+//                     infoWindow.close();
+//                     infoWindow.setContent(marker.getTitle());
+//                     infoWindow.open(marker.getMap(), marker);
+//                     markers.push(marker);
+//                 });
+//                 //     const markerCluster = new markerClusterer.MarkerClusterer({ map, marks});
+//                 return marker;
+//             }
+//         }
+//     );
+// }
 
 function agentlatLong(agentLogs) {
     var newArray = [];
@@ -491,34 +491,34 @@ function specificMap(result) {
     }
 }
 
-function AgentSpeificLocationMap(result) {
-    const infoWindow = new google.maps.InfoWindow();
-    var bounds = new google.maps.LatLngBounds();
+// function AgentSpeificLocationMap(result) {
+//     const infoWindow = new google.maps.InfoWindow();
+//     var bounds = new google.maps.LatLngBounds();
 
-    result.forEach((position, is_available, agent_name) => {
-        if (position != "t") {
-            image = agenticon(is_available);
-            bounds.extend(position);
+//     result.forEach((position, is_available, agent_name) => {
+//         if (position != "t") {
+//             image = agenticon(is_available);
+//             bounds.extend(position);
 
-            const marker = new google.maps.Marker({
-                position,
-                map,
-                title: `${agent_name}`,
-                icon: image,
-            });
+//             const marker = new google.maps.Marker({
+//                 position,
+//                 map,
+//                 title: `${agent_name}`,
+//                 icon: image,
+//             });
 
-            map.fitBounds(bounds);
-            // Add a click listener for each marker, and set up the info window.
+//             map.fitBounds(bounds);
+//             // Add a click listener for each marker, and set up the info window.
 
-            marker.addListener("click", () => {
-                infoWindow.close();
-                infoWindow.setContent(marker.getTitle());
-                infoWindow.open(marker.getMap(), marker);
-            });
-            agent_mark.push({ data: marker });
-        }
-    });
-}
+//             marker.addListener("click", () => {
+//                 infoWindow.close();
+//                 infoWindow.setContent(marker.getTitle());
+//                 infoWindow.open(marker.getMap(), marker);
+//             });
+//             agent_mark.push({ data: marker });
+//         }
+//     });
+// }
 
 function focusMap(result) {
     var filter = $(".dark_theme2").val();
@@ -1195,36 +1195,27 @@ async function get_filter_details() {
 }
 
 function getUser(search) {
+   
     return mark.find(({ id }) => +id === search) ?? "Not working";
 }
 
 function MoveAgentLocation(data) {
     //var data = data;
-    image = '';
-    // image =
-    //     data.event_type == "task_log"
-    //         ? mapIcon(data.task_type, data.task_status)
-    //         : agenticon(data.is_available, data.is_busy);
-    if (data.event_type == "task_log" || data.event_type == "agent_create") {
-        const infoWindow = new google.maps.InfoWindow();
-        // const infoWindow = new google.maps.InfoWindow();
-        // var bounds = new google.maps.LatLngBounds();
-        var myLatLng = new google.maps.LatLng(data.lat, data.lng);
-        marker = new google.maps.Marker({
-            position: myLatLng,
-            map: map,
-            icon: image,
-            title: data.name,
-        });
-        data.event_type == "agent_create"
-            ? mark.push({ id: data.id, data: marker })
-            : "";
+    if (data.is_available == 1) {
+        image = url + "/demo/images/location.png";
     } else {
+        image = url + "/demo/images/location_grey.png";
+    }
+    var image = {
+        url: image, // url
+        scaledSize: new google.maps.Size(50, 50), // scaled size
+        origin: new google.maps.Point(0, 0), // origin
+        anchor: new google.maps.Point(22, 22), // anchor
+    };
         var dataAgent = getUser(data.id);
         marker = dataAgent.data;
         //marker.setMap( map );
-    }
-    console.log(dataAgent, 'adfkadbkfjb')
+    
     marker != undefined ? moveBus(map, marker, data, image) : "";
 }
 
@@ -1234,61 +1225,11 @@ function moveBus(map, marker, data, image) {
 }
 
 //function to listen different channels of event of different dates and different agent status
-function ListenDataChannel() {
-    //leave/not listen previous channel in case filters have been changed
-    Echo.leave(old_channelname);
-
-    //listen route add/update/delete/assigned/completed event
-    Echo.channel(channelname)
-        .listen('loadDashboardData', (e) => {
-            var heading = "";
-            var message = "";
-            var toastcolor = "";
-            if (typeof(e.order_status) != "undefined") {
-                if (e.order_status == "unassigned") {
-                    heading = "Created";
-                    message = "Route Created/Updated.";
-                    toastcolor = "green";
-                } else if (e.order_status == "assigned") {
-                    heading = "Assigned";
-                    message = "Route Assigned to {{ __(getAgentNomenclature()) }}.";
-                    toastcolor = "orange";
-                } else if (e.order_status == "completed") {
-                    heading = "Completed";
-                    message = "Route Completed by {{ __(getAgentNomenclature()) }}.";
-                    toastcolor = "green";
-                } else {
-                    heading = "Deleted";
-                    message = "Route Deleted.";
-                    toastcolor = "red";
-                }
-            } else {
-                heading = "Deleted";
-                message = "Route Deleted.";
-                toastcolor = "red";
-            }
-
-            if (heading != '') {
-                loadTeams(1, 0);
-                $.toast({
-                    heading: heading,
-                    text: message,
-                    showHideTransition: 'slide',
-                    bgColor: toastcolor,
-                    textColor: '#eee',
-                    allowToastClose: true,
-                    hideAfter: 5000,
-                    stack: 5,
-                    textAlign: 'left',
-                    position: 'top-right'
-                });
-            }
-        });
-}
 
 function ListenAgentLogChannel() {
+    
     if (window.Echo) {
-        window.Echo.channel("laravel_database_user-channel").listen(
+        window.Echo.channel(`${app_name}_database_user-channel`).listen(
             ".UserEvent",
             (data) => {
                 //markers = [];
@@ -1307,7 +1248,6 @@ function ListenAgentLogChannel() {
                     MoveAgentLocation(data);
                 } else {
                     var date = $("#birthdatepicker").val();
-                    console.log(date);
                     order_details(
                         (val = ""),
                         date,

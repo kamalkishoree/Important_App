@@ -21,7 +21,15 @@ Route::get('hitevent', function (Request $request) {
 	event(new \App\Events\agentLogFetch());
 	dd("Event successfull");
 });
+Route::get('/t', function () {
+	//$data =[];
+	$data = ['event_type'=>'agent_status_update','lat' => 25.2138, 'lng'=> 75.8648,'name'=>'Gurvinder','agent_id'=>720956,'is_available'=>1,'is_busy'=>0,'id'=>47];
+	//$data['event_type'] = 'agent_log';
 
+
+	event(new \App\Events\SendMessage($data));
+	dd('Event Run Successfully.');
+});
 Route::get('/switch/language', function (Request $request) {
 	if ($request->lang) {
 		session()->put("applocale", $request->lang);
@@ -158,6 +166,7 @@ Route::group(['middleware' => 'switchLanguage'], function () {
 		Route::any('payment/vnpay/api',    'VnpayController@vnpay_respontAPP')->name('vnpay_webview');
 		Route::get('driver/wallet/refreshBalance/{id?}', 'AgentController@refreshWalletbalance')->name('driver.wallet.refreshBalance');
 		Route::get('api_documentation', 'DashBoardController@api_documentation');
+		Route::get('getlogs', 'DashBoardController@GetAgentLogs');
 		Route::group(['middleware' => ['auth:client'], 'prefix' => '/'], function () {
 
 			Route::post('rating_type/create', 'Rating\RatingTypeController@store')->name('rating_type.create');

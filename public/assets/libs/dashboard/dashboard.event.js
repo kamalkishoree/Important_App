@@ -1,7 +1,7 @@
 $(function(){ 
     $('#wrapper').addClass('dshboard');
     $(".timeago").timeago();
-
+// alert()
     if($("#newmarker_map_data").val()!=''){
             olddata  = JSON.parse($("#newmarker_map_data").val());
         }
@@ -11,9 +11,13 @@ $(function(){
             allroutes  = JSON.parse($("#uniquedrivers_map_data").val());
     }
 
-    if ($("#agents_map_data").val() != '') {
-        allagent = JSON.parse($("#agents_map_data").val());
+    // if ($("#agents_map_data").val() != '') {
+    //     allagent = JSON.parse($("#agents_map_data").val());
+    // }
+    if(agentsLatLong != ''){
+        allagent = JSON.parse(agentsLatLong);
     }
+    
 
     if ($("#agentslocations_map_data").val() != '') {
         defaultmaplocation = JSON.parse($("#agentslocations_map_data").val());
@@ -26,6 +30,7 @@ $(function(){
         width: "resolve",
         placeholder: "Select Team"
     });
+    $('#dummy').hide()
 
     $("#agent_id").select2({
         allowClear: true,

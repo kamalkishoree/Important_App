@@ -33,12 +33,13 @@
         "omnipay/stripe": "^3.1",
         "paystackhq/omnipay-paystack": "^1.0",
         "predis/predis": "^1.1",
-        "pusher/pusher-php-server": "~3.0",
+        "pusher/pusher-php-server": "*",
         "r0bdiablo/laravel5-phumbor": "^1.0",
         "rap2hpoutre/laravel-log-viewer": "^1.7",
         "ratchet/rfc6455": "^0.3.1",
         "razorpay/razorpay": "2.*",
         "react/event-loop": "^1.5",
+        "react/react": "*",
         "react/socket": "^1.0",
         "rinvex/countries": "^6.1",
         "sarav/laravel-multiauth": "dev-master",
@@ -48,8 +49,7 @@
         "symfony/routing": "*",
         "twilio/sdk": "^6.13",
         "vonage/client": "^2.3.0",
-        "yajra/laravel-datatables-oracle": "~9.0",
-        "react/react":"*"
+        "yajra/laravel-datatables-oracle": "~9.0"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.7",

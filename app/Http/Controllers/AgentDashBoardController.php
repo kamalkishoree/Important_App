@@ -626,7 +626,7 @@ class AgentDashBoardController extends Controller
     }
     public function dashboardOrderData(Request $request)
     {
-    return $this->orderData($request);
+    return $this->orderDataEN($request);
     }
     public function dashboardOrderData_old1(Request $request)
     {
