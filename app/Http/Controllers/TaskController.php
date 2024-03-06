@@ -52,6 +52,7 @@ use App\Http\Controllers\Api\BaseController;
 use App\Traits\{ApiResponser, DispatcherRouteAllocation, GlobalFunction};
 use App\Traits\TollFee;
 use App\Imports\OrderImport;
+use App\Jobs\ImportTaskCsv;
 use App\Model\Product;
 use App\Model\OrderVendorProduct;
 use App\Traits\inventoryManagement;
@@ -1125,6 +1126,13 @@ class TaskController extends BaseController
                     ]);
                 }
             }
+            if($request->has('agent_tag'))
+
+            {
+                $agent_tag = $request->input('agent_tag');
+            }
+
+           
             DB::commit();
             
             if($client->is_lumen_enabled)
@@ -1136,20 +1144,20 @@ class TaskController extends BaseController
                     switch ($allocation->auto_assign_logic) {
                         case 'one_by_one':
                             // this is called when allocation type is one by one
-                            $this->finalRoster($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
+                            $this->finalRoster($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation,$agent_tag);
                             break;
                         case 'send_to_all':
                             // this is called when allocation type is send to all
                             Log::info('send_to_all taskController');
-                            $this->SendToAll($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
+                            $this->SendToAll($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation,$agent_tag);
                             break;
                         case 'round_robin':
                             // this is called when allocation type is round robin
-                            $this->roundRobin($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
+                            $this->roundRobin($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation,$agent_tag);
                             break;
                         default:
                             // this is called when allocation type is batch wise
-                            $this->batchWise($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation);
+                            $this->batchWise($geo, $notification_time, $agent_id, $orders->id, $customer, $finalLocation, $taskcount, $allocation,$agent_tag);
                     }
                 }
             }
@@ -1992,7 +2000,7 @@ class TaskController extends BaseController
         return $c;
     }
 
-    public function finalRoster($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $allocation)
+    public function finalRoster($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $allocation,$agent_tag= [])
     {
         $allcation_type = 'AR';
         $date = \Carbon\Carbon::today();
@@ -2071,7 +2079,7 @@ class TaskController extends BaseController
             // $geoagents = Agent::whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
             //     $f->whereDate('order_time', $date)->with('task');
             // }])->orderBy('id', 'DESC')->get()->where("agent_cash_at_hand", '<', $cash_at_hand);
-            $geoagents = $this->getGeoBasedAgentsData($geo, '0', '', $date, $cash_at_hand,$orders_id);
+            $geoagents = $this->getGeoBasedAgentsData($geo, '0', $agent_tag, $date, $cash_at_hand,$orders_id);
 
 
 
@@ -2197,7 +2205,7 @@ class TaskController extends BaseController
     }
     
     
-    public function OneByOne($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $allocation)
+    public function OneByOne($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $allocation,$agent_tag= [])
     {
         $allcation_type = 'AR';
         $date = \Carbon\Carbon::today();
@@ -2259,7 +2267,7 @@ class TaskController extends BaseController
                 $this->dispatch(new RosterCreate($data, $extraData));
             }
         } else {
-            $geoagents = $this->getGeoBasedAgentsData($geo, '0', '', $date, $cash_at_hand,$orders_id);
+            $geoagents = $this->getGeoBasedAgentsData($geo, '0', $agent_tag, $date, $cash_at_hand,$orders_id);
             // for ($i = 1; $i <= $try; $i++) {
             foreach ($geoagents as $key =>  $geoitem) {
                 if (!empty($geoitem->device_token) && $geoitem->is_available == 1) {
@@ -2291,7 +2299,7 @@ class TaskController extends BaseController
         }
     }
 
-    public function SendToAll($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $allocation)
+    public function SendToAll($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $allocation,$agent_tag= [])
     {
         $allcation_type = 'AR';
         $date = \Carbon\Carbon::today();
@@ -2366,7 +2374,7 @@ class TaskController extends BaseController
             // $geoagents = Agent::whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
             //     $f->whereDate('order_time', $date)->with('task');
             // }])->orderBy('id', 'DESC')->get()->where("agent_cash_at_hand", '<', $cash_at_hand);
-            $geoagents = $this->getGeoBasedAgentsData($geo, '0', '', $date, $cash_at_hand,$orders_id);
+            $geoagents = $this->getGeoBasedAgentsData($geo, '0', $agent_tag, $date, $cash_at_hand,$orders_id);
             for ($i = 0; $i <= $try-1; $i++) {
                 foreach ($geoagents as $key =>  $geoitem) {
                     if (!empty($geoitem->device_token) && $geoitem->is_available == 1) {
@@ -2404,7 +2412,7 @@ class TaskController extends BaseController
         }
     }
 
-    public function batchWise($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $allocation)
+    public function batchWise($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $allocation,$agent_tag= [])
     {
         $allcation_type = 'AR';
         $date = \Carbon\Carbon::today();
@@ -2476,7 +2484,7 @@ class TaskController extends BaseController
             // $geoagents = Agent::whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
             //     $f->whereDate('order_time', $date)->with('task');
             // }])->orderBy('id', 'DESC')->get()->where("agent_cash_at_hand", '<', $cash_at_hand)->toArray();
-            $geoagents = $this->getGeoBasedAgentsData($geo, '0', '', $date, $cash_at_hand,$orders_id);
+            $geoagents = $this->getGeoBasedAgentsData($geo, '0', $agent_tag, $date, $cash_at_hand,$orders_id);
             // this function is give me nearest drivers list accourding to the the task location.
             $distenseResult = $this->haversineGreatCircleDistance($geoagents, $finalLocation, $unit, $max_redius, $max_task);
 
@@ -2524,7 +2532,7 @@ class TaskController extends BaseController
         }
     }
 
-    public function roundRobin($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount)
+    public function roundRobin($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount,$agent_tag= [])
     {
         $allcation_type = 'AR';
         $date = \Carbon\Carbon::today();
@@ -2596,7 +2604,7 @@ class TaskController extends BaseController
             // $geoagents = Agent::whereIn('id',  $geoagents_ids)->with(['logs','order'=> function ($f) use ($date) {
             //     $f->whereDate('order_time', $date)->with('task');
             // }])->orderBy('id', 'DESC')->get()->where("agent_cash_at_hand", '<', $cash_at_hand)->toArray();
-            $geoagents = $this->getGeoBasedAgentsData($geo, '0', '', $date, $cash_at_hand,$orders_id);
+            $geoagents = $this->getGeoBasedAgentsData($geo, '0', $agent_tag, $date, $cash_at_hand,$orders_id);
             // this function give me the driver list accourding to who have liest task for the current date
             $distenseResult = $this->roundCalculation($geoagents, $finalLocation, $unit, $max_redius, $max_task);
             if (! empty($distenseResult)) {
@@ -3723,6 +3731,7 @@ class TaskController extends BaseController
             $fileModel->status = 1;
             $fileModel->save();
             $data = Excel::import(new OrderImport($fileModel->id), $request->file('bulk_upload_file'));
+            // ImportTaskCsv::dispatch($request->file('bulk_upload_file'))->onQueue('import')->delay(now()->addSeconds(5));
             return response()->json([
                 'status' => 'Success',
                 'message' => 'Route Created successfully!'
