@@ -1,6 +1,12 @@
 <?php
 
-namespace App\Imports;
+namespace App\Jobs;
+
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 use DB;
 use Maatwebsite\Excel\Row;
 use Illuminate\Support\Collection;
@@ -25,18 +31,34 @@ use App\Model\{Order, Client, ClientPreference, Customer, Location, category, Al
 use App\Traits\getLocationServices;
 use GuzzleHttp\Client as GClient;
 
-class OrderImport implements ToCollection
+class ImportTaskCsv implements ShouldQueue
 {
-    private $folderName = 'routes';
-    use AuthorizesRequests, DispatchesJobs, ValidatesRequests, getLocationServices;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels,DispatchesJobs,AuthorizesRequests,ValidatesRequests;
 
+    private $folderName = 'routes';
+
+
+   
+
+    /**
+     * Create a new job instance.
+     *
+     * @return void
+     */
     public function  __construct($csv_order_import_id){
+       
         $code = Client::orderBy('id','asc')->value('code');
         $this->csv_order_import_id = $csv_order_import_id;
         $this->folderName = '/'.$code.'/routes';
     }
-    
-    public function collection(Collection $rows){
+
+    /**
+     * Execute the job.
+     *
+     * @return void
+     */
+    public function handle($rows)
+    {
         try {
             DB::beginTransaction();
             $i = 0;
@@ -332,12 +354,6 @@ class OrderImport implements ToCollection
             $error[] = "Other: " .$ex->getMessage();
             \Log::info($ex->getMessage()."".$ex->getLine());
             DB::rollback();
-        }
+        }  
     }
-
-
-    
-
-    
-    
 }

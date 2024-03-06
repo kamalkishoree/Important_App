@@ -52,6 +52,7 @@ use App\Http\Controllers\Api\BaseController;
 use App\Traits\{ApiResponser, DispatcherRouteAllocation, GlobalFunction};
 use App\Traits\TollFee;
 use App\Imports\OrderImport;
+use App\Jobs\ImportTaskCsv;
 use App\Model\Product;
 use App\Model\OrderVendorProduct;
 use App\Traits\inventoryManagement;
@@ -3730,6 +3731,7 @@ class TaskController extends BaseController
             $fileModel->status = 1;
             $fileModel->save();
             $data = Excel::import(new OrderImport($fileModel->id), $request->file('bulk_upload_file'));
+            // ImportTaskCsv::dispatch($request->file('bulk_upload_file'))->onQueue('import')->delay(now()->addSeconds(5));
             return response()->json([
                 'status' => 'Success',
                 'message' => 'Route Created successfully!'
