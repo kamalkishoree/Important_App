@@ -389,8 +389,8 @@ trait DispatcherOrders
             }
             $clientPreference = $clientPreference[0];
             $googleapikey = $clientPreference->map_key_1 ?? '';
-
-            $sql = "SELECT * FROM countries WHERE id = {$user->country_id} LIMIT 1";
+            $country_id = $user_country_id ?? 226 ;
+            $sql = "SELECT * FROM countries WHERE id = $country_id LIMIT 1";
             $getAdminCurrentCountry = \DB::select($sql);
             if(!empty($getAdminCurrentCountry)){
                 $getAdminCurrentCountry = $getAdminCurrentCountry[0];
