@@ -1,6 +1,6 @@
     <!-- Bannar Section -->
     {{-- <section class="bannar header-setting"> --}}
-        
+       
     <div class="container-fluid p-0">
         <div class="row coolcheck no-gutters">
             {{-- <div class="pageloader" style="display: none;">
@@ -138,7 +138,7 @@
             <div id="agent_route_container">
                 <div id="accordion" class="overflow-hidden">
                     <!-- dragable_tasks -->
-                    <div id="handle-dragula-left0" class="no_data" agentid="0"  params="{{ $params0 }}" date="{{ $date }}">
+                    <div id="handle-dragula-left0" class="dragable_tasks" agentid=""  params="{{ $params0 }}" date="{{ $date }}">
                         @include('dashboard.parts.layout-'.$dashboard_theme.'.ajax.order')
                     </div>
                 </div>
