@@ -112,6 +112,7 @@
 
                 {{-- agent section  --}}
                 <?php
+             
                 if(isset($distance_matrix[0]))
                 {
                     if($unassigned_orders[0]['task_order']==0){
@@ -122,8 +123,10 @@
                     $routeperams0 = "'".$distance_matrix[0]['tasks']."','".json_encode($distance_matrix[0]['distance'])."','".$opti0."',0,'".$date."'";
                     $optimize0 = '<span class="optimize_btn" onclick="RouteOptimization('.$routeperams0.')">'.__("Optimize").'</span>';
                     $params0 = "'".$distance_matrix[0]['tasks']."','".json_encode($distance_matrix[0]['distance'])."','yes',0,'".$date."'";
+       
                     $turnbyturn0 = '<span class="navigation_btn optimize_btn" onclick="NavigatePath('.$routeperams0.')">'.__("Export").'</span>';
                 }else{
+                    
                     $optimize0="";
                     $params0 = "";
                     $turnbyturn0 = "";
@@ -138,7 +141,7 @@
             <div id="agent_route_container">
                 <div id="accordion" class="overflow-hidden">
                     <!-- dragable_tasks -->
-                    <div id="handle-dragula-left0" class="dragable_tasks" agentid=""  params="{{ $params0 }}" date="{{ $date }}">
+                    <div id="handle-dragula-left0" class="dragable_tasks" agentid="1"  params="{{ $params0 }}" date="{{ $date }}">
                         @include('dashboard.parts.layout-'.$dashboard_theme.'.ajax.order')
                     </div>
                 </div>
