@@ -1317,6 +1317,7 @@ function initializeSortable() {
                         ')">Optimize</span>';
                     $('.optimizebtn' + agentid).html(funperams);
                     spinnerJS.hideSpinner();
+                    $('#optimize-route-modal').modal('show');
                     $('#routeTaskIds').val(taskorder);
                     $('#routeMatrix').val('');
                     $('#routeOptimize').val('');
@@ -1337,7 +1338,7 @@ function initializeSortable() {
                         $("input[type=radio][name=driver_start_location][value='select']")
                             .click();
                     }
-                    $('#optimize-route-modal').modal('show');
+                    
                 },
                 error: function(response) {
                     Swal.fire({

@@ -690,6 +690,7 @@ trait GlobalFunction{
         //This is for drag and drop functionality
         public function arrangeRoute(Request $request)
         {
+            
             $taskids = explode(',', $request->taskids);
             $taskids = array_filter($taskids);
     
@@ -818,7 +819,13 @@ trait GlobalFunction{
             $driverlocation = [];
             if ($agentid != 0) {
                 $singleagentdetail = Agent::where('id', $agentid)->with('agentlog')->first();
+                if(empty($singleagentdetail)){
+                    $singleagentdetail = Agent::with('agentlog')->first();
+                }
                 if ($singleagentdetail->is_available == 1) {
+                    $driverlocation['lat'] = $singleagentdetail->agentlog->lat;
+                    $driverlocation['long'] = $singleagentdetail->agentlog->long;
+                } else{
                     $driverlocation['lat'] = $singleagentdetail->agentlog->lat;
                     $driverlocation['long'] = $singleagentdetail->agentlog->long;
                 }
@@ -840,8 +847,8 @@ trait GlobalFunction{
                     'client_code'         => '',
                     'created_at'          => Carbon::now()->toDateTimeString(),
                     'updated_at'          => Carbon::now()->toDateTimeString(),
-                    'device_type'         => $oneagent->device_type,
-                    'device_token'        => $oneagent->device_token,
+                    'device_type'         => @$oneagent->device_type,
+                    'device_token'        => @$oneagent->device_token,
                     'detail_id'           => '',
                 ];
                 $this->sendsilentnotification($notification_data);

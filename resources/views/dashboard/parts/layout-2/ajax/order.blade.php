@@ -3,9 +3,10 @@
         <h5>No Orders found</h5>
     </div>
 @else
+
     @foreach ($unassigned_orders as $orders)
    
-          
+    <div class="card-body" task_id ="{{ $orders->task_id }}">
                 <div class="p-2 assigned-block">
                     @php
                         $st = ucfirst($orders->status);
@@ -84,6 +85,7 @@
                         </div>
                     </div>
             </div>
+    </div>
     @endforeach
     @if ($lastPage != $page && $unassigned_orders)
         <button class="form-control" id="load-more" data-page="{{ $page + 1 }}"
