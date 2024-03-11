@@ -1289,11 +1289,12 @@ function initializeSortable() {
             var params = $(this).attr('params');
             var agentid = $(this).attr('agentid');
             var date = $(this).attr('date');
-
+            
             var taskorder = "";
             jQuery("#" + divid + " .card-body.ui-sortable-handle").each(function(index, element) {
                 taskorder = taskorder + $(this).attr('task_id') + ",";
             });
+            console.log(taskorder);
             $('input[type=radio][name=driver_start_location]').prop('checked', false);
             $.ajax({
                 type: 'POST',

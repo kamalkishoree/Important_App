@@ -95,16 +95,7 @@
                     </div>
                     <div class="select_bar">
                         <div class="form-group mb-0 ml-1">
-                        {{-- <select name="agent_id[]" id="agent_id" multiple="multiple" class="form-control">
-                              
-                              @foreach ($agentsData as $agent)
-                                  @php
-                                  
-                                      $checkAgentActive = ($agent['is_available'] == 1) ? ' ('.__('Online').')' : ' ('.__('Offline').')';
-                                  @endphp
-                                      <option value="{{$agent['id']}}">{{ ucfirst($agent['name']). $checkAgentActive }}</option>
-                                  @endforeach
-                              </select> --}}
+                   
                         </div>
                     </div>
                 </div>
@@ -115,18 +106,19 @@
              
                 if(isset($distance_matrix[0]))
                 {
-                    if($unassigned_orders[0]['task_order']==0){
-                        $opti0 = "yes";
-                    }else{
+                    
+                    // if($unassigned_orders[0]['task_order']==0){
+                    //     $opti0 = "yes";
+                    // }else{
+                    //     die('pass');
                         $opti0 = "";
-                    }
+                    // }
                     $routeperams0 = "'".$distance_matrix[0]['tasks']."','".json_encode($distance_matrix[0]['distance'])."','".$opti0."',0,'".$date."'";
                     $optimize0 = '<span class="optimize_btn" onclick="RouteOptimization('.$routeperams0.')">'.__("Optimize").'</span>';
                     $params0 = "'".$distance_matrix[0]['tasks']."','".json_encode($distance_matrix[0]['distance'])."','yes',0,'".$date."'";
        
                     $turnbyturn0 = '<span class="navigation_btn optimize_btn" onclick="NavigatePath('.$routeperams0.')">'.__("Export").'</span>';
                 }else{
-                    
                     $optimize0="";
                     $params0 = "";
                     $turnbyturn0 = "";

@@ -602,13 +602,37 @@ trait DispatcherOrders
         }
     
         $countSql = "{$sql} GROUP BY orders.id ORDER BY orders.id DESC";
+       
+       
         $countParams = ['start_date' => $startdate, 'end_date' => $enddate, 'checkuserroutes' => $checkuserroutes];
         $count = \DB::select($countSql, $countParams);
         $totalcount = count($count);
         $lastPage = ceil($totalcount / $perPage);
     
         $sql .= " GROUP BY orders.id ORDER BY orders.id DESC LIMIT $perPage OFFSET $offset";
-  
+        $un_order = \DB::select($sql);
+        if (count($un_order)>=1) {
+            $unassigned_orders = (array)$un_order;
+                $unassigned_distance_mat = [];
+                $unassigned_points = [];
+                $unassigned_taskids = [];
+                $un_route = [];
+                $unassigned_orders[0] = (array) $unassigned_orders[0];
+                $unassigned_points[] = [floatval($unassigned_orders[0]['latitude'] ?? ''), floatval($unassigned_orders[0]['longitude'] ?? '')];
+        foreach ($unassigned_orders as $k => $singleua) {
+            $unassigned_orders[$k] = $singleua = (array) $singleua;
+            $unassigned_taskids[] = $singleua['task_id'] ?? '';// $singleua['task'][0]['id'];
+            $unassigned_orders[$k]['task_order'] = $singleua['task_order'] ?? ''; //['task'][0]['task_order'];
+            // $unassigned_task[] = $singleua['task'];
+            if(!empty($singleua['latitude']) && !empty($singleua['longitude'])){
+                $unassigned_points[] = [floatval($singleua['latitude']), floatval($singleua['longitude'])];
+            }
+        }
+
+    }
+    $unassigned_distance_mat['tasks'] = implode(',', $unassigned_taskids);
+    $unassigned_distance_mat['distance'] = $unassigned_points;
+    $distancematrix[0] = $unassigned_distance_mat;
 
         $orderResults = \DB::select($sql);
      
@@ -621,7 +645,7 @@ trait DispatcherOrders
         $response['tasks'] = [];
         $response['page'] = $page;
         $response['lastPage'] = $lastPage;
-    
+        $response['distance_matrix'] = $distancematrix;
         if ($is_load_html == 1) {
             return view('dashboard.parts.layout-' . $dashboard_theme . '.ajax.order', compact('orderResults'))->with($response)->render();
         } else {
