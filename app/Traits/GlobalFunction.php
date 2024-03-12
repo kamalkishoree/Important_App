@@ -690,7 +690,7 @@ trait GlobalFunction{
         //This is for drag and drop functionality
         public function arrangeRoute(Request $request)
         {
-            
+          
             $taskids = explode(',', $request->taskids);
             $taskids = array_filter($taskids);
     

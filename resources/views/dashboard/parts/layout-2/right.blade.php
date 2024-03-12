@@ -150,6 +150,7 @@
                 </form>
             </div>
         </div>
+        @include('modals.optimize-route');
     </div>
     <?php   // for setting default location on map
         $agentslocations = array();

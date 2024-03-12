@@ -630,10 +630,13 @@ trait DispatcherOrders
         }
 
     }
+   
+    if(!empty($unassigned_taskids)){
     $unassigned_distance_mat['tasks'] = implode(',', $unassigned_taskids);
     $unassigned_distance_mat['distance'] = $unassigned_points;
     $distancematrix[0] = $unassigned_distance_mat;
-
+    }
+    
         $orderResults = \DB::select($sql);
      
         $response['status'] = "success";
@@ -645,7 +648,8 @@ trait DispatcherOrders
         $response['tasks'] = [];
         $response['page'] = $page;
         $response['lastPage'] = $lastPage;
-        $response['distance_matrix'] = $distancematrix;
+        $response['distance_matrix'] = $distancematrix ?? '';
+       
         if ($is_load_html == 1) {
             return view('dashboard.parts.layout-' . $dashboard_theme . '.ajax.order', compact('orderResults'))->with($response)->render();
         } else {
