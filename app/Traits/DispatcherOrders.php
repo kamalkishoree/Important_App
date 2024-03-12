@@ -627,7 +627,15 @@ trait DispatcherOrders
             if(!empty($singleua['latitude']) && !empty($singleua['longitude'])){
                 $unassigned_points[] = [floatval($singleua['latitude']), floatval($singleua['longitude'])];
             }
-        }
+        
+        $tasks[$singleua['id']][] = [
+            'id' => $singleua['task_id'],
+            'task_type_id' => $singleua['task_type_id'],
+            'assigned_time' => $singleua['assigned_time'],
+            'task_status' => $singleua['task_status'],
+            'task_order' => $singleua['task_order']
+        ];
+    }
 
     }
    
@@ -638,18 +646,26 @@ trait DispatcherOrders
     }
     
         $orderResults = \DB::select($sql);
-     
+        // Convert the array to a Laravel collection
+$orderCollection = collect($orderResults);
+
+// Sort the collection by the task_order attribute in ascending order
+$sortedOrders = $orderCollection->sortBy('task_order');
+
+// Convert the sorted collection back to a plain array if needed
+$orderResults = $sortedOrders->values()->all();
+      
         $response['status'] = "success";
         $response['userstatus'] = $userstatus;
         $response['date'] = $date;
         $response['unassigned_orders'] = $orderResults;
         $response['client_timezone'] = $user->timezone;
         $response['agent_ids'] = $agent_ids;
-        $response['tasks'] = [];
+        $response['tasks'] = $tasks ?? '';
         $response['page'] = $page;
         $response['lastPage'] = $lastPage;
         $response['distance_matrix'] = $distancematrix ?? '';
-       
+      
         if ($is_load_html == 1) {
             return view('dashboard.parts.layout-' . $dashboard_theme . '.ajax.order', compact('orderResults'))->with($response)->render();
         } else {

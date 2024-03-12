@@ -196,7 +196,7 @@ trait GlobalFunction{
                   }
   
                   if(!empty($order_datetime)){
-                      $dayname =Carbon::parse($order_datetime)->format('l')  ;
+                      $dayname =Carbon::parse($order_datetime)->format('l') ;
                       $time =  Carbon::parse($order_datetime)->format('H:i');
                       $pricingRule->whereHas('priceRuleTimeframe', function($query) use ($dayname, $time){
                           $query->where('is_applicable', 1)
@@ -882,6 +882,9 @@ trait GlobalFunction{
             if ($driver_start_location=='current') {
                 if ($agentid != 0) {
                     $singleagentdetail = Agent::where('id', $agentid)->with('agentlog')->first();
+                    if(empty($singleagentdetail)){
+                        $singleagentdetail = Agent::with('agentlog')->first(); 
+                    }
                     if ($singleagentdetail->is_available == 1) {
                         $driver_lat = $singleagentdetail->agentlog->lat;
                         $driver_long = $singleagentdetail->agentlog->long;
@@ -910,6 +913,8 @@ trait GlobalFunction{
                     $driver_long = $driver_longitude;
                 }
             }
+
+           
     
             $output = array();
             

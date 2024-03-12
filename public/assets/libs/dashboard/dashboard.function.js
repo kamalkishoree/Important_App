@@ -1317,7 +1317,6 @@ function initializeSortable() {
                         ')">Optimize</span>';
                     $('.optimizebtn' + agentid).html(funperams);
                     spinnerJS.hideSpinner();
-                    $('#optimize-route-modal').modal('show');
                     $('#routeTaskIds').val(taskorder);
                     $('#routeMatrix').val('');
                     $('#routeOptimize').val('');
@@ -1330,7 +1329,7 @@ function initializeSortable() {
                     $('#addressTaskBlock').css('display', 'none');
                     $('#selectedtasklocations').html('');
                     $('.selecttask').css('display', 'none');
-
+                    $('#optimize-route-modal').modal('show');
                     if (data.current_location == 0) {
                         $("input[type=radio][name=driver_start_location][value='current']")
                             .remove();
@@ -1410,7 +1409,6 @@ function RouteOptimization(taskids, distancematrix, optimize, agentid, date) {
     $('#routeAgentid').val(agentid);
     $('#routeDate').val(date);
     $('#optimizeType').val('optimize');
-    $("input[name='driver_start_location'][value='current']").prop("checked", true);
     $('#addressBlock').css('display', 'none');
     $('#addressTaskBlock').css('display', 'none');
     $('#selectedtasklocations').html('');
@@ -1452,6 +1450,7 @@ function RouteOptimization(taskids, distancematrix, optimize, agentid, date) {
                 var option = '<option value="' + task_id + '">' + tasktype + ' - ' + shortname + ' - ' +
                     location_address + '</option>';
                 $('#selectedtasklocations').append(option);
+
             }
         },
         error: function(response) {
