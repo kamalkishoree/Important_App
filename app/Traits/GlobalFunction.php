@@ -13,6 +13,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Arr;
 use App\Traits\googleMapApiFunctions;
 use File;
 
@@ -558,6 +559,7 @@ trait GlobalFunction{
         // function to get distance between 2 location
         public function GoogleDistanceMatrix($lat1, $long1, $lat2, $long2)
         {
+           
             $client = ClientPreference::where('id', 1)->first();
             $ch = curl_init();
             $headers = array('Accept: application/json',
@@ -569,6 +571,7 @@ trait GlobalFunction{
             curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
             $response = curl_exec($ch);
             $result = json_decode($response);
+          
             curl_close($ch); // Close the connection
     
             $value =   $result->rows[0]->elements??'';
@@ -704,8 +707,10 @@ trait GlobalFunction{
             $enddate = date("Y-m-d 23:59:59", strtotime($request->date));
             $startdate = Carbon::parse($startdate . $auth->timezone ?? 'UTC')->tz('UTC');
             $enddate = Carbon::parse($enddate . $auth->timezone ?? 'UTC')->tz('UTC');
-    
+            $task = Task::with('location')->whereIn('id',$taskids)->get();
+           
             $agentid = $request->agentid;
+            
             for ($i=0; $i < count($taskids); $i++) {
                 $taskorder = [
                     'task_order' => $i
@@ -747,6 +752,7 @@ trait GlobalFunction{
                     array_push($allmarker, $append);
                 }
             }
+           
     
             $allagents = Agent::with('agentlog')->get()->toArray();
             $alldrivers = array();
@@ -773,6 +779,8 @@ trait GlobalFunction{
                     }
                 }
             }
+
+            
     
             //unassigned_orders
             $unassigned_orders = array();
@@ -831,8 +839,8 @@ trait GlobalFunction{
                 }
             }
     
-            $gettotal_distance = $this->getTotalDistance($taskids, $driverlocation);
-            $distance  = $gettotal_distance['total_distance_miles'];
+            // $gettotal_distance = $this->getTotalDistance($taskids, $driverlocation);
+            // $distance  = $gettotal_distance['total_distance_miles'];
     
             if ($agentid!=0) {
                 $allcation_type = 'silent';
@@ -856,7 +864,8 @@ trait GlobalFunction{
     
             $output = array();
             $output['allroutedata'] = $alldrivers;
-            $output['total_distance'] = $distance;
+             
+            // $output['total_distance'] = $distance;
             $output['current_location'] = Task::where('id', $taskids[0])->whereHas('order.agent.agentlog')->count();
             echo json_encode($output);
         }
@@ -864,6 +873,7 @@ trait GlobalFunction{
         //for updating task time after drag drop functionality
         public function optimizeArrangeRoute(Request $request)
         {
+          
             $driver_start_time = $request->driver_start_time;
             $task_duration = $request->task_duration;
             $brake_start_time = $request->brake_start_time;
@@ -914,6 +924,10 @@ trait GlobalFunction{
                 }
             }
 
+            if ($driver_start_location=='select') {
+               $this->getTotalDistancewithLatLong($taskids,$driver_latitude,$driver_longitude);
+            }
+
            
     
             $output = array();
@@ -927,47 +941,127 @@ trait GlobalFunction{
             $totaldistance = 0;
             $distancearray  = [];
             $loc1 = $loc2 = $prev_latitude = $prev_longitude = 0;
+           
             for ($i=0;$i<count($taskids);$i++) {
+                
                 $Taskdetail = Task::where('id', $taskids[$i])->with('location')->first();
-                if($i==0)
-                {
+               
                     if (isset($driverlocation['lat'])) {
                         $distance = $this->GoogleDistanceMatrix($driverlocation['lat'], $driverlocation['long'], $Taskdetail->location->latitude??'', $Taskdetail->location->longitude??'');
                         $totaldistance += $distance;
-                        $distancearray[] = $distance;
+                        $distancearray[$Taskdetail->id] = number_format($distance/1000, 2);
+                        
                     } else {
                         $distancearray[] = 0;
                     }
                     $loc1           = $Taskdetail->location_id;
                     $prev_latitude  = $Taskdetail->location->latitude??'';
                     $prev_longitude = $Taskdetail->location->longitude??'';
-                }else{
-                    $loc2 = $Taskdetail->location_id;
-                    $checkdistance = LocationDistance::where(['from_loc_id'=>$loc1,'to_loc_id'=>$loc2])->first();
-                    if (isset($checkdistance->id)) {
-                        $totaldistance += $checkdistance->distance;
-                        $distancearray[] = $checkdistance->distance;
-                    } else {
-                        $distance = $this->GoogleDistanceMatrix($prev_latitude, $prev_longitude, $Taskdetail->location->latitude ?? '', $Taskdetail->location->longitude ?? '');
-                        $totaldistance += $distance;
-                        $distancearray[] = $distance;
-                        $locdata = array('from_loc_id'=>$loc1,'to_loc_id'=>$loc2,'distance'=>$distance);
-                        LocationDistance::create($locdata);
-                    }
-                    $loc1 = $loc2;
-                    $prev_latitude  = $Taskdetail->location->latitude ?? '';
-                    $prev_longitude = $Taskdetail->location->longitude ?? '';
-                }
+                // }else{
+                //     $loc2 = $Taskdetail->location_id;
+                //     $checkdistance = LocationDistance::where(['from_loc_id'=>$loc1,'to_loc_id'=>$loc2])->first();
+                //     if (isset($checkdistance->id)) {
+                //         $totaldistance += $checkdistance->distance;
+                //         $distancearray[] = $checkdistance->distance;
+                //     } else {
+                //         $distance = $this->GoogleDistanceMatrix($prev_latitude, $prev_longitude, $Taskdetail->location->latitude ?? '', $Taskdetail->location->longitude ?? '');
+                //         $totaldistance += $distance;
+                //         $distancearray[] = $distance;
+                //         $locdata = array('from_loc_id'=>$loc1,'to_loc_id'=>$loc2,'distance'=>$distance);
+                //         LocationDistance::create($locdata);
+                //     }
+                //     $loc1 = $loc2;
+                //     $prev_latitude  = $Taskdetail->location->latitude ?? '';
+                //     $prev_longitude = $Taskdetail->location->longitude ?? '';
+                // }
             }
             
             $distance_in_km = number_format($totaldistance/1000, 2);
             $distance_in_miles = number_format($totaldistance/1609.344, 2);
             $output['total_distance'] = $totaldistance;
             $output['distance'] = $distancearray;
+            $output['distance'] = Arr::sort($output['distance']);
+
+          // If you want to maintain keys, use sortBy()
+           $output['distances'] = collect($output['distance'])->sortBy(function ($distance) {
+           return $distance;
+            })->toArray();
             $output['total_distance_km'] = $distance_in_km . __('km');
             $output['total_distance_miles'] = $distance_in_miles . __('miles');
+            $j = 0;
+           foreach($output['distances'] as $taskId => $distance){
+              $update_task = Task::where('id',$taskId)->update(['task_order'=>$j]);
+              $j++; 
+           }
             return $output;
         }
+
+
+        public function getTotalDistancewithLatLong($taskids=null, $driverlat=null,$driverlong=null)
+        {
+            
+            $points = array();
+            $totaldistance = 0;
+            $distancearray  = [];
+            $loc1 = $loc2 = $prev_latitude = $prev_longitude = 0;
+          
+            for ($i=0;$i<count($taskids);$i++) {
+                
+                $Taskdetail = Task::where('id', $taskids[$i])->with('location')->first();
+                    
+                    if (isset($driverlat)) {
+                        $distance = $this->GoogleDistanceMatrix($driverlat, $driverlong, $Taskdetail->location->latitude??'', $Taskdetail->location->longitude??'');
+                        
+                        $totaldistance += $distance;
+                        $distancearray[$Taskdetail->id] = number_format($distance/1000, 2);
+                        
+                    } else {
+                        $distancearray[] = 0;
+                    }
+                    $loc1           = $Taskdetail->location_id;
+                    $prev_latitude  = $Taskdetail->location->latitude??'';
+                    $prev_longitude = $Taskdetail->location->longitude??'';
+                // }else{
+                //     $loc2 = $Taskdetail->location_id;
+                //     $checkdistance = LocationDistance::where(['from_loc_id'=>$loc1,'to_loc_id'=>$loc2])->first();
+                //     if (isset($checkdistance->id)) {
+                //         $totaldistance += $checkdistance->distance;
+                //         $distancearray[] = $checkdistance->distance;
+                //     } else {
+                //         $distance = $this->GoogleDistanceMatrix($prev_latitude, $prev_longitude, $Taskdetail->location->latitude ?? '', $Taskdetail->location->longitude ?? '');
+                //         $totaldistance += $distance;
+                //         $distancearray[] = $distance;
+                //         $locdata = array('from_loc_id'=>$loc1,'to_loc_id'=>$loc2,'distance'=>$distance);
+                //         LocationDistance::create($locdata);
+                //     }
+                //     $loc1 = $loc2;
+                //     $prev_latitude  = $Taskdetail->location->latitude ?? '';
+                //     $prev_longitude = $Taskdetail->location->longitude ?? '';
+                // }
+            }
+            
+            $distance_in_km = number_format($totaldistance/1000, 2);
+            $distance_in_miles = number_format($totaldistance/1609.344, 2);
+            $output['total_distance'] = $totaldistance;
+            $output['distance'] = $distancearray;
+            
+            $output['distance'] = Arr::sort($output['distance']);
+          // If you want to maintain keys, use sortBy()
+           $output['distances'] = collect($output['distance'])->sortBy(function ($distance) {
+           return $distance;
+            })->toArray();
+            $output['total_distance_km'] = $distance_in_km . __('km');
+            $output['total_distance_miles'] = $distance_in_miles . __('miles');
+            $j = 0;
+           foreach($output['distances'] as $taskId => $distance){
+              $update_task = Task::where('id',$taskId)->update(['task_order'=>$j]);
+              $j++; 
+           }
+            return $output;
+        }
+
+
+      
     
         // for turn by turn funcationality
         public function ExportPdfPath(Request $request)
