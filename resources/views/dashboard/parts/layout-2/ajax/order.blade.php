@@ -1,11 +1,40 @@
+<?php
+if(isset($distance_matrix[0]))
+{
+    
+    // if($unassigned_orders[0]['task_order']==0){
+    //     $opti0 = "yes";
+    // }else{
+    //     die('pass');
+        $opti0 = "";
+    // }
+    $routeperams0 = "'".$distance_matrix[0]['tasks']."','".json_encode($distance_matrix[0]['distance'])."','".$opti0."',0,'".$date."'";
+    $optimize0 = '<span class="optimize_btn" onclick="RouteOptimization('.$routeperams0.')">'.__("Optimize").'</span>';
+    $params0 = "'".$distance_matrix[0]['tasks']."','".json_encode($distance_matrix[0]['distance'])."','yes',0,'".$date."'";
+
+    $turnbyturn0 = '<span class="navigation_btn optimize_btn" onclick="NavigatePath('.$routeperams0.')">'.__("Export").'</span>';
+}else{
+    $optimize0="";
+    $params0 = "";
+    $turnbyturn0 = "";
+}
+?>
+@php
+$date = date('Y-m-d');
+use Carbon\Carbon;
+
+
+@endphp
+
 @if (empty($unassigned_orders))
     <div class="text-center">
         <h5>No Orders found</h5>
     </div>
 @else
+<div id="handle-dragula-left0" class="dragable_tasks" agentid="1"  params="{{ $params0 }}" date="{{ $date }}">
     @foreach ($unassigned_orders as $orders)
    
-          
+    <div class="card-body" task_id ="{{ $orders->task_id }}">
                 <div class="p-2 assigned-block">
                     @php
                         $st = ucfirst($orders->status);
@@ -84,7 +113,9 @@
                         </div>
                     </div>
             </div>
+    </div>
     @endforeach
+</div>
     @if ($lastPage != $page && $unassigned_orders)
         <button class="form-control" id="load-more" data-page="{{ $page + 1 }}"
             data-url="{{ route('dashboard.orderdata', ['page' => $page + 1]) }}">Load More</button>

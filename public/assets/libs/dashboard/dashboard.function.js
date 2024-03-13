@@ -1289,11 +1289,12 @@ function initializeSortable() {
             var params = $(this).attr('params');
             var agentid = $(this).attr('agentid');
             var date = $(this).attr('date');
-
+            
             var taskorder = "";
             jQuery("#" + divid + " .card-body.ui-sortable-handle").each(function(index, element) {
                 taskorder = taskorder + $(this).attr('task_id') + ",";
             });
+            console.log(taskorder);
             $('input[type=radio][name=driver_start_location]').prop('checked', false);
             $.ajax({
                 type: 'POST',
@@ -1316,6 +1317,7 @@ function initializeSortable() {
                         ')">Optimize</span>';
                     $('.optimizebtn' + agentid).html(funperams);
                     spinnerJS.hideSpinner();
+                    $('#optimize-route-modal').modal('show');
                     $('#routeTaskIds').val(taskorder);
                     $('#routeMatrix').val('');
                     $('#routeOptimize').val('');
@@ -1328,7 +1330,7 @@ function initializeSortable() {
                     $('#addressTaskBlock').css('display', 'none');
                     $('#selectedtasklocations').html('');
                     $('.selecttask').css('display', 'none');
-
+                    
                     if (data.current_location == 0) {
                         $("input[type=radio][name=driver_start_location][value='current']")
                             .remove();
@@ -1336,7 +1338,7 @@ function initializeSortable() {
                         $("input[type=radio][name=driver_start_location][value='select']")
                             .click();
                     }
-                    $('#optimize-route-modal').modal('show');
+                    
                 },
                 error: function(response) {
                     Swal.fire({
@@ -1408,7 +1410,6 @@ function RouteOptimization(taskids, distancematrix, optimize, agentid, date) {
     $('#routeAgentid').val(agentid);
     $('#routeDate').val(date);
     $('#optimizeType').val('optimize');
-    $("input[name='driver_start_location'][value='current']").prop("checked", true);
     $('#addressBlock').css('display', 'none');
     $('#addressTaskBlock').css('display', 'none');
     $('#selectedtasklocations').html('');
@@ -1450,6 +1451,7 @@ function RouteOptimization(taskids, distancematrix, optimize, agentid, date) {
                 var option = '<option value="' + task_id + '">' + tasktype + ' - ' + shortname + ' - ' +
                     location_address + '</option>';
                 $('#selectedtasklocations').append(option);
+
             }
         },
         error: function(response) {
