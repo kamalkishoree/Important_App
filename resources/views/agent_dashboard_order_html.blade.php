@@ -26,7 +26,7 @@
 @if($page == 1)
 <div id="accordion" class="overflow-hidden">
     <!-- dragable_tasks -->
-    <div id="handle-dragula-left0" class=" " agentid="0"  params="{{ $params0 }}" date="{{ $date }}">
+    <div id="handle-dragula-left0" class="dragable_tasks" agentid="{{ $agent['id'] }}"  params="{{ $params0 }}" date="{{ $date }}">
 @endif
         @foreach($unassigned_orders as $orders)
            
