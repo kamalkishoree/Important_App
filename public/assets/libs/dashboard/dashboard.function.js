@@ -1317,6 +1317,7 @@ function initializeSortable() {
                         ')">Optimize</span>';
                     $('.optimizebtn' + agentid).html(funperams);
                     spinnerJS.hideSpinner();
+                    $('#optimize-route-modal').modal('show');
                     $('#routeTaskIds').val(taskorder);
                     $('#routeMatrix').val('');
                     $('#routeOptimize').val('');
@@ -1329,7 +1330,7 @@ function initializeSortable() {
                     $('#addressTaskBlock').css('display', 'none');
                     $('#selectedtasklocations').html('');
                     $('.selecttask').css('display', 'none');
-                    $('#optimize-route-modal').modal('show');
+                    
                     if (data.current_location == 0) {
                         $("input[type=radio][name=driver_start_location][value='current']")
                             .remove();
