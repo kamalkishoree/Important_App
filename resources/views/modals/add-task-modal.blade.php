@@ -95,7 +95,7 @@
                     </div>
 
                     <h4 class="header-title mb-2">
-                        {{__("Meta Data")}} <a href="javascript:void(0)" class="edit-icon-float-right"> <i class="mdi mdi-chevron-down"></i></a>
+                        {{__("Meta Data")}} <a href="javascript:void(0)" class="edit-icon-float-right"> </a>
                     </h4>
                     <div class="meta_data_task_div" style="display: none;">
                         <div class="row mb-2">
