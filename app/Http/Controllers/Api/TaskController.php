@@ -3774,7 +3774,7 @@ class TaskController extends BaseController
 
             //get pricing rule  for save with every order
             $agent_tags = (isset($request->order_agent_tag) && !empty($request->order_agent_tag)) ? $request->order_agent_tag : '';
-            $pricingRule = $this->getPricingRuleData($geoid, $agent_tags, $this->getConvertUTCToLocalTime($notification_time, $auth->timezone));
+            $pricingRule = $this->getPricingRuleData($geoid??'', $agent_tags, $this->getConvertUTCToLocalTime($notification_time, $auth->timezone));
 
 
 
