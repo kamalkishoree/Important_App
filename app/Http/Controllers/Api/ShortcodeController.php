@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\BaseController;
-use App\Model\{Client,ClientPreference};
+use App\Model\{Client,ClientPreference, Currency};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
@@ -88,6 +88,9 @@ class ShortcodeController extends BaseController
                 $client->is_freelancer = !empty($client_db_data->getPreference) && isset($client_db_data->getPreference->is_freelancer) ? $client_db_data->getPreference->is_freelancer : 0;
                 $client->is_road_side_toggle = !empty($client_db_data->getPreference) && isset($client_db_data->getPreference->is_road_side_toggle) ? $client_db_data->getPreference->is_road_side_toggle : 0;
                 $client['isAttendence'] = ($getAdditionalPreference['is_attendence'] == 1) ? $getAdditionalPreference['is_attendence'] : 0;
+                $Currency = Currency::where('id', $client_db_data->getPreference->currency_id)->first();
+                $client['currencyCode'] = $Currency->symbol??null;
+                $client['distanceUnit'] = $client_db_data->getPreference->distance_unit??null;
                 
             }
         }
