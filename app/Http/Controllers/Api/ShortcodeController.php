@@ -97,6 +97,7 @@ class ShortcodeController extends BaseController
         unset($client->database_password);
         $client->is_refferal_code_enable = ClientPreference::value('refer_earn_driver_to_driver_toggle');
         $client->distance_in_meter = ClientPreference::value('distance_in_meter');
+        $client->getAdditionalPreference = $getAdditionalPreference;
         return response()->json([
             'data' => $client,
             'status' => 200,
