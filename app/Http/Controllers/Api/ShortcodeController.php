@@ -79,7 +79,11 @@ class ShortcodeController extends BaseController
                 'pickup_type',
                 'drop_type',
                 'is_attendence',
-                'idle_time'
+                'idle_time',
+                'hold_to_start',
+                'hold_to_arrive',
+                'hold_to_pick',
+                'hold_to_complete',
             ]);
             if(!empty($client_db_data)){
                 $client->client_db_id = $client_db_data->id;
