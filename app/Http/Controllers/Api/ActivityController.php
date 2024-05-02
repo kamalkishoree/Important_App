@@ -259,10 +259,7 @@ class ActivityController extends BaseController
 
     public function agentLog(Request $request)
     {
-        
-       
-                    // Start time
-   $startTime = microtime(true);
+    
         $user_id = Auth::user()->id;
 
         $header = $request->header();
@@ -481,14 +478,7 @@ class ActivityController extends BaseController
             
         $datas['user']                = $agents;
         $datas['tasks']               = $tasks;
-         // End time
-         $endTime = microtime(true);
-        
-         // Calculate execution time
-         $executionTime = $endTime - $startTime;
-   
-         // Log execution time
-         \Log::info("Execution time of yourFunction for client database '{$client_code->database_name}': " . $executionTime . " seconds");
+
 
         
                    
