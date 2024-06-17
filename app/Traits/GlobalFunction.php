@@ -683,7 +683,7 @@ trait GlobalFunction{
             ->firstOrNew() // Get the latest or create a new instance if not found
             ->fill($data) // Fill the data to be updated or created
             ->save();
-            $log = AgentLog::where('agent_id',$data['agent_id'])->latest('created_at')->first();
+            $log = AgentLog::where('agent_id',$data['agent_id'])->orderBy('id','desc')->first();
             }else{
                 $log = AgentOrderLog::create($data);
             }

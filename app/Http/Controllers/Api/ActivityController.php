@@ -259,7 +259,7 @@ class ActivityController extends BaseController
 
     public function agentLog(Request $request)
     {
-
+    
         $user_id = Auth::user()->id;
 
         $header = $request->header();
@@ -377,11 +377,15 @@ class ActivityController extends BaseController
                     }
                 }
             }else{
+              
                 $log=  $this->updateAgentLog($data,$request->order_id);
+   
                 $agent_details=Agent::with('agentlog')->where('id',$log->agent_id)->first();
                 //event(new \App\Events\agentLogFetch());
             }
         }
+
+
         // $send_data=[
         //     'name'=>$agent_details->name,
         //     'agent_id'=>$agent_details->agent_id,
@@ -394,7 +398,7 @@ class ActivityController extends BaseController
         // $this->FireEvent($send_data);
         $id    = Auth::user()->id;
         $all   = $request->all;
-
+        
         if ($all == 1) {
             $orders = Order::where('driver_id', $id)->where('status', 'assigned')->orderBy('order_time')->pluck('id')->toArray();
         } else {
@@ -405,7 +409,7 @@ class ActivityController extends BaseController
         $agent->device_type = $request->device_type??null;
         $agent->device_token = $request->device_token??null;;
         $agent->save();
-
+   
 
         if (count($orders) > 0) {
 
@@ -432,12 +436,14 @@ class ActivityController extends BaseController
                 }
             }
         }
+        
 
         $agents    = $agent; //Agent::where('id', $id)->with('team')->first();
         $taskProof = TaskProof::all();
 
         $payment_codes = ['stripe'];
         $payment_creds = PaymentOption::select('code', 'credentials')->whereIn('code', $payment_codes)->where('status', 1)->get();
+      
         if ($payment_creds) {
             foreach ($payment_creds as $creds) {
                 $creds_arr = json_decode($creds->credentials);
@@ -458,21 +464,25 @@ class ActivityController extends BaseController
 
         $datas['attribute_form'] = $this->getAttributeForm($request);
 
-        $averageTaskComplete   = $this->getDriverTaskDonePercentage( $agents->id);
+        // $averageTaskComplete   = $this->getDriverTaskDonePercentage( $agents->id);
         $preferences['alert_dismiss_time'] = (int)$allcation->request_expiry;
         $agents['client_preference']  = $preferences;
-        $agents['task_proof']         = $taskProof;
-        $agents['averageTaskComplete']= $averageTaskComplete['averageRating'];
-        $agents['CompletedTasks']= $averageTaskComplete['CompletedTasks'];
+         $agents['task_proof']         = $taskProof;
+        // $agents['averageTaskComplete']= $averageTaskComplete['averageRating'];
+        // $agents['CompletedTasks']= $averageTaskComplete['CompletedTasks'];
         if($preferences->unique_id_show){
             $agents['unique_id'] = base64_encode('DId_'.$agent->id);
         }
         $agents['is_road_side_toggle']= $preferences->is_road_side_toggle;
         $agents['is_refferal_code_enable'] = ClientPreference::value('refer_earn_driver_to_driver_toggle');
-
+            
         $datas['user']                = $agents;
         $datas['tasks']               = $tasks;
 
+
+        
+                   
+       
         return response()->json([
             'data' => $datas,
             'status' => 200,
