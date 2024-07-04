@@ -1328,6 +1328,10 @@ class TaskController extends BaseController
 
     public function CreateTask(CreateTaskRequest $request)
     {
+
+        \Log::info(' create task request data');
+        \Log::info($request->all());
+
         try {
             $auth = $client = Client::with([
                 'getAllocation',
@@ -1910,6 +1914,8 @@ class TaskController extends BaseController
                         $this->OneByOne($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, $agent_tags, $is_order_updated, $is_one_push_booking);
                         break;
                     case 'send_to_all':
+                        \Log::info('in send to all ');
+                        
                         //this is called when allocation type is send to all
                         $this->SendToAll($geo, $notification_time, $agent_id, $orders->id, $customer, $pickup_location, $taskcount, $header, $allocation, $orders->is_cab_pooling, $agent_tags, $is_order_updated, $is_one_push_booking);
                         break;
@@ -2588,6 +2594,9 @@ class TaskController extends BaseController
 
     public function SendToAll($geo, $notification_time, $agent_id, $orders_id, $customer, $finalLocation, $taskcount, $header, $allocation, $is_cab_pooling, $agent_tag = '', $is_order_updated, $is_one_push_booking = 0,$particular_driver_id = 0)
     {
+
+        \Log::info(' inside send to all');
+        
         $allcation_type    = 'AR';
         $date              = \Carbon\Carbon::today();
         $auth              = Client::where('database_name', $header['client'][0])->with(['getAllocation', 'getPreference'])->first();
@@ -2603,6 +2612,11 @@ class TaskController extends BaseController
         $time              = $this->checkTimeDiffrence($notification_time, $beforetime);
         $randem            = rand(11111111, 99999999);
         $data = [];
+
+        \Log::info(' geo ');
+        \Log::info([$geo]);
+        \Log::info(' agent_id ');
+        \Log::info([$agent_id]);
 
         if ($type == 'acceptreject') {
             $allcation_type = 'AR';
@@ -2650,6 +2664,9 @@ class TaskController extends BaseController
             }
         } else {
             $geoagents = $this->getGeoBasedAgentsData($geo, $is_cab_pooling, $agent_tag, $date, $cash_at_hand,$orders_id,$particular_driver_id);
+
+            \Log::info(' geo agents array ');
+            \Log::info([$geoagents]);
             if(count($geoagents) > 0){
                 for ($i = 1; $i <= $try; $i++) {
                     foreach ($geoagents as $key =>  $geoitem) {
@@ -2683,6 +2700,9 @@ class TaskController extends BaseController
                 }
             }
            if(!empty($data))
+
+           \Log::info(' notification roster data ');
+           \Log::info([$data]);
             $this->dispatch(new RosterCreate($data, $extraData));
         }
     }

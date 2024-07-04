@@ -23,7 +23,8 @@ class SendPushNotification
      */
     public function __construct()
     {
-
+        \Log::info('inside send push listener construct ');
+        
     }
     /**
      * Handle the event.
@@ -33,7 +34,7 @@ class SendPushNotification
      */
     public function handle(PushNotification $event)
     {
-   
+        \Log::info('inside send push listener handle function ');
         $date =  Carbon::now()->toDateTimeString();
         try {
             $schemaName = 'royodelivery_db';
@@ -63,6 +64,7 @@ class SendPushNotification
 
     public function getData()
     {        
+        \Log::info('inside send push listener data function ');
         $schemaName       = 'royodelivery_db';
         $date             =  Carbon::now()->toDateTimeString();
       
@@ -75,7 +77,14 @@ class SendPushNotification
                                     ->select('rosters.*', 'roster_details.customer_name', 'roster_details.customer_phone_number',
         'roster_details.short_name','roster_details.address','roster_details.lat','roster_details.long','roster_details.task_count');
         $get              = $get->get();
+
+        \Log::info('notification get data');
+        \Log::info([$get]);
+
         $getids           = $get->pluck('id')->toArray();
+        \Log::info('notification get data ids ');
+        \Log::info([$getids]);
+
         DB::connection($schemaName)->table('rosters')->where('status',10)->delete();
                         
         if(count($getids) > 0){ 
@@ -90,6 +99,9 @@ class SendPushNotification
 
     public function sendnotification($recipients)
     { 
+
+        \Log::info('notification recipients ');
+        \Log::info([$recipients]);
         try {        
             $array = json_decode(json_encode($recipients), true);
             foreach($array as $item){            
@@ -123,8 +135,8 @@ class SendPushNotification
                                             'show_in_foreground' => true,
                                         ])
                                 ->send();
-                               //\Log::info( "fcm" );                            
-                               //\Log::info( $fcm_store );
+                               \Log::info( "fcm" );                            
+                               \Log::info( $fcm_store );
                             }else{
                                 $fcm_store =   $fcmObj
                                 ->to([$item['device_token']])
